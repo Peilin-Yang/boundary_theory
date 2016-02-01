@@ -17,10 +17,12 @@ class CollectionStats(object):
         self.fieldnames=['qid', 'docid', 'score', 'rel_score', 'tf', 'total_tf', 
             'doc_len', 'doc_minTF', 'doc_maxTF', 'doc_avgTF', 'doc_varTF']
 
+        self.dumpindex = 'dumpindex_EX'
+
     #index############################################################
 
     def get_index_statistics(self):
-        process = Popen(['dumpindex', os.path.join(self.collection_path, 'index'), 's'], stdout=PIPE)
+        process = Popen([self.dumpindex, os.path.join(self.collection_path, 'index'), 's'], stdout=PIPE)
         stdout, stderr = process.communicate()
         stats = {}
         for line in stdout.split('\n'):
@@ -54,7 +56,7 @@ class CollectionStats(object):
         path = os.path.join(self.collection_path, 'vocabulary_stats.json')
         if not os.path.exists(path):
             with open(path, 'wb') as f:
-                subprocess.Popen(['dumpindex', 
+                subprocess.Popen([self.dumpindex, 
                     os.path.join(self.collection_path, 'index'), 'vs'], 
                     stdout=f)
                 f.flush()
@@ -101,7 +103,7 @@ class CollectionStats(object):
         with open(tmp_fn, 'wb') as f:
             f.write('\n'.join(internal_docids))
 
-        process = Popen(['dumpindex', 
+        process = Popen([self.dumpindex, 
             os.path.join(self.collection_path, 'index'), 'ds', tmp_fn], 
             stdout=PIPE)
         stdout, stderr = process.communicate()
@@ -140,7 +142,7 @@ class CollectionStats(object):
         @Return: the required statistics
         """
 
-        process = Popen(['dumpindex', 
+        process = Popen([self.dumpindex, 
             os.path.join(self.collection_path, 'index'), 'termfeature', term], 
             stdout=PIPE)
         stdout, stderr = process.communicate()
@@ -191,7 +193,7 @@ class CollectionStats(object):
         @Return: the internal docid
         """
 
-        process = Popen(['dumpindex', 
+        process = Popen([self.dumpindex, 
             os.path.join(self.collection_path, 'index'), 'di', 'docno', docno], 
             stdout=PIPE)
         stdout, stderr = process.communicate()
@@ -208,7 +210,7 @@ class CollectionStats(object):
         @Return: the external docid
         """
 
-        process = Popen(['dumpindex', 
+        process = Popen([self.dumpindex, 
             os.path.join(self.collection_path, 'index'), 'dn', docid], stdout=PIPE)
         stdout, stderr = process.communicate()
 
@@ -267,7 +269,7 @@ class CollectionStats(object):
         if not os.path.exists(richStatsFilePath):
             f = open(richStatsFilePath, 'wb')
             all_performances = {}
-            process = Popen(['dumpindex', os.path.join(self.collection_path, 'index'), 'rs'], stdout=f)
+            process = Popen([self.dumpindex, os.path.join(self.collection_path, 'index'), 'rs'], stdout=f)
             stdout, stderr = process.communicate()
             f.close()
 
@@ -275,7 +277,7 @@ class CollectionStats(object):
             return json.load(f)
 
     def get_term_counts(self, term):
-        process = Popen(['dumpindex', 
+        process = Popen([self.dumpindex, 
             os.path.join(self.collection_path, 'index'), 't', term], stdout=PIPE)
         stdout, stderr = process.communicate()
 
@@ -289,7 +291,7 @@ class CollectionStats(object):
         return all_term_counts
 
     def get_term_counts_dict(self, term):
-        process = Popen(['dumpindex', 
+        process = Popen([self.dumpindex, 
             os.path.join(self.collection_path, 'index'), 't', term], stdout=PIPE)
         stdout, stderr = process.communicate()
 
