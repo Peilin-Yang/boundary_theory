@@ -16,13 +16,13 @@ class Judgment(object):
             print '[Judgment Constructor]:Please provide a valid corpus path'
             exit(1)
 
-        self.judgment_file_path = os.path.join(self.corpus_path, 'judgment_file')
+        self.judgment_file_path = os.path.join(self.corpus_path, 'judgement_file')
         if not os.path.exists(self.judgment_file_path):
             frameinfo = getframeinfo(currentframe())
             print frameinfo.filename, frameinfo.lineno
-            print """No judgment file found! 
-                judgment file should be called "judgment_file" under 
-                corpus path. You can create a symlink for it"""
+            print 'No judgment file found!'
+            print 'judgment file should be called "judgment_file" under'
+            print 'corpus path. You can create a symlink for it'
             exit(1)
 
 
