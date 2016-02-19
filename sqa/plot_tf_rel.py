@@ -170,7 +170,7 @@ class PlotTFRel(SingleQueryAnalysis):
 
 
 
-    def plot_single_tfc_constraints_rel_tf(self, collection_path, smoothing=False, oformat='eps'):
+    def plot_single_tfc_constraints_rel_tf(self, collection_path, plot_ratio=True, smoothing=False, oformat='eps'):
         collection_name = collection_path.split('/')[-1]
         cs = CollectionStats(collection_path)
         output_root = 'single_query_figures'
@@ -233,6 +233,7 @@ class PlotTFRel(SingleQueryAnalysis):
             xaxis.sort()
             yaxis = [x_dict[x][0] for x in xaxis]
             yaxis_total = [x_dict[x][1] for x in xaxis]
+            yaxis_ratio = [x_dict[x][0]/x_dict[x][1] for x in xaxis]
             #print xaxis
             #print yaxis
             xaxis_splits_10 = [[x for x in xaxis if x <= i+10 and x > i] for i in range(0, maxTF+1, 10)]
@@ -242,31 +243,25 @@ class PlotTFRel(SingleQueryAnalysis):
             entropy_splits_10 = [entropy(ele, base=2) for ele in yaxis_splits_10]
             query_stat = cs.get_term_stats(query_term)
             dist_entropy = entropy(yaxis, base=2)
-            # self.plot_single_tfc_constraints_draw_pdf(ax, xaxis, 
-            #     yaxis, qid+'-'+query_term, 
-            #     'term_maxTF=%d\nterm_minTF=%d\nterm_avgTF=%.2f\nterm_varTF=%.2f\ndf=%d\ndist_entropy=%.2f\nsplit_entropy_10=%s'
-            #     % (maxTF, query_stat['minTF'], query_stat['avgTF'], query_stat['varTF'],
-            #       query_stat['df'], dist_entropy, str(entropy_splits_10)), 
-            #     True,
-            #     xlog=False)
-            # self.plot_single_tfc_constraints_draw_pdf(ax, xaxis, yaxis_total, qid+'-'+query_term, 
-            #     'term_maxTF=%d\nterm_minTF=%d\nterm_avgTF=%.2f\nterm_varTF=%.2f\ndf=%d\ndist_entropy=%.2f\nsplit_entropy_10=%s'
-            #     % (maxTF, query_stat['minTF'], query_stat['avgTF'], query_stat['varTF'],
-            #       query_stat['df'], dist_entropy, str(entropy_splits_10)), 
-            #     True,
-            #     xlog=False)
-            self.plot_single_tfc_constraints_draw_pdf(ax, xaxis, yaxis_total, 
-                qid+'-'+query_term, 
-                'total\nidf:%.1f'%idf, 
-                True,
-                xlog=False)
-            self.plot_single_tfc_constraints_draw_pdf(ax, xaxis, 
-                yaxis, qid+'-'+query_term, 
-                'rel', 
-                True,
-                marker='bs', 
-                xlog=False,
-                zoom=(qid =='379' or qid =='395' or qid =='417' or qid =='424'))
+            if plot_ratio:
+                self.plot_single_tfc_constraints_draw_pdf(ax, xaxis, 
+                    yaxis_ratio, qid+'-'+query_term, 
+                    'total\nidf:%.1f'%idf,
+                    True,
+                    xlog=False)
+            else:
+                self.plot_single_tfc_constraints_draw_pdf(ax, xaxis, yaxis_total, 
+                    qid+'-'+query_term, 
+                    'total\nidf:%.1f'%idf, 
+                    True,
+                    xlog=False)
+                self.plot_single_tfc_constraints_draw_pdf(ax, xaxis, 
+                    yaxis, qid+'-'+query_term, 
+                    'rel', 
+                    True,
+                    marker='bs', 
+                    xlog=False,
+                    zoom=(qid =='379' or qid =='395' or qid =='417' or qid =='424'))
 
 
         collection_vocablulary_stat = cs.get_vocabulary_stats()
@@ -279,8 +274,11 @@ class PlotTFRel(SingleQueryAnalysis):
                 idx = 1
             idx += 1
         #fig.text(0.5, 0, collection_vocablulary_stat_str, ha='center', va='center', fontsize=12)
-        plt.savefig(os.path.join(self.all_results_root, output_root, collection_name+'-rel_tf.'+oformat), 
-            format=oformat, bbox_inches='tight', dpi=400)
+        if plot_ratio:
+            output_fn = os.path.join(self.all_results_root, output_root, collection_name+'-rel_tf_ratio.'+oformat)
+        else:
+            os.path.join(self.all_results_root, output_root, collection_name+'-rel_tf.'+oformat)
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
 
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
