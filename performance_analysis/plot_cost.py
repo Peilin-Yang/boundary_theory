@@ -50,7 +50,7 @@ class PerformaceAnalysis(object):
                     print x, avg_perform
                     plt.plot(x, avg_perform)
                 model_idx += 1
-            plt.savefig(os.path.join('../all_results/', 'performance_analysis', collection.split('/')[-1]+'-'+str(i)+'.png'), 
+            plt.savefig(os.path.join('../../all_results/', 'performance_analysis', collection.split('/')[-1]+'-'+str(i)+'.png'), 
             format='png', bbox_inches='tight', dpi=400)    
 
 
