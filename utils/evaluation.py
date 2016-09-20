@@ -4,7 +4,7 @@ import json
 from subprocess import Popen, PIPE
 
 
-class Evaluation():
+class Evaluation(object):
     """
     Get the evaluation of a corpus for a result.
     When constructing, pass the path of the corpus and the path of the result file. 

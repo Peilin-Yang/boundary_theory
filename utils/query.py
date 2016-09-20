@@ -21,7 +21,8 @@ class Query(object):
         if not os.path.exists(self.corpus_path):
             frameinfo = getframeinfo(currentframe())
             print frameinfo.filename, frameinfo.lineno
-            print '[Evaluation Constructor]:Please provide a valid corpus path'
+            print '[Query Constructor]:path "' + self.corpus_path + '" is not a valid path'
+            print '[Query Constructor]:Please provide a valid corpus path'
             exit(1)
 
         self.query_file_path = os.path.join(self.corpus_path, 'raw_topics')
