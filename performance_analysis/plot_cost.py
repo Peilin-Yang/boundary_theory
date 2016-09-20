@@ -32,7 +32,7 @@ class PerformaceAnalysis(object):
         for i in query_instance.get_queries_lengths():
             print '-'*20
             print i,':'
-            print query_instance.get_queries_of_length(i)
+            print [q['num'] for q in query_instance.get_queries_of_length(i)]
         
 
 PerformaceAnalysis().gen_performance_trending()
