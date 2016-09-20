@@ -14,27 +14,28 @@ class CollectionStats(object):
             print '[CollectionStats Constructor]:Please provide a valid collection path'
             exit(1)
 
-        self.fieldnames=['qid', 'docid', 'score', 'rel_score', 'tf', 'total_tf', 
-            'doc_len', 'doc_minTF', 'doc_maxTF', 'doc_avgTF', 'doc_varTF']
-
         self.dumpindex = 'dumpindex_EX'
 
     #index############################################################
 
     def get_index_statistics(self):
-        process = Popen([self.dumpindex, os.path.join(self.collection_path, 'index'), 's'], stdout=PIPE)
-        stdout, stderr = process.communicate()
-        stats = {}
-        for line in stdout.split('\n'):
-            line = line.strip()
-            if line:
-                row = line.split(':')
-                try:
-                    stats[row[0].strip()] = ast.literal_eval(row[1].strip())
-                except:
-                    continue
-
-        return stats        
+        ofn = os.path.join(self.collection_path, 'collection_stats.json') 
+        if not os.path.exists( ofn ):        
+            process = Popen([self.dumpindex, os.path.join(self.collection_path, 'index'), 's'], stdout=PIPE)
+            stdout, stderr = process.communicate()
+            stats = {}
+            for line in stdout.split('\n'):
+                line = line.strip()
+                if line:
+                    row = line.split(':')
+                    try:
+                        stats[row[0].strip()] = ast.literal_eval(row[1].strip())
+                    except:
+                        continue
+            with open(ofn, 'wb') as f:
+                json.dump(stats, f, indent=2, sort_keys=True)
+        with open(ofn) as f:
+            return json.load(f)
 
     def get_avdl(self):
         all_statistics = self.get_index_statistics()
@@ -43,6 +44,10 @@ class CollectionStats(object):
     def get_doc_counts(self):
         all_statistics = self.get_index_statistics()
         return all_statistics.get('documents', None)
+
+    def get_total_terms(self):
+        all_statistics = self.get_index_statistics()
+        return all_statistics.get('total terms', None)
 
 
     #vocabulary############################################################
@@ -56,10 +61,10 @@ class CollectionStats(object):
         path = os.path.join(self.collection_path, 'vocabulary_stats.json')
         if not os.path.exists(path):
             with open(path, 'wb') as f:
-                subprocess.Popen([self.dumpindex, 
+                p = subprocess.Popen([self.dumpindex, 
                     os.path.join(self.collection_path, 'index'), 'vs'], 
                     stdout=f)
-                f.flush()
+                p.communicate()
 
         with open(path) as f:
             r = json.load(f)
@@ -95,7 +100,7 @@ class CollectionStats(object):
     def get_document_stats(self, internal_docids):
         """
         Get a list of documents' statistics.
-        We use the modified "dumpindex" indri code to do this in faster way.
+        We use the modified "dumpindex.cpp" indri code to do this in a faster way.
         It is better to send a list of internal docids to Indri code so that 
         it can be faster!!!
         """
@@ -141,16 +146,32 @@ class CollectionStats(object):
 
         @Return: the required statistics
         """
-
-        process = Popen([self.dumpindex, 
-            os.path.join(self.collection_path, 'index'), 'termfeature', term], 
-            stdout=PIPE)
-        stdout, stderr = process.communicate()
-        r = json.loads(stdout)
-        if feature:
-            return r[feature]
+        fn = os.path.join(self.collection_path, 'term_stats.json')
+        _run = False
+        r = {}
+        if not os.path.exists(fn):
+            _run = True
         else:
-            return r
+            with open(fn) as f:
+                r = json.load(f)
+            if term not in r:
+                _run = True
+        if _run:
+            process = Popen([self.dumpindex, 
+                os.path.join(self.collection_path, 'index'), 'termfeature', term], 
+                stdout=PIPE)
+            stdout, stderr = process.communicate()
+            r[term] = json.loads(stdout)
+            with open(fn, 'wb') as f:
+                json.dump(r, f, indent=2, sort_keys=True)
+        else:
+            with open(fn) as f:
+                r = json.load(f)
+
+        if feature:
+            return r[term][feature]
+        else:
+            return r[term]
 
     
     def get_term_stem(self, term):
@@ -167,6 +188,18 @@ class CollectionStats(object):
         N/df
         """
         return self.get_term_stats(term, 'idf1')
+
+    def get_term_logidf1(self, term):
+        """
+        N/df
+        """
+        return self.get_term_stats(term, 'log(idf1)')
+
+    def get_term_collection_occur(self, term):
+        """
+        collection occurence
+        """
+        return self.get_term_stats(term, 'total_occur')
 
     def get_term_maxTF(self, term):
         return self.get_term_stats(term, 'maxTF')
@@ -236,7 +269,7 @@ class CollectionStats(object):
 
     def get_qid_details(self, qid):
         with open(os.path.join(self.collection_path, 'detailed_doc_stats', qid)) as f:
-            rows = csv.DictReader(f, fieldnames=self.fieldnames)
+            rows = csv.DictReader(f)
             for row in rows:
                 yield row
 

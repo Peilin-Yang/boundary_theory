@@ -1,24 +1,78 @@
 import os,sys
 import ast
+import json
+import csv
 from operator import itemgetter
 import shutil
 import argparse
+import subprocess, shlex
+from subprocess import Popen, PIPE
 import inspect
 from inspect import currentframe, getframeinfo
 
 import numpy as np
 
-from utils.MPI import MPI
-
-import tie_breaker
-from utils import indri
+from utils.ArrayJob import ArrayJob
+import g
+from tie_breaker import TieBreaker
 from utils.evaluation import Evaluation
 
 
-_root = '../batch/'
+_root = '../../reproduce/collections/'
 output_root = '../all_results/'
 max_nodes = 120
 
+
+def gen_batch_framework(para_label, batch_pythonscript_para, all_paras, \
+        quote_command=False, memory='2G', max_task_per_node=50000, num_task_per_node=50):
+
+    para_dir = os.path.join('batch_paras', '%s') % para_label
+    if os.path.exists(para_dir):
+        shutil.rmtree(para_dir)
+    os.makedirs(para_dir)
+
+    batch_script_root = 'bin'
+    if not os.path.exists(batch_script_root):
+        os.makedirs(batch_script_root)
+
+    if len(all_paras) == 0:
+        print 'Nothing to run for ' + para_label
+        return
+
+    tasks_cnt_per_node = min(num_task_per_node, max_task_per_node) if len(all_paras) > num_task_per_node else 1
+    all_paras = [all_paras[t: t+tasks_cnt_per_node] for t in range(0, len(all_paras), tasks_cnt_per_node)]
+    batch_script_fn = os.path.join(batch_script_root, '%s-0.qs' % (para_label) )
+    batch_para_fn = os.path.join(para_dir, 'para_file_0')
+    with open(batch_para_fn, 'wb') as bf:
+        for i, ele in enumerate(all_paras):
+            para_file_fn = os.path.join(para_dir, 'para_file_%d' % (i+1))
+            bf.write('%s\n' % (para_file_fn))
+            with open(para_file_fn, 'wb') as f:
+                writer = csv.writer(f)
+                writer.writerows(ele)
+    command = 'python %s -%s' % (
+        inspect.getfile(inspect.currentframe()), \
+        batch_pythonscript_para
+    )
+    arrayjob_script = ArrayJob()
+    arrayjob_script.output_batch_qs_file(batch_script_fn, command, quote_command, True, batch_para_fn, len(all_paras), _memory=memory)
+    run_batch_gen_query_command = 'qsub %s' % batch_script_fn
+    subprocess.call( shlex.split(run_batch_gen_query_command) )
+    """
+    for i, ele in enumerate(all_paras):
+        batch_script_fn = os.path.join( batch_script_root, '%s-%d.qs' % (para_label, i) )
+        batch_para_fn = os.path.join(para_dir, 'para_file_%d' % i)
+        with open(batch_para_fn, 'wb') as bf:
+            bf.write('\n'.join(ele))
+        command = 'python %s -%s' % (
+            inspect.getfile(inspect.currentframe()), \
+            batch_pythonscript_para
+        )
+        arrayjob_script = ArrayJob.ArrayJob()
+        arrayjob_script.output_batch_qs_file(batch_script_fn, command, quote_command, True, batch_para_fn, len(ele))
+        run_batch_gen_query_command = 'qsub %s' % batch_script_fn
+        subprocess.call( shlex.split(run_batch_gen_query_command) )
+    """
 
 def get_already_generated_qids(collection_path):
     r = []
@@ -129,62 +183,28 @@ def collect_existing_detailed_doc_stats_results(intermediate_results_root,
     return not_run
 
 
-def gen_detailed_doc_stats(result_file):
-    if not os.path.exists(result_file):
-        print 'Result File:', result_file, ' Does not exists!'
-        exit()
+def gen_detailed_doc_stats_paras(method_name):
+    all_paras = []
+    for q in g.query:
+        collection_name = q['collection']
+        collection_path = os.path.join(_root, collection_name)
+        all_paras.extend(TieBreaker(collection_path).gen_detailed_doc_stats_paras( 
+            method_name,
+            query_parts=q['qf_parts']
+        ) )
 
-    current_function_name = inspect.stack()[0][3]
-    collection_path = os.path.abspath('/'.join(result_file.split('/')[:-2]))
-    collection_name = collection_path.split('/')[-1]
-    final_output_path = os.path.join(collection_path, "detailed_doc_stats")
-
-    intermediate_results_root = os.path.abspath(os.path.join(_root, collection_name, 
-        'intermediate_results', current_function_name))
-
-    already_generated_qids = get_already_generated_qids(collection_path)
-    all_doc_paras = tie_breaker.TieBreaker(collection_path).gen_doc_details(result_file)
-    all_doc_paras = collect_existing_detailed_doc_stats_results(
-        intermediate_results_root, all_doc_paras, already_generated_qids, final_output_path)
-
-    already_generated_qids = list(set(already_generated_qids))
-    with open(os.path.join(collection_path, 'detailed_doc_stats_log'), 'wb') as f:
-        f.write('\n'.join(already_generated_qids))
-
-    #print all_doc_paras.keys(), len(all_doc_paras)
-    if not all_doc_paras:
-        print 'Nothing to RUN'
-    else:
-        all_paras = []
-        for qid in all_doc_paras:
-            all_paras.append([])
-            for ele in all_doc_paras[qid]:
-                all_paras[-1].append([collection_path, qid, ele[0], str(ele[1])])
-
-        query_cnt = len(all_doc_paras)
-
-        # split the paras based on the qid so that we can get best parallel efficiency!
-        total_nodes = min( max_nodes-1, query_cnt )
-        while len(all_paras)>total_nodes:
-            tmp = []
-            for i in range(0,len(all_paras),2):
-                if i+1 < len(all_paras):
-                    tmp.append(all_paras[i]+all_paras[i+1])
-            all_paras = tmp
-        # split the paras based on the qid so that we can get best parallel efficiency!
-
-        #print all_paras, len(all_paras)
-        if not os.path.exists(intermediate_results_root):
-            os.makedirs(intermediate_results_root)
-
-        MPI().gen_batch_framework(os.path.join(_root, collection_name, 'bin'), 
-            current_function_name, "tie_breaker.py", '11', 
-            all_paras, 
-            os.path.join(_root, collection_name, 'misc', current_function_name), 
-            para_alreay_split=True,
-            add_node_to_para=True, node_para_prefix=intermediate_results_root,
-            run_after_gen=False, max_nodes=total_nodes, memory='4G')
+    #print all_paras
+    gen_batch_framework('gen_detailed_doc_stats', '11', all_paras, memory='10G')
   
+def gen_detailed_doc_stats_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            result_fn = row[1]
+            output_fn = row[2]
+            TieBreaker(collection_path).gen_doc_details_atom(result_fn, output_fn) 
+
 
 ###################################################
 def run_all_baseline_results_atom(para_file):
@@ -266,11 +286,57 @@ def gen_baseline_best_results(collections=[]):
                 output.write('\n')
 
 
+def gen_run_baseline_paras(baseline_method='lm'):
+    all_paras = []
+    with open('g.json') as f:
+        methods = json.load(f)['methods']
+        for m in methods:
+            for q in g.query:
+                collection_name = q['collection']
+                collection_path = os.path.join(_root, collection_name)
+                all_paras.extend(TieBreaker(collection_path).gen_run_baseline_paras(m['name'], 10000, q['qf_parts']))
+    gen_batch_framework('run_baseline', '00', all_paras)
+
+def gen_run_baseline_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            query_para = row[0]
+            output_fn = row[1]
+            #print query_para
+            #print output_fn
+            run_query(query_para, output_fn)
+            
+def run_query(query_para, output_fn):
+    paras = shlex.split(query_para)
+    paras.insert(0, 'IndriRunQuery_EX')
+    p = Popen(paras, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = p.communicate()
+    if 'exiting' not in stdout:
+        with open(output_fn, 'wb') as o:
+            o.write(stdout)
+    else:
+        print stdout, stderr
+        exit()   
+
+
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-1", "--gen_detailed_doc_stats",
+    parser.add_argument("-0", "--gen_run_baseline_paras",
+        action='store_true',
+        help="generate the batch run parameters for running \
+               the baseline method")
+    parser.add_argument('-00', '--gen_run_baseline_atom', nargs=1,
+                       help='actually run the baseline method')
+
+    parser.add_argument("-1", "--gen_detailed_doc_stats_paras",
+        nargs=1,
+        help="Generate the detailed document for the query. The input is \
+            the method name (default lm).")
+    parser.add_argument("-11", "--gen_detailed_doc_stats_atom",
         nargs=1,
         help="Generate the detailed document for the query. The input is \
             the result file.")
@@ -289,8 +355,15 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.gen_detailed_doc_stats:
-        gen_detailed_doc_stats(args.gen_detailed_doc_stats[0])
+    if args.gen_run_baseline_paras:
+        gen_run_baseline_paras()
+    if args.gen_run_baseline_atom:
+        gen_run_baseline_atom(args.gen_run_baseline_atom[0])
+
+    if args.gen_detailed_doc_stats_paras:
+        gen_detailed_doc_stats_paras(args.gen_detailed_doc_stats_paras[0])
+    if args.gen_detailed_doc_stats_atom:
+        gen_detailed_doc_stats_atom(args.gen_detailed_doc_stats_atom[0])
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)

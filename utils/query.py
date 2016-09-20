@@ -86,7 +86,8 @@ class Query(object):
 
                 _all = []
                 for t in all_topics:
-                    a = re.split(r'(<.*?>)', t.replace('<top>','').replace('</top>', ''), re.DOTALL)
+                    t = re.sub(r'<\/.*?>', r'', t, flags=re.DOTALL)
+                    a = re.split(r'(<.*?>)', t.replace('<top>',''), re.DOTALL)
                     #print a
                     aa = [ele.strip() for ele in a if ele.strip()]
                     d = {}
@@ -98,10 +99,11 @@ class Query(object):
                             d[aa[i-1][1:-1]] = aa[i].strip().replace('\n', ' ')
                         """
                         tag = aa[i][1:-1]
-                        value = aa[i+1].replace('\n', '').strip().split(':')[-1].strip()
-                        if tag != 'num':
+                        value = aa[i+1].replace('\n', ' ').strip().split(':')[-1].strip()
+                        if tag != 'num' and value:
                             value = self.parse_query([value])[0]
-
+                        if tag == 'num':
+                            value = str(int(value)) # remove the trailing '0' at the beginning
                         d[tag] = value
                     _all.append(d)
 

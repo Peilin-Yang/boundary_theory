@@ -22,7 +22,7 @@ class Judgment(object):
             print frameinfo.filename, frameinfo.lineno
             print 'No judgment file found!'
             print 'judgment file should be called "judgment_file" under'
-            print 'corpus path. You can create a symlink for it'
+            print 'corpus path. You can create a symlink for it.'
             exit(1)
 
 

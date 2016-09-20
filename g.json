@@ -1,0 +1,10 @@
+{ 
+  "methods": [
+    {
+      "year": 2001,
+      "paper": "C. Zhai and J. Lafferty. A study of smoothingmethods for language models applied to ad hoc information retrieval.",
+      "name": "lm",
+      "formal_name": "DIR"
+    }
+  ]
+}
