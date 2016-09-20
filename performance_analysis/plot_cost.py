@@ -44,7 +44,7 @@ class PerformaceAnalysis(object):
                     x = [(para-min(para_value.values()[0]))/(max(para_value.values()[0]) - min(para_value.values()[0])) for para in para_value.values()[0]]
                     for para in para_value.values()[0]:
                         method_str = para_key+','+para_value.iterkeys().next()+':'+str(para)
-                        avg_peform.append( np.mean([v['map'] for v in eval_instance.get_all_performance_of_some_queries(method = method_str, qids = qids, return_all_metrics = False).values()]) )
+                        avg_perform.append( np.mean([v['map'] for v in eval_instance.get_all_performance_of_some_queries(method = method_str, qids = qids, return_all_metrics = False).values()]) )
                     print x, avg_perform
 
 PerformaceAnalysis().gen_performance_trending()
