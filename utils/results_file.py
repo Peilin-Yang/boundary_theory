@@ -4,7 +4,7 @@ from operator import itemgetter
 from inspect import currentframe, getframeinfo
 
 
-class ResultsFile():
+class ResultsFile(object):
     """
     This class plays with the results file.
     When constructing, pass the path of the results file. For example, "../wt2g/all_baseline_results/okapi_0.05"
