@@ -38,7 +38,9 @@ class PerformaceAnalysis(object):
         eval_instance = Evaluation(collection)
         for i in query_instance.get_queries_lengths():
             qids = [q['num'] for q in query_instance.get_queries_of_length(i)]
+            model_idx = 1
             for model in models:
+                plt.subplot(3, 1, i)
                 for para_key, para_value in model.items():
                     avg_perform = []
                     x = [para*1.0/max(para_value.values()[0]) for para in para_value.values()[0]]
@@ -46,6 +48,11 @@ class PerformaceAnalysis(object):
                         method_str = para_key+','+para_value.iterkeys().next()+':'+str(para)
                         avg_perform.append( np.mean([v['map'] for v in eval_instance.get_all_performance_of_some_queries(method = method_str, qids = qids, return_all_metrics = False).values()]) )
                     print x, avg_perform
+                    plt.plot(x, avg_perform)
+                model_idx += 1
+            plt.savefig(os.path.join('../all_results/', 'performance_analysis', collection.split('/')[-1]+'-'+str(i)+'.png'), 
+            format='png', bbox_inches='tight', dpi=400)    
+
 
 PerformaceAnalysis().gen_performance_trending()
 
