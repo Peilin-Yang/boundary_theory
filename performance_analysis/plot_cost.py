@@ -23,7 +23,7 @@ class PerformaceAnalysis(object):
     def __init__(self):
         pass
 
-    def gen_performance_trending(self, collection='../../../reproduce/collections/wt2g'):
+    def gen_performance_trending(self, collection='../../../reproduce/collections/gov2'):
         """
         Generate the performance trendings based on the parameter of 
         the model and the number of terms in the query
