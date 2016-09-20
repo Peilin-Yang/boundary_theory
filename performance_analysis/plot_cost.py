@@ -37,10 +37,13 @@ class PerformaceAnalysis(object):
             print '-'*20
             print i,':'
             qids = [q['num'] for q in query_instance.get_queries_of_length(i)]
-            for para_key, para_value in models[0].items():
-                model = para_key+','+para_value.iterkeys().next()+':'+str(para_value.itervalues().next()[0])
-                print model
-                print eval_instance.get_all_performance_of_some_queries(method = model, qids = qids, return_all_metrics = False)
+            for model in models:
+                for para_key, para_value in model.items():
+                    for para in para_value.values():
+                        method_str = para_key+','+para_value.iterkeys().next()+':'+str(para)
+                        print method_str
+                        print eval_instance.get_all_performance_of_some_queries(method = method_str, qids = qids, return_all_metrics = False)
         
 
 PerformaceAnalysis().gen_performance_trending()
+
