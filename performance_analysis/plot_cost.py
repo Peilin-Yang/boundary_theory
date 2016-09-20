@@ -7,7 +7,6 @@ from evaluation import Evaluation
 from utils import Utils
 from collection_stats import CollectionStats
 from baselines import Baselines
-import indri
 import g
 import ArrayJob
 
