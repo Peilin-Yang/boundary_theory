@@ -31,7 +31,7 @@ class PerformaceAnalysis(object):
         """
         for i in range(50):
             print '-'*20
-            print i + ':'
+            print i,':'
             print Query(collection).get_queries_of_length(i)
         
 
