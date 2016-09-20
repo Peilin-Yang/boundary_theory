@@ -5,7 +5,7 @@ import csv
 from subprocess import Popen, PIPE
 
 
-class Baselines():
+class Baselines(object):
     """
     Baselines related
     """
