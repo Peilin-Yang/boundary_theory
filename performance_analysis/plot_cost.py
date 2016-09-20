@@ -48,9 +48,9 @@ class PerformaceAnalysis(object):
                         method_str = para_key+','+para_value.iterkeys().next()+':'+str(para)
                         avg_perform.append( np.mean([v['map'] for v in eval_instance.get_all_performance_of_some_queries(method = method_str, qids = qids, return_all_metrics = False).values()]) )
                     print x, avg_perform
-                    plt.plot(x, avg_perform)
+                    plt.plot(x, avg_perform, label=model)
                 model_idx += 1
-            plt.savefig(os.path.join('../../all_results/', 'performance_analysis', collection.split('/')[-1]+'-'+str(i)+'.png'), 
+        plt.savefig(os.path.join('../../all_results/', 'performance_analysis', collection.split('/')[-1]+'-'+str(i)+'.png'), 
             format='png', bbox_inches='tight', dpi=400)    
 
 
