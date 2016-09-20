@@ -43,11 +43,9 @@ class Evaluation():
 
         with open(fn) as f:
             j = json.load(f)
-        if return_all_metrics:
-            return j
-        else:
+        if not return_all_metrics:
             j = {qid:{m:j[qid][m] for m in metrics} for qid in j}
-            return j
+        return j
 
 
 
