@@ -38,7 +38,7 @@ class PerformaceAnalysis(object):
             print i,':'
             qids = [q['num'] for q in query_instance.get_queries_of_length(i)]
             for para_key, para_value in models[0].items():
-                model = para_key+','+para_value.iterkeys().next()+'='+str(para_value.itervalues().next()[0])
+                model = para_key+','+para_value.iterkeys().next()+':'+str(para_value.itervalues().next()[0])
                 print model
                 print eval_instance.get_all_performance_of_some_queries(method = model, qids = qids, return_all_metrics = False)
         
