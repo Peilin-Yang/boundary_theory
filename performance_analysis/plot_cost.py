@@ -1,5 +1,6 @@
 import sys, os
 import json
+import numpy as np
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from query import Query
 from results_file import ResultsFile
@@ -34,15 +35,13 @@ class PerformaceAnalysis(object):
         query_instance = Query(collection)
         eval_instance = Evaluation(collection)
         for i in query_instance.get_queries_lengths():
-            print '-'*20
-            print i,':'
             qids = [q['num'] for q in query_instance.get_queries_of_length(i)]
             for model in models:
                 for para_key, para_value in model.items():
                     for para in para_value.values()[0]:
                         method_str = para_key+','+para_value.iterkeys().next()+':'+str(para)
-                        print method_str
-                        print eval_instance.get_all_performance_of_some_queries(method = method_str, qids = qids, return_all_metrics = False)
+                        print method_str, 
+                        print np.mean([v['map'] for v in eval_instance.get_all_performance_of_some_queries(method = method_str, qids = qids, return_all_metrics = False).values()])
         
 
 PerformaceAnalysis().gen_performance_trending()
