@@ -40,7 +40,7 @@ class PerformaceAnalysis(object):
             qids = [q['num'] for q in query_instance.get_queries_of_length(i)]
             model_idx = 1
             for model in models:
-                plt.subplot(3, 1, i)
+                plt.subplot(4, 1, i)
                 for para_key, para_value in model.items():
                     avg_perform = []
                     x = [para*1.0/max(para_value.values()[0]) for para in para_value.values()[0]]
