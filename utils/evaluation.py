@@ -32,7 +32,7 @@ class Evaluation(object):
         get all kinds of performance
 
         @Input:
-            - method: which method to return. coubld be with parameters
+            - method: which method to return. probably with parameters, e.g. pivoted,s:0.1
             - qf_parts: results using which part of the query, e.g. title, description, narrative and so on.
             - return_all_metrics(boolean): whether to return all the metrics, default is True.
             - metrics(list): If return_all_metrics==False, return only the metrics in this list.

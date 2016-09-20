@@ -28,6 +28,9 @@ class PerformaceAnalysis(object):
 
         @Output: csv formatted
         """
+        with open('g.json') as f:
+            models = [{ele['name']:ele['paras'].itervalues().next()} for ele in json.load(f)['methods']]
+        print models
         query_instance = Query(collection)
         for i in query_instance.get_queries_lengths():
             print '-'*20
