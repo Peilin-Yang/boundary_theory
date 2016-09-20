@@ -17,7 +17,7 @@ class PerformaceAnalysis(object):
     def __init__(self):
         pass
 
-    def gen_performance_trending(self, collection='wt2g', method='okapi', outputformat='png'):
+    def gen_performance_trending(self, collection='../../collections/wt2g', method='okapi', outputformat='png'):
         """
         Generate the performance trendings based on the parameter of 
         the model and the number of terms in the query
