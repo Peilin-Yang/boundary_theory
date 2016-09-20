@@ -128,7 +128,20 @@ class Query(object):
 
         return all_queries_dict
         
-    def get_queries_of_length(self, length):
+    def get_queries_lengths(self, part='title'):
+        """
+        For a set of queries, return the lengths of the queries
+
+        @Return: a list of integers showing the lengths of the queries
+        """
+        queries = self.get_queries()
+        lengths = set([len(q[part].split()) for q in queries])
+        lengths = list(lengths)
+        lengths.sort()
+        return lengths
+
+
+    def get_queries_of_length(self, length, part='title'):
         """
         Get the queries of a specific length
 
@@ -141,7 +154,7 @@ class Query(object):
         """
 
         all_queries = self.get_queries()
-        filtered_queries = [ele for ele in all_queries if len(ele['title'].split()) == length]
+        filtered_queries = [ele for ele in all_queries if len(ele[part].split()) == length]
 
         return filtered_queries
 

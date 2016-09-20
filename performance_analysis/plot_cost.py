@@ -28,10 +28,11 @@ class PerformaceAnalysis(object):
 
         @Output: csv formatted
         """
-        for i in range(50):
+        query_instance = Query(collection)
+        for i in query_instance.get_queries_lengths():
             print '-'*20
             print i,':'
-            print Query(collection).get_queries_of_length(i)
+            print query_instance.get_queries_of_length(i)
         
 
 PerformaceAnalysis().gen_performance_trending()
