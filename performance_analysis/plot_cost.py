@@ -30,13 +30,17 @@ class PerformaceAnalysis(object):
         @Output: csv formatted
         """
         with open('g.json') as f:
-            models = [{ele['name']:ele['paras'].itervalues().next()} for ele in json.load(f)['methods']]
-        print models
+            models = [{ele['name']:ele['paras']} for ele in json.load(f)['methods']]
         query_instance = Query(collection)
+        eval_instance = Evaluation(collection)
         for i in query_instance.get_queries_lengths():
             print '-'*20
             print i,':'
-            print [q['num'] for q in query_instance.get_queries_of_length(i)]
+            qids = [q['num'] for q in query_instance.get_queries_of_length(i)]
+            for para_key, para_value in models[0].items():
+                model = para_key+','+para_value.iterkeys().next()+'='+para_value.itervalues().next()[0]
+                print model
+                print eval_instance.get_all_performance_of_some_queries(method = model, qids = qids, return_all_metrics = False)
         
 
 PerformaceAnalysis().gen_performance_trending()
