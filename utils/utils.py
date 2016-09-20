@@ -12,7 +12,7 @@ def run_multiprocess_cb(cb_func, args):
 def run_multiprocess_cb_wrapper(args):
     return run_multiprocess_cb(*args)
 
-class Utils():
+class Utils(object):
     """
     Some Utility Functions
     """
