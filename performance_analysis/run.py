@@ -62,14 +62,14 @@ def gen_batch_framework(para_label, batch_pythonscript_para, all_paras, \
     subprocess.call( shlex.split(run_batch_gen_query_command) )
 
 
-def gen_plot_para_trending_batch_paras():
+def gen_plot_para_trending_batch_paras(outfmt):
     all_paras = []
     for q in g.query:
         collection_name = q['collection']
         collection_path = os.path.join(g.collection_root, collection_name)
         for query_part in q['qf_parts']:
             for metric in q['metrics']:
-                all_paras.append((collection_path, query_part, metric))
+                all_paras.append((collection_path, query_part, metric, outfmt))
 
     #print all_paras
     gen_batch_framework('plot_para_trending', '12', all_paras)
@@ -82,14 +82,15 @@ def plot_para_trending(para_file):
             collection_path = row[0]
             query_part = row[1]
             metric = row[2]
-            PerformaceAnalysis().plot_para_trending(collection_path, query_part, metric)
+            outfmt = row[3]
+            PerformaceAnalysis().plot_para_trending(collection_path, query_part, metric, outfmt)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-11', '--gen_plot_para_trending_batch_paras', 
-        nargs='+',
-        help='')
+        nargs=1,
+        help='put the output format as the parameter, e.g. eps or png')
     parser.add_argument('-12', '--plot_para_trending', 
         nargs='+',
         help='')
@@ -97,7 +98,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.gen_plot_para_trending_batch_paras:
-        print args.gen_plot_para_trending_batch_paras
-        gen_plot_para_trending_batch_paras()
+        gen_plot_para_trending_batch_paras(args.gen_plot_para_trending_batch_paras[0])
     if args.plot_para_trending:
         plot_para_trending(args.plot_para_trending[0])
