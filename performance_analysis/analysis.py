@@ -35,7 +35,7 @@ class PerformaceAnalysis(object):
         @Output: plots in files
         """
         # We assume that there is ONLY ONE parameter in the model!!
-        collection_name = collection_path.split('/')[-1]
+        collection_name = collection.split('/')[-1]
         with open('g.json') as f:
             models = [{ele['name']:ele['paras']} for ele in json.load(f)['methods']]
         query_instance = Query(collection)
