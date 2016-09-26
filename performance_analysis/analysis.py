@@ -42,7 +42,7 @@ class PerformaceAnalysis(object):
         query_instance = Query(collection)
         eval_instance = Evaluation(collection)
         query_nums = query_instance.get_queries_lengths(query_part)
-        print query_part, query_nums
+        print collection_name, query_part, query_nums
         #plot related
         num_cols = 2
         num_rows = int(math.ceil(len(query_nums)*1.0/num_cols))
@@ -54,7 +54,7 @@ class PerformaceAnalysis(object):
         col_idx = 0
         for i in query_nums:
             qids = [q['num'] for q in query_instance.get_queries_of_length(i, query_part)]
-            print i, qids
+            print str(i)+'->'+str(len(qids))
             # we assume that the model parameters can be normalized to [0, 1]
             ax = axs[row_idx][col_idx]
             col_idx += 1
@@ -70,6 +70,7 @@ class PerformaceAnalysis(object):
                         method_str = para_key+','+para_value.iterkeys().next()+':'+str(para)
                         avg_perform.append( np.mean([v[metric] if v else 0.0 for v in eval_instance.get_all_performance_of_some_queries(method = method_str, qids = qids, return_all_metrics = False).values()]) )
                     ax.plot(x, avg_perform, markers[model_idx], ls='-', label=model.keys()[0])
+                    print model.keys()[0], avg_perform
             ax.set_title('qLen=%d' % i)
         plt.legend()
         plt.savefig(os.path.join(self.output_root, 
