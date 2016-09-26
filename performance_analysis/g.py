@@ -7,6 +7,7 @@ query = [
     "cnt": 150,
     "qf_parts": ['title'],
     "qrel_program": 'trec_eval -m all_trec -q',
+    "metrics": ['map'],
     "main_metric": "MAP"
   },
   { 
@@ -15,6 +16,7 @@ query = [
     "cnt": 250,
     "qf_parts": ['title'],
     "qrel_program": 'trec_eval -m all_trec -q',
+    "metrics": ['map'],
     "main_metric": "MAP"
   },  
   {
@@ -23,6 +25,7 @@ query = [
     "cnt": 50,
     "qf_parts": ['title'],
     "qrel_program": 'trec_eval -m all_trec -q',
+    "metrics": ['map'],
     "main_metric": "MAP"
   },
   {
@@ -31,6 +34,7 @@ query = [
     "cnt": 150,
     "qf_parts": ['title'],
     "qrel_program": 'trec_eval -m all_trec -q',
+    "metrics": ['map'],
     "main_metric": "MAP"
   }
 ]

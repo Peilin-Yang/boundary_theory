@@ -22,7 +22,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 
 import g
 import ArrayJob
-import analysis
+from analysis import PerformaceAnalysis
 
 
 def gen_batch_framework(para_label, batch_pythonscript_para, all_paras, \
@@ -62,42 +62,42 @@ def gen_batch_framework(para_label, batch_pythonscript_para, all_paras, \
     subprocess.call( shlex.split(run_batch_gen_query_command) )
 
 
-def gen_lambdarank_batch():
+def gen_plot_para_trending_batch_paras():
     all_paras = []
-    collection_root = '../../../reproduce/collections/'
-    with open('lambdarank.json') as f:
-        methods = json.load(f)['methods']
-        for q in g.query:
-            collection_name = q['collection']
-            collection_path = os.path.join(collection_root, collection_name)
-            all_paras.extend(LambdaRank(collection_path).gen_lambdarank_paras( methods ) )
+    for q in g.query:
+        collection_name = q['collection']
+        collection_path = os.path.join(g.collection_root, collection_name)
+        for query_part in q['qf_parts']:
+            for metric in q['metrics']:
+                all_paras.append((collection_path, query_part, metric))
 
     #print all_paras
-    gen_batch_framework('run_lambdarank', 'l2', all_paras)
+    gen_batch_framework('plot_para_trending', '12', all_paras)
 
 
-def run_lambdarank(para_file):
+def plot_para_trending(para_file):
     with open(para_file) as f:
         reader = csv.reader(f)
         for row in reader:
             collection_path = row[0]
-            qid = row[1]
-            method_name = row[2]
-            method_paras = row[3]
-            output_fn = row[4]
-            LambdaRank(collection_path).process(qid, method_name, method_paras, output_fn)
+            query_part = row[1]
+            metric = row[2]
+            PerformaceAnalysis().plot_para_trending(collection_path, query_part, metric)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-11', '--gen_plot_para_trending_batch_paras', action='store_true',
-                       help='')
-    parser.add_argument('-12', '--plot_para_trending', nargs='+',
-                       help='')
+    parser.add_argument('-11', '--gen_plot_para_trending_batch_paras', 
+        nargs='?',
+        help='')
+    parser.add_argument('-12', '--plot_para_trending', 
+        nargs='+',
+        help='')
 
     args = parser.parse_args()
 
     if args.gen_plot_para_trending_batch_paras:
+        print args.gen_plot_para_trending_batch_paras
         gen_plot_para_trending_batch_paras()
     if args.plot_para_trending:
         plot_para_trending(args.plot_para_trending[0])
