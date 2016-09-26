@@ -42,7 +42,7 @@ class PerformaceAnalysis(object):
         query_instance = Query(collection)
         eval_instance = Evaluation(collection)
         query_nums = query_instance.get_queries_lengths(query_part)
-        print query_nums
+        print query_part, query_nums
         #plot related
         num_cols = 2
         num_rows = int(math.ceil(len(query_nums)*1.0/num_cols))
@@ -72,7 +72,7 @@ class PerformaceAnalysis(object):
                             avg_perform.append( np.mean([v[metric] for v in eval_instance.get_all_performance_of_some_queries(method = method_str, qids = qids, return_all_metrics = False).values()]) )
                         except:
                             avg_perform.append(0.0)
-                    ax.plot(x, avg_perform, markers[model_idx], ls='-', label=model.iterkeys.next())
+                    ax.plot(x, avg_perform, markers[model_idx], ls='-', label=model.keys()[0])
             ax.set_title('qLen=%d' % i)
         plt.legend()
         plt.savefig(os.path.join(self.output_root, 
