@@ -69,7 +69,7 @@ class PerformaceAnalysis(object):
                     for para in para_value.values()[0]:
                         method_str = para_key+','+para_value.iterkeys().next()+':'+str(para)
                         avg_perform.append( np.mean([v[metric] for v in eval_instance.get_all_performance_of_some_queries(method = method_str, qids = qids, return_all_metrics = False).values()]) )
-                        avg_perform.append(0.0)
+                        #avg_perform.append(0.0)
                     ax.plot(x, avg_perform, markers[model_idx], ls='-', label=model.keys()[0])
             ax.set_title('qLen=%d' % i)
         plt.legend()
