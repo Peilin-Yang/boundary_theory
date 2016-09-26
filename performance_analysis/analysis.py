@@ -22,7 +22,7 @@ class PerformaceAnalysis(object):
     Performance Analysis related
     """
     def __init__(self):
-        output_root = '../../all_results/'
+        self.output_root = '../../all_results/'
   
     def plot_para_trending(self, collection, query_part, metric, outfmt='png'):
         """
