@@ -1,5 +1,6 @@
 import sys, os
 import json
+from operator import itemgetter
 import math
 import numpy as np
 import matplotlib
@@ -70,7 +71,9 @@ class PerformaceAnalysis(object):
                         method_str = para_key+','+para_value.iterkeys().next()+':'+str(para)
                         avg_perform.append( np.mean([v[metric] if v else 0.0 for v in eval_instance.get_all_performance_of_some_queries(method = method_str, qids = qids, return_all_metrics = False).values()]) )
                     ax.plot(x, avg_perform, markers[model_idx], ls='-', label=model.keys()[0])
-                    print model.keys()[0], avg_perform
+                    zipped = zip(x, avg_perform)
+                    zipped.sort(key=itemgetter(1,0), reverse=True)
+                    print model.keys()[0], zipped[0]
             ax.set_title('qLen=%d' % i)
         plt.legend()
         plt.savefig(os.path.join(self.output_root, 
