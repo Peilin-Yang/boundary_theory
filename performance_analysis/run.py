@@ -88,7 +88,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-11', '--gen_plot_para_trending_batch_paras', 
-        nargs='?',
+        nargs='+',
         help='')
     parser.add_argument('-12', '--plot_para_trending', 
         nargs='+',
