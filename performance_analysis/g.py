@@ -1,3 +1,5 @@
+collection_root = '../../../reproduce/collections/'
+
 query = [ 
   {
     "collection": "disk12",
