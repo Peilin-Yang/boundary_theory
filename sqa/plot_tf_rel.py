@@ -451,7 +451,7 @@ class PlotTFRel(SingleQueryAnalysis):
         """
         log(tf)/(tf+log(dl))
         """
-        return round(np.log(float(row['total_tf']))/(float(row['total_tf'])+np.log(float(row['doc_len']))), 3) 
+        return round(np.log(float(row['total_tf']))/np.log(float(row['doc_len'])), 3) 
     def tf_dl_5(self, row):
         """
         log(tf)/(tf+log(dl))
