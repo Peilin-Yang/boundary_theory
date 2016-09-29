@@ -468,7 +468,7 @@ class PlotTFRel(SingleQueryAnalysis):
         formal_method_name = method_name
         if method_name == 'okapi':
             x_func = self.okapi
-            formal_method_name = 'okapi,b:0.25'
+            formal_method_name = 'okapi,b:0.0'
         elif method_name == 'f2':
             x_func = self.f2
         elif method_name == 'tf_ln_3':
