@@ -55,6 +55,7 @@ class PerformaceAnalysis(object):
         plt.rc('font', **font)
         row_idx = 0
         col_idx = 0
+        json_output = []
         for i in query_nums:
             qids = [q['num'] for q in query_instance.get_queries_of_length(i, query_part)]
             this_json_output = {'qLen': i, 'qids': qids}
@@ -79,9 +80,12 @@ class PerformaceAnalysis(object):
                     this_json_output['model'] = model.keys()[0]
                     this_json_output['para'] = zipped[0][0]
                     this_json_output['performance'] = zipped[0][2]
+                    json_output.append(this_json_output)
                     print model.keys()[0], zipped[0]
             ax.set_title('qLen=%d' % i)
         plt.legend()
         plt.savefig(os.path.join(self.output_root, 
             'performance_analysis', collection_name+'_'+query_part+'_'+metric+'.'+outfmt), 
-            format=outfmt, bbox_inches='tight', dpi=400)    
+            format=outfmt, bbox_inches='tight', dpi=400)
+        with open(json_output_fn, 'wb') as jo:
+            json.dump(json_output, jo, indent=2)    
