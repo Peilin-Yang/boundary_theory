@@ -243,10 +243,28 @@ class PlotTFRel(SingleQueryAnalysis):
         ax.plot(trialX, trialY, label='fitting')
 
 
-    def plot_single_tfc_constraints_rel_tf(self, plot_ratio=True, 
-            performance_as_legend=True, plot_tf_ln=True, 
+    def plot_single_tfc_constraints_rel_tf(self, x_func, 
+            _method, plot_ratio=True, 
+            performance_as_legend=True, 
             drawline=True, plotbins=True, numbins=60, 
-            smoothing=False, oformat='eps'):
+            oformat='eps'):
+        """
+        plot the P(D=1|TF=x)
+
+        Input:
+        @x_func: how to get the x-axis of the figure. By default, this should 
+            be TF values. But we are flexible with other options, e.g. tf/dl
+        @_method: Which method is going to be plot. The parameters should also be 
+            attached, e.g. dir,mu:2500
+        @plot_ratio: When this is false, plot the y-axis as the number of relevant 
+            documents; When this is true, plot the y-axis as the #rel_docs/#docs
+        @performance_as_legend: whether to add performance(e.g. MAP) 
+            as part of the legend
+        @drawline: draw the data points as line(true) or dots(false)
+        @plotbins: whether to group the x points as bins
+        @numbins: the number of bins if we choose to plot x points as bins
+        @oformat: output format, eps or png
+        """
         collection_name = self.collection_path.split('/')[-1]
         print collection_name
         cs = CollectionStats(self.collection_path)
@@ -258,103 +276,14 @@ class PlotTFRel(SingleQueryAnalysis):
         #print rel_docs
         collection_legend = ''
         if performance_as_legend:
-            baseline_performances = Evaluation(self.collection_path).get_all_performance_of_some_queries(
+            eval_class = Evaluation(self.collection_path)
+            p = eval_class.get_all_performance_of_some_queries(
+                method=_method,
                 qids=queries.keys(), 
                 return_all_metrics=False, 
                 metrics=['map']
             )
-            optimals = Performances(self.collection_path).load_optimal_performance(['dir', 'okapi'])
-            dirichlet_performances = Evaluation(self.collection_path).get_all_performance_of_some_queries(
-                method=optimals[0][0]+','+optimals[0][2],
-                qids=queries.keys(), 
-                return_all_metrics=False, 
-                metrics=['map']
-            )
-            okapi_performances = Evaluation(self.collection_path).get_all_performance_of_some_queries(
-                method=optimals[1][0]+','+optimals[1][2],
-                qids=queries.keys(), 
-                return_all_metrics=False, 
-                metrics=['map']
-            )
-            tf_performances = Evaluation(self.collection_path).get_all_performance_of_some_queries(
-                method='tf1',
-                qids=queries.keys(), 
-                return_all_metrics=False, 
-                metrics=['map']
-            )
-            hypothesis_tf1_performances = Evaluation(self.collection_path).get_all_performance_of_some_queries(
-                method='hypothesis_stq_tf',
-                qids=queries.keys(), 
-                return_all_metrics=False, 
-                metrics=['map']
-            )
-            try:
-                hypothesis_tf2_performances = Evaluation(self.collection_path).get_all_performance_of_some_queries(
-                    method='hypothesis_stq_tf_2',
-                    qids=queries.keys(), 
-                    return_all_metrics=False, 
-                    metrics=['map']
-                )
-            except:
-                pass
-            try:
-                hypothesis_tf_ln_1_performances = Evaluation(self.collection_path).get_all_performance_of_some_queries(
-                    method='hypothesis_stq_tf_ln_1',
-                    qids=queries.keys(), 
-                    return_all_metrics=False, 
-                    metrics=['map']
-                )
-            except:
-                pass
-            try:
-                hypothesis_tf_ln_3_performances = Evaluation(self.collection_path).get_all_performance_of_some_queries(
-                    method='hypothesis_stq_tf_ln_3',
-                    qids=queries.keys(), 
-                    return_all_metrics=False, 
-                    metrics=['map']
-                )
-            except:
-                pass
-            try:
-                hypothesis_tf_ln_5_performances = Evaluation(self.collection_path).get_all_performance_of_some_queries(
-                    method='hypothesis_stq_tf_ln_5',
-                    qids=queries.keys(), 
-                    return_all_metrics=False, 
-                    metrics=['map']
-                )
-            except:
-                pass
-
-            avg_baseline_performance = np.mean([baseline_performances[qid]['map'] for qid in baseline_performances])
-            #legend += 'avg_map(lm):%.3f' % avg_baseline_performance
-            avg_dirichlet_performance = np.mean([dirichlet_performances[qid]['map'] for qid in dirichlet_performances])
-            collection_legend += 'avg_map(dir):%.4f' % avg_dirichlet_performance
-            avg_okapi_performance = np.mean([okapi_performances[qid]['map'] for qid in okapi_performances])
-            collection_legend += '\navg_map(okapi):%.4f' % avg_okapi_performance
-            avg_tf_performances = np.mean([tf_performances[qid]['map'] for qid in tf_performances])
-            collection_legend += '\navg_map(tf):%.4f' % avg_tf_performances
-            avg_hypothesis_tf1_performances = np.mean([hypothesis_tf1_performances[qid]['map'] for qid in hypothesis_tf1_performances])
-            #collection_legend += '\navg_map(hypo_tf1):%.3f' % avg_hypothesis_tf1_performances
-            try:
-                avg_hypothesis_tf2_performances = np.mean([hypothesis_tf2_performances[qid]['map'] for qid in hypothesis_tf2_performances])
-                #collection_legend += '\navg_map(hypo_tf2):%.3f' % avg_hypothesis_tf2_performances
-            except:
-                pass
-            try:
-                avg_hypothesis_tf_ln_1_performances = np.mean([hypothesis_tf_ln_1_performances[qid]['map'] for qid in hypothesis_tf_ln_1_performances])
-                collection_legend += '\navg_map(tf_ln_1):%.4f' % avg_hypothesis_tf_ln_1_performances
-            except:
-                pass
-            try:
-                avg_hypothesis_tf_ln_3_performances = np.mean([hypothesis_tf_ln_3_performances[qid]['map'] for qid in hypothesis_tf_ln_3_performances])
-                collection_legend += '\navg_map(tf_ln_3):%.4f' % avg_hypothesis_tf_ln_3_performances
-            except:
-                pass
-            try:
-                avg_hypothesis_tf_ln_5_performances = np.mean([hypothesis_tf_ln_5_performances[qid]['map'] for qid in hypothesis_tf_ln_5_performances])
-                collection_legend += '\navg_map(tf_ln_5):%.4f' % avg_hypothesis_tf_ln_5_performances
-            except:
-                pass
+            coll_legend_str = 'map(%s):%.4f' % (_method, np.mean([p[qid]['map'] for qid in p]))
 
         collection_level_x_dict = {}
         collection_level_maxTF = 0
@@ -382,83 +311,27 @@ class PlotTFRel(SingleQueryAnalysis):
             #idf = math.log(cs.get_term_IDF1(query_term))
             legend = 'idf:%.2f'%idf
             if performance_as_legend:
-                baseline_performance = baseline_performances[qid]['map']
-                #legend += '\nmap(lm):%.3f' % baseline_performance
-                dirichlet_performance = dirichlet_performances[qid]['map']
-                legend += '\nmap(dir):%.4f' % dirichlet_performance
-                okapi_performance = okapi_performances[qid]['map']
-                legend += '\nmap(okapi):%.4f' % okapi_performance
-                tf_performance = tf_performances[qid]['map']
-                legend += '\nmap(tf):%.4f' % tf_performance
-                hypothesis_tf1_performance = hypothesis_tf1_performances[qid]['map']
-                #legend += '\nmap(hypo_tf1):%.3f' % hypothesis_tf1_performance
-                try:
-                    hypothesis_tf2_performance = hypothesis_tf2_performances[qid]['map']
-                    #legend += '\nmap(hypo_tf2):%.3f' % hypothesis_tf2_performance
-                except:
-                    pass
-                try:
-                    hypothesis_tf_ln_1_performance = hypothesis_tf_ln_1_performances[qid]['map']
-                    legend += '\nmap(tf_ln_1):%.4f' % hypothesis_tf_ln_1_performance
-                except:
-                    pass
-                try:
-                    hypothesis_tf_ln_3_performance = hypothesis_tf_ln_3_performances[qid]['map']
-                    legend += '\nmap(tf_ln_3):%.4f' % hypothesis_tf_ln_3_performance
-                except:
-                    pass
-                try:
-                    hypothesis_tf_ln_5_performance = hypothesis_tf_ln_5_performances[qid]['map']
-                    legend += '\nmap(tf_ln_5):%.4f' % hypothesis_tf_ln_5_performance
-                except:
-                    pass
+                legend += '\nmap(%s):%.4f' % (_method, p[qid]['map'])
             if maxTF > collection_level_maxTF:
                 collection_level_maxTF = maxTF
-            #query_term_ivlist = cs.get_term_counts_dict(query_term)
-            # detailed_stats_fn = os.path.join(collection_path, 'docs_statistics_json', qid)
-            # with open(detailed_stats_fn) as f:
-            #     detailed_stats_json = json.load(f)
-            # tf_dict = {}
-            # tf_dict = {k:[v['TOTAL_TF'], k in rel_docs[qid]] for k,v in detailed_stats_json.items()}
-            # x_dict = {}
-            # for docid, values in tf_dict.items():
             x_dict = {}
             qid_docs_len = 0
-            yaxis_all = []
             for row in cs.get_qid_details(qid):
                 qid_docs_len += 1
-                if plot_tf_ln:
-                    ## we use tf instead for code compatiablity
-
-                    ##### tf_ln_3
-                    tf = round(np.log(float(row['total_tf']))/(float(row['total_tf'])+np.log(float(row['doc_len']))), 3) 
-                    ##### tf_ln_5
-                    # if 'gov2' in self.collection_path:
-                    #     delta = 3
-                    # elif 'disk12' in self.collection_path:
-                    #     delta = 0.05
-                    # elif 'disk45' in self.collection_path:
-                    #     delta = 0.0
-                    # elif 'wt2g' in self.collection_path:
-                    #     delta = 0.0
-                    # tf = round((np.log(float(row['total_tf']))+delta)/np.log(float(row['doc_len'])), 3)
-                else:
-                    tf = int(row['total_tf'])
-                if tf > collection_level_maxX:
-                    collection_level_maxX = tf
+                x = x_func(row)
+                if x > collection_level_maxX:
+                    collection_level_maxX = x
                 rel = (int(row['rel_score'])>=1)
-                if tf not in x_dict:
-                    x_dict[tf] = [0, 0] # [rel_docs, total_docs]
+                if x not in x_dict:
+                    x_dict[x] = [0, 0] # [rel_docs, total_docs]
                 if rel:
-                    x_dict[tf][0] += 1
-                x_dict[tf][1] += 1
-                yaxis_all.append(tf)
-
-                if tf not in collection_level_x_dict:
-                    collection_level_x_dict[tf] = [0, 0] # [rel_docs, total_docs]
+                    x_dict[x][0] += 1
+                x_dict[x][1] += 1
+                if x not in collection_level_x_dict:
+                    collection_level_x_dict[x] = [0, 0] # [rel_docs, total_docs]
                 if rel:
-                    collection_level_x_dict[tf][0] += 1
-                collection_level_x_dict[tf][1] += 1
+                    collection_level_x_dict[x][0] += 1
+                collection_level_x_dict[x][1] += 1
             xaxis = x_dict.keys()
             xaxis.sort()
             yaxis = [x_dict[x][0] for x in xaxis]
@@ -466,36 +339,36 @@ class PlotTFRel(SingleQueryAnalysis):
             yaxis_ratio = [x_dict[x][0]*1.0/x_dict[x][1] for x in xaxis]
             #print xaxis
             #print yaxis
-            xaxis_splits_10 = [[x for x in xaxis if x <= i+10 and x > i] for i in range(0, maxTF+1, 10)]
-            #print xaxis_splits_10
-            yaxis_splits_10 = [[x_dict[x][0]*1./x_dict[x][1] for x in xaxis if x <= i+10 and x > i] for i in range(0, maxTF+1, 10)]
-            #print yaxis_splits_10
-            entropy_splits_10 = [entropy(ele, base=2) for ele in yaxis_splits_10]
             query_stat = cs.get_term_stats(query_term)
-            dist_entropy = entropy(yaxis, base=2)
-            if plot_ratio:
-                self.plot_single_tfc_constraints_draw_pdf(ax, xaxis, 
-                    yaxis_ratio, qid+'-'+query_term, 
+            if drawline:
+                plot_single_tfc_constraints_draw_pdf_line(ax, xaxis, 
+                    yaxis_ratio if plot_ratio else yaxis_total,
+                    qid+'-'+query_term, 
                     legend,
                     True,
                     xlog=False,
-                    legend_pos='best' if plot_tf_ln else 'upper right',
+                    legend_pos='best', 
                     xlabel_format=1)
             else:
-                self.plot_single_tfc_constraints_draw_pdf(ax, xaxis, yaxis_total, 
+                plot_single_tfc_constraints_draw_pdf(ax, xaxis, 
+                    yaxis_ratio if plot_ratio else yaxis_total,
                     qid+'-'+query_term, 
-                    'total\nidf:%.1f'%idf, 
+                    legend,
                     True,
-                    xlog=False)
-                self.plot_single_tfc_constraints_draw_pdf(ax, xaxis, 
-                    yaxis, qid+'-'+query_term, 
-                    'rel', 
-                    True,
-                    marker='bs', 
                     xlog=False,
-                    zoom=(qid =='349' or qid =='379' or qid =='392' or qid =='395' or qid =='417' or qid =='424'))
+                    legend_pos='best', 
+                    xlabel_format=1)
+        output_fn = os.path.join(self.all_results_root, output_root, 
+            '%s-%s-%s-%s-%d-individual.%s' % (
+                collection_name, 
+                _method, 
+                'ratio' if plot_ratio else 'abscnt', 
+                'line' if drawline else 'dots', 
+                numbins if plotbins else 0, 
+                oformat) )
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-
+        # draw the figure for the whole collection
         collection_vocablulary_stat = cs.get_vocabulary_stats()
         collection_vocablulary_stat_str = ''
         idx = 1
@@ -505,16 +378,6 @@ class PlotTFRel(SingleQueryAnalysis):
                 collection_vocablulary_stat_str += '\n'
                 idx = 1
             idx += 1
-        #fig.text(0.5, 0, collection_vocablulary_stat_str, ha='center', va='center', fontsize=12)
-        if plot_ratio:
-            if plot_tf_ln:
-                output_fn = os.path.join(self.all_results_root, output_root, collection_name+'-rel_tf_ln_ratio.'+oformat)
-            else:
-                output_fn = os.path.join(self.all_results_root, output_root, collection_name+'-rel_tf_ratio.'+oformat)
-        else:
-            output_fn = os.path.join(self.all_results_root, output_root, collection_name+'-rel_tf.'+oformat)
-        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
-
 
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 8}
@@ -545,8 +408,11 @@ class PlotTFRel(SingleQueryAnalysis):
                 legend_pos='best' if plot_tf_ln else 'upper right',
                 xlog=False,
                 ylog=False)
+            # only if we want to draw the fitting curve
+            """
             if plotbins:
                 self.plot_hypothesis_tfln_curve_fit(axs, xaxis, yaxis)
+            """
         else:
             self.plot_single_tfc_constraints_draw_pdf(axs, xaxis, 
                 yaxis, collection_name, 
@@ -554,35 +420,16 @@ class PlotTFRel(SingleQueryAnalysis):
                 legend_pos='best' if plot_tf_ln else 'upper right',
                 xlog=False,
                 ylog=False)
-        if plot_tf_ln:
-            if drawline:
-                if plotbins:
-                    plt.savefig(os.path.join(self.all_results_root, output_root, collection_name+'-alllinebins-rel_tf_ln_3.'+oformat), 
-                        format=oformat, bbox_inches='tight', dpi=400)
-                else:
-                    plt.savefig(os.path.join(self.all_results_root, output_root, collection_name+'-allline-rel_tf_ln.'+oformat), 
-                        format=oformat, bbox_inches='tight', dpi=400)
-            else:
-                if plotbins:
-                    plt.savefig(os.path.join(self.all_results_root, output_root, collection_name+'-allbins-rel_tf_ln.'+oformat), 
-                        format=oformat, bbox_inches='tight', dpi=400)
-                else:
-                    plt.savefig(os.path.join(self.all_results_root, output_root, collection_name+'-all-rel_tf_ln.'+oformat), 
-                        format=oformat, bbox_inches='tight', dpi=400)
-        else:
-            if drawline:
-                if plotbins:
-                    plt.savefig(os.path.join(self.all_results_root, output_root, collection_name+'-alllinebins-rel_tf.'+oformat), 
-                        format=oformat, bbox_inches='tight', dpi=400)
-                else:
-                    plt.savefig(os.path.join(self.all_results_root, output_root, collection_name+'-allline-rel_tf.'+oformat), 
-                        format=oformat, bbox_inches='tight', dpi=400)
-            else:
-                if plotbins:
-                    plt.savefig(os.path.join(self.all_results_root, output_root, collection_name+'-allbins-rel_tf.'+oformat), 
-                        format=oformat, bbox_inches='tight', dpi=400)
-                else:
-                    plt.savefig(os.path.join(self.all_results_root, output_root, collection_name+'-all-rel_tf.'+oformat), 
-                        format=oformat, bbox_inches='tight', dpi=400)
-        return collection_name, xaxis, yaxis, legend, plot_tf_ln
+
+        output_fn = os.path.join(self.all_results_root, output_root, 
+            '%s-%s-%s-%s-%d-all.%s' % (
+                collection_name, 
+                _method, 
+                'ratio' if plot_ratio else 'abscnt', 
+                'line' if drawline else 'dots', 
+                numbins if plotbins else 0, 
+                oformat) )
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+
+        return collection_name, xaxis, yaxis, legend, _method
 

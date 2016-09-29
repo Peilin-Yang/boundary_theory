@@ -791,5 +791,5 @@ class PlotRelTF(PlotTFRel):
             self.collection_path = os.path.abspath(c)
             cd = self.plot_single_tfc_constraints()
             all_rel_tf_data.append(cd)
-        self.plot_rel_tf_for_all_collections(all_rel_tf_data)
+        #self.plot_rel_tf_for_all_collections(all_rel_tf_data)
 
