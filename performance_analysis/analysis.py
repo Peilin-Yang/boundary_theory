@@ -48,8 +48,8 @@ class PerformaceAnalysis(object):
         num_cols = 2
         num_rows = int(math.ceil(len(query_nums)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, 
-            sharey=False, figsize=(3*num_cols, 3.*num_rows))
-        font = {'size' : 8}
+            sharey=False, figsize=(num_cols, num_rows))
+        font = {'size' : 4}
         plt.rc('font', **font)
         row_idx = 0
         col_idx = 0
