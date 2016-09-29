@@ -227,18 +227,17 @@ if __name__ == '__main__':
                        help='Output the data files for SVMMAP')
 
     args = parser.parse_args()
+    collection_root = '../../../reproduce/collections/'
 
     if args.plot_tfc_constraints:
         PlotRelTF().plot_tfc_constraints(args.plot_tfc_constraints)
 
     if args.plot_tf_rel:
-        collection_root = '../../../reproduce/collections/'
         for c in g.query:
             print c['collection']
-            PlotTFRel().wrapper(args.plot_tf_rel)
+            PlotTFRel(os.path.join(collection_root, c['collection'])).wrapper(args.plot_tf_rel)
 
     if args.gen_ranking_list:
-        collection_root = '../../../reproduce/collections/'
         method_name = args.gen_ranking_list[0]
         callback_code = int(args.gen_ranking_list[1])
         method_type = args.gen_ranking_list[2]
@@ -254,14 +253,12 @@ if __name__ == '__main__':
               paras)
 
     if args.gen_perfect_ranking_list:
-        collection_root = '../../../reproduce/collections/'
         for c in g.query:
             print c['collection']
             h = Hypothesis(os.path.join(collection_root, c['collection']))
             h.gen_perfect_ranking_list()
 
     if args.print_eval:
-        collection_root = '../../../reproduce/collections/'
         methods = args.print_eval
         for c in g.query:
             h = Hypothesis(os.path.join(collection_root, c['collection']))
@@ -271,7 +268,6 @@ if __name__ == '__main__':
             h.print_eval(methods)
 
     if args.print_best:
-        collection_root = '../../../reproduce/collections/'
         methods = args.print_best
         for c in g.query:
             p = Prints(os.path.join(collection_root, c['collection']))
@@ -281,7 +277,6 @@ if __name__ == '__main__':
             p.print_best_performances(methods)
 
     if args.print_statistics:
-        collection_root = '../../../reproduce/collections/'
         methods = args.print_statistics
         for c in g.query:
             p = Prints(os.path.join(collection_root, c['collection']))
@@ -310,7 +305,6 @@ if __name__ == '__main__':
         print_para_ranknet(args.ranknet_print_para[0])
 
     if args.svmmap_data:
-        collection_root = '../../../reproduce/collections/'
         for c in g.query:
             s = SVMMAP(os.path.join(collection_root, c['collection']))
             print '-'*40
