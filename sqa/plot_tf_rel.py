@@ -440,7 +440,7 @@ class PlotTFRel(SingleQueryAnalysis):
         """
         okapi
         """
-        return round((1.2+1)*float(row['total_tf'])/(float(row['total_tf']) + 1.2*(1-0.25+0.25*float(row['doc_len'])/float(collection_stats.get_avdl()))), 3) 
+        return round((1.2+1)*float(row['total_tf'])/(float(row['total_tf']) + 1.2*(1-0.+0.*float(row['doc_len'])/float(collection_stats.get_avdl()))), 3) 
     def f2(self, collection_stats, row):
         """
         tf/(tf+dl)
