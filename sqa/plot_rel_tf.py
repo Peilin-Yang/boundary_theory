@@ -28,12 +28,12 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
 
-class PlotTFRel(SingleQueryAnalysis):
+class PlotRelTF(PlotTFRel):
     """
-    Plot the probability distribution of P(TF=x|D=1) and P(D=1|TF=x)
+    Plot the probability distribution of P(D=1|TF=x)
     """
     def __init__(self):
-        super(PlotTFRel, self).__init__()
+        super(PlotRelTF, self).__init__()
         self.collection_path = ''
 
     def plot_single_tfc_constraints_draw_pdf(self, ax, xaxis, yaxis, 
@@ -86,6 +86,139 @@ class PlotTFRel(SingleQueryAnalysis):
         ax.legend(loc=legend_pos)
         if xlabel_format != 0:
             ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
+
+    def plot_single_tfc_constraints_draw_kde(self, ax, yaxis, _bandwidth=0.5):
+        # kernel density estimation 
+        #print '_bandwidth:'+str(_bandwidth)
+        yaxis = np.asarray(yaxis)[:, np.newaxis]
+        kde = KernelDensity(kernel='gaussian', bandwidth=_bandwidth).fit(yaxis)
+        X_plot = np.linspace(0, len(yaxis), 100)[:, np.newaxis]
+        log_dens = kde.score_samples(X_plot)
+        ax.fill(X_plot[:, 0], np.exp(log_dens), fc='#AAAAFF',
+                label='KDE')
+        #print kde
+        ax.legend(loc='best')
+
+    def plot_single_tfc_constraints_draw_hist(self, ax, yaxis, nbins, _norm, title, legend):
+        #2. hist gram
+        yaxis.sort()
+        n, bins, patches = ax.hist(yaxis, nbins, normed=_norm, facecolor='#F08080', alpha=0.5, label=legend)
+        ax.set_title(title)
+        ax.legend()
+
+
+    def plot_single_tfc_constraints_tf_rel(self, collection_path, smoothing=True, oformat='eps'):
+        collection_name = collection_path.split('/')[-1]
+        cs = CollectionStats(collection_path)
+        output_root = 'single_query_figures'
+        single_queries = Query(collection_path).get_queries_of_length(1)
+        queries = {ele['num']:ele['title'] for ele in single_queries}
+        #print queries
+        rel_docs = Judgment(collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
+        #print rel_docs
+        #raw_input()
+        collection_level_tfs = []
+        collection_level_x_dict = {}
+        collection_level_maxTF = 0
+        collection_level_maxTFLN = 0.0
+        num_cols = 4
+        num_rows = int(math.ceil(len(rel_docs)*1.0/num_cols*2))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3.*num_rows))
+        font = {'size' : 8}
+        plt.rc('font', **font)
+        row_idx = 0
+        col_idx = 0
+        for qid in sorted(rel_docs):
+            ax1 = axs[row_idx][col_idx]
+            ax2 = axs[row_idx][col_idx+1]
+            col_idx += 2
+            if col_idx >= num_cols:
+                row_idx += 1
+                col_idx = 0
+            query_term = queries[qid]
+            maxTF = cs.get_term_maxTF(query_term)
+            if maxTF > collection_level_maxTF:
+                collection_level_maxTF = maxTF
+            #print maxTF
+            idf = cs.get_term_IDF1(query_term)
+            tfs = [int(tf) for tf in cs.get_term_docs_tf_of_term_with_qid(qid, query_term, rel_docs[qid].keys())]
+            rel_docs_len = len( rel_docs[qid].keys() )
+            #print tfs, rel_docs_len
+            doc_with_zero_tf_len = len( rel_docs[qid].keys() ) - len(tfs)
+            tfs.extend([0]*doc_with_zero_tf_len)
+            collection_level_tfs.extend(tfs)
+            #print len( rel_docs[qid].keys() )
+            #print len(tfs)
+            x_dict = {}
+            for tf in tfs:
+                if tf not in x_dict:
+                    x_dict[tf] = 0
+                x_dict[tf] += 1
+                if tf not in collection_level_x_dict:
+                    collection_level_x_dict[tf] = 0
+                collection_level_x_dict[tf] += 1
+            x_dict[0] = len( rel_docs[qid].keys() ) - len(tfs)
+            yaxis_hist = tfs
+            yaxis_hist.sort()
+            #print len(yaxis_hist)
+            #print yaxis_hist
+            yaxis_all = []
+            for tf in range(0, maxTF+1):
+                if tf not in x_dict:
+                    x_dict[tf] = 0
+                else:
+                    yaxis_all.extend([tf+.1]*x_dict[tf])
+                if smoothing:
+                    x_dict[tf] += .1
+                    rel_docs_len += .1
+
+                if tf not in collection_level_x_dict:
+                    collection_level_x_dict[tf] = 0
+                if smoothing:
+                    collection_level_x_dict[tf] += .1
+
+            xaxis = x_dict.keys()
+            xaxis.sort()
+            yaxis_pdf = [x_dict[x]/rel_docs_len for x in xaxis]
+
+            self.plot_single_tfc_constraints_draw_pdf(ax1, xaxis, 
+                yaxis_pdf, qid+'-'+query_term, 
+                "maxTF=%d\n|rel_docs|=%d\nidf=%.1f" % (maxTF, rel_docs_len, idf), 
+                xlog=False)
+            self.plot_single_tfc_constraints_draw_kde(ax1, yaxis_all, 1.06*math.pow(len(yaxis_all), -0.2)*np.std(yaxis_all))
+            self.plot_single_tfc_constraints_draw_hist(ax2, yaxis_hist, 
+                math.ceil(maxTF/10.), False, qid+'-'+query_term, 
+                '#bins(maxTF/10.0)=%d' % (math.ceil(maxTF/10.)))
+
+        fig.text(0.5, 0.07, 'Term Frequency', ha='center', va='center', fontsize=12)
+        fig.text(0.06, 0.5, 'P( c(t,D)=x | D is a relevant document)=tf/|rel_docs|', ha='center', va='center', rotation='vertical', fontsize=12)
+        fig.text(0.5, 0.5, 'Histgram', ha='center', va='center', rotation='vertical', fontsize=12)
+        fig.text(0.6, 0.04, 'Histgram:rel docs are binned by their TFs. The length of the bin is set to 10. Y axis shows the number of rel docs in each bin.', ha='center', va='center', fontsize=10)
+
+        plt.savefig(os.path.join(self.all_results_root, output_root, collection_name+'-tf_rel.'+oformat), 
+            format=oformat, bbox_inches='tight', dpi=400)
+
+        #collection level
+        collection_level_xaxis = collection_level_x_dict.keys()
+        collection_level_xaxis.sort()
+        collection_level_yaxis_pdf = [collection_level_x_dict[x]/len(collection_level_tfs) for x in collection_level_xaxis]
+
+        fig, axs = plt.subplots(nrows=2, ncols=1, sharex=False, sharey=False, figsize=(6, 2.*2))
+        font = {'size' : 8}
+        plt.rc('font', **font)
+        self.plot_single_tfc_constraints_draw_pdf(axs[0], collection_level_xaxis, 
+            collection_level_yaxis_pdf, collection_name, "", ylog=False)
+        self.plot_single_tfc_constraints_draw_hist(axs[1], collection_level_tfs, 
+            math.ceil(collection_level_maxTF/10.), False, "", 
+            '#bins(collection_level_maxTF/10.0)=%d' % (math.ceil(collection_level_maxTF/10.)))
+        #fig.text(0.5, 0.07, 'Term Frequency', ha='center', va='center', fontsize=12)
+        #fig.text(0.06, 0.5, 'P( c(t,D)=x | D is a relevant document)=tf/|rel_docs|', ha='center', va='center', rotation='vertical', fontsize=12)
+        #fig.text(0.5, 0.5, 'Histgram', ha='center', va='center', rotation='vertical', fontsize=12)
+        #fig.text(0.6, 0.04, 'Histgram:rel docs are binned by their TFs. The length of the bin is set to 10. Y axis shows the number of rel docs in each bin.', ha='center', va='center', fontsize=10)
+
+        plt.savefig(os.path.join(self.all_results_root, output_root, collection_name+'-all-tf_rel.'+oformat), 
+            format=oformat, bbox_inches='tight', dpi=400)
+
 
 
     def hypothesis_tf_function(self, tf, mu, sigma, scale):
@@ -585,4 +718,78 @@ class PlotTFRel(SingleQueryAnalysis):
                     plt.savefig(os.path.join(self.all_results_root, output_root, collection_name+'-all-rel_tf.'+oformat), 
                         format=oformat, bbox_inches='tight', dpi=400)
         return collection_name, xaxis, yaxis, legend, plot_tf_ln
+
+
+    def plot_single_tfc_constraints(self):
+        #self.plot_single_tfc_constraints_tf_rel(corpus_path)
+        return self.plot_single_tfc_constraints_rel_tf()
+
+
+    def plot_rel_tf_for_all_collections(self, data, smooth_curve=False, output_root='single_query_figures', oformat='eps'):
+        """
+        @input:
+            -data: a list of data with each element as the data for a single collection 
+                    with the format: (collection_name, xaxis, yaxis, legend)
+        """
+        fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
+        font = {'size' : 8}
+        plt.rc('font', **font)
+        markers = ['ro', 'bs', 'kv', 'gx'] 
+        for d in zip(data, markers):
+            xaxis = d[0][1]
+            yaxis = d[0][2]
+            legend = d[0][0]
+            if smooth_curve:
+                x_smooth = np.linspace(xaxis[0], xaxis[-1], 2000)
+                y_smooth = spline(xaxis, yaxis, x_smooth)
+                xaxis = x_smooth
+                yaxis = y_smooth
+                axs.plot(xaxis, yaxis, d[1], label=legend)
+                axs.set_xlim(0, axs.get_xlim()[1] if axs.get_xlim()[1]<100 else 100)
+                axs.set_ylim(0, 1)
+                axs.set_title('All Collections')
+                axs.legend(loc='best')
+            else:
+                self.plot_single_tfc_constraints_draw_pdf(axs, xaxis, 
+                    yaxis, 'All Collections', 
+                    legend, 
+                    marker='' if smooth_curve else d[1],
+                    xlog=False,
+                    ylog=False)
+        box = axs.get_position()
+        #axs.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+        # Put a legend to the right of the current axis
+        #axs.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        if data[0][4]: #plot_tf_ln
+            plt.savefig(os.path.join(self.all_results_root, output_root, 'all-rel_tf_ln.'+oformat), 
+                format=oformat, bbox_inches='tight', dpi=400)
+        else:
+            plt.savefig(os.path.join(self.all_results_root, output_root, 'all-rel_tf.'+oformat), 
+                format=oformat, bbox_inches='tight', dpi=400)
+
+
+    def plot_tfc_constraints(self, collections_path=[], smoothing=True):
+        """
+        * Start with the relevant document distribution according to one 
+        term statistic and see how it affects the performance. 
+
+        Take TF as an example and we start from the simplest case when 
+        |Q|=1.  We could leverage an existing collection 
+        and estimate P( c(t,D)=x | D is a relevant document), 
+        where x = 0,1,2,...maxTF(t).
+
+        Note that this step is function-independent.  We are looking at
+        a general constraint for TF (i.e., TFC1), and to see how well 
+        real collections would satisfy this constraint and then formalize
+        the impact of TF on performance based on the rel doc distribution. 
+        """
+        print '-'*30
+        print 'PLEASE RUN THIS PROGRAM TWICE IN ORDER TO GET THE CORRECT RESULTS!!!'
+        print '-'*30
+        all_rel_tf_data = []
+        for c in collections_path:
+            self.collection_path = os.path.abspath(c)
+            cd = self.plot_single_tfc_constraints()
+            all_rel_tf_data.append(cd)
+        self.plot_rel_tf_for_all_collections(all_rel_tf_data)
 
