@@ -64,7 +64,8 @@ class PerformaceAnalysis(object):
             if col_idx >= num_cols:
                 row_idx += 1
                 col_idx = 0
-            markers = ['ro', 'bs', 'kv', 'gx'] 
+            markers = ['ro', 'bs', 'kv', 'gx']
+            this_json_output = {'qLen': i, 'qids': qids, 'details': []}
             for model_idx, model in enumerate(models):
                 for para_key, para_value in model.items():
                     avg_perform = []
@@ -76,12 +77,11 @@ class PerformaceAnalysis(object):
                     ax.plot(x, avg_perform, markers[model_idx], ls='-', label=model.keys()[0])
                     zipped = zip(orig_x, x, avg_perform)
                     zipped.sort(key=itemgetter(2,1,0), reverse=True)
-                    this_json_output = {'qLen': i, 'qids': qids}
-                    this_json_output['model'] = model.keys()[0]
-                    this_json_output['para'] = zipped[0][0]
-                    this_json_output['performance'] = zipped[0][2]
-                    json_output.append(this_json_output)
-                    print model.keys()[0], zipped[0]
+                    
+                    this_json_output['details'].append({'model':model.keys()[0], 
+                        'para': zipped[0][0], 'performance': round(zipped[0][2], 4)})
+                    #print model.keys()[0], zipped[0]
+            json_output.append(this_json_output)
             ax.set_title('qLen=%d' % i)
         plt.legend()
         plt.savefig(os.path.join(self.output_root, 
