@@ -36,7 +36,7 @@ class PlotTFRel(SingleQueryAnalysis):
         super(PlotTFRel, self).__init__()
 
         self.collection_path = os.path.abspath(corpus_path)
-        if not os.path.exists(self.corpus_path):
+        if not os.path.exists(self.collection_path):
             print '[Evaluation Constructor]:Please provide valid corpus path'
             exit(1)
 
