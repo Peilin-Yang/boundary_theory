@@ -234,8 +234,10 @@ if __name__ == '__main__':
 
     if args.plot_tf_rel:
         for c in g.query:
-            print c['collection']
-            PlotTFRel(os.path.join(collection_root, c['collection'])).wrapper(args.plot_tf_rel)
+            print c['collection'], args.plot_tf_rel
+            PlotTFRel(os.path.join(collection_root, c['collection'])).wrapper(
+                *args.plot_tf_rel
+                )
 
     if args.gen_ranking_list:
         method_name = args.gen_ranking_list[0]
