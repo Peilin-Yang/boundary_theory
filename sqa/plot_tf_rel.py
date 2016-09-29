@@ -286,7 +286,7 @@ class PlotTFRel(SingleQueryAnalysis):
                 return_all_metrics=False, 
                 metrics=['map']
             )
-            coll_legend_str = 'map(%s):%.4f' % (_method, np.mean([p[qid]['map'] for qid in p]))
+            collection_legend = 'map:%.4f' % (np.mean([p[qid]['map'] for qid in p]))
 
         collection_level_x_dict = {}
         collection_level_maxTF = 0
@@ -314,7 +314,7 @@ class PlotTFRel(SingleQueryAnalysis):
             #idf = math.log(cs.get_term_IDF1(query_term))
             legend = 'idf:%.2f'%idf
             if performance_as_legend:
-                legend += '\nmap(%s):%.4f' % (_method, p[qid]['map'])
+                legend += '\nmap:%.4f' % (p[qid]['map'])
             if maxTF > collection_level_maxTF:
                 collection_level_maxTF = maxTF
             x_dict = {}
@@ -452,6 +452,11 @@ class PlotTFRel(SingleQueryAnalysis):
         log(tf)/(tf+log(dl))
         """
         return round(np.log(float(row['total_tf']))/(float(row['total_tf'])+np.log(float(row['doc_len']))), 3) 
+    def tf_dl_5(self, row):
+        """
+        log(tf)/(tf+log(dl))
+        """
+        return round(np.log(float(row['total_tf']))/(float(row['total_tf'])+np.log(float(row['doc_len']))), 3) 
 
     def wrapper(self, method_name, plot_ratio, performance_as_legend, 
             drawline, plotbins, numbins, oformat='eps'):
@@ -468,6 +473,9 @@ class PlotTFRel(SingleQueryAnalysis):
         elif method_name == 'tf_ln_3':
             x_func = self.tf_dl_3
             formal_method_name = 'hypothesis_stq_tf_ln_3'
+        elif method_name == 'tf_ln_5':
+            x_func = self.tf_dl_5
+            formal_method_name = 'hypothesis_stq_tf_ln_5'
         self.plot_single_tfc_constraints_rel_tf(
             x_func,
             formal_method_name,
