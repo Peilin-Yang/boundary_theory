@@ -464,7 +464,7 @@ class PlotTFRel(SingleQueryAnalysis):
             x_func = self.f1
         elif method_name == 'f2':
             x_func = self.f2
-        elif method_name == 'hypothesis_stq_tf_ln_3':
+        elif method_name == 'tf_ln_3':
             x_func = self.tf_dl_3
         self.plot_single_tfc_constraints_rel_tf(
             x_func,
