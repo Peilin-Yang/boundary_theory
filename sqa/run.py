@@ -35,7 +35,6 @@ from evaluation import Evaluation
 from utils import Utils
 from collection_stats import CollectionStats
 from baselines import Baselines
-import indri
 from plot_tf_rel import PlotTFRel
 from hypothesis import Hypothesis
 from prints import Prints
