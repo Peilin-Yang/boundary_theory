@@ -321,7 +321,7 @@ class PlotTFRel(SingleQueryAnalysis):
             qid_docs_len = 0
             for row in cs.get_qid_details(qid):
                 qid_docs_len += 1
-                x = x_func(row)
+                x = x_func(cs, row)
                 if x > collection_level_maxX:
                     collection_level_maxX = x
                 rel = (int(row['rel_score'])>=1)
@@ -436,23 +436,23 @@ class PlotTFRel(SingleQueryAnalysis):
 
         return collection_name, xaxis, yaxis, legend, _method
 
-    def okapi(self, row):
+    def okapi(self, collection_stats, row):
         """
         okapi
         """
-        return round((1.2+1)*float(row['total_tf'])/(float(row['total_tf']) + 1.2*(1-0.25+0.25*float(row['doc_len'])/float(row['avdl']))), 3) 
-    def f2(self, row):
+        return round((1.2+1)*float(row['total_tf'])/(float(row['total_tf']) + 1.2*(1-0.25+0.25*float(row['doc_len'])/float(collection_stats.get_avdl()))), 3) 
+    def f2(self, collection_stats, row):
         """
         tf/(tf+dl)
         """
         return round(float(row['total_tf'])/(float(row['doc_len'])+float(row['doc_len'])), 3) 
 
-    def tf_dl_3(self, row):
+    def tf_dl_3(self, collection_stats, row):
         """
         log(tf)/(tf+log(dl))
         """
         return round(np.log(float(row['total_tf']))/(float(row['total_tf'])+np.log(float(row['doc_len']))), 3) 
-    def tf_dl_5(self, row):
+    def tf_dl_5(self, collection_stats, row):
         """
         log(tf)/(tf+log(dl))
         """
