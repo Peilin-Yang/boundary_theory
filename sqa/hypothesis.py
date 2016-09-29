@@ -102,6 +102,8 @@ class Hypothesis(object):
             return (math.log(tf*1.0)+delta)/math.log(ln)
         elif _type == 6:
             return tf*1.0/(tf+math.log(ln))
+        elif _type == 7:
+            return math.log(tf*1.0)/(math.log(tf*1.0)+math.log(ln))
 
 
     def output_results(self, res, method):
