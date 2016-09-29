@@ -408,7 +408,7 @@ class PlotTFRel(SingleQueryAnalysis):
             self.plot_single_tfc_constraints_draw_pdf_line(axs, xaxis, 
                 yaxis, collection_name, 
                 collection_legend, 
-                legend_pos='best' if plot_tf_ln else 'upper right',
+                legend_pos='best'
                 xlog=False,
                 ylog=False)
             # only if we want to draw the fitting curve
@@ -420,7 +420,7 @@ class PlotTFRel(SingleQueryAnalysis):
             self.plot_single_tfc_constraints_draw_pdf(axs, xaxis, 
                 yaxis, collection_name, 
                 collection_legend, 
-                legend_pos='best' if plot_tf_ln else 'upper right',
+                legend_pos='best'
                 xlog=False,
                 ylog=False)
 
