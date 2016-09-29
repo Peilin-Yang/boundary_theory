@@ -448,6 +448,12 @@ class PlotTFRel(SingleQueryAnalysis):
         """
         return round(float(row['total_tf'])/(float(row['doc_len'])+float(row['doc_len'])), 3) 
 
+    def tf_dl_3(self, row):
+        """
+        log(tf)/(tf+log(dl))
+        """
+        return round(np.log(float(row['total_tf']))/(float(row['total_tf'])+np.log(float(row['doc_len']))), 3) 
+
     def wrapper(self, method_name, plot_ratio, performance_as_legend, 
             drawline, plotbins, numbins, oformat='eps'):
         """
@@ -459,12 +465,8 @@ class PlotTFRel(SingleQueryAnalysis):
             x_func = self.f1
         elif method_name == 'f2':
             x_func = self.f2
-        elif method_name == 'f3':
-            x_func = self.f3
-        elif method_name == 'f4':
-            x_func = self.f4
-        elif method_name == 'f5':
-            x_func = self.f5
+        elif method_name == 'hypothesis_stq_tf_ln_3':
+            x_func = self.tf_dl_3
         self.plot_single_tfc_constraints_rel_tf(
             x_func,
             _method,
