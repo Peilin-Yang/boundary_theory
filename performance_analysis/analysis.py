@@ -58,7 +58,6 @@ class PerformaceAnalysis(object):
         json_output = []
         for i in query_nums:
             qids = [q['num'] for q in query_instance.get_queries_of_length(i, query_part)]
-            this_json_output = {'qLen': i, 'qids': qids}
             # we assume that the model parameters can be normalized to [0, 1]
             ax = axs[row_idx][col_idx]
             col_idx += 1
@@ -77,6 +76,7 @@ class PerformaceAnalysis(object):
                     ax.plot(x, avg_perform, markers[model_idx], ls='-', label=model.keys()[0])
                     zipped = zip(orig_x, x, avg_perform)
                     zipped.sort(key=itemgetter(2,1,0), reverse=True)
+                    this_json_output = {'qLen': i, 'qids': qids}
                     this_json_output['model'] = model.keys()[0]
                     this_json_output['para'] = zipped[0][0]
                     this_json_output['performance'] = zipped[0][2]
