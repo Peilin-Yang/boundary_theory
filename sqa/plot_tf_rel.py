@@ -469,7 +469,7 @@ class PlotTFRel(SingleQueryAnalysis):
             x_func = self.tf_dl_3
         self.plot_single_tfc_constraints_rel_tf(
             x_func,
-            _method,
+            method_name,
             False if plot_ratio == '0' else True,
             False if performance_as_legend == '0' else True,
             False if drawline == '0' else True,
