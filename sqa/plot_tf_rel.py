@@ -436,11 +436,11 @@ class PlotTFRel(SingleQueryAnalysis):
 
         return collection_name, xaxis, yaxis, legend, _method
 
-    def f1(self, row):
+    def okapi(self, row):
         """
-        tf/dl
+        okapi
         """
-        return round(float(row['total_tf'])/float(row['doc_len']), 3) 
+        return round((1.2+1)float(row['total_tf'])/(float(row['total_tf']) + 1.2*(1-0.25+0.25*float(row['doc_len'])/float(row['avdl']))), 3) 
     def f2(self, row):
         """
         tf/(tf+dl)
@@ -451,7 +451,7 @@ class PlotTFRel(SingleQueryAnalysis):
         """
         log(tf)/(tf+log(dl))
         """
-        return round(np.log(float(row['total_tf']))/np.log(float(row['doc_len'])), 3) 
+        return round(np.log(float(row['total_tf']))/(float(row['total_tf'])+np.log(float(row['doc_len']))), 3) 
     def tf_dl_5(self, row):
         """
         log(tf)/(tf+log(dl))
