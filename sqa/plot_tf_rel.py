@@ -460,15 +460,17 @@ class PlotTFRel(SingleQueryAnalysis):
         We parse the CLI arguments and convert them to the values required 
         for the function.
         """
+        formal_method_name = method_name
         if method_name == 'f1':
             x_func = self.f1
         elif method_name == 'f2':
             x_func = self.f2
         elif method_name == 'tf_ln_3':
             x_func = self.tf_dl_3
+            formal_method_name = 'hypothesis_stq_tf_ln_3'
         self.plot_single_tfc_constraints_rel_tf(
             x_func,
-            method_name,
+            formal_method_name,
             False if plot_ratio == '0' else True,
             False if performance_as_legend == '0' else True,
             False if drawline == '0' else True,
