@@ -106,6 +106,8 @@ class Hypothesis(object):
             return math.log(tf*1.0)/(math.log(tf*1.0)+math.log(ln))
         elif _type == 8:
             return math.log(tf*1.0)/math.log(ln)
+        elif _type == 9:
+            return math.log(tf*1.0)/(math.log(tf*1.0)+math.log(ln*1.0/avdl))
 
     def output_results(self, res, method):
         with open(os.path.join(self.results_folder, 'title-method:%s'%method), 'wb') as output:
