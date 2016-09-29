@@ -179,6 +179,13 @@ if __name__ == '__main__':
                        |Q|=1.  We could leverage an existing collection \
                        and estimate P( c(t,D)=x | D is a relevant document), \
                        where x = 0,1,2,...maxTF(t). ')
+    parser.add_argument('-12', '--plot_tf_rel', nargs='+',
+                       help='plot P( D is a relevant document | c(t,D)=x ), \
+                       where x = 0,1,2,...maxTF(t). \
+                       args: [method_name(method_with_para)] [plot_ratio(boolean)] [performance_as_legend(boolean)] \
+                       [drawline(boolean)] [plotbins(boolean)] [numbins(int)] [output_format(eps|png)]')
+
+
     parser.add_argument('-2', '--gen_ranking_list', nargs='+',
                        help='input: \
                        [-name] each method should have a name. the name will be added a prefix "hypothesis_stq_" \
@@ -223,7 +230,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.plot_tfc_constraints:
-        PlotTFRel().plot_tfc_constraints(args.plot_tfc_constraints)
+        PlotRelTF().plot_tfc_constraints(args.plot_tfc_constraints)
+
+    if args.plot_tf_rel:
+        collection_root = '../../../reproduce/collections/'
+        for c in g.query:
+            print c['collection']
+            PlotRelTF().wrapper(args.plot_tf_rel)
 
     if args.gen_ranking_list:
         collection_root = '../../../reproduce/collections/'

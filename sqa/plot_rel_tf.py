@@ -28,7 +28,7 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
 
-class PlotRelTF(PlotTFRel):
+class PlotRelTF(SingleQueryAnalysis):
     """
     Plot the probability distribution of P(D=1|TF=x)
     """
@@ -793,3 +793,27 @@ class PlotRelTF(PlotTFRel):
             all_rel_tf_data.append(cd)
         #self.plot_rel_tf_for_all_collections(all_rel_tf_data)
 
+    def plot_tfc_constraints(self, collections_path=[], smoothing=True):
+        """
+        * Start with the relevant document distribution according to one 
+        term statistic and see how it affects the performance. 
+
+        Take TF as an example and we start from the simplest case when 
+        |Q|=1.  We could leverage an existing collection 
+        and estimate P( c(t,D)=x | D is a relevant document), 
+        where x = 0,1,2,...maxTF(t).
+
+        Note that this step is function-independent.  We are looking at
+        a general constraint for TF (i.e., TFC1), and to see how well 
+        real collections would satisfy this constraint and then formalize
+        the impact of TF on performance based on the rel doc distribution. 
+        """
+        print '-'*30
+        print 'PLEASE RUN THIS PROGRAM TWICE IN ORDER TO GET THE CORRECT RESULTS!!!'
+        print '-'*30
+        all_rel_tf_data = []
+        for c in collections_path:
+            self.collection_path = os.path.abspath(c)
+            cd = self.plot_single_tfc_constraints()
+            all_rel_tf_data.append(cd)
+        #self.plot_rel_tf_for_all_collections(all_rel_tf_data)

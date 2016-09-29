@@ -32,9 +32,13 @@ class PlotTFRel(SingleQueryAnalysis):
     """
     Plot the probability distribution of P(TF=x|D=1) and P(D=1|TF=x)
     """
-    def __init__(self):
+    def __init__(self, corpus_path):
         super(PlotTFRel, self).__init__()
-        self.collection_path = ''
+
+        self.collection_path = os.path.abspath(corpus_path)
+        if not os.path.exists(self.corpus_path):
+            print '[Evaluation Constructor]:Please provide valid corpus path'
+            exit(1)
 
     def plot_single_tfc_constraints_draw_pdf(self, ax, xaxis, yaxis, 
             title, legend, legend_outside=False, marker='ro', 
@@ -433,3 +437,41 @@ class PlotTFRel(SingleQueryAnalysis):
 
         return collection_name, xaxis, yaxis, legend, _method
 
+    def f1(self, row):
+        """
+        tf/dl
+        """
+        return round(float(row['total_tf'])/float(row['doc_len']), 3) 
+    def f2(self, row):
+        """
+        tf/(tf+dl)
+        """
+        return round(float(row['total_tf'])/(float(row['doc_len'])+float(row['doc_len'])), 3) 
+
+    def wrapper(self, method_name, plot_ratio, performance_as_legend, 
+            drawline, plotbins, numbins, oformat='eps'):
+        """
+        This is the wrapper of the actual function. 
+        We parse the CLI arguments and convert them to the values required 
+        for the function.
+        """
+        if method_name == 'f1':
+            x_func = self.f1
+        elif method_name == 'f2':
+            x_func = self.f2
+        elif method_name == 'f3':
+            x_func = self.f3
+        elif method_name == 'f4':
+            x_func = self.f4
+        elif method_name == 'f5':
+            x_func = self.f5
+        self.plot_single_tfc_constraints_rel_tf(
+            x_func,
+            _method,
+            False if plot_ratio == '0' else True,
+            False if performance_as_legend == '0' else True,
+            False if drawline == '0' else True,
+            False if plotbins == '0' else True,
+            int(numbins),
+            oformat
+        )
