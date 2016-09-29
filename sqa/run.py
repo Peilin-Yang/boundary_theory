@@ -235,7 +235,7 @@ if __name__ == '__main__':
         collection_root = '../../../reproduce/collections/'
         for c in g.query:
             print c['collection']
-            PlotRelTF().wrapper(args.plot_tf_rel)
+            PlotTFRel().wrapper(args.plot_tf_rel)
 
     if args.gen_ranking_list:
         collection_root = '../../../reproduce/collections/'
