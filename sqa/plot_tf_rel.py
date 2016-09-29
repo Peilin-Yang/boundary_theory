@@ -270,7 +270,6 @@ class PlotTFRel(SingleQueryAnalysis):
         @oformat: output format, eps or png
         """
         collection_name = self.collection_path.split('/')[-1]
-        print collection_name
         cs = CollectionStats(self.collection_path)
         output_root = 'single_query_figures'
         single_queries = Query(self.collection_path).get_queries_of_length(1)
@@ -345,7 +344,7 @@ class PlotTFRel(SingleQueryAnalysis):
             #print yaxis
             query_stat = cs.get_term_stats(query_term)
             if drawline:
-                plot_single_tfc_constraints_draw_pdf_line(ax, xaxis, 
+                self.plot_single_tfc_constraints_draw_pdf_line(ax, xaxis, 
                     yaxis_ratio if plot_ratio else yaxis_total,
                     qid+'-'+query_term, 
                     legend,
@@ -354,7 +353,7 @@ class PlotTFRel(SingleQueryAnalysis):
                     legend_pos='best', 
                     xlabel_format=1)
             else:
-                plot_single_tfc_constraints_draw_pdf(ax, xaxis, 
+                self.plot_single_tfc_constraints_draw_pdf(ax, xaxis, 
                     yaxis_ratio if plot_ratio else yaxis_total,
                     qid+'-'+query_term, 
                     legend,
