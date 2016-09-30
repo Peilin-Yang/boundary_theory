@@ -441,11 +441,16 @@ class PlotTFRel(SingleQueryAnalysis):
         okapi
         """
         return round((1.2+1)*float(row['total_tf'])/(float(row['total_tf']) + 1.2*(1-0.+0.*float(row['doc_len'])/float(collection_stats.get_avdl()))), 3) 
-    def f2(self, collection_stats, row):
+    def tf_1(self, collection_stats, row):
         """
-        tf/(tf+dl)
+        tf
         """
-        return round(float(row['total_tf'])/(float(row['doc_len'])+float(row['doc_len'])), 3) 
+        return int(row['total_tf'])
+    def tf_dl_1(self, collection_stats, row):
+        """
+        tf/dl
+        """
+        return round(float(row['total_tf'])/float(row['doc_len']), 3) 
 
     def tf_dl_3(self, collection_stats, row):
         """
@@ -454,9 +459,10 @@ class PlotTFRel(SingleQueryAnalysis):
         return round(np.log(float(row['total_tf']))/(float(row['total_tf'])+np.log(float(row['doc_len']))), 3) 
     def tf_dl_5(self, collection_stats, row):
         """
-        log(tf)/(tf+log(dl))
+        (log(tf)+delta)/(tf+log(dl))
         """
-        return round(np.log(float(row['total_tf']))/(float(row['total_tf'])+np.log(float(row['doc_len']))), 3) 
+        delta = 2.75
+        return round((np.log(float(row['total_tf']))+delta)/np.log(float(row['doc_len'])), 3) 
 
     def wrapper(self, method_name, plot_ratio, performance_as_legend, 
             drawline, plotbins, numbins, oformat='eps'):
@@ -469,8 +475,12 @@ class PlotTFRel(SingleQueryAnalysis):
         if method_name == 'okapi':
             x_func = self.okapi
             formal_method_name = 'okapi,b:0.0'
-        elif method_name == 'f2':
-            x_func = self.f2
+        elif method_name == 'tf_1':
+            x_func = self.tf_1
+            formal_method_name = 'tf1'
+        elif method_name == 'tf_ln_1':
+            x_func = self.tf_dl_1
+            formal_method_name = 'hypothesis_stq_tf_ln_1'
         elif method_name == 'tf_ln_3':
             x_func = self.tf_dl_3
             formal_method_name = 'hypothesis_stq_tf_ln_3'
