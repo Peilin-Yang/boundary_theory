@@ -278,6 +278,7 @@ class PlotTFRel(SingleQueryAnalysis):
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
         for qid in rel_docs:
             print qid, len(rel_docs[qid])
+        print np.mean([len(rel_docs[qid]) for qid in rel_docs])
         collection_legend = ''
         if performance_as_legend:
             eval_class = Evaluation(self.collection_path)
