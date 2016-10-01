@@ -85,7 +85,7 @@ class PlotTFRel(SingleQueryAnalysis):
         if ylog:
             ax.set_yscale('log')
         ax.set_xlim(0, ax.get_xlim()[1] if ax.get_xlim()[1]<100 else 100)
-        ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<500 else 500)
+        #ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<500 else 500)
         ax.set_title(title)
         ax.legend(loc=legend_pos)
         if xlabel_format != 0:
@@ -392,10 +392,7 @@ class PlotTFRel(SingleQueryAnalysis):
         if plot_ratio:
             yaxis = [collection_level_x_dict[x][0]*1./collection_level_x_dict[x][1] for x in xaxis]
         else:
-            yaxis = [collection_level_x_dict[x][1] for x in xaxis] 
-        print collection_level_x_dict
-        print yaxis
-        exit()
+            yaxis = [collection_level_x_dict[x][0] for x in xaxis] 
         if plotbins:
             interval = collection_level_maxX*1.0/numbins
             newxaxis = [i for i in np.arange(0, collection_level_maxX+1e-10, interval)]
