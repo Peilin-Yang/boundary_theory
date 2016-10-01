@@ -388,7 +388,10 @@ class PlotTFRel(SingleQueryAnalysis):
         plt.rc('font', **font)
         xaxis = collection_level_x_dict.keys()
         xaxis.sort()
-        yaxis = [collection_level_x_dict[x][0]*1./collection_level_x_dict[x][1] for x in xaxis]
+        if plot_ratio:
+            yaxis = [collection_level_x_dict[x][0]*1./collection_level_x_dict[x][1] for x in xaxis]
+        else:
+            yaxis = [collection_level_x_dict[x][0] for x in xaxis] 
         if plotbins:
             interval = collection_level_maxX*1.0/numbins
             newxaxis = [i for i in np.arange(0, collection_level_maxX+1e-10, interval)]
@@ -402,7 +405,10 @@ class PlotTFRel(SingleQueryAnalysis):
                 # print newyaxis
                 # raw_input()
             xaxis = newxaxis
-            yaxis = [ele[0]/ele[1] if ele[1] != 0 else 0.0 for ele in newyaxis]
+            if plot_ratio:
+                yaxis = [ele[0]/ele[1] if ele[1] != 0 else 0.0 for ele in newyaxis]
+            else:
+                yaxis = [ele[0] for ele in newyaxis]   
 
 
         if drawline:
