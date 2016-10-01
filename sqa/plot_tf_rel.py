@@ -339,7 +339,7 @@ class PlotTFRel(SingleQueryAnalysis):
             xaxis = x_dict.keys()
             xaxis.sort()
             yaxis = [x_dict[x][0] for x in xaxis]
-            yaxis_total = [x_dict[x][1] for x in xaxis]
+            yaxis_total = [x_dict[x][0] for x in xaxis]
             yaxis_ratio = [x_dict[x][0]*1.0/x_dict[x][1] for x in xaxis]
             #print xaxis
             #print yaxis
