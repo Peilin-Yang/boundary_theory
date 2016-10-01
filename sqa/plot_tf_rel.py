@@ -276,9 +276,7 @@ class PlotTFRel(SingleQueryAnalysis):
         queries = {ele['num']:ele['title'] for ele in single_queries}
         #print qids
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
-        for qid in rel_docs:
-            print qid, len(rel_docs[qid])
-        print np.mean([len(rel_docs[qid]) for qid in rel_docs])
+        #print np.mean([len(rel_docs[qid]) for qid in rel_docs])
         collection_legend = ''
         if performance_as_legend:
             eval_class = Evaluation(self.collection_path)
@@ -340,14 +338,16 @@ class PlotTFRel(SingleQueryAnalysis):
             xaxis = x_dict.keys()
             xaxis.sort()
             yaxis = [x_dict[x][0] for x in xaxis]
-            yaxis_total = [x_dict[x][0] for x in xaxis]
-            yaxis_ratio = [x_dict[x][0]*1.0/x_dict[x][1] for x in xaxis]
+            if plot_ratio:
+                yaxis = [x_dict[x][0]*1.0/x_dict[x][1] for x in xaxis]
+            else:
+                yaxis = [x_dict[x][0] for x in xaxis]
             #print xaxis
             #print yaxis
             query_stat = cs.get_term_stats(query_term)
             if drawline:
-                self.plot_single_tfc_constraints_draw_pdf_line(ax, xaxis, 
-                    yaxis_ratio if plot_ratio else yaxis_total,
+                self.plot_single_tfc_constraints_draw_pdf_line(
+                    ax, xaxis, yaxis,
                     qid+'-'+query_term, 
                     legend,
                     True,
@@ -355,8 +355,8 @@ class PlotTFRel(SingleQueryAnalysis):
                     legend_pos='best', 
                     xlabel_format=1)
             else:
-                self.plot_single_tfc_constraints_draw_pdf(ax, xaxis, 
-                    yaxis_ratio if plot_ratio else yaxis_total,
+                self.plot_single_tfc_constraints_draw_pdf(
+                    ax, xaxis, yaxis,
                     qid+'-'+query_term, 
                     legend,
                     True,
