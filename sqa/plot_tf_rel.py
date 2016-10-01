@@ -392,7 +392,7 @@ class PlotTFRel(SingleQueryAnalysis):
         if plot_ratio:
             yaxis = [collection_level_x_dict[x][0]*1./collection_level_x_dict[x][1] for x in xaxis]
         else:
-            yaxis = [collection_level_x_dict[x][0] for x in xaxis] 
+            yaxis = [collection_level_x_dict[x][1] for x in xaxis] 
         if plotbins:
             interval = collection_level_maxX*1.0/numbins
             newxaxis = [i for i in np.arange(0, collection_level_maxX+1e-10, interval)]
