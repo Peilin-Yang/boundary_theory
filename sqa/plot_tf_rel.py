@@ -277,6 +277,8 @@ class PlotTFRel(SingleQueryAnalysis):
         #print qids
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
         #print rel_docs
+        for qid in rel_docs:
+            print qid, len(rel_docs[qid])
         collection_legend = ''
         if performance_as_legend:
             eval_class = Evaluation(self.collection_path)
