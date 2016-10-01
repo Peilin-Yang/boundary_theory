@@ -85,7 +85,7 @@ class PlotTFRel(SingleQueryAnalysis):
         if ylog:
             ax.set_yscale('log')
         ax.set_xlim(0, ax.get_xlim()[1] if ax.get_xlim()[1]<100 else 100)
-        #ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<500 else 500)
+        ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<500 else 500)
         ax.set_title(title)
         ax.legend(loc=legend_pos)
         if xlabel_format != 0:
