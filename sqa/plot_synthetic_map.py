@@ -41,7 +41,6 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             for j in range(rel_doc_cnt):
                 cur_rel += 1 
 	        s += cur_rel*1.0/(total+j+1)
-                print cur_rel, total, j, s
 	        if not has_total_rel:
 		    total_rel += 1
             total += this_doc_cnt
@@ -110,7 +109,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 8}
         plt.rc('font', **font)
-        maxTF = 20
+        maxTF = 50
         xaxis = range(1, maxTF+1)
         ranking = self.construct_relevance(1, maxTF)
         yaxis = [ele[0]*1./ele[1] for ele in ranking] 
