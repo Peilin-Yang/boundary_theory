@@ -45,7 +45,6 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
 	        if not has_total_rel:
 		    total_rel += 1
             total += this_doc_cnt
-        print total_rel, total
         #print s/total_rel
         return s/total_rel
 
