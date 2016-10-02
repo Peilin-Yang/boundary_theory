@@ -34,14 +34,18 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
     def cal_map(self, ranking_list, has_total_rel=False, total_rel=0):
         cur_rel = 0
         s = 0.0
-        for i, ele in enumerate(ranking_list):
-            docid = ele[0]
-            rel = int(ele[1])>=1
-            if rel:
-                cur_rel += 1
-                s += cur_rel*1.0/(i+1)
-                if not has_total_rel:
-                    total_rel += 1
+        total = 0
+        for ele in reversed(ranking_list):
+            rel_doc_cnt = ele[0]
+            this_doc_cnt = ele[1]
+            for j in range(rel_doc_cnt):
+                cur_rel += 1 
+	        s += cur_rel*1.0/(total+j+1)
+                print cur_rel, total, j, s
+	        if not has_total_rel:
+		    total_rel += 1
+            total += this_doc_cnt
+        print total_rel, total
         #print s/total_rel
         return s/total_rel
 
@@ -53,7 +57,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         that TF.
         """
         if type == 1:
-            return [(1, maxTF-i) for i in range(maxTF)]
+            return [(1, maxTF-i+1) for i in range(1, maxTF+1)]
         if type == 2:
             return [(1, maxTF-i) for i in range(maxTF+1)]
 
@@ -74,27 +78,10 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         ax.legend(loc=legend_pos)
         if xlabel_format != 0:
             ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
-        # zoom
-        if zoom:
-            axins = inset_axes(ax,
-                   width="50%",  # width = 30% of parent_bbox
-                   height=0.8,  # height : 1 inch
-                   loc=7) # center right
-            zoom_xaxis = []
-            for x in xaxis:
-                if x <= 20:
-                    zoom_xaxis.append(x)
-            zoom_yaxis = yaxis[:len(zoom_xaxis)]
-            axins.plot(zoom_xaxis, zoom_yaxis, marker, ms=4)
-            axins.vlines(zoom_xaxis, [0], zoom_yaxis)
-            axins.set_xlim(0, 20)
-            mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
-
 
     def plot_line(self, ax, xaxis, yaxis, 
             title="", legend="", legend_outside=False, marker=None, linestyle=None, 
             legend_pos='best',  xlabel_format=0):
-        # 1. probability distribution 
         ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
         ax.set_title(title)
         ax.legend(loc=legend_pos)
@@ -125,13 +112,15 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         font = {'size' : 8}
         plt.rc('font', **font)
         maxTF = 20
-        xaxis = range(maxTF)
-        yaxis = [ele[0]*1./ele[1] for ele in self.construct_relevance(1, maxTF)] 
-        print yaxis
+        xaxis = range(1, maxTF+1)
+        ranking = self.construct_relevance(1, maxTF)
+        yaxis = [ele[0]*1./ele[1] for ele in ranking] 
+        _map = self.cal_map(ranking)
+        legend = 'map: %.4f' % (_map)
         if drawline:
-            self.plot_line(axs, xaxis, yaxis)
+            self.plot_line(axs, xaxis, yaxis, legend=legend)
         else:
-            self.plot_dots(axs, xaxis, yaxis) 
+            self.plot_dots(axs, xaxis, yaxis, legend=legend) 
         output_fn = os.path.join(self.output_root, 
             '%d-%s.%s' % (maxTF,
                 'line' if drawline else 'dots', 
