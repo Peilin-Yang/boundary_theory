@@ -5,7 +5,6 @@ import argparse
 import json
 import ast
 from operator import itemgetter
-from subprocess import Popen, PIPE
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from base import SingleQueryAnalysis
@@ -16,29 +15,44 @@ from evaluation import Evaluation
 from performance import Performances
 
 import numpy as np
-from sklearn.neighbors import KernelDensity
-import scipy.stats
-from scipy.stats import entropy
-from scipy.optimize import curve_fit
-from scipy.interpolate import spline
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
-from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
-
-class PlotTFRel(SingleQueryAnalysis):
+class PlotSyntheticMAP(SingleQueryAnalysis):
     """
-    Plot the probability distribution of P(D=1|f(tf,dl,other_stats)=x)
+    This class plots the performance(MAP) for the synthetic collection.
+    The purpose here is to see how the curve correlates with the performance
     """
     def __init__(self, corpus_path):
-        super(PlotTFRel, self).__init__()
+        super(PlotSyntheticMAP, self).__init__()
 
         self.collection_path = os.path.abspath(corpus_path)
         if not os.path.exists(self.collection_path):
             print '[Evaluation Constructor]:Please provide valid corpus path'
             exit(1)
+
+    def cal_map(self, ranking_list, has_total_rel=False, total_rel=0):
+        cur_rel = 0
+        s = 0.0
+        for i, ele in enumerate(ranking_list):
+            docid = ele[0]
+            rel = int(ele[1])>=1
+            if rel:
+                cur_rel += 1
+                s += cur_rel*1.0/(i+1)
+                if not has_total_rel:
+                    total_rel += 1
+        #print s/total_rel
+        return s/total_rel
+
+    def construct_relevance(self, maxTF=20):
+        """
+        Construct the relevance information.
+        The return format is a list where the index of the list is the TF.
+        Each element of the list is a tuple (numOfRelDocs, numOfTotalDocs) for 
+        that TF.
+        """
 
     def plot_single_tfc_constraints_draw_pdf(self, ax, xaxis, yaxis, 
             title, legend, legend_outside=False, marker='ro', 
