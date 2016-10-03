@@ -31,7 +31,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         if not os.path.exists(self.output_root):
             os.makedirs(self.output_root)
 
-    def cal_map(self, ranking_list, has_total_rel=False, total_rel=0):
+    def cal_map(self, ranking_list, has_total_rel=False, total_rel=0, type=1):
         cur_rel = 0
         s = 0.0
         total = 0
@@ -40,12 +40,14 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             this_doc_cnt = ele[1]
             if rel_doc_cnt == 0:
                 continue
+            if type == 0: # cal worst
+                total += this_doc_cnt - rel_doc_cnt
             for j in range(rel_doc_cnt):
                 cur_rel += 1 
 	        s += cur_rel*1.0/(total+j+1)
 	        if not has_total_rel:
 		    total_rel += 1
-            total += this_doc_cnt
+            total += this_doc_cnt if type == 1 else rel_doc_cnt
         #print s/total_rel
         if total_rel == 0:
             return 0
@@ -62,8 +64,10 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         if type == 1:
             l = [(1, (maxTF-i+1)) for i in ranges]
         if type == 2:
-            l = [(int(round(i*10.0/maxTF, 0)), 10) for i in ranges]
+            l = [(2, (maxTF-i+2)) for i in ranges]
         if type == 3:
+            l = [(int(round(i*10.0/maxTF, 0)), 10) for i in ranges]
+        if type == 4:
             l = [(i-1, i) for i in ranges]
 
         return [(ele[0]*scale_factor, ele[1]*scale_factor) for ele in l]
@@ -97,7 +101,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
 
     def plot(self, plot_ratio=True, 
             performance_as_legend=True,  drawline=True, plotbins=True, numbins=60, 
-            oformat='eps'):
+            oformat='png'):
         """
         plot the P(D=1|TF=x)
 
@@ -120,13 +124,14 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         plt.rc('font', **font)
         scale_factor = 1
         maxTF = 50
-        markers = ['', '+', '.', 'o']
-        for plot_type in range(1, 4):
+        markers = ['', '+', '+', '.', 'o']
+        for plot_type in range(1, 5):
             xaxis = range(1, maxTF+1)
             ranking = self.construct_relevance(plot_type, maxTF, scale_factor)
             yaxis = [ele[0]*1./ele[1] for ele in ranking] 
-            _map = self.cal_map(ranking)
-            legend = 'map: %.4f' % (_map)
+            best_map = self.cal_map(ranking, type=1)
+            worst_map = self.cal_map(ranking, type=0)
+            legend = 'map: %.4f~%.4f' % (worst_map, best_map)
             if drawline:
                 self.plot_line(axs, xaxis, yaxis, marker=markers[plot_type], legend=legend)
             else:
