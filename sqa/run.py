@@ -192,7 +192,7 @@ if __name__ == '__main__':
     parser.add_argument('-syc2', '--output_synthetic_impact', nargs='+',
                        help='output the impact of changing the number of relevant \
                        documents for each TF data point \
-                       args: [maxTF(int)] [scale_factor(int)] [output_format(eps|png)]')
+                       args: [maxTF(int)] [rel_docs_change(int)]')
 
     parser.add_argument('-2', '--gen_ranking_list', nargs='+',
                        help='input: \
@@ -254,7 +254,9 @@ if __name__ == '__main__':
             int(args.plot_synthetic[1]), 
             args.plot_synthetic[2])
     if args.output_synthetic_impact:
-        PlotSyntheticMAP().output_num_rel_docs_impact(*args.output_synthetic_impact)
+        PlotSyntheticMAP().output_num_rel_docs_impact(
+            int(args.plot_synthetic[0]), 
+            int(args.plot_synthetic[1]))
 
     if args.gen_ranking_list:
         method_name = args.gen_ranking_list[0]
