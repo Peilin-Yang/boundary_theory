@@ -58,10 +58,15 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         Each element of the list is a tuple (numOfRelDocs, numOfTotalDocs) for 
         that TF.
         """
+        ranges = [i for i in range(1, maxTF+1)]
         if type == 1:
-            return [(1*scale_factor, (maxTF-i+1)*scale_factor) for i in range(1, maxTF+1)]
+            l = [(1, (maxTF-i+1)) for i in ranges]
         if type == 2:
-            return [(int(round(i*10.0/maxTF, 0)), 10) for i in range(1, maxTF+1)]
+            l = [(int(round(i*10.0/maxTF, 0)), 10) for i in ranges]
+        if type == 3:
+            l = [(i-1, i) for i in ranges]
+
+        return [(ele[0]*scale_factor, ele[1]*scale_factor) for ele in l]
 
     def plot_dots(self, ax, xaxis, yaxis, 
             title="", legend="", legend_outside=False, marker='ro', 
@@ -114,16 +119,16 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         font = {'size' : 8}
         plt.rc('font', **font)
         scale_factor = 1
-        maxTF = 20
-        for plot_type in range(1, 3):
+        maxTF = 50
+        markers = ['', '+', '.', 'o']
+        for plot_type in range(1, 4):
             xaxis = range(1, maxTF+1)
             ranking = self.construct_relevance(plot_type, maxTF, scale_factor)
             yaxis = [ele[0]*1./ele[1] for ele in ranking] 
-            print xaxis, yaxis
             _map = self.cal_map(ranking)
             legend = 'map: %.4f' % (_map)
             if drawline:
-                self.plot_line(axs, xaxis, yaxis, legend=legend)
+                self.plot_line(axs, xaxis, yaxis, marker=markers[plot_type], legend=legend)
             else:
                 self.plot_dots(axs, xaxis, yaxis, legend=legend) 
         output_fn = os.path.join(self.output_root, 
