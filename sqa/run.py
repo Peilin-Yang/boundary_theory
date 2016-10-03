@@ -189,8 +189,8 @@ if __name__ == '__main__':
                        help='plot P( D is a relevant document | c(t,D)=x ), \
                        where x = 0,1,2,...maxTF(t) for the synthetic data set \
                        args: [maxTF(int)] [scale_factor(int)] [output_format(eps|png)]')
-    parser.add_argument('-syc2', '--output_synthetic_impact', nargs='+',
-                       help='output the impact of changing the number of relevant \
+    parser.add_argument('-syc2', '--plot_synthetic_impact', nargs='+',
+                       help='plot the impact of changing the number of relevant \
                        documents for each TF data point \
                        args: [maxTF(int)] [rel_docs_change(int)]')
 
@@ -254,7 +254,7 @@ if __name__ == '__main__':
             int(args.plot_synthetic[1]), 
             args.plot_synthetic[2])
     if args.output_synthetic_impact:
-        PlotSyntheticMAP().output_num_rel_docs_impact(
+        PlotSyntheticMAP().plot_num_rel_docs_impact(
             int(args.output_synthetic_impact[0]), 
             int(args.output_synthetic_impact[1]))
 

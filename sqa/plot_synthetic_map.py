@@ -159,27 +159,28 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
                 oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-    def output_num_rel_docs_impact(self, maxTF=20, rel_docs_change=10):
+    def plot_num_rel_docs_impact(self, maxTF=20, rel_docs_change=1, oformat='png'):
         """
         output the impact of changing the number of relevant documents at each 
         data point. The approach is to increase/decrease the number of relevant 
         documents for a specific data point and see what is the consequence of 
         doing so. 
         """
-        for rel_type in range(1, 6):
-            print '-'*30
-            print rel_type
-            print '-'*30
+        fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
+        font = {'size' : 8}
+        plt.rc('font', **font)
+        markers = ['', 's', 's', '.', '+', '+']
+        for plot_type in range(1, 6):
             xaxis = range(1, maxTF+1)
-            ranking = self.construct_relevance(rel_type, maxTF, 1)
+            ranking = self.construct_relevance(plot_type, maxTF, 1)
+            yaxis = []
             for i in range(len(ranking)):
                 modified_ranking = self.construct_relevance_impact(ranking, i, rel_docs_change)
                 best_map = self.cal_map(modified_ranking, type=1)
                 worst_map = self.cal_map(modified_ranking, type=0)
-                print i, best_map, worst_map
-        # output_fn = os.path.join(self.output_root, 
-        #     '%d-%d-%d-%s.%s' % (plot_type, scale_factor, maxTF,
-        #         'line' if drawline else 'dots', 
-        #         oformat) )
-        #plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+                yaxis.append(worst_map)
+            self.plot_line(axs, xaxis, yaxis, marker=markers[plot_type]) 
+        output_fn = os.path.join(self.output_root, 
+            'impact-%d-%d-%d.%s' % (plot_type, maxTF, rel_docs_change, oformat) )
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
