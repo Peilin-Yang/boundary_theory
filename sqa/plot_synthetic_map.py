@@ -79,7 +79,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         if type == 3:
             l = [(int(round(i*10.0/maxTF, 0)), 10) for i in ranges]
         if type == 4:
-            l = [(i-3, i) for i in range(4, maxTF+1)]
+            l = [(i-3 if i-3 >= 0 else 0, i) for i in ranges]
         if type == 5:
             l = [(i-1, i) for i in ranges]
         return [(ele[0]*scale_factor, ele[1]*scale_factor) for ele in l]
