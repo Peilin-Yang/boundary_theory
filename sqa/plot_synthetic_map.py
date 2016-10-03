@@ -171,7 +171,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             print rel_type
             print '-'*30
             xaxis = range(1, maxTF+1)
-            ranking = self.construct_relevance(rel_type, maxTF, scale_factor)
+            ranking = self.construct_relevance(rel_type, maxTF, 1)
             for i in range(len(ranking)):
                 modified_ranking = self.construct_relevance_impact(ranking, i, rel_docs_change)
                 best_map = self.cal_map(modified_ranking, type=1)
