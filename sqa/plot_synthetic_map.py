@@ -129,7 +129,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 8}
         plt.rc('font', **font)
-        markers = ['', '*', '*', '.', '+', '+']
+        markers = ['', 's', 's', '.', '+', '+']
         for plot_type in range(1, 6):
             xaxis = range(1, maxTF+1)
             ranking = self.construct_relevance(plot_type, maxTF, scale_factor)
