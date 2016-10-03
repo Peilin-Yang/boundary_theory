@@ -36,6 +36,7 @@ from utils import Utils
 from collection_stats import CollectionStats
 from baselines import Baselines
 from plot_tf_rel import PlotTFRel
+from plot_synthetic_map import PlotSyntheticMAP
 from hypothesis import Hypothesis
 from prints import Prints
 from ranknet import RankNet
@@ -184,6 +185,14 @@ if __name__ == '__main__':
                        args: [method_name(method_with_para)] [plot_ratio(boolean)] [performance_as_legend(boolean)] \
                        [drawline(boolean)] [plotbins(boolean)] [numbins(int)] [output_format(eps|png)]')
 
+    parser.add_argument('-syc1', '--plot_synthetic', nargs='+',
+                       help='plot P( D is a relevant document | c(t,D)=x ), \
+                       where x = 0,1,2,...maxTF(t) for the synthetic data set \
+                       args: [maxTF(int)] [scale_factor(int)] [output_format(eps|png)]')
+    parser.add_argument('-syc2', '--output_synthetic_impact', nargs='+',
+                       help='output the impact of changing the number of relevant \
+                       documents for each TF data point \
+                       args: [maxTF(int)] [scale_factor(int)] [output_format(eps|png)]')
 
     parser.add_argument('-2', '--gen_ranking_list', nargs='+',
                        help='input: \
@@ -238,6 +247,11 @@ if __name__ == '__main__':
             PlotTFRel(os.path.join(collection_root, c['collection'])).wrapper(
                 *args.plot_tf_rel
                 )
+
+    if args.plot_synthetic:
+        PlotSyntheticMAP.plot(*args.plot_synthetic)
+    if args.output_synthetic_impact:
+        PlotSyntheticMAP.output_num_rel_docs_impact(*args.output_synthetic_impact)
 
     if args.gen_ranking_list:
         method_name = args.gen_ranking_list[0]

@@ -75,12 +75,13 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         if type == 1:
             l = [(1, (maxTF-i+1)) for i in ranges]
         if type == 2:
-            l = [(2, (maxTF-i+2)) for i in ranges]
+            l = [(3, (maxTF-i+3)) for i in ranges]
         if type == 3:
             l = [(int(round(i*10.0/maxTF, 0)), 10) for i in ranges]
         if type == 4:
+            l = [(i-3, i) for i in ranges]
+        if type == 5:
             l = [(i-1, i) for i in ranges]
-
         return [(ele[0]*scale_factor, ele[1]*scale_factor) for ele in l]
 
     def plot_dots(self, ax, xaxis, yaxis, 
@@ -104,14 +105,15 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
     def plot_line(self, ax, xaxis, yaxis, 
             title="", legend="", legend_outside=False, marker=None, linestyle=None, 
             legend_pos='best', xlabel_format=0):
-        ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
+        ax.plot(xaxis, yaxis, marker=marker if marker else '+', 
+            ls=linestyle if linestyle else '-', label=legend)
         ax.set_title(title)
         ax.legend(loc=legend_pos)
         if xlabel_format != 0:
             ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
 
-    def plot(self, maxTF=20, scale_factor=1, plot_ratio=True, 
-            performance_as_legend=True, drawline=True, oformat='png'):
+    def plot(self, maxTF=20, scale_factor=1, oformat='png', plot_ratio=True, 
+            performance_as_legend=True, drawline=True):
         """
         plot the relationship between P(D=1|TF=x) and the performance 
         on a synthetic data set
@@ -127,7 +129,36 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 8}
         plt.rc('font', **font)
+        markers = ['', '*', '*', '.', '+', '+']
+        for plot_type in range(1, 6):
+            xaxis = range(1, maxTF+1)
+            ranking = self.construct_relevance(plot_type, maxTF, scale_factor)
+            yaxis = [ele[0]*1./ele[1] for ele in ranking] 
+            best_map = self.cal_map(ranking, type=1)
+            worst_map = self.cal_map(ranking, type=0)
+            legend = 'map: %.4f~%.4f' % (worst_map, best_map)
+            if drawline:
+                self.plot_line(axs, xaxis, yaxis, marker=markers[plot_type], legend=legend)
+            else:
+                self.plot_dots(axs, xaxis, yaxis, legend=legend) 
+        output_fn = os.path.join(self.output_root, 
+            '%d-%d-%d-%s.%s' % (plot_type, scale_factor, maxTF,
+                'line' if drawline else 'dots', 
+                oformat) )
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+
+    def output_num_rel_docs_impact(self, maxTF=20, rel_docs_change=10):
+        """
+        output the impact of changing the number of relevant documents at each 
+        data point. The approach is to increase/decrease the number of relevant 
+        documents for a specific data point and see what is the consequence of 
+        doing so. 
+        """
+        fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
+        font = {'size' : 8}
+        plt.rc('font', **font)
         markers = ['', '+', '+', '.', 'o']
+        plot_type = 1
         for plot_type in range(1, 5):
             xaxis = range(1, maxTF+1)
             ranking = self.construct_relevance(plot_type, maxTF, scale_factor)
@@ -145,4 +176,3 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
                 oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-PlotSyntheticMAP().plot()
