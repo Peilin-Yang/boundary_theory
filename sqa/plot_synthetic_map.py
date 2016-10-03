@@ -166,7 +166,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         documents for a specific data point and see what is the consequence of 
         doing so. 
         """
-        for rel_type in range(1, 5):
+        for rel_type in range(1, 6):
             print '-'*30
             print rel_type
             print '-'*30
