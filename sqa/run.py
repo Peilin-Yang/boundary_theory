@@ -249,12 +249,12 @@ if __name__ == '__main__':
                 )
 
     if args.plot_synthetic:
-        PlotSyntheticMAP.plot(
+        PlotSyntheticMAP().plot(
             int(args.plot_synthetic[0]), 
             int(args.plot_synthetic[1]), 
             args.plot_synthetic[2])
     if args.output_synthetic_impact:
-        PlotSyntheticMAP.output_num_rel_docs_impact(*args.output_synthetic_impact)
+        PlotSyntheticMAP().output_num_rel_docs_impact(*args.output_synthetic_impact)
 
     if args.gen_ranking_list:
         method_name = args.gen_ranking_list[0]
