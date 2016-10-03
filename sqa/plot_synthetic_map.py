@@ -47,7 +47,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         #print s/total_rel
         return s/total_rel
 
-    def construct_relevance(self, type=1, maxTF=20):
+    def construct_relevance(self, type=1, maxTF=20, rel_docs_factor=1):
         """
         Construct the relevance information.
         The return format is a list where the index of the list is the TF.
@@ -55,7 +55,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         that TF.
         """
         if type == 1:
-            return [(1, maxTF-i+1) for i in range(1, maxTF+1)]
+            return [(1*rel_docs_factor, maxTF-i+1) for i in range(1, maxTF+1)]
         if type == 2:
             return [(1, maxTF-i) for i in range(maxTF+1)]
 
@@ -109,9 +109,11 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 8}
         plt.rc('font', **font)
+        plot_type = 1
+        rel_docs_factor = 2
         maxTF = 50
         xaxis = range(1, maxTF+1)
-        ranking = self.construct_relevance(1, maxTF)
+        ranking = self.construct_relevance(plot_type, maxTF, rel_docs_factor)
         yaxis = [ele[0]*1./ele[1] for ele in ranking] 
         _map = self.cal_map(ranking)
         legend = 'map: %.4f' % (_map)
@@ -120,7 +122,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         else:
             self.plot_dots(axs, xaxis, yaxis, legend=legend) 
         output_fn = os.path.join(self.output_root, 
-            '%d-%s.%s' % (maxTF,
+            '%d-%d-%d-%s.%s' % (plot_type, rel_docs_factor, maxTF,
                 'line' if drawline else 'dots', 
                 oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
