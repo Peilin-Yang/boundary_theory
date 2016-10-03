@@ -38,6 +38,8 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         for ele in reversed(ranking_list):
             rel_doc_cnt = ele[0]
             this_doc_cnt = ele[1]
+            if rel_doc_cnt == 0:
+                continue
             for j in range(rel_doc_cnt):
                 cur_rel += 1 
 	        s += cur_rel*1.0/(total+j+1)
@@ -45,6 +47,8 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
 		    total_rel += 1
             total += this_doc_cnt
         #print s/total_rel
+        if total_rel == 0:
+            return 0
         return s/total_rel
 
     def construct_relevance(self, type=1, maxTF=20, scale_factor=1):
@@ -57,7 +61,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         if type == 1:
             return [(1*scale_factor, (maxTF-i+1)*scale_factor) for i in range(1, maxTF+1)]
         if type == 2:
-            return [(1, maxTF-i) for i in range(maxTF+1)]
+            return [(int(round(i*10.0/maxTF, 0)), 10) for i in range(1, maxTF+1)]
 
     def plot_dots(self, ax, xaxis, yaxis, 
             title="", legend="", legend_outside=False, marker='ro', 
@@ -109,18 +113,19 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 8}
         plt.rc('font', **font)
-        plot_type = 1
-        scale_factor = 2
-        maxTF = 50
-        xaxis = range(1, maxTF+1)
-        ranking = self.construct_relevance(plot_type, maxTF, scale_factor)
-        yaxis = [ele[0]*1./ele[1] for ele in ranking] 
-        _map = self.cal_map(ranking)
-        legend = 'map: %.4f' % (_map)
-        if drawline:
-            self.plot_line(axs, xaxis, yaxis, legend=legend)
-        else:
-            self.plot_dots(axs, xaxis, yaxis, legend=legend) 
+        scale_factor = 1
+        maxTF = 20
+        for plot_type in range(1, 3):
+            xaxis = range(1, maxTF+1)
+            ranking = self.construct_relevance(plot_type, maxTF, scale_factor)
+            yaxis = [ele[0]*1./ele[1] for ele in ranking] 
+            print xaxis, yaxis
+            _map = self.cal_map(ranking)
+            legend = 'map: %.4f' % (_map)
+            if drawline:
+                self.plot_line(axs, xaxis, yaxis, legend=legend)
+            else:
+                self.plot_dots(axs, xaxis, yaxis, legend=legend) 
         output_fn = os.path.join(self.output_root, 
             '%d-%d-%d-%s.%s' % (plot_type, scale_factor, maxTF,
                 'line' if drawline else 'dots', 
