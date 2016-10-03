@@ -253,7 +253,7 @@ if __name__ == '__main__':
             int(args.plot_synthetic[0]), 
             int(args.plot_synthetic[1]), 
             args.plot_synthetic[2])
-    if args.output_synthetic_impact:
+    if args.plot_synthetic_impact:
         PlotSyntheticMAP().plot_num_rel_docs_impact(
             int(args.output_synthetic_impact[0]), 
             int(args.output_synthetic_impact[1]))
