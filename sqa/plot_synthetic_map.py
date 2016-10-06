@@ -193,7 +193,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             2 - set the number of relevant documents as exponential decay
         """
         if type == '2':
-            tf_scale = [50.0/i for i in range(1, maxTF+1)]
+            tf_scale = [50/i for i in range(1, maxTF+1)]
             docs_cnt_scale = np.exp([(-3.0)*i for i in range(1, maxTF+1)])
         # if type == 2:
         #     l = [(3, (maxTF-i+3)) for i in ranges]
