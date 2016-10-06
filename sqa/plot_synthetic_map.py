@@ -185,7 +185,18 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             'impact-%d-%d-%d.%s' % (plot_type, maxTF, rel_docs_change, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-    def interpolation_1(self, maxTF, type='1'):
+
+    def plot_interpolation(self, xaxis, yaxis, output_fn, oformat='png'):
+        """
+        plot the interpolation figure
+        """
+        fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
+        font = {'size' : 8}
+        plt.rc('font', **font)
+        self.plot_line(ax, xaxis, yaxis, 'ro') 
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+
+    def interpolation_1(self, maxTF, oformat='png', type='1'):
         """
         Normal distribution
         type:
@@ -208,9 +219,12 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         print docs_cnt_scale
         print 'best:', self.cal_map(zip(tf_scale, docs_cnt_scale), type=1)
         print 'worst:', self.cal_map(zip(tf_scale, docs_cnt_scale), type=0)
+        output_fn = os.path.join(self.output_root, 
+            'interpolation-%d-1-%s.%s' % (maxTF, type, oformat) )
+        self.plot_interpolation(tf_scale, docs_cnt_scale, output_fn, oformat)
 
     def cal_map_with_interpolation(self, maxTF=20, interpolation_type=1, 
-            interpolation_paras=[]):
+            oformat='png', interpolation_paras=[]):
         """
         Calculate the MAP with interpolation of the data.
         Typical interpolation is to change part of the y-axis. 
@@ -218,5 +232,5 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         where TF (xaxis) <= 20.
         """
         if interpolation_type == 1:
-            self.interpolation_1(maxTF, *interpolation_paras)
+            self.interpolation_1(maxTF, oformat, *interpolation_paras)
 
