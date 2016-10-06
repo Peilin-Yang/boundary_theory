@@ -343,7 +343,7 @@ class PlotTFRel(SingleQueryAnalysis):
             else:
                 yaxis = [x_dict[x][0] for x in xaxis]
             #print xaxis
-            #print yaxis
+            print [x_dict[x][1] for x in xaxis]
             query_stat = cs.get_term_stats(query_term)
             if drawline:
                 self.plot_single_tfc_constraints_draw_pdf_line(
