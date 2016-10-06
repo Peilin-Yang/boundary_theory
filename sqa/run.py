@@ -266,7 +266,7 @@ if __name__ == '__main__':
         PlotSyntheticMAP().cal_map_with_interpolation(
             int(args.cal_interpolation_map[0]), 
             int(args.cal_interpolation_map[1]),
-            int(args.plot_synthetic_impact[2]),
+            int(args.cal_interpolation_map[2]),
             args.cal_interpolation_map[3:])
 
     if args.gen_ranking_list:
