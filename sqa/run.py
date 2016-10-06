@@ -193,6 +193,9 @@ if __name__ == '__main__':
                        help='plot the impact of changing the number of relevant \
                        documents for each TF data point \
                        args: [maxTF(int)] [rel_docs_change(int)]')
+    parser.add_argument('-syc3', '--cal_interpolation_map', nargs='+',
+                       help='calculate the MAP based on interpolation \
+                       args: [maxTF(int)] [interpolation_type(int)] [other_options]')
 
     parser.add_argument('-2', '--gen_ranking_list', nargs='+',
                        help='input: \
@@ -258,6 +261,12 @@ if __name__ == '__main__':
             int(args.plot_synthetic_impact[0]), 
             int(args.plot_synthetic_impact[1]),
             args.plot_synthetic_impact[2])
+
+    if args.cal_interpolation_map:
+        PlotSyntheticMAP().cal_map_with_interpolation(
+            int(args.cal_interpolation_map[0]), 
+            int(args.cal_interpolation_map[1]),
+            args.cal_interpolation_map[2:])
 
     if args.gen_ranking_list:
         method_name = args.gen_ranking_list[0]

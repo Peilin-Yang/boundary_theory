@@ -15,6 +15,7 @@ from evaluation import Evaluation
 from performance import Performances
 
 import numpy as np
+from scipy.stats import norm
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -183,4 +184,37 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         output_fn = os.path.join(self.output_root, 
             'impact-%d-%d-%d.%s' % (plot_type, maxTF, rel_docs_change, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+
+    def interpolation_1(self, maxTF, type='1'):
+        """
+        Normal distribution
+        type:
+            1 - set the number of relevant documents as a contant scale scale_factor
+            2 - set the number of relevant documents as exponential decay
+        """
+        ranges = norm.pdf([i for i in range(1, maxTF+1)], maxTF/2)
+        print ranges
+        # if type == '1':
+        #     l = [(1, (maxTF-i+1)) for i in ranges]
+        # if type == 2:
+        #     l = [(3, (maxTF-i+3)) for i in ranges]
+        # if type == 3:
+        #     l = [(int(round(i*10.0/maxTF, 0)), 10) for i in ranges]
+        # if type == 4:
+        #     l = [(i-3 if i-3 >= 0 else 0, i) for i in ranges]
+        # if type == 5:
+        #     l = [(i-1, i) for i in ranges]
+        # return [(ele[0]*scale_factor, ele[1]*scale_factor) for ele in l]
+
+
+    def cal_map_with_interpolation(self, maxTF=20, interpolation_type=1, 
+            interpolation_paras=[]):
+        """
+        Calculate the MAP with interpolation of the data.
+        Typical interpolation is to change part of the y-axis. 
+        For example, we can make the yaxis follows the Normal Distribution 
+        where TF (xaxis) <= 20.
+        """
+        if interpolation_type == 1:
+            self.interpolation_1(maxTF, *interpolation_paras)
 
