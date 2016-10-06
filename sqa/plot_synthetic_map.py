@@ -204,7 +204,8 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         # if type == 5:
         #     l = [(i-1, i) for i in ranges]
         # return [(ele[0]*scale_factor, ele[1]*scale_factor) for ele in l]
-        print tf_scale, docs_cnt_scale
+        print tf_scale
+        print docs_cnt_scale
 
     def cal_map_with_interpolation(self, maxTF=20, interpolation_type=1, 
             interpolation_paras=[]):
