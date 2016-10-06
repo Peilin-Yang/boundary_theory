@@ -206,6 +206,8 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         # return [(ele[0]*scale_factor, ele[1]*scale_factor) for ele in l]
         print tf_scale
         print docs_cnt_scale
+        print 'best:', self.cal_map(zip(tf_scale, docs_cnt_scale), type=1)
+        print 'worst:', self.cal_map(zip(tf_scale, docs_cnt_scale), type=0)
 
     def cal_map_with_interpolation(self, maxTF=20, interpolation_type=1, 
             interpolation_paras=[]):
