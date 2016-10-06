@@ -203,9 +203,10 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             1 - set the number of relevant documents as a contant scale scale_factor
             2 - set the number of relevant documents as exponential decay
         """
+        ranges = for i in range(1, maxTF+1)
         if type == '2':
-            tf_scale = [50/i for i in range(1, maxTF+1)]
-            docs_cnt_scale = [2000/(i*i) for i in range(1, maxTF+1)]
+            tf_scale = [50/i for i in ranges]
+            docs_cnt_scale = [2000/(i*i) for i in ranges]
         # if type == 2:
         #     l = [(3, (maxTF-i+3)) for i in ranges]
         # if type == 3:
@@ -215,13 +216,14 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         # if type == 5:
         #     l = [(i-1, i) for i in ranges]
         # return [(ele[0]*scale_factor, ele[1]*scale_factor) for ele in l]
-        print tf_scale
-        print docs_cnt_scale
-        print 'best:', self.cal_map(zip(tf_scale, docs_cnt_scale), type=1)
-        print 'worst:', self.cal_map(zip(tf_scale, docs_cnt_scale), type=0)
+        ranking_list = zip(tf_scale, docs_cnt_scale)
+        print ranking_list
+        print 'best:', self.cal_map(ranking_list, type=1)
+        print 'worst:', self.cal_map(ranking_list, type=0)
         output_fn = os.path.join(self.output_root, 
             'interpolation-%d-1-%s.%s' % (maxTF, type, oformat) )
-        self.plot_interpolation(tf_scale, docs_cnt_scale, output_fn, oformat)
+        yaxis = [ele[0]*1.0/ele[1] for ele in ranking_list]
+        self.plot_interpolation(ranges, yaxis, output_fn, oformat)
 
     def cal_map_with_interpolation(self, maxTF=20, interpolation_type=1, 
             oformat='png', interpolation_paras=[]):
