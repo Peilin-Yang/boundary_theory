@@ -192,10 +192,10 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             1 - set the number of relevant documents as a contant scale scale_factor
             2 - set the number of relevant documents as exponential decay
         """
-        ranges = norm.pdf([i for i in range(1, maxTF+1)], maxTF/2)
+        ranges = norm.pdf([i for i in range(1, maxTF+1)], maxTF/2, 100)
         print ranges
         # if type == '1':
-        #     l = [(1, (maxTF-i+1)) for i in ranges]
+        #     ranges = ranges * 100
         # if type == 2:
         #     l = [(3, (maxTF-i+3)) for i in ranges]
         # if type == 3:
