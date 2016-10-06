@@ -192,9 +192,9 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             1 - set the number of relevant documents as a contant scale scale_factor
             2 - set the number of relevant documents as exponential decay
         """
-        ranges = norm.pdf([i for i in range(1, maxTF+1)], maxTF/2, maxTF/8)
         if type == '2':
-            docs_cnt_scale = np.exp([i/(-4.0) for i in range(1, maxTF+1)])
+            tf_scale = [50.0/i for i in range(1, maxTF+1)]
+            docs_cnt_scale = np.exp([(-3.0)*i for i in range(1, maxTF+1)])
         # if type == 2:
         #     l = [(3, (maxTF-i+3)) for i in ranges]
         # if type == 3:
@@ -204,7 +204,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         # if type == 5:
         #     l = [(i-1, i) for i in ranges]
         # return [(ele[0]*scale_factor, ele[1]*scale_factor) for ele in l]
-        print ranges, docs_cnt_scale
+        print tf_scale, docs_cnt_scale
 
     def cal_map_with_interpolation(self, maxTF=20, interpolation_type=1, 
             interpolation_paras=[]):
