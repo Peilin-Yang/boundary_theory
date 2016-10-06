@@ -194,7 +194,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         """
         ranges = norm.pdf([i for i in range(1, maxTF+1)], maxTF/2, maxTF/8)
         if type == '2':
-            docs_cnt_scale = np.exp([-3*i for i in range(1, maxTF+1)])
+            docs_cnt_scale = np.exp([i/(-3.0) for i in range(1, maxTF+1)])
         # if type == 2:
         #     l = [(3, (maxTF-i+3)) for i in ranges]
         # if type == 3:
