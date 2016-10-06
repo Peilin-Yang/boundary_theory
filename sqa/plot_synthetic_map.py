@@ -203,7 +203,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             1 - set the number of relevant documents as a contant scale scale_factor
             2 - set the number of relevant documents as exponential decay
         """
-        ranges = [for i in range(1, maxTF+1)]
+        ranges = [i for i in range(1, maxTF+1)]
         if type == '2':
             tf_scale = [50/i for i in ranges]
             docs_cnt_scale = [2000/(i*i) for i in ranges]
