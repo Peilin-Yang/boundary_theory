@@ -15,7 +15,7 @@ from evaluation import Evaluation
 from performance import Performances
 
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import norm, expon
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -193,10 +193,8 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             2 - set the number of relevant documents as exponential decay
         """
         ranges = norm.pdf([i for i in range(1, maxTF+1)], maxTF/2, maxTF/8)
-        x = np.linspace(norm.ppf(0.01), norm.ppf(0.99), 100)
-        print x
         if type == '2':
-            docs_cnt_scale = []
+            docs_cnt_scale = np.exp([-5*i for i in range(1, maxTF+1)])
         # if type == 2:
         #     l = [(3, (maxTF-i+3)) for i in ranges]
         # if type == 3:
@@ -206,7 +204,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         # if type == 5:
         #     l = [(i-1, i) for i in ranges]
         # return [(ele[0]*scale_factor, ele[1]*scale_factor) for ele in l]
-        print ranges
+        print ranges, docs_cnt_scale
 
     def cal_map_with_interpolation(self, maxTF=20, interpolation_type=1, 
             interpolation_paras=[]):
