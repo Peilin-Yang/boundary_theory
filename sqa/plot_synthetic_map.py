@@ -193,7 +193,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             2 - set the number of relevant documents as exponential decay
         """
         ranges = norm.pdf([i for i in range(1, maxTF+1)], maxTF/2, maxTF/8)
-        x = np.linspace(expon.ppf(0.01), expon.ppf(0.99), 100)
+        x = np.linspace(norm.ppf(0.01), norm.ppf(0.99), 100)
         print x
         if type == '2':
             docs_cnt_scale = []
