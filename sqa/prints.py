@@ -103,10 +103,14 @@ class Prints(object):
 
     def cut_docs_tf_with_maxTF(self, maxTF=20):
         docs_tf = self.get_docs_tf()
+        dropped_list = []
         for qid in docs_tf:
             tf = [ele for ele in docs_tf[qid] if ele[1] <= maxTF]
+            dropped = [ele for ele in docs_tf[qid] if ele[1] > maxTF]
+            dropped_list.append(dropped)
             tf.sort(key=itemgetter(1,0), reverse=True)
             docs_tf[qid] = tf
+        print 'avg dropped:', np.mean(np.asarray(dropped_list))
         return docs_tf
 
     def cal_map(self, ranking_list_with_judgement):
