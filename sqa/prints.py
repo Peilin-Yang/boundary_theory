@@ -140,7 +140,7 @@ class Prints(object):
             rel_smaller_cnt = len([ele for ele in ranking_with_judge if ele[1]])
             rel_smaller_than_maxTF.append(rel_smaller_cnt)
             rel_larger_than_maxTF.append(len(rel_docs[qid]) - rel_smaller_cnt)
-            print len(rel_docs[qid]) - rel_smaller_cnt
+            print len(rel_docs[qid]), rel_smaller_cnt
             maps.append(self.cal_map(ranking_with_judge))
         print np.mean(np.asarray(maps))
         print 'rel_smaller:', np.mean(np.asarray(rel_smaller_than_maxTF)),
