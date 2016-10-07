@@ -107,7 +107,6 @@ class Prints(object):
         for qid in docs_tf:
             tf = [ele for ele in docs_tf[qid] if ele[1] <= maxTF]
             dropped = [ele[0] for ele in docs_tf[qid] if ele[1] > maxTF]
-            print len(dropped)
             dropped_list.append(len(dropped))
             tf.sort(key=itemgetter(1,0), reverse=True)
             docs_tf[qid] = tf
@@ -141,6 +140,7 @@ class Prints(object):
             rel_smaller_cnt = len([ele for ele in ranking_with_judge if ele[1]])
             rel_smaller_than_maxTF.append(rel_smaller_cnt)
             rel_larger_than_maxTF.append(len(rel_docs[qid]) - rel_smaller_cnt)
+            print len(rel_docs[qid]) - rel_smaller_cnt
             maps.append(self.cal_map(ranking_with_judge))
         print np.mean(np.asarray(maps))
         print 'rel_smaller:', np.mean(np.asarray(rel_smaller_than_maxTF)),
