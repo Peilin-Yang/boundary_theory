@@ -215,10 +215,12 @@ if __name__ == '__main__':
     parser.add_argument('-2p', '--print_eval', nargs='+',
                        help='print the evaluation results for methods list. INPUT: [methods list]')
 
-    parser.add_argument('-pb', '--print_best', nargs='+',
+    parser.add_argument('-pp1', '--print_best', nargs='+',
                        help='print the optimal performances and the paras for the methods. INPUT: [methods list]')
-    parser.add_argument('-ps', '--print_statistics', nargs='+',
+    parser.add_argument('-pp2', '--print_statistics', nargs='+',
                        help='print the statistics of collection')
+    parser.add_argument('-pp3', '--print_map_with_cut_maxTF', nargs=1,
+                       help='print MAP for cut maxTF')
 
     parser.add_argument('-l1', '--lambdarank_batch', action='store_true',
                        help='LambdaRank related. This is to get the optimal parameters for classic models')
@@ -319,6 +321,14 @@ if __name__ == '__main__':
             print c['collection']
             print '-'*40
             p.print_statistics(methods)
+
+    if args.print_map_with_cut_maxTF:
+        for c in g.query:
+            p = Prints(os.path.join(collection_root, c['collection']))
+            print '-'*40
+            print c['collection']
+            print '-'*40
+            p.cut_docs_tf_with_maxTF(int(args.print_map_with_cut_maxTF[0]))
 
 
     if args.lambdarank_batch:

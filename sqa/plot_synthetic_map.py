@@ -185,7 +185,6 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             'impact-%d-%d-%d.%s' % (plot_type, maxTF, rel_docs_change, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-
     def plot_interpolation(self, xaxis, yaxis, output_fn, oformat='png'):
         """
         plot the interpolation figure
