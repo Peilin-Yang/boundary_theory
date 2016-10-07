@@ -128,6 +128,8 @@ class Prints(object):
         single_queries = Query(self.collection_path).get_queries_of_length(1)
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([ele['num'] for ele in single_queries])
         cutted_docs = self.cut_docs_tf_with_maxTF(maxTF)
+        maps = []
         for qid in cutted_docs:
             ranking_with_judge = [(doc[0], doc[0] in [ele[0] for ele in rel_docs[qid]]) for doc in cutted_docs[qid]]
-            print qid, self.cal_map(ranking_with_judge)
+            maps.append(self.cal_map(ranking_with_judge))
+        print np.mean(np.asarray(maps))
