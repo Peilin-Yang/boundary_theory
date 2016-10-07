@@ -110,6 +110,8 @@ class Prints(object):
             tf.sort(key=itemgetter(1,0), reverse=True)
             docs_tf[qid] = tf
             dropped = [ele for ele in docs_tf[qid] if ele[1] > maxTF]
+            print dropped
+            raw_input()
             dropped_list.append(len(dropped))
             dropped_tf[qid] = dropped
         print 'avg dropped:', np.mean(np.asarray(dropped_list))
