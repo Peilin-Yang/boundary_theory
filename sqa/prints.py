@@ -103,15 +103,17 @@ class Prints(object):
 
     def cut_docs_tf_with_maxTF(self, maxTF=20):
         docs_tf = self.get_docs_tf()
+        dropped_tf = {}
         dropped_list = []
         for qid in docs_tf:
             tf = [ele for ele in docs_tf[qid] if ele[1] <= maxTF]
-            dropped = [ele[0] for ele in docs_tf[qid] if ele[1] > maxTF]
-            dropped_list.append(len(dropped))
             tf.sort(key=itemgetter(1,0), reverse=True)
             docs_tf[qid] = tf
+            dropped = [ele for ele in docs_tf[qid] if ele[1] > maxTF]
+            dropped_list.append(len(dropped))
+            dropped_tf[qid] = dropped
         print 'avg dropped:', np.mean(np.asarray(dropped_list))
-        return docs_tf
+        return docs_tf, dropped_tf
 
     def cal_map(self, ranking_list_with_judgement):
         cur_rel = 0
@@ -131,7 +133,7 @@ class Prints(object):
     def print_map_with_cut_maxTF(self, maxTF=20):
         single_queries = Query(self.collection_path).get_queries_of_length(1)
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([ele['num'] for ele in single_queries])
-        cutted_docs = self.cut_docs_tf_with_maxTF(maxTF)
+        cutted_docs, dropped_tf = self.cut_docs_tf_with_maxTF(maxTF)
         maps = []
         rel_smaller_than_maxTF = []
         rel_larger_than_maxTF = []
@@ -139,8 +141,9 @@ class Prints(object):
             ranking_with_judge = [(doc[0], doc[0] in [ele[0] for ele in rel_docs[qid]]) for doc in cutted_docs[qid]]
             rel_smaller_cnt = len([ele for ele in ranking_with_judge if ele[1]])
             rel_smaller_than_maxTF.append(rel_smaller_cnt)
-            rel_larger_than_maxTF.append(len(rel_docs[qid]) - rel_smaller_cnt)
-            print len(rel_docs[qid]), rel_smaller_cnt
+            larger_ones = [(doc[0], doc[0] in [ele[0] for ele in rel_docs[qid]]) for doc in dropped_tf[qid]]
+            rel_larger_cnt = len([ele for ele in larger_ones if ele[1]])
+            rel_larger_than_maxTF.append(rel_larger_cnt)
             maps.append(self.cal_map(ranking_with_judge))
         print np.mean(np.asarray(maps))
         print 'rel_smaller:', np.mean(np.asarray(rel_smaller_than_maxTF)),
