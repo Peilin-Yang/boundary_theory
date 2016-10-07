@@ -328,7 +328,7 @@ if __name__ == '__main__':
             print '-'*40
             print c['collection']
             print '-'*40
-            p.cut_docs_tf_with_maxTF(int(args.print_map_with_cut_maxTF[0]))
+            p.print_map_with_cut_maxTF(int(args.print_map_with_cut_maxTF[0]))
 
 
     if args.lambdarank_batch:

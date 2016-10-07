@@ -101,10 +101,15 @@ class Prints(object):
                     break
         return res
 
-    def cut_docs_tf_with_maxTF(self, maxTF):
+    def cut_docs_tf_with_maxTF(self, maxTF=20):
         docs_tf = self.get_docs_tf()
         for qid in docs_tf:
             tf = [ele for ele in docs_tf[qid] if ele[1] <= maxTF]
             tf.sort(key=itemgetter(1,0), reverse=True)
             docs_tf[qid] = tf
-        print docs_tf
+        return docs_tf
+
+    def print_map_with_cut_maxTF(self, maxTF=20):
+        single_queries = Query(self.collection_path).get_queries_of_length(1)
+        rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([ele['num'] for ele in single_queries])
+        print rel_docs
