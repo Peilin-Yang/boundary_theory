@@ -248,10 +248,9 @@ class PlotTFRel(SingleQueryAnalysis):
 
 
     def plot_single_tfc_constraints_rel_tf(self, x_func, 
-            _method, plot_ratio=True, 
-            performance_as_legend=True, 
-            drawline=True, plotbins=True, numbins=60, 
-            oformat='eps'):
+            _method, plot_ratio=True, plot_total_or_avg=True,
+            performance_as_legend=True, drawline=True, plotbins=True, 
+            numbins=60, oformat='eps'):
         """
         plot the P(D=1|TF=x)
 
@@ -262,6 +261,9 @@ class PlotTFRel(SingleQueryAnalysis):
             attached, e.g. dir,mu:2500
         @plot_ratio: When this is false, plot the y-axis as the number of relevant 
             documents; When this is true, plot the y-axis as the #rel_docs/#docs
+        @plot_total_or_avg: When this is true, plot the y-axis as the collection 
+            total ; When this is false, plot the collection average. 
+            Only available when plot_ratio is false is only available for collection-wise
         @performance_as_legend: whether to add performance(e.g. MAP) 
             as part of the legend
         @drawline: draw the data points as line(true) or dots(false)
@@ -288,7 +290,7 @@ class PlotTFRel(SingleQueryAnalysis):
             )
             collection_legend = 'map:%.4f' % (np.mean([p[qid]['map'] for qid in p]))
 
-        collection_level_x_dict = {}
+        collection_x_dict = {}
         collection_level_maxTF = 0
         collection_level_maxX = 0.0
         num_cols = 4
@@ -330,11 +332,11 @@ class PlotTFRel(SingleQueryAnalysis):
                 if rel:
                     x_dict[x][0] += 1
                 x_dict[x][1] += 1
-                if x not in collection_level_x_dict:
-                    collection_level_x_dict[x] = [0, 0] # [rel_docs, total_docs]
+                if x not in collection_x_dict:
+                    collection_x_dict[x] = [0, 0] # [rel_docs, total_docs]
                 if rel:
-                    collection_level_x_dict[x][0] += 1
-                collection_level_x_dict[x][1] += 1
+                    collection_x_dict[x][0] += 1
+                collection_x_dict[x][1] += 1
             xaxis = x_dict.keys()
             xaxis.sort()
             yaxis = [x_dict[x][0] for x in xaxis]
@@ -345,12 +347,12 @@ class PlotTFRel(SingleQueryAnalysis):
             #print xaxis
             p1 = np.asarray([x_dict[x][1] for x in xaxis])
             p2 = scipy.stats.poisson.pmf(xaxis, 4)
-            print xaxis
-            print p1
-            print p2
-            print p1*p2
-            print np.asarray(yaxis)
-            raw_input()
+            # print xaxis
+            # print p1
+            # print p2
+            # print p1*p2
+            # print np.asarray(yaxis)
+            # raw_input()
             query_stat = cs.get_term_stats(query_term)
             if drawline:
                 self.plot_single_tfc_constraints_draw_pdf_line(
@@ -394,20 +396,23 @@ class PlotTFRel(SingleQueryAnalysis):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 8}
         plt.rc('font', **font)
-        xaxis = collection_level_x_dict.keys()
+        xaxis = collection_x_dict.keys()
         xaxis.sort()
         if plot_ratio:
-            yaxis = [collection_level_x_dict[x][0]*1./collection_level_x_dict[x][1] for x in xaxis]
+            yaxis = [collection_x_dict[x][0]*1./collection_x_dict[x][1] for x in xaxis]
         else:
-            yaxis = [(collection_level_x_dict[x][0], collection_level_x_dict[x][1]) for x in xaxis] 
+            if plot_total_or_avg:
+                yaxis = [(collection_x_dict[x][0], collection_x_dict[x][1]) for x in xaxis] 
+            else:
+                yaxis = [(collection_x_dict[x][0]/len(idfs), collection_x_dict[x][1]/len(idfs)) for x in xaxis] 
         if plotbins:
             interval = collection_level_maxX*1.0/numbins
             newxaxis = [i for i in np.arange(0, collection_level_maxX+1e-10, interval)]
             newyaxis = [[0.0, 0.0] for x in newxaxis]
             for x in xaxis:
                 newx = int(x / interval)
-                newyaxis[newx][0] += collection_level_x_dict[x][0]
-                newyaxis[newx][1] += collection_level_x_dict[x][1]
+                newyaxis[newx][0] += collection_x_dict[x][0]
+                newyaxis[newx][1] += collection_x_dict[x][1]
                 # print x, newx
                 # print newxaxis
                 # print newyaxis
@@ -444,6 +449,7 @@ class PlotTFRel(SingleQueryAnalysis):
                 collection_name, 
                 _method, 
                 'ratio' if plot_ratio else 'abscnt', 
+                'total' if plot_total_or_avg else 'avg',
                 'line' if drawline else 'dots', 
                 numbins if plotbins else 0, 
                 oformat) )
