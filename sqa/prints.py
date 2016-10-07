@@ -133,7 +133,14 @@ class Prints(object):
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([ele['num'] for ele in single_queries])
         cutted_docs = self.cut_docs_tf_with_maxTF(maxTF)
         maps = []
+        rel_smaller_than_maxTF = []
+        rel_larger_than_maxTF = []
         for qid in cutted_docs:
             ranking_with_judge = [(doc[0], doc[0] in [ele[0] for ele in rel_docs[qid]]) for doc in cutted_docs[qid]]
+            rel_smaller_cnt = len([ele for ele ranking_with_judge if ele[1]])
+            rel_smaller_than_maxTF.append(rel_smaller_cnt)
+            rel_larger_than_maxTF.append(len(rel_docs[qid]) - rel_smaller_cnt)
             maps.append(self.cal_map(ranking_with_judge))
         print np.mean(np.asarray(maps))
+        print 'rel_smaller:', np.mean(np.asarray(rel_smaller_than_maxTF))
+        print 'rel_larger:', np.mean(np.asarray(rel_larger_than_maxTF))
