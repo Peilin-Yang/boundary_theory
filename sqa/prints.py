@@ -119,9 +119,9 @@ class Prints(object):
             if is_rel:
                 cur_rel += 1
             s += cur_rel*1.0/(i+1)
-        if cur_rel == 0:
+        if total == 0:
             return 0
-        return s/cur_rel
+        return s/total
 
     def print_map_with_cut_maxTF(self, maxTF=20):
         single_queries = Query(self.collection_path).get_queries_of_length(1)
