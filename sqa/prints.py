@@ -110,7 +110,7 @@ class Prints(object):
         return docs_tf
 
     def cal_map(self, ranking_list_with_judgement):
-
+        pass
 
     def print_map_with_cut_maxTF(self, maxTF=20):
         single_queries = Query(self.collection_path).get_queries_of_length(1)
