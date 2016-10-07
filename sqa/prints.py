@@ -118,6 +118,6 @@ class Prints(object):
         cutted_docs = self.cut_docs_tf_with_maxTF(maxTF)
         for qid in cutted_docs:
             print [ele[0] for ele in rel_docs[qid]]
-            ranking_with_judge = [(doc[0], doc[1] in [ele[0] for ele in rel_docs[qid]]) for doc in cutted_docs[qid]]
+            ranking_with_judge = [(doc[0], doc[0] in [ele[0] for ele in rel_docs[qid]]) for doc in cutted_docs[qid]]
             print ranking_with_judge
             raw_input()
