@@ -117,7 +117,7 @@ class Prints(object):
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([ele['num'] for ele in single_queries])
         cutted_docs = self.cut_docs_tf_with_maxTF(maxTF)
         for qid in cutted_docs:
-            print rel_docs[qid]
+            print [ele[0] for ele in rel_docs[qid]]
             ranking_with_judge = [(doc[0], doc[1] in [ele[0] for ele in rel_docs[qid]]) for doc in cutted_docs[qid]]
             print ranking_with_judge
             raw_input()
