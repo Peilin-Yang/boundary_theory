@@ -144,4 +144,4 @@ class Prints(object):
         print np.mean(np.asarray(maps))
         print 'rel_smaller:', np.mean(np.asarray(rel_smaller_than_maxTF)),
         print 'rel_larger:', np.mean(np.asarray(rel_larger_than_maxTF)),
-        print 'ratoo:', np.mean(np.asarray(rel_larger_than_maxTF)) / np.mean(np.asarray(rel_smaller_than_maxTF))
+        print 'ratio:', np.mean(np.asarray(rel_larger_than_maxTF)) / np.mean(np.asarray(rel_smaller_than_maxTF))
