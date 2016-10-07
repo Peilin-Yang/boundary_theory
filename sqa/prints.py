@@ -112,4 +112,8 @@ class Prints(object):
     def print_map_with_cut_maxTF(self, maxTF=20):
         single_queries = Query(self.collection_path).get_queries_of_length(1)
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([ele['num'] for ele in single_queries])
+        cutted_docs = self.cut_docs_tf_with_maxTF(maxTF)
+        for qid in rel_docs:
+            docs = [doc for doc in rel_docs[qid] if doc in cutted_docs[qid]]
+            rel_docs[qid] = docs
         print rel_docs
