@@ -107,6 +107,7 @@ class Prints(object):
         for qid in docs_tf:
             tf = [ele for ele in docs_tf[qid] if ele[1] <= maxTF]
             dropped = [ele[0] for ele in docs_tf[qid] if ele[1] > maxTF]
+            print len(dropped)
             dropped_list.append(len(dropped))
             tf.sort(key=itemgetter(1,0), reverse=True)
             docs_tf[qid] = tf
