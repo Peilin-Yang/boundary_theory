@@ -115,6 +115,6 @@ class Prints(object):
         cutted_docs = self.cut_docs_tf_with_maxTF(maxTF)
         print cutted_docs
         for qid in rel_docs:
-            docs = [doc for doc in rel_docs[qid] if doc in [ele[1] for ele in cutted_docs[qid]]]
+            docs = [doc for doc in rel_docs[qid] if doc in [ele[0] for ele in cutted_docs[qid]]]
             rel_docs[qid] = docs
         print rel_docs
