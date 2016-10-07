@@ -104,7 +104,7 @@ class Prints(object):
     def cut_docs_tf_with_maxTF(self, maxTF):
         docs_tf = self.get_docs_tf()
         for qid in docs_tf:
-            tf = [ele for ele in docs_tf[qid] if ele[1] > maxTF]
+            tf = [ele for ele in docs_tf[qid] if ele[1] <= maxTF]
             tf.sort(key=itemgetter(1,0), reverse=True)
             docs_tf[qid] = tf
         print docs_tf
