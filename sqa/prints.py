@@ -118,6 +118,7 @@ class Prints(object):
             is_rel = ele[1]
             if is_rel:
                 cur_rel += 1
+                total += 1
             s += cur_rel*1.0/(i+1)
         if total == 0:
             return 0
