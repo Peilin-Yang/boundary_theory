@@ -445,7 +445,7 @@ class PlotTFRel(SingleQueryAnalysis):
                 ylog=False)
 
         output_fn = os.path.join(self.all_results_root, output_root, 
-            '%s-%s-%s-%s-%d-all.%s' % (
+            '%s-%s-%s-%s-%s-%d-all.%s' % (
                 collection_name, 
                 _method, 
                 'ratio' if plot_ratio else 'abscnt', 
