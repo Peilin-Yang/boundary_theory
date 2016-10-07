@@ -142,5 +142,6 @@ class Prints(object):
             rel_larger_than_maxTF.append(len(rel_docs[qid]) - rel_smaller_cnt)
             maps.append(self.cal_map(ranking_with_judge))
         print np.mean(np.asarray(maps))
-        print 'rel_smaller:', np.mean(np.asarray(rel_smaller_than_maxTF))
-        print 'rel_larger:', np.mean(np.asarray(rel_larger_than_maxTF))
+        print 'rel_smaller:', np.mean(np.asarray(rel_smaller_than_maxTF)),
+        print 'rel_larger:', np.mean(np.asarray(rel_larger_than_maxTF)),
+        print 'ratoo:', np.mean(np.asarray(rel_larger_than_maxTF)) / np.mean(np.asarray(rel_smaller_than_maxTF))
