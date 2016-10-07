@@ -109,12 +109,14 @@ class Prints(object):
             docs_tf[qid] = tf
         return docs_tf
 
+    def cal_map(self, ranking_list_with_judgement):
+
+
     def print_map_with_cut_maxTF(self, maxTF=20):
         single_queries = Query(self.collection_path).get_queries_of_length(1)
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([ele['num'] for ele in single_queries])
         cutted_docs = self.cut_docs_tf_with_maxTF(maxTF)
-        print cutted_docs
-        for qid in rel_docs:
-            docs = [doc[0] for doc in rel_docs[qid] if doc[0] in [ele[0] for ele in cutted_docs[qid]]]
-            rel_docs[qid] = docs
-        print rel_docs
+        for qid in cutted_docs:
+            ranking_with_judge = [(doc[0], doc[1] in [ele[0] for ele in rel_docs[qid]]) for doc in cutted_docs[qid]]
+            print ranking_with_judge
+            raw_input()
