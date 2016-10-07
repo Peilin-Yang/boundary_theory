@@ -343,7 +343,14 @@ class PlotTFRel(SingleQueryAnalysis):
             else:
                 yaxis = [x_dict[x][0] for x in xaxis]
             #print xaxis
-            print [x_dict[x][1] for x in xaxis]
+            p1 = np.asarray([x_dict[x][1] for x in xaxis])
+            p2 = scipy.stats.poisson.pmf(xaxis, 4)
+            print xaxis
+            print p1
+            print p2
+            print p1*p2
+            print np.asarray(yaxis)
+            raw_input()
             query_stat = cs.get_term_stats(query_term)
             if drawline:
                 self.plot_single_tfc_constraints_draw_pdf_line(
