@@ -485,8 +485,8 @@ class PlotTFRel(SingleQueryAnalysis):
         delta = 2.75
         return round((np.log(float(row['total_tf']))+delta)/np.log(float(row['doc_len'])), 3) 
 
-    def wrapper(self, method_name, plot_ratio, performance_as_legend, 
-            drawline, plotbins, numbins, oformat='eps'):
+    def wrapper(self, method_name, plot_ratio, plot_total_or_avg, 
+            performance_as_legend, drawline, plotbins, numbins, oformat='eps'):
         """
         This is the wrapper of the actual function. 
         We parse the CLI arguments and convert them to the values required 
@@ -512,6 +512,7 @@ class PlotTFRel(SingleQueryAnalysis):
             x_func,
             formal_method_name,
             False if plot_ratio == '0' else True,
+            False if plot_total_or_avg == '0' else True,
             False if performance_as_legend == '0' else True,
             False if drawline == '0' else True,
             False if plotbins == '0' else True,
