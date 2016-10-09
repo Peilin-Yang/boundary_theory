@@ -32,7 +32,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         if not os.path.exists(self.output_root):
             os.makedirs(self.output_root)
 
-    def cal_map(self, ranking_list, has_total_rel=False, total_rel=0, type=1):
+    def cal_map(self, ranking_list, total_rel=0, type=1):
         """
         Calculate the MAP based on the ranking_list.
 
@@ -50,15 +50,12 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         for ele in reversed(ranking_list):
             rel_doc_cnt = ele[0]
             this_doc_cnt = ele[1]
-            if rel_doc_cnt == 0:
-                continue
             if type == 0: # cal worst
                 total += this_doc_cnt - rel_doc_cnt
             for j in range(rel_doc_cnt):
                 cur_rel += 1 
-	        s += cur_rel*1.0/(total+j+1)
-	        if not has_total_rel:
-		    total_rel += 1
+                s += cur_rel*1.0/(total+j+1)
+    	        total_rel += 1
             total += this_doc_cnt if type == 1 else rel_doc_cnt
         #print s/total_rel
         if total_rel == 0:
@@ -195,33 +192,44 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         self.plot_line(ax, xaxis, yaxis, 'ro') 
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-    def interpolation_1(self, maxTF, oformat='png', type='1'):
+    def interpolation_1(self, maxTF, oformat='png', tf_init=30, tf_halflife=4, 
+            docs_cnt_init=2000, docs_cnt_halflife=1, fit_larger_maxTF_cnt = 20, 
+            fit_larger_maxTF_type=1):
         """
         Normal distribution
         type:
             1 - set the number of relevant documents as a contant scale scale_factor
             2 - set the number of relevant documents as exponential decay
         """
+        tf_init = int(tf_init)
+        tf_halflife = int(tf_halflife)
+        docs_cnt_init = int(docs_cnt_init)
+        docs_cnt_halflife = int(docs_cnt_halflife)
+        fit_larger_maxTF_cnt = int(fit_larger_maxTF_cnt)
+        fit_larger_maxTF_type = int(fit_larger_maxTF_type)
+        
         ranges = [i for i in range(1, maxTF+1)]
-        if type == '2':
-            #tf_scale = [50/i for i in ranges]
-            tf_scale = [int(30*math.pow(2, -1.*i/4)) for i in ranges]
-            docs_cnt_scale = [2000/(i*i) for i in ranges]
-        # if type == 2:
-        #     l = [(3, (maxTF-i+3)) for i in ranges]
-        # if type == 3:
-        #     l = [(int(round(i*10.0/maxTF, 0)), 10) for i in ranges]
-        # if type == 4:
-        #     l = [(i-3 if i-3 >= 0 else 0, i) for i in ranges]
-        # if type == 5:
-        #     l = [(i-1, i) for i in ranges]
-        # return [(ele[0]*scale_factor, ele[1]*scale_factor) for ele in l]
+        tf_scale = [int(tf_init*math.pow(2, -1.*i/tf_halflife)) for i in ranges]
+        #docs_cnt_scale = [3000/(i*i) for i in ranges]
+        docs_cnt_scale = [int(docs_cnt_init*math.pow(2, -1.*i/docs_cnt_halflife)) for i in ranges]
+        if fit_larger_maxTF_type != 0:
+            for i in range(fit_larger_maxTF_cnt):
+                ranges.append(maxTF+i+1)
+                if fit_larger_maxTF_type == 1: # best
+                    tf = 1 if i>=fit_larger_maxTF_cnt/2 else 0
+                if fit_larger_maxTF_type == 2: # worst
+                    tf = 1 if i<fit_larger_maxTF_cnt/2 else 0
+                if fit_larger_maxTF_type == 3: # intermediate
+                    tf = 1 if i%2==1 else 0
+                tf_scale.append(tf)
+                docs_cnt_scale.append(1)
         ranking_list = zip(tf_scale, docs_cnt_scale)
         print ranking_list
         print 'best:', self.cal_map(ranking_list, type=1)
         print 'worst:', self.cal_map(ranking_list, type=0)
         output_fn = os.path.join(self.output_root, 
-            'interpolation-%d-1-%s.%s' % (maxTF, type, oformat) )
+            'interpolation1-maxTF%d-tfinit%d-tfhalflife%d-docsinit%d-docshalflife%d-fitlargercnt%d-fitlargertype%d.%s' 
+            % (maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife, fit_larger_maxTF_cnt, fit_larger_maxTF_type, oformat) )
         yaxis = [ele[0]*1.0/ele[1] for ele in ranking_list]
         self.plot_interpolation(ranges, yaxis, output_fn, oformat)
 
