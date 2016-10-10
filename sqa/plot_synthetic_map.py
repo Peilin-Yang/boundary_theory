@@ -228,7 +228,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         print ranking_list
         performance = 'best:' + str(round(self.cal_map(ranking_list, type=1), 4))
         performance += '\nworst:' + str(round(self.cal_map(ranking_list, type=0), 4))
-        title = 'interpolation1-maxTF%d-tfinit%d-tfhalflife%d-docsinit%d-docshalflife%d-fitlargercnt%d-fitlargertype%d' \
+        title = 'interpolation1-maxTF%d-tfinit%.1f-tfhalflife%.1f-docsinit%.1f-docshalflife%.1f-fitlargercnt%d-fitlargertype%d' \
             % (maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife, fit_larger_maxTF_cnt, fit_larger_maxTF_type)
         output_fn = os.path.join(self.output_root, title+'.'+oformat) 
         yaxis = [ele[0]*1.0/ele[1] for ele in ranking_list]
