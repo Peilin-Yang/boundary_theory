@@ -95,22 +95,12 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         return l
 
     def plot_dots(self, ax, xaxis, yaxis, 
-            title="", legend="", legend_outside=False, marker='ro', 
-            xlog=True, ylog=False, zoom=False, legend_pos='upper right', 
-            xlabel_format=0):
+            title="", legend="", marker='ro'):
         # 1. probability distribution 
         ax.plot(xaxis, yaxis, marker, ms=4, label=legend)
         ax.vlines(xaxis, [0], yaxis)
-        if xlog:
-            ax.set_xscale('log')
-        if ylog:
-            ax.set_yscale('log')
-        ax.set_xlim(0, ax.get_xlim()[1] if ax.get_xlim()[1]<100 else 100)
-        #ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<500 else 500)
         ax.set_title(title)
-        ax.legend(loc=legend_pos)
-        if xlabel_format != 0:
-            ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
+        ax.legend(loc='best')
 
     def plot_line(self, ax, xaxis, yaxis, 
             title="", legend="", legend_outside=False, marker=None, linestyle=None, 
@@ -121,6 +111,16 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         ax.legend(loc=legend_pos)
         if xlabel_format != 0:
             ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
+
+    def plot_bar(self, ax, xaxis, yaxis, title="", legend=""): 
+        ax.bar(xaxis, yaxis, alpha=0.5, label=legend)
+        ax.set_title(title)
+        ax.legend(loc='best')
+
+    def plot_hist(self, ax, yaxis, numbins=40, title="", legend=""): 
+        ax.hist(yaxis, histtype='stepfilled', label=legend)
+        ax.set_title(title)
+        ax.legend(loc='best')
 
     def plot(self, maxTF=20, scale_factor=1, oformat='png', plot_ratio=True, 
             performance_as_legend=True, drawline=True):
@@ -182,14 +182,15 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             'impact-%d-%d-%d.%s' % (plot_type, maxTF, rel_docs_change, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-    def plot_interpolation(self, xaxis, yaxis, output_fn, oformat='png'):
+    def plot_interpolation(self, xaxis, yaxis, title, legend, output_fn, oformat='png'):
         """
         plot the interpolation figure
         """
         fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 8}
         plt.rc('font', **font)
-        self.plot_line(ax, xaxis, yaxis, 'ro') 
+        self.plot_dots(ax, xaxis, yaxis, title, legend) 
+        #self.plot_bar(ax, xaxis, yaxis, title=title, legend=legend) 
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
     def interpolation_1(self, maxTF, oformat='png', tf_init=30, tf_halflife=4, 
@@ -201,17 +202,17 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             1 - set the number of relevant documents as a contant scale scale_factor
             2 - set the number of relevant documents as exponential decay
         """
-        tf_init = int(tf_init)
-        tf_halflife = int(tf_halflife)
-        docs_cnt_init = int(docs_cnt_init)
-        docs_cnt_halflife = int(docs_cnt_halflife)
+        tf_init = float(tf_init)
+        tf_halflife = float(tf_halflife)
+        docs_cnt_init = float(docs_cnt_init)
+        docs_cnt_halflife = float(docs_cnt_halflife)
         fit_larger_maxTF_cnt = int(fit_larger_maxTF_cnt)
         fit_larger_maxTF_type = int(fit_larger_maxTF_type)
         
         ranges = [i for i in range(1, maxTF+1)]
         tf_scale = [int(tf_init*math.pow(2, -1.*i/tf_halflife)) for i in ranges]
-        #docs_cnt_scale = [3000/(i*i) for i in ranges]
-        docs_cnt_scale = [int(docs_cnt_init*math.pow(2, -1.*i/docs_cnt_halflife)) for i in ranges]
+        docs_cnt_scale = [docs_cnt_init/math.pow(i, 2) for i in ranges]
+        #docs_cnt_scale = [int(docs_cnt_init*math.pow(2, -1.*i/docs_cnt_halflife)) for i in ranges]
         if fit_larger_maxTF_type != 0:
             for i in range(fit_larger_maxTF_cnt):
                 ranges.append(maxTF+i+1)
@@ -225,13 +226,13 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
                 docs_cnt_scale.append(1)
         ranking_list = zip(tf_scale, docs_cnt_scale)
         print ranking_list
-        print 'best:', self.cal_map(ranking_list, type=1)
-        print 'worst:', self.cal_map(ranking_list, type=0)
-        output_fn = os.path.join(self.output_root, 
-            'interpolation1-maxTF%d-tfinit%d-tfhalflife%d-docsinit%d-docshalflife%d-fitlargercnt%d-fitlargertype%d.%s' 
-            % (maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife, fit_larger_maxTF_cnt, fit_larger_maxTF_type, oformat) )
+        performance = 'best:' + str(round(self.cal_map(ranking_list, type=1), 4))
+        performance += '\nworst:' + str(round(self.cal_map(ranking_list, type=0), 4))
+        title = 'interpolation1-maxTF%d-tfinit%d-tfhalflife%d-docsinit%d-docshalflife%d-fitlargercnt%d-fitlargertype%d' \
+            % (maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife, fit_larger_maxTF_cnt, fit_larger_maxTF_type)
+        output_fn = os.path.join(self.output_root, title+'.'+oformat) 
         yaxis = [ele[0]*1.0/ele[1] for ele in ranking_list]
-        self.plot_interpolation(ranges, yaxis, output_fn, oformat)
+        self.plot_interpolation(ranges, yaxis, title, performance, output_fn, oformat)
 
     def cal_map_with_interpolation(self, maxTF=20, interpolation_type=1, 
             oformat='png', interpolation_paras=[]):
