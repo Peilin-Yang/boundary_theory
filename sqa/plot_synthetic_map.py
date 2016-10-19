@@ -209,6 +209,10 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         docs_cnt_halflife = float(docs_cnt_halflife)
         fit_larger_maxTF_cnt = int(fit_larger_maxTF_cnt)
         fit_larger_maxTF_type = int(fit_larger_maxTF_type)
+
+        title = r'TF-$R_0($%.1f)-$H$(%.1f)-$D_0$(%.1f)'  % (tf_init, tf_halflife, docs_cnt_init)
+        verbose = 'interpolation1-%d-maxTF%d-tfinit%.1f-tfhalflife%.1f-docsinit%.1f-docshalflife%.1f-fitlargercnt%d-fitlargertype%d' \
+            % (type, maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife, fit_larger_maxTF_cnt, fit_larger_maxTF_type)
         
         ranges = [i for i in range(1, maxTF+1)]
         if type == 1:
@@ -219,6 +223,10 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             docs_cnt_scale = [int(docs_cnt_init*math.pow(1.5, -1.*i/docs_cnt_halflife)) for i in ranges]
         # elif type == 2:
         #     docs_cnt_scale = [int(docs_cnt_init*math.pow(2, -1.*i/docs_cnt_halflife)) for i in ranges]
+        output_tf_fn = os.path.join(self.output_root, verbose+'.tf.'+oformat) 
+        self.plot_interpolation(ranges, tf_scale, title+"(TF)", "", output_tf_fn, oformat)
+        output_doc_fn = os.path.join(self.output_root, verbose+'.doc.'+oformat) 
+        self.plot_interpolation(ranges, docs_cnt_scale, title+"(DOC)", "", output_doc_fn, oformat)
 
         if fit_larger_maxTF_type != 0:
             for i in range(fit_larger_maxTF_cnt):
@@ -233,12 +241,8 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
                 docs_cnt_scale.append(1)
         ranking_list = zip(tf_scale, docs_cnt_scale)
         print ranking_list
-        performance = '1'
-        # performance = 'best:' + str(round(self.cal_map(ranking_list, type=1), 4))
-        # performance += '\nworst:' + str(round(self.cal_map(ranking_list, type=0), 4))
-        title = r'TF-$R_0($%.1f)-$H$(%.1f)-$D_0$(%.1f)'  % (tf_init, tf_halflife, docs_cnt_init)
-        verbose = 'interpolation1-%d-maxTF%d-tfinit%.1f-tfhalflife%.1f-docsinit%.1f-docshalflife%.1f-fitlargercnt%d-fitlargertype%d' \
-            % (type, maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife, fit_larger_maxTF_cnt, fit_larger_maxTF_type)
+        performance = 'best:' + str(round(self.cal_map(ranking_list, type=1), 4))
+        performance += '\nworst:' + str(round(self.cal_map(ranking_list, type=0), 4))
         output_fn = os.path.join(self.output_root, verbose+'.'+oformat) 
         yaxis = [ele[0]*1.0/ele[1] for ele in ranking_list]
         self.plot_interpolation(ranges, yaxis, title, performance, output_fn, oformat)
