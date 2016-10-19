@@ -405,7 +405,6 @@ class PlotTFRel(SingleQueryAnalysis):
                 yaxis = [(collection_x_dict[x][0]) for x in xaxis] 
             else:
                 yaxis = [(collection_x_dict[x][0]/len(idfs)) for x in xaxis]
-        print yaxis 
         if plotbins:
             interval = collection_level_maxX*1.0/numbins
             newxaxis = [i for i in np.arange(0, collection_level_maxX+1e-10, interval)]
@@ -422,9 +421,11 @@ class PlotTFRel(SingleQueryAnalysis):
             if plot_ratio:
                 yaxis = [ele[0]/ele[1] if ele[1] != 0 else 0.0 for ele in newyaxis]
             else:
-                yaxis = [(ele[0], ele[1]) for ele in newyaxis]   
-
-
+                if plot_total_or_avg:
+                    yaxis = [(ele[0]) for x in xaxis] 
+                else:
+                    yaxis = [(ele[0]/len(idfs)) for x in xaxis]
+ 
         if drawline:
             self.plot_single_tfc_constraints_draw_pdf_line(axs, xaxis, 
                 yaxis, collection_name, 
