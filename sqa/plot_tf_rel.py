@@ -422,10 +422,10 @@ class PlotTFRel(SingleQueryAnalysis):
                 yaxis = [ele[0]/ele[1] if ele[1] != 0 else 0.0 for ele in newyaxis]
             else:
                 if plot_total_or_avg:
-                    yaxis = [(ele[0]) for x in xaxis] 
+                    yaxis = [(ele[0]) for ele in newyaxis] 
                 else:
-                    yaxis = [(ele[0]/len(idfs)) for x in xaxis]
- 
+                    yaxis = [(ele[0]/len(idfs)) for ele in newyaxis]
+
         if drawline:
             self.plot_single_tfc_constraints_draw_pdf_line(axs, xaxis, 
                 yaxis, collection_name, 
