@@ -251,6 +251,7 @@ if __name__ == '__main__':
     #     PlotRelTF().plot_tfc_constraints(args.plot_tfc_constraints)
 
     if args.plot_tf_rel:
+        print args.plot_tf_rel
         for c in g.query:
             print c['collection']
             PlotTFRel(os.path.join(collection_root, c['collection'])).wrapper(
