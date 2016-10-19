@@ -199,7 +199,7 @@ if __name__ == '__main__':
                        args: [maxTF(int)] [rel_docs_change(int)]')
     parser.add_argument('-syc3', '--cal_interpolation_map', nargs='+',
                        help='calculate the MAP based on interpolation \
-                       args: [maxTF(int)] [interpolation_type(int)] [output_format(eps|png)] [other_options]')
+                       args: [maxTF(int)] [interpolation_type(int)] [subtype(int)] [output_format(eps|png)] [other_options]')
 
     parser.add_argument('-2', '--gen_ranking_list', nargs='+',
                        help='input: \
@@ -272,8 +272,9 @@ if __name__ == '__main__':
         PlotSyntheticMAP().cal_map_with_interpolation(
             int(args.cal_interpolation_map[0]), 
             int(args.cal_interpolation_map[1]),
-            args.cal_interpolation_map[2],
-            args.cal_interpolation_map[3:])
+            int(args.cal_interpolation_map[2]),
+            args.cal_interpolation_map[3],
+            args.cal_interpolation_map[4:])
 
     if args.gen_ranking_list:
         method_name = args.gen_ranking_list[0]

@@ -194,14 +194,14 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         #self.plot_bar(ax, xaxis, yaxis, title=title, legend=legend) 
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-    def interpolation_1(self, maxTF, oformat='png', tf_init=30, tf_halflife=4, 
-            docs_cnt_init=2000, docs_cnt_halflife=1, fit_larger_maxTF_cnt = 20, 
-            fit_larger_maxTF_type=1):
+    def interpolation_1(self, maxTF, oformat='png', type=1, tf_init=30, 
+            tf_halflife=4, docs_cnt_init=2000, docs_cnt_halflife=1, 
+            fit_larger_maxTF_cnt = 20, fit_larger_maxTF_type=1):
         """
         Normal distribution
         type:
-            1 - set the number of relevant documents as a contant scale scale_factor
-            2 - set the number of relevant documents as exponential decay
+            1 - set the number of documents as power decay
+            2 - set the number of documents as radioactive decay
         """
         tf_init = float(tf_init)
         tf_halflife = float(tf_halflife)
@@ -212,7 +212,10 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         
         ranges = [i for i in range(1, maxTF+1)]
         tf_scale = [int(tf_init*math.pow(2, -1.*i/tf_halflife)) for i in ranges]
-        docs_cnt_scale = [docs_cnt_init/math.pow(i, 2) for i in ranges]
+        if type == 1:
+            docs_cnt_scale = [docs_cnt_init*math.pow(i, -2) for i in ranges]
+        elif type == 2:
+            docs_cnt_scale = [int(docs_cnt_init*math.pow(2, -1.*i/docs_cnt_halflife)) for i in ranges]
         #docs_cnt_scale = [int(docs_cnt_init*math.pow(2, -1.*i/docs_cnt_halflife)) for i in ranges]
         if fit_larger_maxTF_type != 0:
             for i in range(fit_larger_maxTF_cnt):
@@ -230,14 +233,14 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         performance = 'best:' + str(round(self.cal_map(ranking_list, type=1), 4))
         performance += '\nworst:' + str(round(self.cal_map(ranking_list, type=0), 4))
         title = r'TF-$R_0($%.1f)-$H$(%.1f)-$D_0$(%.1f)'  % (tf_init, tf_halflife, docs_cnt_init)
-        verbose = 'interpolation1-maxTF%d-tfinit%.1f-tfhalflife%.1f-docsinit%.1f-docshalflife%.1f-fitlargercnt%d-fitlargertype%d' \
-            % (maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife, fit_larger_maxTF_cnt, fit_larger_maxTF_type)
+        verbose = 'interpolation1-%d-maxTF%d-tfinit%.1f-tfhalflife%.1f-docsinit%.1f-docshalflife%.1f-fitlargercnt%d-fitlargertype%d' \
+            % (type, maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife, fit_larger_maxTF_cnt, fit_larger_maxTF_type)
         output_fn = os.path.join(self.output_root, verbose+'.'+oformat) 
         yaxis = [ele[0]*1.0/ele[1] for ele in ranking_list]
         self.plot_interpolation(ranges, yaxis, title, performance, output_fn, oformat)
 
     def cal_map_with_interpolation(self, maxTF=20, interpolation_type=1, 
-            oformat='png', interpolation_paras=[]):
+            subtype=1, oformat='png', interpolation_paras=[]):
         """
         Calculate the MAP with interpolation of the data.
         Typical interpolation is to change part of the y-axis. 
@@ -245,5 +248,5 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         where TF (xaxis) <= 20.
         """
         if interpolation_type == 1:
-            self.interpolation_1(maxTF, oformat, *interpolation_paras)
+            self.interpolation_1(maxTF, subtype, oformat, *interpolation_paras)
 
