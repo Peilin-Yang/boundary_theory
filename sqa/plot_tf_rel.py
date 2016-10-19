@@ -43,7 +43,7 @@ class PlotTFRel(SingleQueryAnalysis):
     def plot_single_tfc_constraints_draw_pdf(self, ax, xaxis, yaxis, 
             title, legend, legend_outside=False, marker='ro', 
             xlog=True, ylog=False, zoom=False, legend_pos='upper right', 
-            xlabel_format=0):
+            xlabel_format=0, xlimit=-1):
         # 1. probability distribution 
         ax.plot(xaxis, yaxis, marker, ms=4, label=legend)
         ax.vlines(xaxis, [0], yaxis)
@@ -51,7 +51,8 @@ class PlotTFRel(SingleQueryAnalysis):
             ax.set_xscale('log')
         if ylog:
             ax.set_yscale('log')
-        #ax.set_xlim(0, ax.get_xlim()[1] if ax.get_xlim()[1]<100 else 100)
+        if xlimit > 0:
+            ax.set_xlim(0, xlimit+1)
         #ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<500 else 500)
         ax.set_title(title)
         ax.legend(loc=legend_pos)
@@ -75,16 +76,17 @@ class PlotTFRel(SingleQueryAnalysis):
 
 
     def plot_single_tfc_constraints_draw_pdf_line(self, ax, xaxis, yaxis, 
-            title, legend, legend_outside=False, marker=None, linestyle=None, 
-            xlog=True, ylog=False, zoom=False, legend_pos='upper right', 
-            xlabel_format=0):
+            title, legend, legend_outside=False, marker=None, 
+            linestyle=None, xlog=True, ylog=False, zoom=False, 
+            legend_pos='upper right', xlabel_format=0, xlimit=-1):
         # 1. probability distribution 
         ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
         if xlog:
             ax.set_xscale('log')
         if ylog:
             ax.set_yscale('log')
-        #ax.set_xlim(0, ax.get_xlim()[1] if ax.get_xlim()[1]<100 else 100)
+        if xlimit > 0:
+            ax.set_xlim(0, xlimit+1)
         #ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<500 else 500)
         ax.set_title(title)
         ax.legend(loc=legend_pos)
@@ -250,7 +252,8 @@ class PlotTFRel(SingleQueryAnalysis):
     def plot_single_tfc_constraints_rel_tf(self, x_func, 
             _method, plot_ratio=True, plot_total_or_avg=True,
             plot_rel_or_all=True, performance_as_legend=True, 
-            drawline=True, plotbins=True, numbins=60, oformat='eps'):
+            drawline=True, plotbins=True, numbins=60, xlimit=-1,
+            oformat='eps'):
         """
         plot the P(D=1|TF=x)
 
@@ -272,6 +275,8 @@ class PlotTFRel(SingleQueryAnalysis):
         @drawline: draw the data points as line(true) or dots(false)
         @plotbins: whether to group the x points as bins
         @numbins: the number of bins if we choose to plot x points as bins
+        @xlimit: the limit of xaxis, any value larger than this value would not 
+            be plotted. default -1, meaning plot all data.
         @oformat: output format, eps or png
         """
         collection_name = self.collection_path.split('/')[-1]
@@ -365,7 +370,8 @@ class PlotTFRel(SingleQueryAnalysis):
                     True,
                     xlog=False,
                     legend_pos='best', 
-                    xlabel_format=1)
+                    xlabel_format=1,
+                    xlimit=xlimit)
             else:
                 self.plot_single_tfc_constraints_draw_pdf(
                     ax, xaxis, yaxis,
@@ -374,14 +380,18 @@ class PlotTFRel(SingleQueryAnalysis):
                     True,
                     xlog=False,
                     legend_pos='best', 
-                    xlabel_format=1)
+                    xlabel_format=1,
+                    xlimit=xlimit)
         output_fn = os.path.join(self.all_results_root, output_root, 
-            '%s-%s-%s-%s-%d-individual.%s' % (
+            '%s-%s-%s-%s-%s-%s-%d-%.1f-individual.%s' % (
                 collection_name, 
                 _method, 
                 'ratio' if plot_ratio else 'abscnt', 
+                'total' if plot_total_or_avg else 'avg',
+                'rel' if plot_rel_or_all else 'all',
                 'line' if drawline else 'dots', 
                 numbins if plotbins else 0, 
+                xlimit, 
                 oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
@@ -435,7 +445,8 @@ class PlotTFRel(SingleQueryAnalysis):
                 collection_legend, 
                 legend_pos='best',
                 xlog=False,
-                ylog=False)
+                ylog=False,
+                xlimit=xlimit)
             # only if we want to draw the fitting curve
             """
             if plotbins:
@@ -447,10 +458,11 @@ class PlotTFRel(SingleQueryAnalysis):
                 collection_legend, 
                 legend_pos='best',
                 xlog=False,
-                ylog=False)
+                ylog=False,
+                xlimit=xlimit)
 
         output_fn = os.path.join(self.all_results_root, output_root, 
-            '%s-%s-%s-%s-%s-%s-%d-all.%s' % (
+            '%s-%s-%s-%s-%s-%s-%d-%.1f-all.%s' % (
                 collection_name, 
                 _method, 
                 'ratio' if plot_ratio else 'abscnt', 
@@ -458,6 +470,7 @@ class PlotTFRel(SingleQueryAnalysis):
                 'rel' if plot_rel_or_all else 'all',
                 'line' if drawline else 'dots', 
                 numbins if plotbins else 0, 
+                xlimit, 
                 oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
@@ -493,7 +506,7 @@ class PlotTFRel(SingleQueryAnalysis):
 
     def wrapper(self, method_name, plot_ratio, plot_total_or_avg, 
             plot_rel_or_all, performance_as_legend, drawline, plotbins, 
-            numbins, oformat='eps'):
+            numbins, xlimit, oformat='eps'):
         """
         This is the wrapper of the actual function. 
         We parse the CLI arguments and convert them to the values required 
@@ -525,5 +538,6 @@ class PlotTFRel(SingleQueryAnalysis):
             False if drawline == '0' else True,
             False if plotbins == '0' else True,
             int(numbins),
+            float(xlimit),
             oformat
         )
