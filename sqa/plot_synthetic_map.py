@@ -217,14 +217,14 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         ranges = [i for i in range(1, maxTF+1)]
         if type == 1:
             # TF: radioactive decay
-            # DOC: Quantic decay
+            # DOC: quantic decay
             tf_scale = [int(tf_init*math.pow(2, -1.*i/tf_halflife)) for i in ranges]
             docs_cnt_scale = [docs_cnt_init*math.pow(i, -2) for i in ranges]
         elif type == 2:
             # TF: radioactive decay
-            # DOC: radioactive decay
+            # DOC: asymptotic decay
             tf_scale = [int(tf_init*math.pow(2, -1.*i/tf_halflife)) for i in ranges]
-            docs_cnt_scale = [int(docs_cnt_init*math.pow(1.5, -1.*i/docs_cnt_halflife)) for i in ranges]
+            docs_cnt_scale = [int(docs_cnt_init*(1 - (i-1)*1.0/(i-1+docs_cnt_halflife))) for i in ranges]
         elif type == 3:
             # TF: asymptotic decay
             # DOC: asymptotic decay 
