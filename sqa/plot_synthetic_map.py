@@ -226,10 +226,10 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             tf_scale = [int(tf_init*math.pow(2, -1.*i/tf_halflife)) for i in ranges]
             docs_cnt_scale = [int(docs_cnt_init*math.pow(1.5, -1.*i/docs_cnt_halflife)) for i in ranges]
         elif type == 3:
-            # TF: radioactive decay
-            # DOC: Asymptotic Decay 
-            tf_scale = [int(tf_init*math.pow(2, -1.*i/tf_halflife)) for i in ranges]
-            docs_cnt_scale = [int(docs_cnt_init * (1 - (i-1)*1.0/(i-1+docs_cnt_halflife))) for i in ranges]
+            # TF: asymptotic decay
+            # DOC: asymptotic decay 
+            tf_scale = [int(tf_init*(1 - (i-1)*1.0/(i-1+tf_halflife))) for i in ranges]
+            docs_cnt_scale = [int(docs_cnt_init*(1 - (i-1)*1.0/(i-1+docs_cnt_halflife))) for i in ranges]
 
         output_tf_fn = os.path.join(self.output_root, verbose+'.tf.'+oformat) 
         self.plot_interpolation(ranges, tf_scale, title+"(TF)", "", output_tf_fn, oformat)
