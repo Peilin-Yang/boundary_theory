@@ -232,8 +232,9 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
                 docs_cnt_scale.append(1)
         ranking_list = zip(tf_scale, docs_cnt_scale)
         print ranking_list
-        performance = 'best:' + str(round(self.cal_map(ranking_list, type=1), 4))
-        performance += '\nworst:' + str(round(self.cal_map(ranking_list, type=0), 4))
+        performance = '1'
+        # performance = 'best:' + str(round(self.cal_map(ranking_list, type=1), 4))
+        # performance += '\nworst:' + str(round(self.cal_map(ranking_list, type=0), 4))
         title = r'TF-$R_0($%.1f)-$H$(%.1f)-$D_0$(%.1f)'  % (tf_init, tf_halflife, docs_cnt_init)
         verbose = 'interpolation1-%d-maxTF%d-tfinit%.1f-tfhalflife%.1f-docsinit%.1f-docshalflife%.1f-fitlargercnt%d-fitlargertype%d' \
             % (type, maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife, fit_larger_maxTF_cnt, fit_larger_maxTF_type)
