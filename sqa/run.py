@@ -187,7 +187,7 @@ if __name__ == '__main__':
                        [rel_or_all(boolean, only if the plot_ratio is false)] \
                        [performance_as_legend(boolean)] \
                        [drawline(boolean)] [plotbins(boolean)] [numbins(int)] \
-                       [output_format(eps|png)]')
+                       [xlimit(float)] [output_format(eps|png)]')
 
     parser.add_argument('-syc1', '--plot_synthetic', nargs='+',
                        help='plot P( D is a relevant document | c(t,D)=x ), \
