@@ -194,7 +194,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         #self.plot_bar(ax, xaxis, yaxis, title=title, legend=legend) 
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-    def interpolation_1(self, maxTF, oformat='png', type=1, tf_init=30, 
+    def interpolation_1(self, maxTF, type=1, oformat='png', tf_init=30, 
             tf_halflife=4, docs_cnt_init=2000, docs_cnt_halflife=1, 
             fit_larger_maxTF_cnt = 20, fit_larger_maxTF_type=1):
         """
