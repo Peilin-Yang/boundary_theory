@@ -404,7 +404,8 @@ class PlotTFRel(SingleQueryAnalysis):
             if plot_total_or_avg:
                 yaxis = [(collection_x_dict[x][0]) for x in xaxis] 
             else:
-                yaxis = [(collection_x_dict[x][0]/len(idfs)) for x in xaxis] 
+                yaxis = [(collection_x_dict[x][0]/len(idfs)) for x in xaxis]
+        print yaxis 
         if plotbins:
             interval = collection_level_maxX*1.0/numbins
             newxaxis = [i for i in np.arange(0, collection_level_maxX+1e-10, interval)]
