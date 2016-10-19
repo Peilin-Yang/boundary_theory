@@ -211,12 +211,14 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         fit_larger_maxTF_type = int(fit_larger_maxTF_type)
         
         ranges = [i for i in range(1, maxTF+1)]
-        tf_scale = [int(tf_init*math.pow(2, -1.*i/tf_halflife)) for i in ranges]
         if type == 1:
-            docs_cnt_scale = [docs_cnt_init*math.pow(i, -2) for i in ranges]
+            tf_scale = [int(tf_init*math.pow(2, -1.*i/tf_halflife)) for i in ranges]
         elif type == 2:
-            docs_cnt_scale = [int(docs_cnt_init*math.pow(2, -1.*i/docs_cnt_halflife)) for i in ranges]
-        #docs_cnt_scale = [int(docs_cnt_init*math.pow(2, -1.*i/docs_cnt_halflife)) for i in ranges]
+            tf_scale = [tf_init*math.pow(i, -2) for i in ranges]
+        docs_cnt_scale = [docs_cnt_init*math.pow(i, -2) for i in ranges]
+        # elif type == 2:
+        #     docs_cnt_scale = [int(docs_cnt_init*math.pow(2, -1.*i/docs_cnt_halflife)) for i in ranges]
+
         if fit_larger_maxTF_type != 0:
             for i in range(fit_larger_maxTF_cnt):
                 ranges.append(maxTF+i+1)
