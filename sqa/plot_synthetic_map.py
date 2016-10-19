@@ -214,6 +214,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         verbose = 'interpolation1-%d-maxTF%d-tfinit%.1f-tfhalflife%.1f-docsinit%.1f-docshalflife%.1f-fitlargercnt%d-fitlargertype%d' \
             % (type, maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife, fit_larger_maxTF_cnt, fit_larger_maxTF_type)
         
+        print type 
         ranges = [i for i in range(1, maxTF+1)]
         if type == 1:
             # TF: radioactive decay
