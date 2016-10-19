@@ -215,7 +215,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             tf_scale = [int(tf_init*math.pow(2, -1.*i/tf_halflife)) for i in ranges]
             docs_cnt_scale = [docs_cnt_init*math.pow(i, -2) for i in ranges]
         elif type == 2:
-            tf_scale = [tf_init*math.pow(i, -2) for i in ranges]
+            tf_scale = [int(tf_init*math.pow(2, -1.*i/tf_halflife)) for i in ranges]
             docs_cnt_scale = [int(docs_cnt_init*math.pow(1.5, -1.*i/docs_cnt_halflife)) for i in ranges]
         # elif type == 2:
         #     docs_cnt_scale = [int(docs_cnt_init*math.pow(2, -1.*i/docs_cnt_halflife)) for i in ranges]
