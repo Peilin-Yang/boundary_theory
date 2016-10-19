@@ -247,11 +247,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
     collection_root = '../../../reproduce/collections/'
 
-    # if args.plot_tfc_constraints:
-    #     PlotRelTF().plot_tfc_constraints(args.plot_tfc_constraints)
+    if args.plot_tfc_constraints:
+        PlotRelTF().plot_tfc_constraints(args.plot_tfc_constraints)
 
     if args.plot_tf_rel:
-        print args.plot_tf_rel
         for c in g.query:
             print c['collection']
             PlotTFRel(os.path.join(collection_root, c['collection'])).wrapper(
