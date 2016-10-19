@@ -184,6 +184,7 @@ if __name__ == '__main__':
                        where x = 0,1,2,...maxTF(t). \
                        args: [method_name(method_with_para)] \
                        [plot_ratio(boolean)] [avg_or_total(boolean, only if the plot_ratio is false)] \
+                       [rel_or_all(boolean, only if the plot_ratio is false)] \
                        [performance_as_legend(boolean)] \
                        [drawline(boolean)] [plotbins(boolean)] [numbins(int)] \
                        [output_format(eps|png)]')

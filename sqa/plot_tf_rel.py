@@ -249,8 +249,8 @@ class PlotTFRel(SingleQueryAnalysis):
 
     def plot_single_tfc_constraints_rel_tf(self, x_func, 
             _method, plot_ratio=True, plot_total_or_avg=True,
-            performance_as_legend=True, drawline=True, plotbins=True, 
-            numbins=60, oformat='eps'):
+            plot_rel_or_all=True, performance_as_legend=True, 
+            drawline=True, plotbins=True, numbins=60, oformat='eps'):
         """
         plot the P(D=1|TF=x)
 
@@ -263,6 +263,9 @@ class PlotTFRel(SingleQueryAnalysis):
             documents; When this is true, plot the y-axis as the #rel_docs/#docs
         @plot_total_or_avg: When this is true, plot the y-axis as the collection 
             total ; When this is false, plot the collection average. 
+            Only available when plot_ratio is false is only available for collection-wise
+        @plot_rel_or_all: When this is true, plot the y-axis as the number of 
+            relevant docs ; When this is false, plot the number of all docs. 
             Only available when plot_ratio is false is only available for collection-wise
         @performance_as_legend: whether to add performance(e.g. MAP) 
             as part of the legend
@@ -402,9 +405,9 @@ class PlotTFRel(SingleQueryAnalysis):
             yaxis = [collection_x_dict[x][0]*1./collection_x_dict[x][1] for x in xaxis]
         else:
             if plot_total_or_avg:
-                yaxis = [(collection_x_dict[x][0]) for x in xaxis] 
+                yaxis = [(collection_x_dict[x][0]) if plot_rel_or_all else (collection_x_dict[x][1]) for x in xaxis] 
             else:
-                yaxis = [(collection_x_dict[x][0]/len(idfs)) for x in xaxis]
+                yaxis = [(collection_x_dict[x][0]/len(idfs)) if plot_rel_or_all else (collection_x_dict[x][1]/len(idfs)) for x in xaxis]
         if plotbins:
             interval = collection_level_maxX*1.0/numbins
             newxaxis = [i for i in np.arange(0, collection_level_maxX+1e-10, interval)]
@@ -422,9 +425,9 @@ class PlotTFRel(SingleQueryAnalysis):
                 yaxis = [ele[0]/ele[1] if ele[1] != 0 else 0.0 for ele in newyaxis]
             else:
                 if plot_total_or_avg:
-                    yaxis = [(ele[0]) for ele in newyaxis] 
+                    yaxis = [(ele[0]) if plot_rel_or_all else (ele[1]) for ele in newyaxis] 
                 else:
-                    yaxis = [(ele[0]/len(idfs)) for ele in newyaxis]
+                    yaxis = [(ele[0]/len(idfs)) if plot_rel_or_all else (ele[1]/len(idfs)) for ele in newyaxis]
 
         if drawline:
             self.plot_single_tfc_constraints_draw_pdf_line(axs, xaxis, 
@@ -452,6 +455,7 @@ class PlotTFRel(SingleQueryAnalysis):
                 _method, 
                 'ratio' if plot_ratio else 'abscnt', 
                 'total' if plot_total_or_avg else 'avg',
+                'rel' if plot_rel_or_all else 'all',
                 'line' if drawline else 'dots', 
                 numbins if plotbins else 0, 
                 oformat) )
@@ -488,7 +492,8 @@ class PlotTFRel(SingleQueryAnalysis):
         return round((np.log(float(row['total_tf']))+delta)/np.log(float(row['doc_len'])), 3) 
 
     def wrapper(self, method_name, plot_ratio, plot_total_or_avg, 
-            performance_as_legend, drawline, plotbins, numbins, oformat='eps'):
+            plot_rel_or_all, performance_as_legend, drawline, plotbins, 
+            numbins, oformat='eps'):
         """
         This is the wrapper of the actual function. 
         We parse the CLI arguments and convert them to the values required 
@@ -515,6 +520,7 @@ class PlotTFRel(SingleQueryAnalysis):
             formal_method_name,
             False if plot_ratio == '0' else True,
             False if plot_total_or_avg == '0' else True,
+            False if plot_rel_or_all == '0' else True,
             False if performance_as_legend == '0' else True,
             False if drawline == '0' else True,
             False if plotbins == '0' else True,
