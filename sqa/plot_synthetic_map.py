@@ -234,7 +234,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             # TF: asymptotic decay
             # DOC: quantic decay 
             tf_scale = [int(tf_init*(1 - (i-1)*1.0/(i-1+tf_halflife))) for i in ranges]
-            docs_cnt_scale = [int(docs_cnt_init*math.pow(i, -2) for i in ranges]
+            docs_cnt_scale = [int(docs_cnt_init*math.pow(i, -2)) for i in ranges]
 
         output_tf_fn = os.path.join(self.output_root, verbose+'.tf.'+oformat) 
         self.plot_interpolation(ranges, tf_scale, title+"(TF)", "", output_tf_fn, oformat)
