@@ -210,7 +210,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         fit_larger_maxTF_cnt = int(fit_larger_maxTF_cnt)
         fit_larger_maxTF_type = int(fit_larger_maxTF_type)
 
-        title = r'TF-$R_0($%.1f)-$H$(%.1f)-$D_0$(%.1f)'  % (tf_init, tf_halflife, docs_cnt_init)
+        title = r'Type1_%d-%d-$R_0($%.1f)-$R_H$(%.1f)-$D_0$(%.1f)-$D_H(%.1f)$'  % (type, maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife)
         verbose = 'interpolation1-%d-maxTF%d-tfinit%.1f-tfhalflife%.1f-docsinit%.1f-docshalflife%.1f-fitlargercnt%d-fitlargertype%d' \
             % (type, maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife, fit_larger_maxTF_cnt, fit_larger_maxTF_type)
         
