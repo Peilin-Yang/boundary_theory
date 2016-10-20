@@ -235,6 +235,11 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             # DOC: quantic decay 
             tf_scale = [int(tf_init*(1 - (i-1)*1.0/(i-1+tf_halflife))) for i in ranges]
             docs_cnt_scale = [int(docs_cnt_init*math.pow(i, -2)) for i in ranges]
+        elif type == 5:
+            # TF: based on x^2 of DOC cnt
+            # DOC: quantic decay 
+            docs_cnt_scale = [int(docs_cnt_init*math.pow(i, -2)) for i in ranges]
+            tf_scale = [int(docs_cnt_scale[i-1]*math.pow((i)*0.05, 2)) for i in ranges]
 
         output_tf_fn = os.path.join(self.output_root, verbose+'.tf.'+oformat) 
         self.plot_interpolation(ranges, tf_scale, title+"(TF)", "", output_tf_fn, oformat)
@@ -257,7 +262,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         performance = 'best:' + str(round(self.cal_map(ranking_list, type=1), 4))
         performance += '\nworst:' + str(round(self.cal_map(ranking_list, type=0), 4))
         output_fn = os.path.join(self.output_root, verbose+'.'+oformat) 
-        yaxis = [ele[0]*1.0/ele[1] for ele in ranking_list]
+        yaxis = [ele[0]*1.0/ele[1] if ele[1] !=0 else 0 for ele in ranking_list]
         self.plot_interpolation(ranges, yaxis, title, performance, output_fn, oformat)
 
     def cal_map_with_interpolation(self, maxTF=20, interpolation_type=1, 
