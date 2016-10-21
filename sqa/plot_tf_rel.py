@@ -10,6 +10,7 @@ from subprocess import Popen, PIPE
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from base import SingleQueryAnalysis
 from collection_stats import CollectionStats
+from gen_doc_details import GenSqaDocDetails
 from query import Query
 from judgment import Judgment
 from evaluation import Evaluation
@@ -281,6 +282,7 @@ class PlotTFRel(SingleQueryAnalysis):
         """
         collection_name = self.collection_path.split('/')[-1]
         cs = CollectionStats(self.collection_path)
+        doc_details = GenSqaDocDetails(self.collection_path)
         output_root = 'single_query_figures'
         single_queries = Query(self.collection_path).get_queries_of_length(1)
         queries = {ele['num']:ele['title'] for ele in single_queries}
@@ -329,7 +331,8 @@ class PlotTFRel(SingleQueryAnalysis):
                 collection_level_maxTF = maxTF
             x_dict = {}
             qid_docs_len = 0
-            for row in cs.get_qid_details(qid):
+            #for row in cs.get_qid_details(qid):
+            for row in doc_details.get_qid_details(qid):
                 qid_docs_len += 1
                 x = x_func(cs, row)
                 if x > collection_level_maxX:

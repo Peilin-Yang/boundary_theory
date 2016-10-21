@@ -60,7 +60,11 @@ class GenSqaDocDetails(object):
             writer.writeheader()
             writer.writerows(details)
 
-
+    def get_qid_details(self, qid):
+        with open(os.path.join(self.collection_path, 'sqa_doc_details', qid)) as f:
+            rows = csv.DictReader(f)
+            for row in rows:
+                yield row
 
 if __name__ == '__main__':
     GenSqaDocDetails(sys.argv[1]).output_doc_details(sys.argv[2])
