@@ -298,7 +298,7 @@ class PlotTFRel(SingleQueryAnalysis):
                 return_all_metrics=False, 
                 metrics=['map']
             )
-            collection_legend = 'map:%.4f' % (np.mean([p[qid]['map'] for qid in p]))
+            collection_legend = 'map:%.4f' % (np.mean([p[qid]['map'] if qid in p for qid in p]))
 
         collection_x_dict = {}
         collection_level_maxTF = 0
