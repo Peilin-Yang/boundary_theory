@@ -101,7 +101,8 @@ def gen_doc_details(para_file):
         for row in reader:
             collection_path = row[0]
             qid = row[1]
-            GenSqaDocDetails(collection_path).output_doc_details(qid)
+            term = row[2]
+            GenSqaDocDetails(collection_path).output_doc_details(qid, term)
 
 def gen_lambdarank_batch():
     all_paras = []

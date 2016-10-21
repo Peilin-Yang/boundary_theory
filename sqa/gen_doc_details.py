@@ -20,20 +20,19 @@ class GenSqaDocDetails(object):
         self.dumpindex = 'dumpindex_EX'
         self.index_path = os.path.join(self.collection_path, 'index')
         self.queries = {ele['num']:ele['title'] for ele in Query(self.collection_path).get_queries_of_length(1)}
-        print self.queries
         self.judgements = Judgment(self.collection_path)\
             .get_judgment_of_some_queries(self.queries.keys(), 'dict')
 
     def batch_gen_doc_details_paras(self):
         paras = []
         output_root = os.path.join(self.collection_path, 'sqa_doc_details')
-        for qid in self.queries:
+        for qid, term in self.queries.items():
             if not os.path.exists(os.path.join(output_root, qid)):
-                paras.append((self.collection_path, qid))
+                paras.append((self.collection_path, qid, term))
         return paras
 
-    def output_doc_details(self, qid):
-        process = Popen([self.dumpindex, self.index_path, 't', self.queries[qid]['title']], stdout=PIPE)
+    def output_doc_details(self, qid, term):
+        process = Popen([self.dumpindex, self.index_path, 't', term], stdout=PIPE)
         stdout, stderr = process.communicate()
         details = []
         for line in stdout.split('\n')[1:-1]:
