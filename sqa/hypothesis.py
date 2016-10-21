@@ -15,6 +15,7 @@ from collection_stats import CollectionStats
 from query import Query
 from judgment import Judgment
 from evaluation import Evaluation
+from gen_doc_details import GenSqaDocDetails
 
 import numpy as np
 import scipy.stats
@@ -171,6 +172,7 @@ class Hypothesis(object):
         """
         single_queries = Query(self.collection_path).get_queries_of_length(1)
         queries = {ele['num']:ele['title'] for ele in single_queries}
+        doc_details = GenSqaDocDetails(self.collection_path)
         cs = CollectionStats(self.collection_path)
         avdl = cs.get_avdl()
         total_terms = cs.get_total_terms()
@@ -181,7 +183,8 @@ class Hypothesis(object):
             ctf = cs.get_term_collection_occur(queries[qid])
             idf = cs.get_term_logidf1(queries[qid])
             print queries[qid], ctf*1.0/total_terms
-            for row in cs.get_qid_details(qid):
+            #for row in cs.get_qid_details(qid):
+            for row in doc_details.get_qid_details(qid):
                 docid = row['docid']
                 total_tf = float(row['total_tf'])
                 doc_len = float(row['doc_len'])
