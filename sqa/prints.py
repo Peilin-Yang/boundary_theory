@@ -16,6 +16,7 @@ from query import Query
 from judgment import Judgment
 from evaluation import Evaluation
 from performance import Performances
+from gen_doc_details import GenSqaDocDetails
 
 import numpy as np
 import scipy.stats
@@ -86,12 +87,12 @@ class Prints(object):
         """
         single_queries = Query(self.collection_path).get_queries_of_length(1)
         queries = {ele['num']:ele['title'] for ele in single_queries}
-        cs = CollectionStats(self.collection_path)
+        doc_details = GenSqaDocDetails(self.collection_path)
         res = {}
         for qid in queries:
             res[qid] = []
             idx = 0
-            for row in cs.get_qid_details(qid):
+            for row in doc_details.get_qid_details(qid):
                 docid = row['docid']
                 tf = float(row['total_tf'])
                 #score = self.hypothesis_tf_function(tf, _type, scale, mu, sigma)
