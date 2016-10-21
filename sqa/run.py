@@ -35,6 +35,7 @@ from evaluation import Evaluation
 from utils import Utils
 from collection_stats import CollectionStats
 from baselines import Baselines
+from gen_doc_details import GenSqaDocDetails
 from plot_tf_rel import PlotTFRel
 from plot_synthetic_map import PlotSyntheticMAP
 from hypothesis import Hypothesis
@@ -45,6 +46,7 @@ from svmmap import SVMMAP
 import g
 import ArrayJob
 
+collection_root = '../../../reproduce/collections/'
 
 def gen_batch_framework(para_label, batch_pythonscript_para, all_paras, \
         quote_command=False, memory='2G', max_task_per_node=50000, num_task_per_node=20):
@@ -83,9 +85,27 @@ def gen_batch_framework(para_label, batch_pythonscript_para, all_paras, \
     subprocess.call( shlex.split(run_batch_gen_query_command) )
 
 
+def gen_doc_details_batch():
+    all_paras = []
+    for q in g.query:
+        collection_name = q['collection']
+        collection_path = os.path.join(collection_root, collection_name)
+        all_paras.extend(GenSqaDocDetails(collection_path).batch_gen_doc_details_paras())
+
+    #print all_paras
+    gen_batch_framework('gen_doc_details', 'g2', all_paras)
+
+def gen_doc_details(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            qid = row[1]
+            GenSqaDocDetails(collection_path).output_doc_details(qid)
+
 def gen_lambdarank_batch():
     all_paras = []
-    collection_root = '../../../reproduce/collections/'
+    
     with open('lambdarank.json') as f:
         methods = json.load(f)['methods']
         for q in g.query:
@@ -109,7 +129,6 @@ def run_lambdarank(para_file):
             LambdaRank(collection_path).process(qid, method_name, method_paras, output_fn)
 
 def print_lambdarank(print_details=False):
-    collection_root = '../../../reproduce/collections/'
     for c in g.query:
         r = LambdaRank(os.path.join(collection_root, c['collection']))
         print '-'*40
@@ -118,7 +137,6 @@ def print_lambdarank(print_details=False):
         r.print_results(print_details)
 
 def print_para_lambdarank(method):
-    collection_root = '../../../reproduce/collections/'
     for c in g.query:
         r = LambdaRank(os.path.join(collection_root, c['collection']))
         print '-'*40
@@ -129,7 +147,6 @@ def print_para_lambdarank(method):
 
 def gen_ranknet_batch():
     all_paras = []
-    collection_root = '../../../reproduce/collections/'
     with open('lambdarank.json') as f:
         methods = json.load(f)['methods']
         for q in g.query:
@@ -153,7 +170,6 @@ def run_ranknet(para_file):
             RankNet(collection_path).process(qid, method_name, method_paras, output_fn)
 
 def print_ranknet(print_details=False):
-    collection_root = '../../../reproduce/collections/'
     for c in g.query:
         r = RankNet(os.path.join(collection_root, c['collection']))
         print '-'*40
@@ -162,7 +178,6 @@ def print_ranknet(print_details=False):
         r.print_results(print_details)
 
 def print_para_ranknet(method):
-    collection_root = '../../../reproduce/collections/'
     for c in g.query:
         r = RankNet(os.path.join(collection_root, c['collection']))
         print '-'*40
@@ -222,6 +237,12 @@ if __name__ == '__main__':
                        help='print the statistics of collection')
     parser.add_argument('-pp3', '--print_map_with_cut_maxTF', nargs=1,
                        help='print MAP for cut maxTF')
+
+    parser.add_argument('-g1', '--gen_doc_details_batch', action='store_true',
+                       help='Generate the document details for single term queries')
+    parser.add_argument('-g2', '--gen_doc_details_atom', nargs=1,
+                       help='Generate the document details for single term queries')
+    
 
     parser.add_argument('-l1', '--lambdarank_batch', action='store_true',
                        help='LambdaRank related. This is to get the optimal parameters for classic models')
@@ -332,6 +353,10 @@ if __name__ == '__main__':
             print '-'*40
             p.print_map_with_cut_maxTF(int(args.print_map_with_cut_maxTF[0]))
 
+    if args.gen_doc_details_batch:
+        gen_doc_details_batch()
+    if args.gen_doc_details_atom:
+        gen_doc_details(args.gen_doc_details_atom[0])
 
     if args.lambdarank_batch:
         gen_lambdarank_batch()
