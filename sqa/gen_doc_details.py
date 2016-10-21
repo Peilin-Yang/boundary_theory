@@ -19,7 +19,7 @@ class GenSqaDocDetails(object):
 
         self.dumpindex = 'dumpindex_EX'
         self.index_path = os.path.join(self.collection_path, 'index')
-        self.queries = Query(self.collection_path).get_queries_of_length(1)
+        self.queries = {ele['num']:ele['title'] for ele in Query(self.collection_path).get_queries_of_length(1)}
         print self.queries
         self.judgements = Judgment(self.collection_path)\
             .get_judgment_of_some_queries(self.queries.keys(), 'dict')
