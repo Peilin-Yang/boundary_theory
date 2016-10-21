@@ -32,6 +32,42 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         if not os.path.exists(self.output_root):
             os.makedirs(self.output_root)
 
+    def A(self, pr, pn, r, n, d):
+        """
+        """
+        if r == 0 || d == 0:
+            return 0
+        if n == 0:
+            return (pr+1.0)/(pr+pn+1.0) + self.A(pr+1, pn, r-1, 0, d-1)
+        prob_r = r*1.0/(r+n)*((pr+1.0)/(pr+pn+1.0)*self.A(pr+1, pn, r-1, n, d-1))
+        prob_n = n*1.0/(r+n)*self.A(pr, pn+1, r, n-1, d-1)
+        return prob_r + prob_n
+
+    def cal_expected_map(self, ranking_list, total_rel=0):
+        """
+        Calculate the MAP based on the ranking_list.
+
+        Input:
+        @ranking_list: The format of the ranking_list is:
+            [(num_rel_docs, num_total_docs), (num_rel_docs, num_total_docs), ...]
+            where the index corresponds to the TF, e.g. ranking_list[1] is TF=1
+        """
+        s = 0.0
+        pr = 0
+        pn = 0
+        for ele in reversed(ranking_list):
+            rel_doc_cnt = ele[0]
+            this_doc_cnt = ele[1]
+            nonrel_doc_cnt = this_doc_cnt - rel_doc_cnt
+            s += self.A(pr, pn, rel_doc_cnt, nonrel_doc_cnt, this_doc_cnt)
+            pr += rel_doc_cnt
+            pn += nonrel_doc_cnt
+            total_rel += rel_doc_cnt
+        #print s/total_rel
+        if total_rel == 0:
+            return 0
+        return s/total_rel
+
     def cal_map(self, ranking_list, total_rel=0, type=1):
         """
         Calculate the MAP based on the ranking_list.
@@ -277,3 +313,15 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         if interpolation_type == 1:
             self.interpolation_1(maxTF, subtype, oformat, *interpolation_paras)
 
+
+
+import unittest
+
+class Test(unittest.TestCase):
+
+    def test_expected_map(self):
+        ranking_list = [(0, 1), (1, 2), (1, 2), (0, 1), (1, 1)]
+        self.assertEqual(round(PlotSyntheticMAP().cal_expected_map(ranking_list), 3), 0.711)
+
+if __name__ == '__main__':
+    unittest.main()
