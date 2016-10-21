@@ -178,11 +178,11 @@ class Hypothesis(object):
         total_terms = cs.get_total_terms()
         res = {}
         for qid in queries:
+            print queries[qid]
             res[qid] = []
             idx = 0
             ctf = cs.get_term_collection_occur(queries[qid])
             idf = cs.get_term_logidf1(queries[qid])
-            print queries[qid], ctf*1.0/total_terms
             #for row in cs.get_qid_details(qid):
             for row in doc_details.get_qid_details(qid):
                 docid = row['docid']
