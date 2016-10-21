@@ -326,7 +326,7 @@ class PlotTFRel(SingleQueryAnalysis):
             #idf = math.log(cs.get_term_IDF1(query_term))
             legend = 'idf:%.2f'%idf
             if performance_as_legend:
-                legend += '\nmap:%.4f' % (p[qid]['map'])
+                legend += '\nmap:%.4f' % (p[qid]['map'] if p[qid] else 0)
             if maxTF > collection_level_maxTF:
                 collection_level_maxTF = maxTF
             x_dict = {}
