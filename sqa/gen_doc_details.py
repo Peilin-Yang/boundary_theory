@@ -26,6 +26,8 @@ class GenSqaDocDetails(object):
     def batch_gen_doc_details_paras(self):
         paras = []
         output_root = os.path.join(self.collection_path, 'sqa_doc_details')
+        if not os.path.exists(output_root):
+            os.makedirs(output_root)
         for qid, term in self.queries.items():
             if not os.path.exists(os.path.join(output_root, qid)):
                 paras.append((self.collection_path, qid, term))
@@ -35,12 +37,10 @@ class GenSqaDocDetails(object):
         process = Popen([self.dumpindex, self.index_path, 't', term], stdout=PIPE)
         stdout, stderr = process.communicate()
         details = []
-        for line in stdout.split('\n')[1:-1]:
+        for line in stdout.split('\n')[1:-2]:
             line = line.strip()
             if line:
-                print line
                 row = line.split()
-                print row
                 docid = row[1]
                 tf = int(row[2])
                 doc_len = int(row[3])
