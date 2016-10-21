@@ -38,7 +38,9 @@ class GenSqaDocDetails(object):
         for line in stdout.split('\n')[1:-1]:
             line = line.strip()
             if line:
+                print line
                 row = line.split()
+                print row
                 docid = row[1]
                 tf = int(row[2])
                 doc_len = int(row[3])
