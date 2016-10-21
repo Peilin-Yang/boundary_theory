@@ -35,7 +35,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
     def A(self, pr, pn, r, n, d):
         """
         """
-        if r == 0 || d == 0:
+        if r == 0 or d == 0:
             return 0
         if n == 0:
             return (pr+1.0)/(pr+pn+1.0) + self.A(pr+1, pn, r-1, 0, d-1)
@@ -318,6 +318,10 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
 import unittest
 
 class Test(unittest.TestCase):
+    def test_A(self):
+        self.assertEqual(round(PlotSyntheticMAP().A(0,0,1,0,1), 3), 1.000)
+        self.assertEqual(round(PlotSyntheticMAP().A(1,0,0,1,1), 3), 0.000)
+        self.assertEqual(round(PlotSyntheticMAP().A(1,1,1,1,2), 3), 0.583)
 
     def test_expected_map(self):
         ranking_list = [(0, 1), (1, 2), (1, 2), (0, 1), (1, 1)]
