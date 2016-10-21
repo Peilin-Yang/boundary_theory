@@ -39,7 +39,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             return 0
         if n == 0:
             return (pr+1.0)/(pr+pn+1.0) + self.A(pr+1, pn, r-1, 0, d-1)
-        prob_r = r*1.0/(r+n)*((pr+1.0)/(pr+pn+1.0)*self.A(pr+1, pn, r-1, n, d-1))
+        prob_r = r*1.0/(r+n)*((pr+1.0)/(pr+pn+1.0)+self.A(pr+1, pn, r-1, n, d-1))
         prob_n = n*1.0/(r+n)*self.A(pr, pn+1, r, n-1, d-1)
         return prob_r + prob_n
 
