@@ -24,6 +24,14 @@ query = [
     "main_metric": "MAP"
   },
   {
+    "collection": "wt10g",
+    "collection_formal_name": "WT10G",
+    "cnt": 100,
+    "qf_parts": ['title'],
+    "qrel_program": 'trec_eval -m all_trec -q',
+    "main_metric": "MAP"
+  },
+  {
     "collection": "gov2",
     "collection_formal_name": "GOV2",
     "cnt": 150,
