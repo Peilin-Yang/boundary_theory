@@ -298,7 +298,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         print ranking_list
         performance = '$MAP_B$:' + str(round(self.cal_map(ranking_list, type=1), 4))
         performance += '\n$MAP_W$:' + str(round(self.cal_map(ranking_list, type=0), 4))
-        performance += '\n$MAP_E$:' + str(round(self.cal_expected_map(ranking_list, type=0), 4))
+        performance += '\n$MAP_E$:' + str(round(self.cal_expected_map(ranking_list), 4))
         output_fn = os.path.join(self.output_root, verbose+'.'+oformat) 
         yaxis = [ele[0]*1.0/ele[1] if ele[1] !=0 else 0 for ele in ranking_list]
         self.plot_interpolation(ranges, yaxis, title, performance, output_fn, oformat)
