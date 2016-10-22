@@ -246,7 +246,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
 
     def interpolation_1(self, maxTF, type=1, oformat='png', tf_init=30, 
             tf_halflife=4, docs_cnt_init=2000, docs_cnt_halflife=1, 
-            fit_larger_maxTF_cnt = 20, fit_larger_maxTF_type=1):
+            fit_larger_maxTF_cnt = 20, fit_larger_maxTF_type=1, cal_expect_map=False):
         """
         Normal distribution
         type:
@@ -312,7 +312,8 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         print ranking_list
         performance = '$MAP_B$:' + str(round(self.cal_map(ranking_list, type=1), 4))
         performance += '\n$MAP_W$:' + str(round(self.cal_map(ranking_list, type=0), 4))
-        performance += '\n$MAP_E$:' + str(round(self.cal_expected_map(ranking_list), 4))
+        if cal_expect_map:
+            performance += '\n$MAP_E$:' + str(round(self.cal_expected_map(ranking_list), 4))
         output_fn = os.path.join(self.output_root, verbose+'.'+oformat) 
         yaxis = [ele[0]*1.0/ele[1] if ele[1] !=0 else 0 for ele in ranking_list]
         self.plot_interpolation(ranges, yaxis, title, performance, output_fn, oformat)
