@@ -246,7 +246,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
 
     def interpolation_1(self, maxTF, type=1, oformat='png', tf_init=30, 
             tf_halflife=4, docs_cnt_init=2000, docs_cnt_halflife=1, 
-            fit_larger_maxTF_cnt = 20, fit_larger_maxTF_type=1, cal_expect_map=False):
+            fit_larger_maxTF_cnt = 20, fit_larger_maxTF_type=1, cal_expect_map='0'):
         """
         Normal distribution
         type:
@@ -259,6 +259,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         docs_cnt_halflife = float(docs_cnt_halflife)
         fit_larger_maxTF_cnt = int(fit_larger_maxTF_cnt)
         fit_larger_maxTF_type = int(fit_larger_maxTF_type)
+        cal_expect_map = False if cal_expect_map == '0' else True
 
         title = r'Type1_%d-%d-$R_0($%.1f)-$R_H$(%.1f)-$D_0$(%.1f)-$D_H(%.1f)$'  % (type, maxTF, tf_init, tf_halflife, docs_cnt_init, docs_cnt_halflife)
         verbose = 'interpolation1-%d-maxTF%d-tfinit%.1f-tfhalflife%.1f-docsinit%.1f-docshalflife%.1f-fitlargercnt%d-fitlargertype%d' \
