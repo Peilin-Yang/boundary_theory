@@ -32,7 +32,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         if not os.path.exists(self.output_root):
             os.makedirs(self.output_root)
 
-    def A(self, pr, pn, r, n, d):
+    def A(self, pr, pn, r, n):
         """
         """
         # if r == 0 or d == 0:
@@ -45,11 +45,14 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
         R = {}
         for i in range(r+1):
             for j in range(n+1):
-                R[(pr+i, pn+j, 0, j, j)] = 0
+                R[(pr+i, pn+j, 0, j)] = 0
         for i in range(1, r+1):
-            R[(pr+r-i, pn, i, 0, i)] = (pr+r-i+1.0) / (pr+r-i+pn+1.0) + R[(pr+r-i+1, pn, i-1, 0, i-1)]
-        print R
-        exit()
+            R[(pr+r-i, pn, i, 0)] = (pr+r-i+1.0) / (pr+r-i+pn+1.0) + R[(pr+r-i+1, pn, i-1, 0)]
+        for i in range(1, r+1):
+            for j in range(1, n+1):
+                R[(pr+r-i, pn+n-j, i, j)] = i*1.0/(i+j)*((pr+r-i+1.0)/(pr+r-i+pn+n-j+1)+R[(pr+r-i+1, pn+n-j, i-1, j)]) \
+                    + j*1.0/(i+j)*R[(pr+r-i, pn+n-j+1, i, j-1)]
+        return R[(pr, pn, r, n)]
 
 
     def cal_expected_map(self, ranking_list, total_rel=0):
@@ -68,7 +71,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
             rel_doc_cnt = ele[0]
             this_doc_cnt = ele[1]
             nonrel_doc_cnt = this_doc_cnt - rel_doc_cnt
-            s += self.A(pr, pn, rel_doc_cnt, nonrel_doc_cnt, this_doc_cnt)
+            s += self.A(pr, pn, rel_doc_cnt, nonrel_doc_cnt)
             pr += rel_doc_cnt
             pn += nonrel_doc_cnt
             total_rel += rel_doc_cnt
@@ -329,9 +332,9 @@ import unittest
 
 class Test(unittest.TestCase):
     def test_A(self):
-        self.assertEqual(round(PlotSyntheticMAP().A(0,0,1,0,1), 3), 1.000)
-        self.assertEqual(round(PlotSyntheticMAP().A(1,0,0,1,1), 3), 0.000)
-        self.assertEqual(round(PlotSyntheticMAP().A(1,1,1,1,2), 3), 0.583)
+        self.assertEqual(round(PlotSyntheticMAP().A(0,0,1,0), 3), 1.000)
+        self.assertEqual(round(PlotSyntheticMAP().A(1,0,0,1), 3), 0.000)
+        self.assertEqual(round(PlotSyntheticMAP().A(1,1,1,1), 3), 0.583)
 
     def test_expected_map(self):
         ranking_list = [(0, 1), (1, 2), (1, 2), (0, 1), (1, 1)]
