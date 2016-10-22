@@ -35,13 +35,22 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
     def A(self, pr, pn, r, n, d):
         """
         """
-        if r == 0 or d == 0:
-            return 0
-        if n == 0:
-            return (pr+1.0)/(pr+pn+1.0) + self.A(pr+1, pn, r-1, 0, d-1)
-        prob_r = r*1.0/(r+n)*((pr+1.0)/(pr+pn+1.0)+self.A(pr+1, pn, r-1, n, d-1))
-        prob_n = n*1.0/(r+n)*self.A(pr, pn+1, r, n-1, d-1)
-        return prob_r + prob_n
+        # if r == 0 or d == 0:
+        #     return 0
+        # if n == 0:
+        #     return (pr+1.0)/(pr+pn+1.0) + self.A(pr+1, pn, r-1, 0, d-1)
+        # prob_r = r*1.0/(r+n)*((pr+1.0)/(pr+pn+1.0)+self.A(pr+1, pn, r-1, n, d-1))
+        # prob_n = n*1.0/(r+n)*self.A(pr, pn+1, r, n-1, d-1)
+        # return prob_r + prob_n
+        R = {}
+        for i in range(r+1):
+            for j in range(n+1):
+                R[(pr+i, pn+j, 0, j, j)] = 0
+        for i in range(1, r+1):
+            R[(pr+r-i, pn, i, 0, i)] = (pr+r-i+1.0) / (pr+r-i+pn+1.0) + R[(pr+r-i+1, pn, i-1, 0, i-1)]
+        print R
+        exit()
+
 
     def cal_expected_map(self, ranking_list, total_rel=0):
         """
