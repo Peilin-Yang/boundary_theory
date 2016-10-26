@@ -80,7 +80,7 @@ class GenDocDetails(object):
                 tf = []
                 for t in terms_list:
                     tf.append(t+'-'+str(docs[docid][t] if t in docs[docid] else 0))
-                this_doc['tf'] = tf.join(',')
+                this_doc['tf'] = ','.join(tf)
                 writer.writerow(this_doc)
 
     def get_qid_details(self, qid):
