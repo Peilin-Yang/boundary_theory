@@ -65,14 +65,13 @@ class GenDocDetails(object):
 
         ofn = os.path.join(self.doc_details_root, qid)
         with open(ofn, 'wb') as f:
-            fieldnames = ['qid','docid','rel_score','total_tf','doc_len']
+            fieldnames = ['qid','docid','rel_score','tf','total_tf','doc_len']
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             for docid in docs:
                 this_doc = {
                     'qid': qid,
                     'docid': docid,
-                    'score': 0.0,
                     'rel_score': docs[docid]['rel_score'],
                     'total_tf': docs[docid]['total_tf'],
                     'doc_len': docs[docid]['doc_len']
