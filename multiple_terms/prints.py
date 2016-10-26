@@ -15,7 +15,7 @@ from query import Query
 from judgment import Judgment
 from evaluation import Evaluation
 from performance import Performances
-from gen_doc_details import GenSqaDocDetails
+from gen_doc_details import GenDocDetails
 
 import numpy as np
 import scipy.stats
@@ -86,7 +86,7 @@ class Prints(object):
         """
         single_queries = Query(self.collection_path).get_queries_of_length(1)
         queries = {ele['num']:ele['title'] for ele in single_queries}
-        doc_details = GenSqaDocDetails(self.collection_path)
+        doc_details = GenDocDetails(self.collection_path)
         res = {}
         for qid in queries:
             res[qid] = []
