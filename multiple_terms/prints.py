@@ -10,7 +10,6 @@ from subprocess import Popen, PIPE
 from operator import itemgetter
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
-from base import SingleQueryAnalysis
 from collection_stats import CollectionStats
 from query import Query
 from judgment import Judgment
