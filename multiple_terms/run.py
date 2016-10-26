@@ -35,14 +35,9 @@ from evaluation import Evaluation
 from utils import Utils
 from collection_stats import CollectionStats
 from baselines import Baselines
-from gen_doc_details import GenSqaDocDetails
+from gen_doc_details import GenDocDetails
 from plot_tf_rel import PlotTFRel
-from plot_synthetic_map import PlotSyntheticMAP
-from hypothesis import Hypothesis
 from prints import Prints
-from ranknet import RankNet
-from lambdarank import LambdaRank
-from svmmap import SVMMAP
 import g
 import ArrayJob
 
@@ -104,88 +99,6 @@ def gen_doc_details(para_file):
             term = row[2]
             GenSqaDocDetails(collection_path).output_doc_details(qid, term)
 
-def gen_lambdarank_batch():
-    all_paras = []
-    
-    with open('lambdarank.json') as f:
-        methods = json.load(f)['methods']
-        for q in g.query:
-            collection_name = q['collection']
-            collection_path = os.path.join(collection_root, collection_name)
-            all_paras.extend(LambdaRank(collection_path).gen_lambdarank_paras( methods ) )
-
-    #print all_paras
-    gen_batch_framework('run_lambdarank', 'l2', all_paras)
-
-
-def run_lambdarank(para_file):
-    with open(para_file) as f:
-        reader = csv.reader(f)
-        for row in reader:
-            collection_path = row[0]
-            qid = row[1]
-            method_name = row[2]
-            method_paras = row[3]
-            output_fn = row[4]
-            LambdaRank(collection_path).process(qid, method_name, method_paras, output_fn)
-
-def print_lambdarank(print_details=False):
-    for c in g.query:
-        r = LambdaRank(os.path.join(collection_root, c['collection']))
-        print '-'*40
-        print c['collection']
-        print '-'*40
-        r.print_results(print_details)
-
-def print_para_lambdarank(method):
-    for c in g.query:
-        r = LambdaRank(os.path.join(collection_root, c['collection']))
-        print '-'*40
-        print c['collection']
-        print '-'*40
-        r.print_results_para(method)
-
-
-def gen_ranknet_batch():
-    all_paras = []
-    with open('lambdarank.json') as f:
-        methods = json.load(f)['methods']
-        for q in g.query:
-            collection_name = q['collection']
-            collection_path = os.path.join(collection_root, collection_name)
-            all_paras.extend(RankNet(collection_path).gen_lambdarank_paras( methods ) )
-
-    #print all_paras
-    gen_batch_framework('run_ranknet', 'r2', all_paras)
-
-
-def run_ranknet(para_file):
-    with open(para_file) as f:
-        reader = csv.reader(f)
-        for row in reader:
-            collection_path = row[0]
-            qid = row[1]
-            method_name = row[2]
-            method_paras = row[3]
-            output_fn = row[4]
-            RankNet(collection_path).process(qid, method_name, method_paras, output_fn)
-
-def print_ranknet(print_details=False):
-    for c in g.query:
-        r = RankNet(os.path.join(collection_root, c['collection']))
-        print '-'*40
-        print c['collection']
-        print '-'*40
-        r.print_results(print_details)
-
-def print_para_ranknet(method):
-    for c in g.query:
-        r = RankNet(os.path.join(collection_root, c['collection']))
-        print '-'*40
-        print c['collection']
-        print '-'*40
-        r.print_results_para(method)
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
@@ -243,28 +156,7 @@ if __name__ == '__main__':
                        help='Generate the document details for single term queries')
     parser.add_argument('-g2', '--gen_doc_details_atom', nargs=1,
                        help='Generate the document details for single term queries')
-    
 
-    parser.add_argument('-l1', '--lambdarank_batch', action='store_true',
-                       help='LambdaRank related. This is to get the optimal parameters for classic models')
-    parser.add_argument('-l2', '--lambdarank_atom', nargs=1,
-                       help='LambdaRank related. This is to get the optimal parameters for classic models')
-    parser.add_argument('-lp', '--lambdarank_print', nargs='?',
-                       help='Print the optimal performances of lambdarank')
-    parser.add_argument('-lpp', '--lambdarank_print_para', nargs=1,
-                       help='Print the optimal performances of lambdarank')
-
-    parser.add_argument('-r1', '--ranknet_batch', action='store_true',
-                       help='Ranknet related. This is to get the optimal parameters for classic models')
-    parser.add_argument('-r2', '--ranknet_atom', nargs=1,
-                       help='Ranknet related. This is to get the optimal parameters for classic models')
-    parser.add_argument('-rp', '--ranknet_print', nargs='?',
-                       help='Print the optimal performances of ranknet')
-    parser.add_argument('-rpp', '--ranknet_print_para', nargs=1,
-                       help='Print the optimal performances of ranknet')
-
-    parser.add_argument('-s1', '--svmmap_data', action='store_true',
-                       help='Output the data files for SVMMAP')
 
     args = parser.parse_args()
     collection_root = '../../../reproduce/collections/'
@@ -359,29 +251,4 @@ if __name__ == '__main__':
     if args.gen_doc_details_atom:
         gen_doc_details(args.gen_doc_details_atom[0])
 
-    if args.lambdarank_batch:
-        gen_lambdarank_batch()
-    if args.lambdarank_atom:
-        run_lambdarank(args.lambdarank_atom[0])
-    if args.lambdarank_print:
-        print_lambdarank(args.lambdarank_print[0] != '0')
-    if args.lambdarank_print_para:
-        print_para_lambdarank(args.lambdarank_print_para[0])
-
-    if args.ranknet_batch:
-        gen_ranknet_batch()
-    if args.ranknet_atom:
-        run_ranknet(args.ranknet_atom[0])
-    if args.ranknet_print:
-        print_ranknet(args.ranknet_print[0] != '0')
-    if args.ranknet_print_para:
-        print_para_ranknet(args.ranknet_print_para[0])
-
-    if args.svmmap_data:
-        for c in g.query:
-            s = SVMMAP(os.path.join(collection_root, c['collection']))
-            print '-'*40
-            print c['collection']
-            print '-'*40
-            s.output_data_file()
 
