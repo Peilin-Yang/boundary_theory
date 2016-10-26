@@ -8,7 +8,6 @@ from operator import itemgetter
 from subprocess import Popen, PIPE
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
-from base import SingleQueryAnalysis
 from collection_stats import CollectionStats
 from gen_doc_details import GenSqaDocDetails
 from query import Query
@@ -29,7 +28,7 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
 
-class PlotTFRel(SingleQueryAnalysis):
+class PlotTFRel(object):
     """
     Plot the probability distribution of P(D=1|f(tf,dl,other_stats)=x)
     """
@@ -40,6 +39,8 @@ class PlotTFRel(SingleQueryAnalysis):
         if not os.path.exists(self.collection_path):
             print '[Evaluation Constructor]:Please provide valid corpus path'
             exit(1)
+            
+        self.all_results_root = '../../all_results'
 
     def plot_single_tfc_constraints_draw_pdf(self, ax, xaxis, yaxis, 
             title, legend, legend_outside=False, marker='ro', 
