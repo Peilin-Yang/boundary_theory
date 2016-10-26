@@ -9,7 +9,7 @@ from subprocess import Popen, PIPE
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from collection_stats import CollectionStats
-from gen_doc_details import GenSqaDocDetails
+from gen_doc_details import GenDocDetails
 from query import Query
 from judgment import Judgment
 from evaluation import Evaluation
@@ -39,7 +39,7 @@ class PlotTFRel(object):
         if not os.path.exists(self.collection_path):
             print '[Evaluation Constructor]:Please provide valid corpus path'
             exit(1)
-            
+
         self.all_results_root = '../../all_results'
 
     def plot_single_tfc_constraints_draw_pdf(self, ax, xaxis, yaxis, 
@@ -283,7 +283,7 @@ class PlotTFRel(object):
         """
         collection_name = self.collection_path.split('/')[-1]
         cs = CollectionStats(self.collection_path)
-        doc_details = GenSqaDocDetails(self.collection_path)
+        doc_details = GenDocDetails(self.collection_path)
         output_root = 'single_query_figures'
         single_queries = Query(self.collection_path).get_queries_of_length(1)
         queries = {ele['num']:ele['title'] for ele in single_queries}
