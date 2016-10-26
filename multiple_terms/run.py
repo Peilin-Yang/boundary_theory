@@ -85,7 +85,7 @@ def gen_doc_details_batch():
     for q in g.query:
         collection_name = q['collection']
         collection_path = os.path.join(collection_root, collection_name)
-        all_paras.extend(GenSqaDocDetails(collection_path).batch_gen_doc_details_paras())
+        all_paras.extend(GenDocDetails(collection_path).batch_gen_doc_details_paras())
 
     #print all_paras
     gen_batch_framework('gen_doc_details', 'g2', all_paras)
@@ -96,8 +96,8 @@ def gen_doc_details(para_file):
         for row in reader:
             collection_path = row[0]
             qid = row[1]
-            term = row[2]
-            GenSqaDocDetails(collection_path).output_doc_details(qid, term)
+            query = row[2]
+            GenDocDetails(collection_path).output_doc_details(qid, query)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
