@@ -36,6 +36,9 @@ class GenDocDetails(object):
         return paras
 
     def output_doc_details(self, qid, query):
+        if not self.judgements[qid]:
+            print self.collection_path, qid
+            return
         terms_list = query.split()
         terms_set = set(terms_list)
         docs = {}

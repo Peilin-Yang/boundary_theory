@@ -284,9 +284,11 @@ class PlotTFRel(object):
         collection_name = self.collection_path.split('/')[-1]
         cs = CollectionStats(self.collection_path)
         doc_details = GenDocDetails(self.collection_path)
-        output_root = 'single_query_figures'
-        single_queries = Query(self.collection_path).get_queries_of_length(1)
-        queries = {ele['num']:ele['title'] for ele in single_queries}
+        output_root = 'multiple_term_queries_figures'
+        if not os.path.exists(os.path.join(self.all_results_root, output_root)):
+            os.makedirs(os.path.join(self.all_results_root, output_root))
+        queries = Query(self.collection_path).get_queries()
+        queries = {ele['num']:ele['title'] for ele in queries}
         #print qids
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
         #print np.mean([len(rel_docs[qid]) for qid in rel_docs])
