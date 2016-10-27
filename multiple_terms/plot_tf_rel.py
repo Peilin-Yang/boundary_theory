@@ -308,7 +308,7 @@ class PlotTFRel(object):
         collection_level_maxX = 0.0
         num_cols = 4
         num_rows = int(math.ceil(len(rel_docs)*1.0/num_cols))
-        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3.*num_rows))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(0.5*num_cols, 0.5*num_rows))
         font = {'size' : 8}
         plt.rc('font', **font)
         row_idx = 0
