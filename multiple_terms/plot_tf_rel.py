@@ -399,7 +399,7 @@ class PlotTFRel(object):
                 numbins if plotbins else 0, 
                 xlimit, 
                 oformat) )
-        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+        #plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
         # draw the figure for the whole collection
         collection_vocablulary_stat = cs.get_vocabulary_stats()

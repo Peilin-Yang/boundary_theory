@@ -109,7 +109,11 @@ class Judgment(object):
 
         judgments = self.get_judgment_of_some_queries(qids, format)
         if format == 'dict':
-            judgment = {k:{docid:judgments[k][docid] for docid in judgments[k] if judgments[k][docid] >= split} for k in judgments}
+            judgment = {}
+            for k in judgments:
+                if not judgments[k]:
+                    continue
+                judgment[k] = {docid:judgments[k][docid] for docid in judgments[k] if judgments[k][docid] >= split}
         elif format == 'tuple' or format == 'list':
             judgment = {k:[e for e in judgments[k] if e[1] >= split] for k in judgments}
 
