@@ -14,6 +14,7 @@ import multiprocessing
 import re
 import csv
 import shutil
+import copy
 
 import inspect
 from inspect import currentframe, getframeinfo
@@ -105,9 +106,9 @@ def gen_plot_tf_rel_batch(paras):
     for q in g.query:
         collection_name = q['collection']
         collection_path = os.path.join(collection_root, collection_name)
-        p = [collection_path, *paras]
-        all_paras.append(p)
-    #print all_paras
+        p = copy.deepcopy(paras)
+        p.insert(0, collection_path)
+        all_paras.append((p))
     gen_batch_framework('plot_tf_rel', '122', all_paras)
 
 def plot_tf_rel_atom(para_file):
@@ -192,9 +193,9 @@ if __name__ == '__main__':
         PlotRelTF().plot_tfc_constraints(args.plot_tfc_constraints)
 
     if args.gen_plot_tf_rel_batch:
-        gen_plot_tf_rel_batch(args.plot_tf_rel)
+        gen_plot_tf_rel_batch(args.gen_plot_tf_rel_batch)
     if args.plot_tf_rel_atom:
-        plot_tf_rel_atom(args.plot_tf_rel_atom)
+        plot_tf_rel_atom(args.plot_tf_rel_atom[0])
 
 
     if args.plot_synthetic:
