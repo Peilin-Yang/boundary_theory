@@ -33,8 +33,8 @@ class GenDocDetails(object):
         paras = []
         output_root = self.doc_details_root
         for qid, query in self.queries.items():
-            #if not os.path.exists(os.path.join(output_root, qid)):
-            paras.append((self.collection_path, qid, query))
+            if not os.path.exists(os.path.join(output_root, qid)):
+                paras.append((self.collection_path, qid, query))
         return paras
 
     def read_docid_from_baseline(self, req_qid):
