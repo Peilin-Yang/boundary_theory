@@ -27,15 +27,33 @@ class GenDocDetails(object):
         if not os.path.exists(self.doc_details_root):
             os.makedirs(self.doc_details_root)
 
+        self.baseline_fn = os.path.join(self.collection_path, 'baselines', 'lm_10000')
+
     def batch_gen_doc_details_paras(self):
         paras = []
         output_root = self.doc_details_root
         for qid, query in self.queries.items():
-            if not os.path.exists(os.path.join(output_root, qid)):
-                paras.append((self.collection_path, qid, query))
+            #if not os.path.exists(os.path.join(output_root, qid)):
+            paras.append((self.collection_path, qid, query))
         return paras
 
+    def read_docid_from_baseline(self, req_qid):
+        docids = {}
+        with open(self.baseline_fn) as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    row = line.split()
+                    qid = row[0]
+                    if qid != req_qid:
+                        continue
+                    docid = row[2]
+                    score = float(row[4])
+                    docids[docid] = score
+        return docids
+
     def output_doc_details(self, qid, query):
+        candidate_docids = self.read_docid_from_baseline(qid)
         terms_list = query.split()
         terms_set = set(terms_list)
         docs = {}
@@ -47,6 +65,8 @@ class GenDocDetails(object):
                 if line:
                     row = line.split()
                     docid = row[1]
+                    if docid not in candidate_docids:
+                        continue
                     tf = int(row[2])
                     doc_len = int(row[3])
                     rel_score = self.judgements[qid][docid] if docid in self.judgements[qid] else 0
