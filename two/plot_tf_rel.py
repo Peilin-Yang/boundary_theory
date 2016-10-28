@@ -284,6 +284,8 @@ class PlotTFRel(SingleQueryAnalysis):
         cs = CollectionStats(self.collection_path)
         doc_details = GenDocDetails(self.collection_path)
         output_root = 'two'
+        if not os.path.exists(os.path.join(self.all_results_root, output_root)):
+            os.makedirs(os.path.join(self.all_results_root, output_root))
         all_queries = Query(self.collection_path).get_queries_of_length(2)
         queries = {ele['num']:ele['title'] for ele in all_queries}
         #print qids
