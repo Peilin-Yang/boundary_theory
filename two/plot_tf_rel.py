@@ -444,6 +444,10 @@ class PlotTFRel(SingleQueryAnalysis):
                 else:
                     yaxis = [(ele[0]/len(idfs)) if plot_rel_or_all else (ele[1]/len(idfs)) for ele in newyaxis]
 
+        # we do not care about the actual values of x
+        # so we just map the actual values to integer values
+        xaxis = range(len(xaxis))
+
         if drawline:
             self.plot_single_tfc_constraints_draw_pdf_line(axs, xaxis, 
                 yaxis, collection_name, 
