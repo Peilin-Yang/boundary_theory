@@ -91,15 +91,18 @@ class Prints(object):
         for qid in queries:
             res[qid] = []
             idx = 0
-            for row in doc_details.get_qid_details(qid):
-                docid = row['docid']
-                tf = float(row['total_tf'])
-                #score = self.hypothesis_tf_function(tf, _type, scale, mu, sigma)
-                res[qid].append([docid, tf])
-                idx += 1
-                if idx >= 1000:
-                    pass
-            res[qid].sort(key=itemgetter(1,0), reverse=True)
+            try:
+                for row in doc_details.get_qid_details(qid):
+                    docid = row['docid']
+                    tf = float(row['total_tf'])
+                    #score = self.hypothesis_tf_function(tf, _type, scale, mu, sigma)
+                    res[qid].append([docid, tf])
+                    idx += 1
+                    if idx >= 1000:
+                        pass
+                res[qid].sort(key=itemgetter(1,0), reverse=True)
+            except IOError:
+                pass
         return res
 
     def cut_docs_tf_with_maxTF(self, maxTF=20):
