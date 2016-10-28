@@ -10,7 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from query import Query
 from judgment import Judgment
 
-class GenSqaDocDetails(object):
+class GenDocDetails(object):
     def __init__(self, path):
         self.collection_path = os.path.abspath(path)
         if not os.path.exists(self.collection_path):

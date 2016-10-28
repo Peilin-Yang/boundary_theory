@@ -85,106 +85,22 @@ def gen_batch_framework(para_label, batch_pythonscript_para, all_paras, \
     subprocess.call( shlex.split(run_batch_gen_query_command) )
 
 
-def gen_doc_details_batch():
+def gen_plot_tf_rel_batch(paras):
     all_paras = []
     for q in g.query:
         collection_name = q['collection']
         collection_path = os.path.join(collection_root, collection_name)
-        all_paras.extend(GenSqaDocDetails(collection_path).batch_gen_doc_details_paras())
+        p = copy.deepcopy(paras)
+        p.insert(0, collection_path)
+        all_paras.append((p))
+    gen_batch_framework('plot_tf_rel', '122', all_paras)
 
-    #print all_paras
-    gen_batch_framework('gen_doc_details', 'g2', all_paras)
-
-def gen_doc_details(para_file):
+def plot_tf_rel_atom(para_file):
     with open(para_file) as f:
         reader = csv.reader(f)
         for row in reader:
             collection_path = row[0]
-            qid = row[1]
-            term = row[2]
-            GenSqaDocDetails(collection_path).output_doc_details(qid, term)
-
-def gen_lambdarank_batch():
-    all_paras = []
-    
-    with open('lambdarank.json') as f:
-        methods = json.load(f)['methods']
-        for q in g.query:
-            collection_name = q['collection']
-            collection_path = os.path.join(collection_root, collection_name)
-            all_paras.extend(LambdaRank(collection_path).gen_lambdarank_paras( methods ) )
-
-    #print all_paras
-    gen_batch_framework('run_lambdarank', 'l2', all_paras)
-
-
-def run_lambdarank(para_file):
-    with open(para_file) as f:
-        reader = csv.reader(f)
-        for row in reader:
-            collection_path = row[0]
-            qid = row[1]
-            method_name = row[2]
-            method_paras = row[3]
-            output_fn = row[4]
-            LambdaRank(collection_path).process(qid, method_name, method_paras, output_fn)
-
-def print_lambdarank(print_details=False):
-    for c in g.query:
-        r = LambdaRank(os.path.join(collection_root, c['collection']))
-        print '-'*40
-        print c['collection']
-        print '-'*40
-        r.print_results(print_details)
-
-def print_para_lambdarank(method):
-    for c in g.query:
-        r = LambdaRank(os.path.join(collection_root, c['collection']))
-        print '-'*40
-        print c['collection']
-        print '-'*40
-        r.print_results_para(method)
-
-
-def gen_ranknet_batch():
-    all_paras = []
-    with open('lambdarank.json') as f:
-        methods = json.load(f)['methods']
-        for q in g.query:
-            collection_name = q['collection']
-            collection_path = os.path.join(collection_root, collection_name)
-            all_paras.extend(RankNet(collection_path).gen_lambdarank_paras( methods ) )
-
-    #print all_paras
-    gen_batch_framework('run_ranknet', 'r2', all_paras)
-
-
-def run_ranknet(para_file):
-    with open(para_file) as f:
-        reader = csv.reader(f)
-        for row in reader:
-            collection_path = row[0]
-            qid = row[1]
-            method_name = row[2]
-            method_paras = row[3]
-            output_fn = row[4]
-            RankNet(collection_path).process(qid, method_name, method_paras, output_fn)
-
-def print_ranknet(print_details=False):
-    for c in g.query:
-        r = RankNet(os.path.join(collection_root, c['collection']))
-        print '-'*40
-        print c['collection']
-        print '-'*40
-        r.print_results(print_details)
-
-def print_para_ranknet(method):
-    for c in g.query:
-        r = RankNet(os.path.join(collection_root, c['collection']))
-        print '-'*40
-        print c['collection']
-        print '-'*40
-        r.print_results_para(method)
+            PlotTFRel(collection_path).wrapper(*row[1:])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -196,6 +112,15 @@ if __name__ == '__main__':
                        and estimate P( c(t,D)=x | D is a relevant document), \
                        where x = 0,1,2,...maxTF(t). ')
     parser.add_argument('-12', '--plot_tf_rel', nargs='+',
+                       help='plot P( D is a relevant document | c(t,D)=x ), \
+                       where x = 0,1,2,...maxTF(t). \
+                       args: [method_name(method_with_para)] \
+                       [plot_ratio(boolean)] [avg_or_total(boolean, only if the plot_ratio is false)] \
+                       [rel_or_all(boolean, only if the plot_ratio is false)] \
+                       [performance_as_legend(boolean)] \
+                       [drawline(boolean)] [plotbins(boolean)] [numbins(int)] \
+                       [xlimit(float)] [output_format(eps|png)]')
+    parser.add_argument('-122', '--plot_tf_rel_atom', nargs=1,
                        help='plot P( D is a relevant document | c(t,D)=x ), \
                        where x = 0,1,2,...maxTF(t). \
                        args: [method_name(method_with_para)] \
@@ -272,12 +197,10 @@ if __name__ == '__main__':
     if args.plot_tfc_constraints:
         PlotRelTF().plot_tfc_constraints(args.plot_tfc_constraints)
 
-    if args.plot_tf_rel:
-        for c in g.query:
-            print c['collection']
-            PlotTFRel(os.path.join(collection_root, c['collection'])).wrapper(
-                *args.plot_tf_rel
-                )
+    if args.gen_plot_tf_rel_batch:
+        gen_plot_tf_rel_batch(args.gen_plot_tf_rel_batch)
+    if args.plot_tf_rel_atom:
+        plot_tf_rel_atom(args.plot_tf_rel_atom[0])
 
     if args.plot_synthetic:
         PlotSyntheticMAP().plot(
