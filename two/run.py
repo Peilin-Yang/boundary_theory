@@ -111,7 +111,7 @@ if __name__ == '__main__':
                        |Q|=1.  We could leverage an existing collection \
                        and estimate P( c(t,D)=x | D is a relevant document), \
                        where x = 0,1,2,...maxTF(t). ')
-    parser.add_argument('-12', '--plot_tf_rel', nargs='+',
+    parser.add_argument('-12', '--gen_plot_tf_rel_batch', nargs='+',
                        help='plot P( D is a relevant document | c(t,D)=x ), \
                        where x = 0,1,2,...maxTF(t). \
                        args: [method_name(method_with_para)] \
