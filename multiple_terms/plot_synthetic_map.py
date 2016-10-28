@@ -241,7 +241,8 @@ class PlotSyntheticMAP(object):
 
     def interpolation_1(self, maxTF, type=1, oformat='png', tf_init=30, 
             tf_halflife=4, docs_cnt_init=2000, docs_cnt_halflife=1, 
-            fit_larger_maxTF_cnt = 20, fit_larger_maxTF_type=1, cal_expect_map='0'):
+            fit_larger_maxTF_cnt = 20, fit_larger_maxTF_rel_cnt = 10, 
+            fit_larger_maxTF_type=1, cal_expect_map='0'):
         """
         Normal distribution
         type:
@@ -253,6 +254,7 @@ class PlotSyntheticMAP(object):
         docs_cnt_init = float(docs_cnt_init)
         docs_cnt_halflife = float(docs_cnt_halflife)
         fit_larger_maxTF_cnt = int(fit_larger_maxTF_cnt)
+        fit_larger_maxTF_rel_cnt = int(fit_larger_maxTF_rel_cnt)
         fit_larger_maxTF_type = int(fit_larger_maxTF_type)
         cal_expect_map = False if cal_expect_map == '0' else True
 
@@ -298,16 +300,10 @@ class PlotSyntheticMAP(object):
         self.plot_interpolation(ranges, docs_cnt_scale, title+"(DOC)", "", output_doc_fn, oformat)
 
         if fit_larger_maxTF_type != 0:
-            for i in range(fit_larger_maxTF_cnt):
+            for i in range(fit_larger_maxTF_rel_cnt):
                 ranges.append(maxTF+i+1)
-                if fit_larger_maxTF_type == 1: # best
-                    tf = 1 if i>=fit_larger_maxTF_cnt/2 else 0
-                if fit_larger_maxTF_type == 2: # worst
-                    tf = 1 if i<fit_larger_maxTF_cnt/2 else 0
-                if fit_larger_maxTF_type == 3: # intermediate
-                    tf = 1 if i%2==1 else 0
-                tf_scale.append(tf)
-                docs_cnt_scale.append(1)
+                tf_scale.append(1)
+                docs_cnt_scale.append(max(fit_larger_maxTF_cnt/fit_larger_maxTF_rel_cnt-1, 1))
         ranking_list = zip(tf_scale, docs_cnt_scale)
         print ranking_list
         performance = '$MAP_B$:' + str(round(self.cal_map(ranking_list, type=1), 4))
