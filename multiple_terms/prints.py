@@ -139,6 +139,8 @@ class Prints(object):
         rel_smaller_than_maxTF = []
         rel_larger_than_maxTF = []
         for qid in cutted_docs:
+            if not rel_docs[qid]:
+                continue
             ranking_with_judge = [(doc[0], doc[0] in [ele[0] for ele in rel_docs[qid]]) for doc in cutted_docs[qid]]
             rel_smaller_cnt = len([ele for ele in ranking_with_judge if ele[1]])
             rel_smaller_than_maxTF.append(rel_smaller_cnt)
