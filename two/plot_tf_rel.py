@@ -283,7 +283,7 @@ class PlotTFRel(SingleQueryAnalysis):
         collection_name = self.collection_path.split('/')[-1]
         cs = CollectionStats(self.collection_path)
         doc_details = GenDocDetails(self.collection_path)
-        output_root = 'single_query_figures'
+        output_root = 'two'
         all_queries = Query(self.collection_path).get_queries_of_length(2)
         queries = {ele['num']:ele['title'] for ele in all_queries}
         #print qids
