@@ -22,46 +22,12 @@ class GenDocDetails(object):
         self.queries = {ele['num']:ele['title'] for ele in Query(self.collection_path).get_queries_of_length(1)}
         self.judgements = Judgment(self.collection_path)\
             .get_judgment_of_some_queries(self.queries.keys(), 'dict')
-
-    def batch_gen_doc_details_paras(self):
-        paras = []
-        output_root = os.path.join(self.collection_path, 'sqa_doc_details')
-        if not os.path.exists(output_root):
-            os.makedirs(output_root)
-        for qid, term in self.queries.items():
-            if not os.path.exists(os.path.join(output_root, qid)):
-                paras.append((self.collection_path, qid, term))
-        return paras
-
-    def output_doc_details(self, qid, term):
-        process = Popen([self.dumpindex, self.index_path, 't', term], stdout=PIPE)
-        stdout, stderr = process.communicate()
-        details = []
-        for line in stdout.split('\n')[1:-2]:
-            line = line.strip()
-            if line:
-                row = line.split()
-                docid = row[1]
-                tf = int(row[2])
-                doc_len = int(row[3])
-                rel_score = self.judgements[qid][docid] if docid in self.judgements[qid] else 0
-                details.append({
-                    'qid': qid,
-                    'docid': docid,
-                    'rel_score': rel_score,
-                    'total_tf': tf,
-                    'doc_len': doc_len
-                })
-
-        ofn = os.path.join(self.collection_path, 'sqa_doc_details', qid)
-        with open(ofn, 'wb') as f:
-            fieldnames = ['qid','docid','rel_score','total_tf','doc_len']
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(details)
+        self.doc_details_root = os.path.join(self.collection_path, 'doc_details')
+        if not os.path.exists(self.doc_details_root):
+            os.makedirs(self.doc_details_root)
 
     def get_qid_details(self, qid):
-        with open(os.path.join(self.collection_path, 'sqa_doc_details', qid)) as f:
+        with open(os.path.join(self.doc_details_root, qid)) as f:
             rows = csv.DictReader(f)
             for row in rows:
                 yield row
