@@ -303,7 +303,7 @@ class PlotSyntheticMAP(object):
             for i in range(fit_larger_maxTF_rel_cnt):
                 ranges.append(maxTF+i+1)
                 tf_scale.append(1)
-                docs_cnt_scale.append(max(fit_larger_maxTF_cnt/fit_larger_maxTF_rel_cnt-1, 1))
+                docs_cnt_scale.append(max(fit_larger_maxTF_cnt/fit_larger_maxTF_rel_cnt, 1))
         ranking_list = zip(tf_scale, docs_cnt_scale)
         print ranking_list
         performance = '$MAP_B$:' + str(round(self.cal_map(ranking_list, type=1), 4))
