@@ -38,6 +38,7 @@ from collection_stats import CollectionStats
 from baselines import Baselines
 from gen_doc_details import GenDocDetails
 from plot_tf_rel import PlotTFRel
+from plot_synthetic_map import PlotSyntheticMAP
 from prints import Prints
 import g
 import ArrayJob
