@@ -7,7 +7,6 @@ import ast
 from operator import itemgetter
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
-from base import SingleQueryAnalysis
 from collection_stats import CollectionStats
 from query import Query
 from judgment import Judgment
@@ -20,7 +19,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-class PlotSyntheticMAP(SingleQueryAnalysis):
+class PlotSyntheticMAP(object):
     """
     This class plots the performance(MAP) for the synthetic collection.
     The purpose here is to see how the curve correlates with the performance
@@ -28,6 +27,7 @@ class PlotSyntheticMAP(SingleQueryAnalysis):
     def __init__(self):
         super(PlotSyntheticMAP, self).__init__()
 
+        self.all_results_root = '../../all_results'
         self.output_root = os.path.join(self.all_results_root, 'synthetic_documents') 
         if not os.path.exists(self.output_root):
             os.makedirs(self.output_root)
