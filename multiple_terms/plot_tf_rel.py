@@ -395,7 +395,7 @@ class PlotTFRel(object):
                     xlimit=xlimit,
                     ylimit=ylimit)
         output_fn = os.path.join(self.all_results_root, output_root, 
-            '%s-%s-%s-%s-%s-%s-%d-%.1f-individual.%s' % (
+            '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-individual.%s' % (
                 collection_name, 
                 _method, 
                 'ratio' if plot_ratio else 'abscnt', 
@@ -481,7 +481,7 @@ class PlotTFRel(object):
                 ylimit=ylimit)
 
         output_fn = os.path.join(self.all_results_root, output_root, 
-            '%s-%s-%s-%s-%s-%s-%d-%.1f-all.%s' % (
+            '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-all.%s' % (
                 collection_name, 
                 _method, 
                 'ratio' if plot_ratio else 'abscnt', 
