@@ -136,7 +136,7 @@ if __name__ == '__main__':
                        [rel_or_all(boolean, only if the plot_ratio is false)] \
                        [performance_as_legend(boolean)] \
                        [drawline(boolean)] [plotbins(boolean)] [numbins(int)] \
-                       [xlimit(float)] [output_format(eps|png)]')
+                       [xlimit(float)] [ylimit(float)] [output_format(eps|png)]')
     parser.add_argument('-122', '--plot_tf_rel_atom', nargs=1,
                        help='plot P( D is a relevant document | c(t,D)=x ), \
                        where x = 0,1,2,...maxTF(t). \
