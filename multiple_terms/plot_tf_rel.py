@@ -536,7 +536,7 @@ class PlotTFRel(object):
 
     def wrapper(self, method_name, plot_ratio, plot_total_or_avg, 
             plot_rel_or_all, performance_as_legend, drawline, plotbins, 
-            numbins, xlimit, oformat='eps'):
+            numbins, xlimit, ylimit, oformat='eps'):
         """
         This is the wrapper of the actual function. 
         We parse the CLI arguments and convert them to the values required 
