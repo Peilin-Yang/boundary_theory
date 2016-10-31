@@ -38,7 +38,7 @@ class Judgment(object):
                 line = line.strip()
                 if line:
                     row = line.split()
-                    _qid = row[0]
+                    _qid = str(int(row[0]))
                     doc_id = row[2]
                     relevant_score = ast.literal_eval(row[3])
                     if callback:
