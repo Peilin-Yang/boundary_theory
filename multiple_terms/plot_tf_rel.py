@@ -501,6 +501,11 @@ class PlotTFRel(object):
         1+log(1+log(tf))
         """
         return 1+math.log(1+math.log(int(row['total_tf'])))
+    def tf_5(self, collection_stats, row):
+        """
+        tf/(tf+k)  k=1.0 default
+        """
+        return int(row['total_tf']) / (1.0 + int(row['total_tf']))
     def tf_dl_1(self, collection_stats, row):
         """
         tf/dl
@@ -537,6 +542,9 @@ class PlotTFRel(object):
         elif method_name == 'tf_4':
             x_func = self.tf_4
             formal_method_name = 'tf4'
+        elif method_name == 'tf_5':
+            x_func = self.tf_5
+            formal_method_name = 'tf5'
         elif method_name == 'tf_ln_1':
             x_func = self.tf_dl_1
             formal_method_name = 'hypothesis_stq_tf_ln_1'
