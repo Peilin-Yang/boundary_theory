@@ -42,6 +42,51 @@ class PlotTFRel(object):
 
         self.all_results_root = '../../all_results'
 
+    def A(self, pr, pn, r, n):
+        """
+        """
+        if r == 0:
+           return 0
+        R = {}
+        for i in range(1, r+1):
+            for j in range(n+1):
+                R[(pr+r-i, pn+n-j, i, 0)] = (pr+r-i+1.0) / (pr+r-i+pn+n-j+1.0) 
+                if i != 1:
+                    R[(pr+r-i, pn+n-j, i, 0)] += R[(pr+r-i+1, pn+n-j, i-1, 0)]
+        for i in range(1, r+1):
+            for j in range(1, n+1):
+                subR = R[(pr+r-i+1, pn+n-j, i-1, j)] if i!=1 else 0
+                prob_r = i*1.0/(i+j)*((pr+r-i+1.0)/(pr+r-i+pn+n-j+1)+subR) 
+                prob_n = j*1.0/(i+j)*R[(pr+r-i, pn+n-j+1, i, j-1)]
+                R[(pr+r-i, pn+n-j, i, j)] = prob_r + prob_n
+        return R[(pr, pn, r, n)]
+
+
+    def cal_expected_map(self, ranking_list, total_rel=0):
+        """
+        Calculate the MAP based on the ranking_list.
+
+        Input:
+        @ranking_list: The format of the ranking_list is:
+            [(num_rel_docs, num_total_docs), (num_rel_docs, num_total_docs), ...]
+            where the index corresponds to the TF, e.g. ranking_list[1] is TF=1
+        """
+        s = 0.0
+        pr = 0
+        pn = 0
+        for ele in reversed(ranking_list):
+            rel_doc_cnt = ele[0]
+            this_doc_cnt = ele[1]
+            nonrel_doc_cnt = this_doc_cnt - rel_doc_cnt
+            s += self.A(pr, pn, rel_doc_cnt, nonrel_doc_cnt)
+            pr += rel_doc_cnt
+            pn += nonrel_doc_cnt
+            total_rel += rel_doc_cnt
+        #print s/total_rel
+        if total_rel == 0:
+            return 0
+        return s/total_rel
+
     def plot_single_tfc_constraints_draw_pdf_dot(self, ax, xaxis, yaxis, 
             title, legend, legend_outside=False, marker='ro', 
             xlog=True, ylog=False, zoom=False, legend_pos='upper right', 
@@ -296,17 +341,6 @@ class PlotTFRel(object):
         #print qids
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
         #print np.mean([len(rel_docs[qid]) for qid in rel_docs])
-        collection_legend = ''
-        if performance_as_legend:
-            eval_class = Evaluation(self.collection_path)
-            p = eval_class.get_all_performance_of_some_queries(
-                method=_method,
-                qids=queries.keys(), 
-                return_all_metrics=False, 
-                metrics=['map']
-            )
-            collection_legend = 'map:%.4f' % (np.mean([p[qid]['map'] if p[qid] else 0 for qid in p]))
-
         collection_x_dict = {}
         collection_level_maxTF = 0
         collection_level_maxX = 0.0
@@ -319,6 +353,7 @@ class PlotTFRel(object):
         col_idx = 0
         idfs = [(qid, math.log(cs.get_term_IDF1(queries[qid]))) for qid in rel_docs]
         idfs.sort(key=itemgetter(1))
+        all_expected_maps = []
         for qid,idf in idfs:
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
@@ -358,6 +393,8 @@ class PlotTFRel(object):
             xaxis = x_dict.keys()
             xaxis.sort()
             yaxis = [x_dict[x][0] for x in xaxis]
+            ranking_list = [(x_dict[x][0], x_dict[x][1]) for x in xaxis]
+            all_expected_maps.append(self.cal_expected_map(ranking_list))
             if plot_ratio:
                 yaxis = [x_dict[x][0]*1.0/x_dict[x][1] for x in xaxis]
             else:
@@ -455,6 +492,18 @@ class PlotTFRel(object):
         # we do not care about the actual values of x
         # so we just map the actual values to integer values
         xaxis = range(len(xaxis))
+
+        collection_legend = ''
+        if performance_as_legend:
+            eval_class = Evaluation(self.collection_path)
+            p = eval_class.get_all_performance_of_some_queries(
+                method=_method,
+                qids=queries.keys(), 
+                return_all_metrics=False, 
+                metrics=['map']
+            )
+            collection_legend = '$MAP$:%.4f' % (np.mean([p[qid]['map'] if p[qid] else 0 for qid in p]))
+            collection_legend += '\n$MAP_E:%.4f$' % (np.mean(all_expected_maps))
 
         if drawline:
             self.plot_single_tfc_constraints_draw_pdf_line(axs, xaxis, 
