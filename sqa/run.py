@@ -14,6 +14,7 @@ import multiprocessing
 import re
 import csv
 import shutil
+import copy
 
 import inspect
 from inspect import currentframe, getframeinfo
