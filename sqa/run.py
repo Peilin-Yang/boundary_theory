@@ -104,6 +104,23 @@ def gen_doc_details(para_file):
             term = row[2]
             GenSqaDocDetails(collection_path).output_doc_details(qid, term)
 
+def gen_plot_tf_rel_batch(paras):
+    all_paras = []
+    for q in g.query:
+        collection_name = q['collection']
+        collection_path = os.path.join(collection_root, collection_name)
+        p = copy.deepcopy(paras)
+        p.insert(0, collection_path)
+        all_paras.append((p))
+    gen_batch_framework('plot_tf_rel', '122', all_paras)
+
+def plot_tf_rel_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            PlotTFRel(collection_path).wrapper(*row[1:])
+
 def gen_lambdarank_batch():
     all_paras = []
     
@@ -195,7 +212,16 @@ if __name__ == '__main__':
                        |Q|=1.  We could leverage an existing collection \
                        and estimate P( c(t,D)=x | D is a relevant document), \
                        where x = 0,1,2,...maxTF(t). ')
-    parser.add_argument('-12', '--plot_tf_rel', nargs='+',
+    parser.add_argument('-12', '--gen_plot_tf_rel_batch', nargs='+',
+                       help='plot P( D is a relevant document | c(t,D)=x ), \
+                       where x = 0,1,2,...maxTF(t). \
+                       args: [method_name(method_with_para)] \
+                       [plot_ratio(boolean)] [avg_or_total(boolean, only if the plot_ratio is false)] \
+                       [rel_or_all(boolean, only if the plot_ratio is false)] \
+                       [performance_as_legend(boolean)] \
+                       [drawline(boolean)] [plotbins(boolean)] [numbins(int)] \
+                       [xlimit(float)] [ylimit(float)] [output_format(eps|png)]')
+    parser.add_argument('-122', '--plot_tf_rel_atom', nargs=1,
                        help='plot P( D is a relevant document | c(t,D)=x ), \
                        where x = 0,1,2,...maxTF(t). \
                        args: [method_name(method_with_para)] \
