@@ -399,6 +399,8 @@ class PlotTFRel(SingleQueryAnalysis):
             xaxis.sort()
             yaxis = [x_dict[x][0] for x in xaxis]
             ranking_list = [(x_dict[x][0], x_dict[x][1]) for x in xaxis]
+            print ranking_list
+            raw_input()
             all_expected_maps.append(self.cal_expected_map(ranking_list))
             if plot_ratio:
                 yaxis = [x_dict[x][0]*1.0/x_dict[x][1] for x in xaxis]
