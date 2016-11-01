@@ -473,6 +473,7 @@ class PlotTFRel(object):
         else:
             if plot_total_or_avg:
                 yaxis = [(collection_x_dict[x][0]) if plot_rel_or_all else (collection_x_dict[x][1]) for x in xaxis] 
+                print np.sum(collection_x_dict[x][0][20:]), np.sum(collection_x_dict[x][1][20:])
             else:
                 yaxis = [(collection_x_dict[x][0]/len(idfs)) if plot_rel_or_all else (collection_x_dict[x][1]/len(idfs)) for x in xaxis]
         if plotbins:
