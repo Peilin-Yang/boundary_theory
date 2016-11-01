@@ -559,12 +559,12 @@ class PlotTFRel(object):
         """
         1+log(1+log(tf))
         """
-        return 1+math.log(1+math.log(int(row['total_tf'])))
+        return round(1+math.log(1+math.log(int(row['total_tf']))), 3)
     def tf_5(self, collection_stats, row):
         """
         tf/(tf+k)  k=1.0 default
         """
-        return int(row['total_tf']) / (1.0 + int(row['total_tf']))
+        return round(int(row['total_tf']) / (1.0 + int(row['total_tf'])), 3)
     def tf_dl_1(self, collection_stats, row):
         """
         tf/dl
