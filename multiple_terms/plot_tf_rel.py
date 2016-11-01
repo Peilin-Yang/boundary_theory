@@ -341,6 +341,13 @@ class PlotTFRel(object):
         #print qids
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
         #print np.mean([len(rel_docs[qid]) for qid in rel_docs])
+        eval_class = Evaluation(self.collection_path)
+        p = eval_class.get_all_performance_of_some_queries(
+            method=_method,
+            qids=queries.keys(), 
+            return_all_metrics=False, 
+            metrics=['map']
+        )
         collection_x_dict = {}
         collection_level_maxTF = 0
         collection_level_maxX = 0.0
@@ -495,13 +502,6 @@ class PlotTFRel(object):
 
         collection_legend = ''
         if performance_as_legend:
-            eval_class = Evaluation(self.collection_path)
-            p = eval_class.get_all_performance_of_some_queries(
-                method=_method,
-                qids=queries.keys(), 
-                return_all_metrics=False, 
-                metrics=['map']
-            )
             collection_legend = '$MAP$:%.4f' % (np.mean([p[qid]['map'] if p[qid] else 0 for qid in p]))
             collection_legend += '\n$MAP_E:%.4f$' % (np.mean(all_expected_maps))
 
