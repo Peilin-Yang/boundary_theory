@@ -565,7 +565,7 @@ class PlotTFRel(object):
         """
         tf/(tf+k)  k=1.0 default
         """
-        return round(int(row['total_tf']) / (1.0 + int(row['total_tf'])), 3)
+        return round(int(row['total_tf']) / (1.0 + int(row['total_tf'])), 4)
     def tf_dl_1(self, collection_stats, row):
         """
         tf/dl
