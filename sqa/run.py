@@ -298,12 +298,10 @@ if __name__ == '__main__':
     if args.plot_tfc_constraints:
         PlotRelTF().plot_tfc_constraints(args.plot_tfc_constraints)
 
-    if args.plot_tf_rel:
-        for c in g.query:
-            print c['collection']
-            PlotTFRel(os.path.join(collection_root, c['collection'])).wrapper(
-                *args.plot_tf_rel
-                )
+    if args.gen_plot_tf_rel_batch:
+        gen_plot_tf_rel_batch(args.gen_plot_tf_rel_batch)
+    if args.plot_tf_rel_atom:
+        plot_tf_rel_atom(args.plot_tf_rel_atom[0])
 
     if args.plot_synthetic:
         PlotSyntheticMAP().plot(
