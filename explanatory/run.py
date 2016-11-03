@@ -119,6 +119,88 @@ def plot_tf_rel_atom(para_file):
             collection_path = row[0]
             PlotTFRel(collection_path).wrapper(*row[1:])
 
+def gen_lambdarank_batch():
+    all_paras = []
+    
+    with open('lambdarank.json') as f:
+        methods = json.load(f)['methods']
+        for q in g.query:
+            collection_name = q['collection']
+            collection_path = os.path.join(collection_root, collection_name)
+            all_paras.extend(LambdaRank(collection_path).gen_lambdarank_paras( methods ) )
+
+    #print all_paras
+    gen_batch_framework('run_lambdarank', 'l2', all_paras)
+
+
+def run_lambdarank(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            qid = row[1]
+            method_name = row[2]
+            method_paras = row[3]
+            output_fn = row[4]
+            LambdaRank(collection_path).process(qid, method_name, method_paras, output_fn)
+
+def print_lambdarank(print_details=False):
+    for c in g.query:
+        r = LambdaRank(os.path.join(collection_root, c['collection']))
+        print '-'*40
+        print c['collection']
+        print '-'*40
+        r.print_results(print_details)
+
+def print_para_lambdarank(method):
+    for c in g.query:
+        r = LambdaRank(os.path.join(collection_root, c['collection']))
+        print '-'*40
+        print c['collection']
+        print '-'*40
+        r.print_results_para(method)
+
+
+def gen_ranknet_batch():
+    all_paras = []
+    with open('lambdarank.json') as f:
+        methods = json.load(f)['methods']
+        for q in g.query:
+            collection_name = q['collection']
+            collection_path = os.path.join(collection_root, collection_name)
+            all_paras.extend(RankNet(collection_path).gen_lambdarank_paras( methods ) )
+
+    #print all_paras
+    gen_batch_framework('run_ranknet', 'r2', all_paras)
+
+
+def run_ranknet(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            qid = row[1]
+            method_name = row[2]
+            method_paras = row[3]
+            output_fn = row[4]
+            RankNet(collection_path).process(qid, method_name, method_paras, output_fn)
+
+def print_ranknet(print_details=False):
+    for c in g.query:
+        r = RankNet(os.path.join(collection_root, c['collection']))
+        print '-'*40
+        print c['collection']
+        print '-'*40
+        r.print_results(print_details)
+
+def print_para_ranknet(method):
+    for c in g.query:
+        r = RankNet(os.path.join(collection_root, c['collection']))
+        print '-'*40
+        print c['collection']
+        print '-'*40
+        r.print_results_para(method)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
@@ -131,7 +213,7 @@ if __name__ == '__main__':
     parser.add_argument('-12', '--gen_plot_tf_rel_batch', nargs='+',
                        help='plot P( D is a relevant document | c(t,D)=x ), \
                        where x = 0,1,2,...maxTF(t). \
-                       args: [method_name(method_with_para)] \
+                       args: [query_len(0 for all queries)] [method_name(method_with_para)] \
                        [plot_ratio(boolean)] [avg_or_total(boolean, only if the plot_ratio is false)] \
                        [rel_or_all(boolean, only if the plot_ratio is false)] \
                        [performance_as_legend(boolean)] \
@@ -168,6 +250,7 @@ if __name__ == '__main__':
                               e.g. we may have multiple implementations of TF functions. \
                        [-other_paras] we can add arbitry number of parameters after the name and type')
 
+
     parser.add_argument('-21', '--gen_perfect_ranking_list', action='store_true',
                        help='')
 
@@ -185,6 +268,28 @@ if __name__ == '__main__':
                        help='Generate the document details for single term queries')
     parser.add_argument('-g2', '--gen_doc_details_atom', nargs=1,
                        help='Generate the document details for single term queries')
+    
+
+    parser.add_argument('-l1', '--lambdarank_batch', action='store_true',
+                       help='LambdaRank related. This is to get the optimal parameters for classic models')
+    parser.add_argument('-l2', '--lambdarank_atom', nargs=1,
+                       help='LambdaRank related. This is to get the optimal parameters for classic models')
+    parser.add_argument('-lp', '--lambdarank_print', nargs='?',
+                       help='Print the optimal performances of lambdarank')
+    parser.add_argument('-lpp', '--lambdarank_print_para', nargs=1,
+                       help='Print the optimal performances of lambdarank')
+
+    parser.add_argument('-r1', '--ranknet_batch', action='store_true',
+                       help='Ranknet related. This is to get the optimal parameters for classic models')
+    parser.add_argument('-r2', '--ranknet_atom', nargs=1,
+                       help='Ranknet related. This is to get the optimal parameters for classic models')
+    parser.add_argument('-rp', '--ranknet_print', nargs='?',
+                       help='Print the optimal performances of ranknet')
+    parser.add_argument('-rpp', '--ranknet_print_para', nargs=1,
+                       help='Print the optimal performances of ranknet')
+
+    parser.add_argument('-s1', '--svmmap_data', action='store_true',
+                       help='Output the data files for SVMMAP')
 
 
     args = parser.parse_args()
@@ -280,3 +385,84 @@ if __name__ == '__main__':
         gen_doc_details(args.gen_doc_details_atom[0])
 
 
+    if args.gen_ranking_list:
+        method_name = args.gen_ranking_list[0]
+        callback_code = int(args.gen_ranking_list[1])
+        method_type = args.gen_ranking_list[2]
+        paras = args.gen_ranking_list[3:] if len(args.gen_ranking_list)>3 else []
+        paras.insert(0, method_type)
+        for c in g.query:
+            h = Hypothesis(os.path.join(collection_root, c['collection']))
+            if callback_code == 2:
+                _callback = h.hypothesis_tf_ln_function
+            h.gen_ranking_list(
+              'hypothesis_stq_'+method_name+'_'+method_type, 
+              _callback, 
+              paras)
+
+    if args.gen_perfect_ranking_list:
+        for c in g.query:
+            print c['collection']
+            h = Hypothesis(os.path.join(collection_root, c['collection']))
+            h.gen_perfect_ranking_list()
+
+    if args.print_eval:
+        methods = args.print_eval
+        for c in g.query:
+            h = Hypothesis(os.path.join(collection_root, c['collection']))
+            print '-'*40
+            print c['collection']
+            print '-'*40
+            h.print_eval(methods)
+
+    if args.print_best:
+        methods = args.print_best
+        for c in g.query:
+            p = Prints(os.path.join(collection_root, c['collection']))
+            print '-'*40
+            print c['collection']
+            print '-'*40
+            p.print_best_performances(methods)
+
+    if args.print_statistics:
+        methods = args.print_statistics
+        for c in g.query:
+            p = Prints(os.path.join(collection_root, c['collection']))
+            print '-'*40
+            print c['collection']
+            print '-'*40
+            p.print_statistics(methods)
+
+    if args.print_map_with_cut_maxTF:
+        for c in g.query:
+            p = Prints(os.path.join(collection_root, c['collection']))
+            print '-'*40
+            print c['collection']
+            print '-'*40
+            p.print_map_with_cut_maxTF(int(args.print_map_with_cut_maxTF[0]))
+
+    if args.lambdarank_batch:
+        gen_lambdarank_batch()
+    if args.lambdarank_atom:
+        run_lambdarank(args.lambdarank_atom[0])
+    if args.lambdarank_print:
+        print_lambdarank(args.lambdarank_print[0] != '0')
+    if args.lambdarank_print_para:
+        print_para_lambdarank(args.lambdarank_print_para[0])
+
+    if args.ranknet_batch:
+        gen_ranknet_batch()
+    if args.ranknet_atom:
+        run_ranknet(args.ranknet_atom[0])
+    if args.ranknet_print:
+        print_ranknet(args.ranknet_print[0] != '0')
+    if args.ranknet_print_para:
+        print_para_ranknet(args.ranknet_print_para[0])
+
+    if args.svmmap_data:
+        for c in g.query:
+            s = SVMMAP(os.path.join(collection_root, c['collection']))
+            print '-'*40
+            print c['collection']
+            print '-'*40
+            s.output_data_file()

@@ -8,9 +8,8 @@ from operator import itemgetter
 from subprocess import Popen, PIPE
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
-from base import SingleQueryAnalysis
 from collection_stats import CollectionStats
-from gen_doc_details import GenSqaDocDetails
+from gen_doc_details import GenDocDetails
 from query import Query
 from judgment import Judgment
 from evaluation import Evaluation
@@ -29,7 +28,7 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
 
-class PlotTFRel(SingleQueryAnalysis):
+class PlotTFRel(object):
     """
     Plot the probability distribution of P(D=1|f(tf,dl,other_stats)=x)
     """
@@ -40,6 +39,10 @@ class PlotTFRel(SingleQueryAnalysis):
         if not os.path.exists(self.collection_path):
             print '[Evaluation Constructor]:Please provide valid corpus path'
             exit(1)
+
+        self.all_results_root = '../../all_results'
+        if not os.path.exists(self.all_results_root):
+            os.path.makedirs(self.all_results_root)
 
     def A(self, pr, pn, r, n):
         """
@@ -86,7 +89,7 @@ class PlotTFRel(SingleQueryAnalysis):
             return 0
         return s/total_rel
 
-    def plot_single_tfc_constraints_draw_pdf(self, ax, xaxis, yaxis, 
+    def plot_single_tfc_constraints_draw_pdf_dot(self, ax, xaxis, yaxis, 
             title, legend, legend_outside=False, marker='ro', 
             xlog=True, ylog=False, zoom=False, legend_pos='upper right', 
             xlabel_format=0, xlimit=0, ylimit=0):
@@ -297,15 +300,16 @@ class PlotTFRel(SingleQueryAnalysis):
         ax.plot(trialX, trialY, label='fitting')
 
 
-    def plot_single_tfc_constraints_rel_tf(self, x_func, 
+    def plot_single_tfc_constraints_rel_tf(self, query_length, x_func, 
             _method, plot_ratio=True, plot_total_or_avg=True,
             plot_rel_or_all=True, performance_as_legend=True, 
-            drawline=True, plotbins=True, numbins=60, xlimit=0,
+            drawline=True, plotbins=True, numbins=60, xlimit=0, 
             ylimit=0, oformat='eps'):
         """
         plot the P(D=1|TF=x)
 
         Input:
+        @query_length: only plot the queries of length, 0 for all queries.
         @x_func: how to get the x-axis of the figure. By default, this should 
             be TF values. But we are flexible with other options, e.g. tf/dl
         @_method: Which method is going to be plot. The parameters should also be 
@@ -331,10 +335,15 @@ class PlotTFRel(SingleQueryAnalysis):
         """
         collection_name = self.collection_path.split('/')[-1]
         cs = CollectionStats(self.collection_path)
-        doc_details = GenSqaDocDetails(self.collection_path)
-        output_root = 'single_query_figures'
-        single_queries = Query(self.collection_path).get_queries_of_length(1)
-        queries = {ele['num']:ele['title'] for ele in single_queries}
+        doc_details = GenDocDetails(self.collection_path)
+        output_root = os.path.join('multiple_term_queries_figures', query_length)
+        if not os.path.exists(os.path.join(self.all_results_root, output_root)):
+            os.makedirs(os.path.join(self.all_results_root, output_root))
+        if query_length == 0:
+            queries = Query(self.collection_path).get_queries()
+        else:
+            queries = Query(self.collection_path).get_queries_of_length(1)
+        queries = {ele['num']:ele['title'] for ele in queries}
         #print qids
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
         #print np.mean([len(rel_docs[qid]) for qid in rel_docs])
@@ -345,13 +354,12 @@ class PlotTFRel(SingleQueryAnalysis):
             return_all_metrics=False, 
             metrics=['map']
         )
-       
         collection_x_dict = {}
         collection_level_maxTF = 0
         collection_level_maxX = 0.0
         num_cols = 4
         num_rows = int(math.ceil(len(rel_docs)*1.0/num_cols))
-        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3.*num_rows))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(0.5*num_cols, 0.5*num_rows))
         font = {'size' : 8}
         plt.rc('font', **font)
         row_idx = 0
@@ -426,7 +434,7 @@ class PlotTFRel(SingleQueryAnalysis):
                     xlimit=xlimit,
                     ylimit=ylimit)
             else:
-                self.plot_single_tfc_constraints_draw_pdf(
+                self.plot_single_tfc_constraints_draw_pdf_dot(
                     ax, xaxis, yaxis,
                     qid+'-'+query_term, 
                     legend,
@@ -437,7 +445,7 @@ class PlotTFRel(SingleQueryAnalysis):
                     xlimit=xlimit,
                     ylimit=ylimit)
         output_fn = os.path.join(self.all_results_root, output_root, 
-            '%s-%s-%s-%s-%s-%s-%d-%.1f-individual.%s' % (
+            '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-individual.%s' % (
                 collection_name, 
                 _method, 
                 'ratio' if plot_ratio else 'abscnt', 
@@ -445,7 +453,8 @@ class PlotTFRel(SingleQueryAnalysis):
                 'rel' if plot_rel_or_all else 'all',
                 'line' if drawline else 'dots', 
                 numbins if plotbins else 0, 
-                xlimit, 
+                xlimit,
+                ylimit, 
                 oformat) )
         #plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
@@ -472,6 +481,7 @@ class PlotTFRel(SingleQueryAnalysis):
                 yaxis = [(collection_x_dict[x][0]) if plot_rel_or_all else (collection_x_dict[x][1]) for x in xaxis] 
             else:
                 yaxis = [(collection_x_dict[x][0]/len(idfs)) if plot_rel_or_all else (collection_x_dict[x][1]/len(idfs)) for x in xaxis]
+            print np.sum(yaxis[20:]), np.sum(yaxis[20:])
         if plotbins:
             interval = collection_level_maxX*1.0/numbins
             newxaxis = [i for i in np.arange(0, collection_level_maxX+1e-10, interval)]
@@ -517,7 +527,7 @@ class PlotTFRel(SingleQueryAnalysis):
                 self.plot_hypothesis_tfln_curve_fit(axs, xaxis, yaxis)
             """
         else:
-            self.plot_single_tfc_constraints_draw_pdf(axs, xaxis, 
+            self.plot_single_tfc_constraints_draw_pdf_dot(axs, xaxis, 
                 yaxis, collection_name, 
                 collection_legend, 
                 legend_pos='best',
@@ -536,7 +546,7 @@ class PlotTFRel(SingleQueryAnalysis):
                 'line' if drawline else 'dots', 
                 numbins if plotbins else 0, 
                 xlimit,
-                ylimit,
+                ylimit, 
                 oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
@@ -552,6 +562,21 @@ class PlotTFRel(SingleQueryAnalysis):
         tf
         """
         return int(row['total_tf'])
+    def tf_4(self, collection_stats, row):
+        """
+        1+log(1+log(tf))
+        """
+        return round(1+math.log(1+math.log(int(row['total_tf']))), 3)
+    def tf_5(self, collection_stats, row):
+        """
+        tf/(tf+k)  k=1.0 default
+        """
+        return round(int(row['total_tf']) / (1.0 + int(row['total_tf'])), 4)
+    def tfidf1(self, collection_stats, row):
+        """
+        tf/(tf+k) * idf  k=1.0 default
+        """
+        return round(int(row['total_tf']) / (1.0 + int(row['total_tf'])), 4)
     def tf_dl_1(self, collection_stats, row):
         """
         tf/dl
@@ -570,7 +595,7 @@ class PlotTFRel(SingleQueryAnalysis):
         delta = 2.75
         return round((np.log(float(row['total_tf']))+delta)/np.log(float(row['doc_len'])), 3) 
 
-    def wrapper(self, method_name, plot_ratio, plot_total_or_avg, 
+    def wrapper(self, query_length, method_name, plot_ratio, plot_total_or_avg, 
             plot_rel_or_all, performance_as_legend, drawline, plotbins, 
             numbins, xlimit, ylimit, oformat='eps'):
         """
@@ -585,6 +610,12 @@ class PlotTFRel(SingleQueryAnalysis):
         elif method_name == 'tf_1':
             x_func = self.tf_1
             formal_method_name = 'tf1'
+        elif method_name == 'tf_4':
+            x_func = self.tf_4
+            formal_method_name = 'tf4'
+        elif method_name == 'tf_5':
+            x_func = self.tf_5
+            formal_method_name = 'tf5'
         elif method_name == 'tf_ln_1':
             x_func = self.tf_dl_1
             formal_method_name = 'hypothesis_stq_tf_ln_1'
@@ -595,6 +626,7 @@ class PlotTFRel(SingleQueryAnalysis):
             x_func = self.tf_dl_5
             formal_method_name = 'hypothesis_stq_tf_ln_5'
         self.plot_single_tfc_constraints_rel_tf(
+            query_length,
             x_func,
             formal_method_name,
             False if plot_ratio == '0' else True,

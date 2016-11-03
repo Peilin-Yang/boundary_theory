@@ -172,7 +172,7 @@ class Hypothesis(object):
         """
         single_queries = Query(self.collection_path).get_queries_of_length(1)
         queries = {ele['num']:ele['title'] for ele in single_queries}
-        doc_details = GenDocDetails(self.collection_path)
+        doc_details = GenSqaDocDetails(self.collection_path)
         cs = CollectionStats(self.collection_path)
         avdl = cs.get_avdl()
         total_terms = cs.get_total_terms()
