@@ -630,7 +630,7 @@ class PlotTFRel(object):
         elif method_name == 'tf_ln_5':
             x_func = self.tf_dl_5
             formal_method_name = 'hypothesis_stq_tf_ln_5'
-        self.plot_single_tfc_constraints_rel_tf(
+        return self.plot_single_tfc_constraints_rel_tf(
             int(query_length),
             x_func,
             formal_method_name,
