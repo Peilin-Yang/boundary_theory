@@ -210,24 +210,17 @@ if __name__ == '__main__':
                        |Q|=1.  We could leverage an existing collection \
                        and estimate P( c(t,D)=x | D is a relevant document), \
                        where x = 0,1,2,...maxTF(t). ')
-    parser.add_argument('-12', '--gen_plot_tf_rel_batch', nargs='+',
-                       help='plot P( D is a relevant document | c(t,D)=x ), \
-                       where x = 0,1,2,...maxTF(t). \
+    parser.add_argument('-121', '--gen_plot_tf_rel_batch', nargs='+',
+                       help='plot P( D is a relevant document | f(tf,doclen)=x ), \
                        args: [query_len(0 for all queries)] [method_name(method_with_para)] \
                        [plot_ratio(boolean)] [avg_or_total(boolean, only if the plot_ratio is false)] \
                        [rel_or_all(boolean, only if the plot_ratio is false)] \
                        [performance_as_legend(boolean)] \
                        [drawline(boolean)] [plotbins(boolean)] [numbins(int)] \
                        [xlimit(float)] [ylimit(float)] [output_format(eps|png)]')
-    parser.add_argument('-122', '--plot_tf_rel_atom', nargs=1,
-                       help='plot P( D is a relevant document | c(t,D)=x ), \
-                       where x = 0,1,2,...maxTF(t). \
-                       args: [method_name(method_with_para)] \
-                       [plot_ratio(boolean)] [avg_or_total(boolean, only if the plot_ratio is false)] \
-                       [rel_or_all(boolean, only if the plot_ratio is false)] \
-                       [performance_as_legend(boolean)] \
-                       [drawline(boolean)] [plotbins(boolean)] [numbins(int)] \
-                       [xlimit(float)] [output_format(eps|png)]')
+    parser.add_argument('-122', '--plot_tf_rel_atom', nargs=1, help='')
+    parser.add_argument('-120', '--plot_tf_rel_all', nargs='+',
+                       help='plot for all collections (a combined plot)')
 
     parser.add_argument('-syc1', '--plot_synthetic', nargs='+',
                        help='plot P( D is a relevant document | c(t,D)=x ), \

@@ -4,6 +4,7 @@ import math
 import argparse
 import json
 import ast
+import copy
 from operator import itemgetter
 from subprocess import Popen, PIPE
 
@@ -505,6 +506,10 @@ class PlotTFRel(object):
 
         # we do not care about the actual values of x
         # so we just map the actual values to integer values
+
+        return_coll_xaxis = copy.deepcopy(xaxis)
+        return_coll_yaxis = copy.deepcopy(yaxis)
+
         xaxis = range(len(xaxis))
 
         collection_legend = ''
@@ -550,7 +555,7 @@ class PlotTFRel(object):
                 oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-        return collection_name, xaxis, yaxis, legend, _method
+        return collection_name, return_coll_xaxis, return_coll_yaxis, legend, _method
 
     def okapi(self, collection_stats, row):
         """
