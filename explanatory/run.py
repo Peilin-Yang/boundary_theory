@@ -106,7 +106,8 @@ def plot_tf_rel_all(paras):
     for q in g.query:
         collection_name = q['collection']
         collection_path = os.path.join(collection_root, collection_name)
-        results = PlotTFRel(collection_path).wrapper(paras)
+        print 'Getting the data and plotting for %s' % collection_name
+        results = PlotTFRel(collection_path).wrapper(*paras)
         xaxis = results[1]
         yaxis = results[2]
         for idx, x in enumerate(xaxis):
