@@ -694,7 +694,7 @@ class PlotTFRel(object):
         output_fn = os.path.join(self.all_results_root, output_root, 
             '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f.%s' % (
                 'all_collections', 
-                _method, 
+                method_name, 
                 'ratio' if plot_ratio else 'abscnt', 
                 'total' if plot_total_or_avg else 'avg',
                 'rel' if plot_rel_or_all else 'all',
