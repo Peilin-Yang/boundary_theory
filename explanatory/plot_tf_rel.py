@@ -508,7 +508,7 @@ class PlotTFRel(object):
         # so we just map the actual values to integer values
 
         return_data = copy.deepcopy(collection_x_dict)
-        xaxis = range(len(xaxis))
+        xaxis = range(1, len(xaxis)+1)
 
         collection_legend = ''
         if performance_as_legend:
@@ -695,7 +695,7 @@ class PlotTFRel(object):
         xaxis = sorted(data.keys())
         yaxis = [[data[x][0]*1./data[x][1] for x in xaxis], [data[x][0] for x in xaxis], [data[x][1] for x in xaxis]]
 
-        xaxis = range(len(xaxis))
+        xaxis = range(1, len(xaxis)+1)
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
