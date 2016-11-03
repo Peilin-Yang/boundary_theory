@@ -336,7 +336,7 @@ class PlotTFRel(object):
         collection_name = self.collection_path.split('/')[-1]
         cs = CollectionStats(self.collection_path)
         doc_details = GenDocDetails(self.collection_path)
-        output_root = os.path.join('multiple_term_queries_figures', query_length)
+        output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
             os.makedirs(os.path.join(self.all_results_root, output_root))
         if query_length == 0:
