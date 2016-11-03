@@ -507,9 +507,7 @@ class PlotTFRel(object):
         # we do not care about the actual values of x
         # so we just map the actual values to integer values
 
-        return_coll_xaxis = copy.deepcopy(xaxis)
-        return_coll_yaxis = copy.deepcopy(yaxis)
-
+        return_data = copy.deepcopy(collection_x_dict)
         xaxis = range(len(xaxis))
 
         collection_legend = ''
@@ -555,7 +553,7 @@ class PlotTFRel(object):
                 oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-        return collection_name, return_coll_xaxis, return_coll_yaxis, legend, _method
+        return collection_name, return_data, legend, _method
 
     def okapi(self, collection_stats, row):
         """
@@ -646,7 +644,7 @@ class PlotTFRel(object):
             oformat
         )
 
-    def plot_with_data(self, xaxis, yaxis, title, legend, 
+    def plot_with_data(self, data, title, legend, 
             query_length, method_name, plot_ratio, 
             plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
             drawline, plotbins, numbins, xlimit, ylimit, oformat='eps'):
@@ -659,6 +657,15 @@ class PlotTFRel(object):
         numbins = int(numbins)
         xlimit = float(xlimit)
         ylimit = float(ylimit)
+
+        xaxis = sorted(data.keys())
+        if plot_ratio:
+            yaxis = [data[x][0]*1./data[x][1] for x in xaxis]
+        else:
+            if plot_rel_or_all:
+                yaxis = [data[x][0] for x in xaxis]
+            else:
+                yaxis = [data[x][1] for x in xaxis]
 
         xaxis = range(len(xaxis))
 
