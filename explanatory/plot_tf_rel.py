@@ -676,9 +676,6 @@ class PlotTFRel(object):
                 xlimit=xlimit,
                 ylimit=ylimit)
 
-        output_root = os.path.join('collection_figures', query_length)
-        if not os.path.exists(os.path.join(self.all_results_root, output_root)):
-            os.makedirs(os.path.join(self.all_results_root, output_root))
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
     def plot_with_data(self, data, title, legend, 
@@ -700,6 +697,9 @@ class PlotTFRel(object):
 
         xaxis = range(len(xaxis))
 
+        output_root = os.path.join('collection_figures', query_length)
+        if not os.path.exists(os.path.join(self.all_results_root, output_root)):
+            os.makedirs(os.path.join(self.all_results_root, output_root))
         for i in range(3):
             output_fn = os.path.join(self.all_results_root, output_root, 
                 '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f.%s' % (
