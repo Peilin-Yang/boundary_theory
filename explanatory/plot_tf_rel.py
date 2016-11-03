@@ -664,7 +664,7 @@ class PlotTFRel(object):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 8}
         plt.rc('font', **font)
-        if plot_line:
+        if drawline:
             self.plot_single_tfc_constraints_draw_pdf_line(
                 axs, 
                 xaxis, 
