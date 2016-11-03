@@ -650,8 +650,6 @@ class PlotTFRel(object):
             query_length, method_name, plot_ratio, 
             plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
             drawline, plotbins, numbins, xlimit, ylimit, oformat='eps'):
-
-        query_length = int(query_length)
         plot_ratio = False if plot_ratio == '0' else True
         plot_total_or_avg = False if plot_total_or_avg == '0' else True
         plot_rel_or_all = False if plot_rel_or_all == '0' else True
