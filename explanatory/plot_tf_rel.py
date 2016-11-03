@@ -716,4 +716,4 @@ class PlotTFRel(object):
             self.plot_with_data_single(xaxis, yaxis[i], title, legend, output_fn, 
                 query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
-                drawline, plotbins, numbins, xlimit, ylimit, oformat='eps')
+                drawline, plotbins, numbins, xlimit, ylimit, oformat)
