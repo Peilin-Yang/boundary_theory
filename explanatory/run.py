@@ -121,6 +121,8 @@ def plot_tf_rel_all(paras):
     PlotTFRel(collection_path).plot_with_data(
       xaxis,
       yaxis,
+      '',
+      '',
       *paras
     )    
 

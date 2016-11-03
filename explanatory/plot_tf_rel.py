@@ -646,7 +646,8 @@ class PlotTFRel(object):
             oformat
         )
 
-    def plot_with_data(self, xaxis, yaxis, query_length, method_name, plot_ratio, 
+    def plot_with_data(self, xaxis, yaxis, title, legend, 
+            query_length, method_name, plot_ratio, 
             plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
             drawline, plotbins, numbins, xlimit, ylimit, oformat='eps'):
 
