@@ -101,6 +101,27 @@ def gen_doc_details(para_file):
             query = row[2]
             GenDocDetails(collection_path).output_doc_details(qid, query)
 
+def plot_tf_rel_all(paras):
+    data = {}
+    for q in g.query:
+        collection_name = q['collection']
+        collection_path = os.path.join(collection_root, collection_name)
+        results = PlotTFRel(collection_path).wrapper(paras)
+        xaxis = results[1]
+        yaxis = results[2]
+        for idx, x in enumerate(xaxis):
+          if x not in data:
+            data[x] = 0
+          data[x] += yaxis[idx]
+
+    xaxis = sorted(data.keys())
+    yaxis = [data[x] for x in xaxis]
+
+    PlotTFRel(collection_path).plot_with_data(
+      xaxis,
+      yaxis,
+      *paras
+    )    
 
 def gen_plot_tf_rel_batch(paras):
     all_paras = []
@@ -295,7 +316,8 @@ if __name__ == '__main__':
         gen_plot_tf_rel_batch(args.gen_plot_tf_rel_batch)
     if args.plot_tf_rel_atom:
         plot_tf_rel_atom(args.plot_tf_rel_atom[0])
-
+    if args.plot_tf_rel_all:
+        plot_tf_rel_all(args.plot_tf_rel_all)
 
     if args.plot_synthetic:
         PlotSyntheticMAP().plot(

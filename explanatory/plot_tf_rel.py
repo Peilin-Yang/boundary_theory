@@ -631,7 +631,7 @@ class PlotTFRel(object):
             x_func = self.tf_dl_5
             formal_method_name = 'hypothesis_stq_tf_ln_5'
         self.plot_single_tfc_constraints_rel_tf(
-            query_length,
+            int(query_length),
             x_func,
             formal_method_name,
             False if plot_ratio == '0' else True,
@@ -645,3 +645,63 @@ class PlotTFRel(object):
             float(ylimit),
             oformat
         )
+
+    def plot_with_data(self, xaxis, yaxis, query_length, method_name, plot_ratio, 
+            plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
+            drawline, plotbins, numbins, xlimit, ylimit, oformat='eps'):
+
+        query_length = int(query_length)
+        plot_ratio = False if plot_ratio == '0' else True
+        plot_total_or_avg = False if plot_total_or_avg == '0' else True
+        plot_rel_or_all = False if plot_rel_or_all == '0' else True
+        performance_as_legend = False if performance_as_legend == '0' else True
+        drawline = False if drawline == '0' else True
+        plotbins = False if plotbins == '0' else True
+        numbins = int(numbins)
+        xlimit = float(xlimit)
+        ylimit = float(ylimit)
+
+        fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
+        font = {'size' : 8}
+        plt.rc('font', **font)
+        if plot_line:
+            self.plot_single_tfc_constraints_draw_pdf_line(
+                axs, 
+                xaxis, 
+                yaxis, 
+                title, 
+                legend, 
+                legend_pos='best',
+                xlog=False,
+                ylog=False,
+                xlimit=xlimit,
+                ylimit=ylimit)
+        else:
+            self.plot_single_tfc_constraints_draw_pdf_dot(
+                axs, 
+                xaxis, 
+                yaxis, 
+                title, 
+                legend, 
+                legend_pos='best',
+                xlog=False,
+                ylog=False,
+                xlimit=xlimit,
+                ylimit=ylimit)
+
+        output_root = os.path.join('collection_figures', query_length)
+        if not os.path.exists(os.path.join(self.all_results_root, output_root)):
+            os.makedirs(os.path.join(self.all_results_root, output_root))
+        output_fn = os.path.join(self.all_results_root, output_root, 
+            '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f.%s' % (
+                'all_collections', 
+                _method, 
+                'ratio' if plot_ratio else 'abscnt', 
+                'total' if plot_total_or_avg else 'avg',
+                'rel' if plot_rel_or_all else 'all',
+                'line' if drawline else 'dots', 
+                numbins if plotbins else 0, 
+                xlimit,
+                ylimit, 
+                oformat) )
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
