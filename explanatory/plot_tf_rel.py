@@ -93,7 +93,8 @@ class PlotTFRel(object):
 
     def plot_single_tfc_constraints_draw_pdf_dot(self, ax, xaxis, yaxis, 
             title, legend, legend_outside=False, marker='ro', 
-            xlog=True, ylog=False, zoom=False, legend_pos='upper right', 
+            xlog=True, ylog=False, zoom=False, zoom_xaxis=[], zoom_yaxis=[], 
+            legend_pos='upper right', 
             xlabel_format=0, xlimit=0, ylimit=0):
         # 1. probability distribution 
         ax.plot(xaxis, yaxis, marker, ms=4, label=legend)
@@ -113,17 +114,12 @@ class PlotTFRel(object):
         # zoom
         if zoom:
             axins = inset_axes(ax,
-                   width="50%",  # width = 30% of parent_bbox
+                   width="50%",  # width = 50% of parent_bbox
                    height=0.8,  # height : 1 inch
                    loc=7) # center right
-            zoom_xaxis = []
-            for x in xaxis:
-                if x <= 20:
-                    zoom_xaxis.append(x)
-            zoom_yaxis = yaxis[:len(zoom_xaxis)]
             axins.plot(zoom_xaxis, zoom_yaxis, marker, ms=4)
             axins.vlines(zoom_xaxis, [0], zoom_yaxis)
-            axins.set_xlim(0, 20)
+            #axins.set_xlim(0, 20)
             mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
 
 
@@ -521,8 +517,6 @@ class PlotTFRel(object):
                 yaxis, collection_name, 
                 collection_legend, 
                 legend_pos='best',
-                xlog=False,
-                ylog=False,
                 xlimit=xlimit,
                 ylimit=ylimit)
             # only if we want to draw the fitting curve
@@ -535,8 +529,6 @@ class PlotTFRel(object):
                 yaxis, collection_name, 
                 collection_legend, 
                 legend_pos='best',
-                xlog=False,
-                ylog=False,
                 xlimit=xlimit,
                 ylimit=ylimit)
 
@@ -660,20 +652,21 @@ class PlotTFRel(object):
                 title, 
                 legend, 
                 legend_pos='best',
-                xlog=False,
-                ylog=False,
                 xlimit=xlimit,
                 ylimit=ylimit)
         else:
+            zoom_xaxis = xaxis[20:]
+            zoom_yaxis = yaxis[20:]
             self.plot_single_tfc_constraints_draw_pdf_dot(
                 axs, 
                 xaxis, 
                 yaxis, 
                 title, 
                 legend, 
+                zoom=True,
+                zoom_xaxis=zoom_xaxis,
+                zoom_yaxis=zoom_yaxis,
                 legend_pos='best',
-                xlog=False,
-                ylog=False,
                 xlimit=xlimit,
                 ylimit=ylimit)
 
