@@ -93,7 +93,7 @@ class PlotTFRel(object):
 
     def plot_single_tfc_constraints_draw_pdf_dot(self, ax, xaxis, yaxis, 
             title, legend, legend_outside=False, marker='ro', 
-            xlog=True, ylog=False, zoom=False, zoom_xaxis=[], zoom_yaxis=[], 
+            xlog=False, ylog=False, zoom=False, zoom_xaxis=[], zoom_yaxis=[], 
             legend_pos='upper right', 
             xlabel_format=0, xlimit=0, ylimit=0):
         # 1. probability distribution 
@@ -125,7 +125,7 @@ class PlotTFRel(object):
 
     def plot_single_tfc_constraints_draw_pdf_line(self, ax, xaxis, yaxis, 
             title, legend, legend_outside=False, marker=None, 
-            linestyle=None, xlog=True, ylog=False, zoom=False, 
+            linestyle=None, xlog=False, ylog=False, zoom=False, 
             legend_pos='upper right', xlabel_format=0, xlimit=0, ylimit=0):
         # 1. probability distribution 
         ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
