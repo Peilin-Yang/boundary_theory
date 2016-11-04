@@ -107,7 +107,7 @@ def plot_tf_rel_all(paras):
         collection_name = q['collection']
         collection_path = os.path.join(collection_root, collection_name)
         print 'Getting the data and plotting for %s' % collection_name
-        results = PlotTFRel(collection_path).wrapper(*paras)
+        results = PlotTFRel(collection_path, q['collection_formal_name']).wrapper(*paras)
         this_data = results[1]
         for x in this_data:
           if x not in data:
@@ -115,7 +115,7 @@ def plot_tf_rel_all(paras):
           data[x][0] += this_data[x][0]
           data[x][1] += this_data[x][1]
 
-    PlotTFRel(collection_path).plot_with_data(data, 
+    PlotTFRel(collection_path, q['collection_formal_name']).plot_with_data(data, 
       'All Collections(query len=%s)' % paras[0], '', *paras)    
 
 def gen_plot_tf_rel_batch(paras):
@@ -133,7 +133,7 @@ def plot_tf_rel_atom(para_file):
         reader = csv.reader(f)
         for row in reader:
             collection_path = row[0]
-            PlotTFRel(collection_path).wrapper(*row[1:])
+            PlotTFRel(collection_path, q['collection_formal_name']).wrapper(*row[1:])
 
 def gen_lambdarank_batch():
     all_paras = []

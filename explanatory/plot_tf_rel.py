@@ -33,7 +33,7 @@ class PlotTFRel(object):
     """
     Plot the probability distribution of P(D=1|f(tf,dl,other_stats)=x)
     """
-    def __init__(self, corpus_path):
+    def __init__(self, corpus_path, corpus_name):
         super(PlotTFRel, self).__init__()
 
         self.collection_path = os.path.abspath(corpus_path)
@@ -41,6 +41,7 @@ class PlotTFRel(object):
             print '[Evaluation Constructor]:Please provide valid corpus path'
             exit(1)
 
+        self.collection_name = corpus_name
         self.all_results_root = '../../all_results'
         if not os.path.exists(self.all_results_root):
             os.path.makedirs(self.all_results_root)
@@ -334,7 +335,7 @@ class PlotTFRel(object):
             be plotted. default 0, meaning plot all data.
         @oformat: output format, eps or png
         """
-        collection_name = self.collection_path.split('/')[-1]
+        collection_name = self.collection_name
         cs = CollectionStats(self.collection_path)
         doc_details = GenDocDetails(self.collection_path)
         output_root = os.path.join('collection_figures', str(query_length))
