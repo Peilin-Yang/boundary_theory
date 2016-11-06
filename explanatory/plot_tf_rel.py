@@ -313,7 +313,7 @@ class PlotTFRel(object):
             _method, plot_ratio=True, plot_total_or_avg=True,
             plot_rel_or_all=True, performance_as_legend=True, 
             drawline=True, plotbins=True, numbins=60, xlimit=0, 
-            ylimit=0, oformat='eps'):
+            ylimit=0, zoom=False, zoom_x=0, oformat='eps'):
         """
         plot the P(D=1|TF=x)
 
@@ -340,6 +340,8 @@ class PlotTFRel(object):
             be plotted. default 0, meaning plot all data.
         @ylimit: the limit of yaxis, any value larger than this value would not 
             be plotted. default 0, meaning plot all data.
+        @zoom: whether zoom part of the plot
+        @zoom_x: the zoom start x point
         @oformat: output format, eps or png
         """
         collection_name = self.collection_name
@@ -523,13 +525,18 @@ class PlotTFRel(object):
             collection_legend = '$MAP:%.4f$' % (np.mean([p[qid]['map'] if p[qid] else 0 for qid in p]))
             collection_legend += '\n$MAP_E:%.4f$' % (np.mean(all_expected_maps))
 
+        zoom_xaxis = xaxis[zoom_x:]
+        zoom_yaxis = yaxis[zoom_x:]
         if drawline:
             self.plot_single_tfc_constraints_draw_pdf_line(axs, xaxis, 
                 yaxis, collection_name, 
                 collection_legend, 
                 legend_pos='best',
                 xlimit=xlimit,
-                ylimit=ylimit)
+                ylimit=ylimit,
+                zoom=zoom,
+                zoom_xaxis=zoom_xaxis,
+                zoom_yaxis=zoom_yaxis)
             # only if we want to draw the fitting curve
             """
             if plotbins:
@@ -541,7 +548,10 @@ class PlotTFRel(object):
                 collection_legend, 
                 legend_pos='best',
                 xlimit=xlimit,
-                ylimit=ylimit)
+                ylimit=ylimit,
+                zoom=zoom,
+                zoom_xaxis=zoom_xaxis,
+                zoom_yaxis=zoom_yaxis)
 
         output_fn = os.path.join(self.all_results_root, output_root, 
             '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-all.%s' % (
@@ -604,7 +614,7 @@ class PlotTFRel(object):
 
     def wrapper(self, query_length, method_name, plot_ratio, plot_total_or_avg, 
             plot_rel_or_all, performance_as_legend, drawline, plotbins, 
-            numbins, xlimit, ylimit, oformat='eps'):
+            numbins, xlimit, ylimit, zoom, zoom_x, oformat='eps'):
         """
         This is the wrapper of the actual function. 
         We parse the CLI arguments and convert them to the values required 
@@ -645,6 +655,8 @@ class PlotTFRel(object):
             int(numbins),
             float(xlimit),
             float(ylimit),
+            False if zoom == '0' else True,
+            float(zoom_x),
             oformat
         )
 
