@@ -747,7 +747,7 @@ class PlotTFRel(object):
         y_prob = [[data[x][0]*1.0/sum_rel for x in xaxis], [data[x][1]*1.0/sum_all for x in xaxis]]
         for i in range(2):
             output_fn = os.path.join(self.all_results_root, output_root, 
-                '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f.%s' % (
+                '%s-%s-%s-%s-%s-%d-%.1f-%.1f.%s' % (
                     'all_collections', 
                     method_name, 
                     'rel_dist' if i==0 else 'all_dist', 
