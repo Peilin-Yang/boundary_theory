@@ -744,7 +744,7 @@ class PlotTFRel(object):
                 query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
                 drawline, numbins, xlimit, ylimit, zoom_x, oformat)
-       for i in range(2):
+        for i in range(2):
             output_fn = os.path.join(self.all_results_root, output_root, 
                 '%s-%s-%s-%s-%s-%d-%.1f-%.1f.%s' % (
                     'all_collections', 
