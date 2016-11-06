@@ -714,6 +714,7 @@ class PlotTFRel(object):
         numbins = int(numbins)
         xlimit = float(xlimit)
         ylimit = float(ylimit)
+        zoom = False if zoom == '0' else True
         zoom_x = int(zoom_x)
 
         xaxis = sorted(data.keys())
