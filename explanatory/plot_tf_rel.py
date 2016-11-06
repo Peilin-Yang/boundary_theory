@@ -126,7 +126,8 @@ class PlotTFRel(object):
     def plot_single_tfc_constraints_draw_pdf_line(self, ax, xaxis, yaxis, 
             title, legend, legend_outside=False, marker=None, 
             linestyle=None, xlog=False, ylog=False, zoom=False, 
-            legend_pos='upper right', xlabel_format=0, xlimit=0, ylimit=0):
+            zoom_xaxis=[], zoom_yaxis=[], legend_pos='upper right', 
+            xlabel_format=0, xlimit=0, ylimit=0):
         # 1. probability distribution 
         ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
         if xlog:
@@ -141,6 +142,16 @@ class PlotTFRel(object):
         ax.legend(loc=legend_pos)
         if xlabel_format != 0:
             ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
+        # zoom
+        if zoom:
+            axins = inset_axes(ax,
+                   width="80%",  # width = 50% of parent_bbox
+                   height="40%",  # height : 1 inch
+                   loc=7) # center right
+            axins.plot(zoom_xaxis, zoom_yaxis, marker, ms=4)
+            axins.vlines(zoom_xaxis, [0], zoom_yaxis)
+            #axins.set_xlim(0, 20)
+            mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
 
 
     def hypothesis_tf_function(self, tf, mu, sigma, scale):
@@ -640,10 +651,13 @@ class PlotTFRel(object):
     def plot_with_data_single(self, xaxis, yaxis, title, legend, output_fn, 
             query_length, method_name, plot_ratio, 
             plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
-            drawline, plotbins, numbins, xlimit, ylimit, oformat='eps'):
+            drawline, plotbins, numbins, xlimit, ylimit,
+            zoom=False, zoom_x=20, oformat='eps'):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 8}
         plt.rc('font', **font)
+        zoom_xaxis = xaxis[zoom_x:]
+        zoom_yaxis = yaxis[zoom_x:]
         if drawline:
             self.plot_single_tfc_constraints_draw_pdf_line(
                 axs, 
@@ -651,19 +665,21 @@ class PlotTFRel(object):
                 yaxis, 
                 title, 
                 legend, 
+                zoom=zoom,
+                zoom_xaxis=zoom_xaxis,
+                zoom_yaxis=zoom_yaxis,
                 legend_pos='best',
                 xlimit=xlimit,
                 ylimit=ylimit)
         else:
-            zoom_xaxis = xaxis[20:]
-            zoom_yaxis = yaxis[20:]
+            
             self.plot_single_tfc_constraints_draw_pdf_dot(
                 axs, 
                 xaxis, 
                 yaxis, 
                 title, 
                 legend, 
-                zoom=True,
+                zoom=zoom,
                 zoom_xaxis=zoom_xaxis,
                 zoom_yaxis=zoom_yaxis,
                 legend_pos='best',
@@ -675,7 +691,8 @@ class PlotTFRel(object):
     def plot_with_data(self, data, title, legend, 
             query_length, method_name, plot_ratio, 
             plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
-            drawline, plotbins, numbins, xlimit, ylimit, oformat='eps'):
+            drawline, plotbins, numbins, xlimit, ylimit, 
+            zoom=False, zoom_x=20, oformat='eps'):
         plot_ratio = False if plot_ratio == '0' else True
         plot_total_or_avg = False if plot_total_or_avg == '0' else True
         plot_rel_or_all = False if plot_rel_or_all == '0' else True
@@ -710,4 +727,4 @@ class PlotTFRel(object):
             self.plot_with_data_single(xaxis, yaxis[i], title, legend, output_fn, 
                 query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
-                drawline, plotbins, numbins, xlimit, ylimit, oformat)
+                drawline, plotbins, numbins, xlimit, ylimit, zoom, zoom_x, oformat)
