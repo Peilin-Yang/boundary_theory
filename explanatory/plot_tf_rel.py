@@ -720,7 +720,7 @@ class PlotTFRel(object):
         xaxis = sorted(data.keys())
         yaxis = [[data[x][0]*1./data[x][1] for x in xaxis], [data[x][0] for x in xaxis], [data[x][1] for x in xaxis]]
 
-        xaxis = range(1, len(xaxis)+1)
+        #xaxis = range(1, len(xaxis)+1)
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
@@ -739,6 +739,25 @@ class PlotTFRel(object):
                     ylimit, 
                     oformat) )
             self.plot_with_data_single(xaxis, yaxis[i], title, legend, output_fn, 
+                query_length, method_name, plot_ratio, 
+                plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
+                drawline, plotbins, numbins, xlimit, ylimit, zoom, zoom_x, oformat)
+        sum_rel = sum([data[x][0] for x in xaxis])
+        sum_all = sum([data[x][1] for x in xaxis])
+        y_prob = [[data[x][0]*1.0/sum_rel for x in xaxis], [data[x][1]*1.0/sum_all for x in xaxis]]
+        for i in range(2):
+            output_fn = os.path.join(self.all_results_root, output_root, 
+                '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f.%s' % (
+                    'all_collections', 
+                    method_name, 
+                    'rel_dist' if i==0 else 'all_dist', 
+                    'total',
+                    'line' if drawline else 'dots', 
+                    numbins if plotbins else 0, 
+                    xlimit,
+                    ylimit, 
+                    oformat) )
+            self.plot_with_data_single(xaxis, y_prob[i], title, legend, output_fn, 
                 query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
                 drawline, plotbins, numbins, xlimit, ylimit, zoom, zoom_x, oformat)
