@@ -535,7 +535,7 @@ class PlotTFRel(object):
                 legend_pos='best',
                 xlimit=xlimit,
                 ylimit=ylimit,
-                zoom=zoom,
+                zoom=zoom_x > 0,
                 zoom_xaxis=zoom_xaxis,
                 zoom_yaxis=zoom_yaxis)
             # only if we want to draw the fitting curve
@@ -550,7 +550,7 @@ class PlotTFRel(object):
                 legend_pos='best',
                 xlimit=xlimit,
                 ylimit=ylimit,
-                zoom=zoom,
+                zoom=zoom_x > 0,
                 zoom_xaxis=zoom_xaxis,
                 zoom_yaxis=zoom_yaxis)
 
