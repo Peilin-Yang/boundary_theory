@@ -93,8 +93,8 @@ class PlotTFRel(object):
 
     def plot_single_tfc_constraints_draw_pdf_dot(self, ax, xaxis, yaxis, 
             title, legend, legend_outside=False, marker='ro', 
-            xlog=False, ylog=False, zoom=False, zoom_xaxis=[], zoom_yaxis=[], 
-            legend_pos='upper right', 
+            xlabel='', ylabel='', xlog=False, ylog=False, zoom=False, 
+            zoom_xaxis=[], zoom_yaxis=[], legend_pos='upper right', 
             xlabel_format=0, xlimit=0, ylimit=0):
         # 1. probability distribution 
         ax.plot(xaxis, yaxis, marker, ms=4, label=legend)
@@ -109,8 +109,9 @@ class PlotTFRel(object):
             ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<ylimit else ylimit)
         ax.set_title(title)
         ax.legend(loc=legend_pos)
-        if xlabel_format != 0:
-            ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
         # zoom
         if zoom:
             axins = inset_axes(ax,
@@ -125,8 +126,8 @@ class PlotTFRel(object):
 
     def plot_single_tfc_constraints_draw_pdf_line(self, ax, xaxis, yaxis, 
             title, legend, legend_outside=False, marker=None, 
-            linestyle=None, xlog=False, ylog=False, zoom=False, 
-            zoom_xaxis=[], zoom_yaxis=[], legend_pos='upper right', 
+            linestyle=None, xlabel='', ylabel='', xlog=False, ylog=False, 
+            zoom=False, zoom_xaxis=[], zoom_yaxis=[], legend_pos='upper right', 
             xlabel_format=0, xlimit=0, ylimit=0):
         # 1. probability distribution 
         ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
@@ -140,8 +141,9 @@ class PlotTFRel(object):
             ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<ylimit else ylimit)
         ax.set_title(title)
         ax.legend(loc=legend_pos)
-        if xlabel_format != 0:
-            ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
         # zoom
         if zoom:
             axins = inset_axes(ax,
@@ -660,12 +662,12 @@ class PlotTFRel(object):
             oformat
         )
 
-    def plot_with_data_single(self, xaxis, yaxis, title, legend, output_fn, 
-            query_length, method_name, plot_ratio, 
+    def plot_with_data_single(self, xaxis, yaxis, title, legend, xlabel, ylabel, 
+            output_fn, query_length, method_name, plot_ratio, 
             plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
             drawline, numbins, xlimit, ylimit, zoom_x=20, oformat='eps'):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
-        font = {'size' : 8}
+        font = {'size' : 12}
         plt.rc('font', **font)
         zoom_xaxis = xaxis[zoom_x:]
         zoom_yaxis = yaxis[zoom_x:]
@@ -676,6 +678,8 @@ class PlotTFRel(object):
                 yaxis, 
                 title, 
                 legend, 
+                xlabel=xlabel,
+                ylabel=ylabel,
                 zoom=zoom_x > 0,
                 zoom_xaxis=zoom_xaxis,
                 zoom_yaxis=zoom_yaxis,
@@ -690,6 +694,8 @@ class PlotTFRel(object):
                 yaxis, 
                 title, 
                 legend, 
+                xlabel=xlabel,
+                ylabel=ylabel,
                 zoom=zoom_x > 0,
                 zoom_xaxis=zoom_xaxis,
                 zoom_yaxis=zoom_yaxis,
@@ -716,10 +722,12 @@ class PlotTFRel(object):
 
         xaxis = sorted(data.keys())
         yaxis = [[data[x][0]*1./data[x][1] for x in xaxis], [data[x][0] for x in xaxis], [data[x][1] for x in xaxis]]
+        ylabels = ['ratio of rel docs', 'rel docs count', 'docs count']
 
         sum_rel = sum([data[x][0] for x in xaxis])
         sum_all = sum([data[x][1] for x in xaxis])
         y_prob = [[data[x][0]*1.0/sum_rel for x in xaxis], [data[x][1]*1.0/sum_all for x in xaxis]]
+        yprob_labels = ['PDF of rel docs', 'PDF of docs']
         
         if compact_x:
             xaxis = range(1, len(xaxis)+1)
@@ -740,8 +748,8 @@ class PlotTFRel(object):
                     xlimit,
                     ylimit, 
                     oformat) )
-            self.plot_with_data_single(xaxis, yaxis[i], title, legend, output_fn, 
-                query_length, method_name, plot_ratio, 
+            self.plot_with_data_single(xaxis, yaxis[i], title, legend, 'projected doc score', 
+                ylabels[i], output_fn, query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
                 drawline, numbins, xlimit, ylimit, zoom_x, oformat)
         for i in range(2):
@@ -756,7 +764,7 @@ class PlotTFRel(object):
                     xlimit,
                     ylimit, 
                     oformat) )
-            self.plot_with_data_single(xaxis, y_prob[i], title, legend, output_fn, 
-                query_length, method_name, plot_ratio, 
+            self.plot_with_data_single(xaxis, y_prob[i], title, legend, 'projected doc score', 
+                ylabels[i], output_fn, query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
                 drawline, numbins, xlimit, ylimit, zoom_x, oformat)
