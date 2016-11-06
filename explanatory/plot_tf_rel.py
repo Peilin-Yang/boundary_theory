@@ -704,7 +704,7 @@ class PlotTFRel(object):
             query_length, method_name, plot_ratio, 
             plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
             drawline, plotbins, numbins, xlimit, ylimit, 
-            zoom=False, zoom_x=20, oformat='eps'):
+            zoom=False, zoom_x=20, compact_x=False, oformat='eps'):
         plot_ratio = False if plot_ratio == '0' else True
         plot_total_or_avg = False if plot_total_or_avg == '0' else True
         plot_rel_or_all = False if plot_rel_or_all == '0' else True
@@ -720,7 +720,8 @@ class PlotTFRel(object):
         xaxis = sorted(data.keys())
         yaxis = [[data[x][0]*1./data[x][1] for x in xaxis], [data[x][0] for x in xaxis], [data[x][1] for x in xaxis]]
 
-        #xaxis = range(1, len(xaxis)+1)
+        if compact_x:
+            xaxis = range(1, len(xaxis)+1)
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
