@@ -656,7 +656,7 @@ class PlotTFRel(object):
             float(xlimit),
             float(ylimit),
             False if zoom == '0' else True,
-            float(zoom_x),
+            int(zoom_x),
             oformat
         )
 
@@ -714,6 +714,7 @@ class PlotTFRel(object):
         numbins = int(numbins)
         xlimit = float(xlimit)
         ylimit = float(ylimit)
+        zoom_x = int(zoom_x)
 
         xaxis = sorted(data.keys())
         yaxis = [[data[x][0]*1./data[x][1] for x in xaxis], [data[x][0] for x in xaxis], [data[x][1] for x in xaxis]]
