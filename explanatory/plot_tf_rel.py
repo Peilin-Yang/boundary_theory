@@ -312,8 +312,8 @@ class PlotTFRel(object):
     def plot_single_tfc_constraints_rel_tf(self, query_length, x_func, 
             _method, plot_ratio=True, plot_total_or_avg=True,
             plot_rel_or_all=True, performance_as_legend=True, 
-            drawline=True, plotbins=True, numbins=60, xlimit=0, 
-            ylimit=0, zoom=False, zoom_x=0, oformat='eps'):
+            drawline=True, numbins=60, xlimit=0, 
+            ylimit=0, zoom_x=0, compact_x=False, oformat='eps'):
         """
         plot the P(D=1|TF=x)
 
@@ -334,14 +334,14 @@ class PlotTFRel(object):
         @performance_as_legend: whether to add performance(e.g. MAP) 
             as part of the legend
         @drawline: draw the data points as line(true) or dots(false)
-        @plotbins: whether to group the x points as bins
-        @numbins: the number of bins if we choose to plot x points as bins
+        @numbins: the number of bins if we choose to plot x points as bins, 0 for no bins
         @xlimit: the limit of xaxis, any value larger than this value would not 
             be plotted. default 0, meaning plot all data.
         @ylimit: the limit of yaxis, any value larger than this value would not 
             be plotted. default 0, meaning plot all data.
         @zoom: whether zoom part of the plot
-        @zoom_x: the zoom start x point
+        @zoom_x: the zoom start x point, 0 for no zoom.
+        @compact_x: map the x to 1,2,3,4,....
         @oformat: output format, eps or png
         """
         collection_name = self.collection_name
@@ -463,7 +463,7 @@ class PlotTFRel(object):
                 'total' if plot_total_or_avg else 'avg',
                 'rel' if plot_rel_or_all else 'all',
                 'line' if drawline else 'dots', 
-                numbins if plotbins else 0, 
+                numbins, 
                 xlimit,
                 ylimit, 
                 oformat) )
@@ -493,7 +493,7 @@ class PlotTFRel(object):
             else:
                 yaxis = [(collection_x_dict[x][0]/len(idfs)) if plot_rel_or_all else (collection_x_dict[x][1]/len(idfs)) for x in xaxis]
             print np.sum(yaxis[20:]), np.sum(yaxis[20:])
-        if plotbins:
+        if numbins > 0:
             interval = collection_level_maxX*1.0/numbins
             newxaxis = [i for i in np.arange(0, collection_level_maxX+1e-10, interval)]
             newyaxis = [[0.0, 0.0] for x in newxaxis]
@@ -518,7 +518,8 @@ class PlotTFRel(object):
         # so we just map the actual values to integer values
 
         return_data = copy.deepcopy(collection_x_dict)
-        xaxis = range(1, len(xaxis)+1)
+        if compact_x:
+            xaxis = range(1, len(xaxis)+1)
 
         collection_legend = ''
         if performance_as_legend:
@@ -561,7 +562,7 @@ class PlotTFRel(object):
                 'total' if plot_total_or_avg else 'avg',
                 'rel' if plot_rel_or_all else 'all',
                 'line' if drawline else 'dots', 
-                numbins if plotbins else 0, 
+                numbins, 
                 xlimit,
                 ylimit, 
                 oformat) )
@@ -613,8 +614,8 @@ class PlotTFRel(object):
         return round((np.log(float(row['total_tf']))+delta)/np.log(float(row['doc_len'])), 3) 
 
     def wrapper(self, query_length, method_name, plot_ratio, plot_total_or_avg, 
-            plot_rel_or_all, performance_as_legend, drawline, plotbins, 
-            numbins, xlimit, ylimit, zoom, zoom_x, oformat='eps'):
+            plot_rel_or_all, performance_as_legend, drawline,
+            numbins, xlimit, ylimit, zoom_x, compact_x=False, oformat='eps'):
         """
         This is the wrapper of the actual function. 
         We parse the CLI arguments and convert them to the values required 
@@ -651,20 +652,18 @@ class PlotTFRel(object):
             False if plot_rel_or_all == '0' else True,
             False if performance_as_legend == '0' else True,
             False if drawline == '0' else True,
-            False if plotbins == '0' else True,
             int(numbins),
             float(xlimit),
             float(ylimit),
-            False if zoom == '0' else True,
             int(zoom_x),
+            False if compact_x == '0' else True,
             oformat
         )
 
     def plot_with_data_single(self, xaxis, yaxis, title, legend, output_fn, 
             query_length, method_name, plot_ratio, 
             plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
-            drawline, plotbins, numbins, xlimit, ylimit,
-            zoom=False, zoom_x=20, oformat='eps'):
+            drawline, numbins, xlimit, ylimit, zoom_x=20, oformat='eps'):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 8}
         plt.rc('font', **font)
@@ -677,7 +676,7 @@ class PlotTFRel(object):
                 yaxis, 
                 title, 
                 legend, 
-                zoom=zoom,
+                zoom=zoom_x > 0,
                 zoom_xaxis=zoom_xaxis,
                 zoom_yaxis=zoom_yaxis,
                 legend_pos='best',
@@ -691,7 +690,7 @@ class PlotTFRel(object):
                 yaxis, 
                 title, 
                 legend, 
-                zoom=zoom,
+                zoom=zoom_x > 0,
                 zoom_xaxis=zoom_xaxis,
                 zoom_yaxis=zoom_yaxis,
                 legend_pos='best',
@@ -703,18 +702,16 @@ class PlotTFRel(object):
     def plot_with_data(self, data, title, legend, 
             query_length, method_name, plot_ratio, 
             plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
-            drawline, plotbins, numbins, xlimit, ylimit, 
-            zoom=False, zoom_x=20, compact_x=False, oformat='eps'):
+            drawline, numbins, xlimit, ylimit, zoom_x=20, 
+            compact_x=False, oformat='eps'):
         plot_ratio = False if plot_ratio == '0' else True
         plot_total_or_avg = False if plot_total_or_avg == '0' else True
         plot_rel_or_all = False if plot_rel_or_all == '0' else True
         performance_as_legend = False if performance_as_legend == '0' else True
         drawline = False if drawline == '0' else True
-        plotbins = False if plotbins == '0' else True
         numbins = int(numbins)
         xlimit = float(xlimit)
         ylimit = float(ylimit)
-        zoom = False if zoom == '0' else True
         zoom_x = int(zoom_x)
 
         xaxis = sorted(data.keys())
@@ -735,14 +732,14 @@ class PlotTFRel(object):
                     'total',
                     'rel' if i==1 else 'all',
                     'line' if drawline else 'dots', 
-                    numbins if plotbins else 0, 
+                    numbins, 
                     xlimit,
                     ylimit, 
                     oformat) )
             self.plot_with_data_single(xaxis, yaxis[i], title, legend, output_fn, 
                 query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
-                drawline, plotbins, numbins, xlimit, ylimit, zoom, zoom_x, oformat)
+                drawline, numbins, xlimit, ylimit, zoom_x, oformat)
         sum_rel = sum([data[x][0] for x in xaxis])
         sum_all = sum([data[x][1] for x in xaxis])
         y_prob = [[data[x][0]*1.0/sum_rel for x in xaxis], [data[x][1]*1.0/sum_all for x in xaxis]]
@@ -754,11 +751,11 @@ class PlotTFRel(object):
                     'rel_dist' if i==0 else 'all_dist', 
                     'total',
                     'line' if drawline else 'dots', 
-                    numbins if plotbins else 0, 
+                    numbins, 
                     xlimit,
                     ylimit, 
                     oformat) )
             self.plot_with_data_single(xaxis, y_prob[i], title, legend, output_fn, 
                 query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
-                drawline, plotbins, numbins, xlimit, ylimit, zoom, zoom_x, oformat)
+                drawline, numbins, xlimit, ylimit, zoom_x, oformat)
