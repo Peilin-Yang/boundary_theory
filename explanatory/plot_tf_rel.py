@@ -114,8 +114,8 @@ class PlotTFRel(object):
         # zoom
         if zoom:
             axins = inset_axes(ax,
-                   width="80%",  # width = 50% of parent_bbox
-                   height="80%",  # height : 1 inch
+                   width="70%",  # width = 50% of parent_bbox
+                   height="70%",  # height : 1 inch
                    loc=7) # center right
             axins.plot(zoom_xaxis, zoom_yaxis, marker, ms=4)
             axins.vlines(zoom_xaxis, [0], zoom_yaxis)
@@ -145,8 +145,8 @@ class PlotTFRel(object):
         # zoom
         if zoom:
             axins = inset_axes(ax,
-                   width="80%",  # width = 50% of parent_bbox
-                   height="40%",  # height : 1 inch
+                   width="70%",  # width = 50% of parent_bbox
+                   height="70%",  # height : 1 inch
                    loc=7) # center right
             axins.plot(zoom_xaxis, zoom_yaxis, marker, ms=4)
             axins.vlines(zoom_xaxis, [0], zoom_yaxis)
