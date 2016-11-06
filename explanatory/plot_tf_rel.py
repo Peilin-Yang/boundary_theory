@@ -717,6 +717,8 @@ class PlotTFRel(object):
         xaxis = sorted(data.keys())
         yaxis = [[data[x][0]*1./data[x][1] for x in xaxis], [data[x][0] for x in xaxis], [data[x][1] for x in xaxis]]
 
+        print xaxis
+
         if compact_x:
             xaxis = range(1, len(xaxis)+1)
 
