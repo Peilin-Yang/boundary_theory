@@ -120,6 +120,7 @@ class PlotTFRel(object):
                    loc=7) # center right
             axins.plot(zoom_xaxis, zoom_yaxis, marker, ms=4)
             axins.vlines(zoom_xaxis, [0], zoom_yaxis)
+            axins.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
             #axins.set_xlim(0, 20)
             mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
 
@@ -152,6 +153,7 @@ class PlotTFRel(object):
                    loc=7) # center right
             axins.plot(zoom_xaxis, zoom_yaxis, marker, ms=4)
             axins.vlines(zoom_xaxis, [0], zoom_yaxis)
+            axins.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
             #axins.set_xlim(0, 20)
             mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
 
