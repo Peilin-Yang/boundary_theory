@@ -717,8 +717,10 @@ class PlotTFRel(object):
         xaxis = sorted(data.keys())
         yaxis = [[data[x][0]*1./data[x][1] for x in xaxis], [data[x][0] for x in xaxis], [data[x][1] for x in xaxis]]
 
-        print xaxis
-
+        sum_rel = sum([data[x][0] for x in xaxis])
+        sum_all = sum([data[x][1] for x in xaxis])
+        y_prob = [[data[x][0]*1.0/sum_rel for x in xaxis], [data[x][1]*1.0/sum_all for x in xaxis]]
+        
         if compact_x:
             xaxis = range(1, len(xaxis)+1)
 
@@ -742,10 +744,7 @@ class PlotTFRel(object):
                 query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
                 drawline, numbins, xlimit, ylimit, zoom_x, oformat)
-        sum_rel = sum([data[x][0] for x in xaxis])
-        sum_all = sum([data[x][1] for x in xaxis])
-        y_prob = [[data[x][0]*1.0/sum_rel for x in xaxis], [data[x][1]*1.0/sum_all for x in xaxis]]
-        for i in range(2):
+       for i in range(2):
             output_fn = os.path.join(self.all_results_root, output_root, 
                 '%s-%s-%s-%s-%s-%d-%.1f-%.1f.%s' % (
                     'all_collections', 
