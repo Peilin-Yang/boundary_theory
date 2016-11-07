@@ -46,9 +46,9 @@ class EM(object):
             print y, weights, coefficients, data
             lambdas = np.sum(weights, axis=1)/np.sum(weights*data, axis=1)
             print lambdas
-            raw_input()
+            #raw_input()
             idx+=1
-        print weights
+        print lambdas
 
 class Test(unittest.TestCase):
     pass
