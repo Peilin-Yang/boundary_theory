@@ -31,7 +31,7 @@ class EM(object):
     def __init__(self):
         super(EM, self).__init__()
 
-    def exponential(self, data=[], init_lambdas=[1,1], max_iteration=50):
+    def exponential(self, data=[], init_lambdas=[2,0.5], max_iteration=50):
         """
         two mixture of exponential
         """
