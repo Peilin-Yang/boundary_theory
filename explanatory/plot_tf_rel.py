@@ -313,6 +313,34 @@ class PlotTFRel(object):
         ax.plot(trialX, trialY, label='fitting')
 
 
+    def cal_curve_fit(self, ax, xaxis, yaxis, mode=1):
+        tfs = self.get_docs_tf()
+        func = self.hypothesis_tf_function
+        popt, pcov = curve_fit(func, x10, y10, method='trf', bounds=([0., -np.inf, 0], [10., np.inf, 1]))
+        print popt
+        self.cal_tf_score(tfs, 0, 10, popt)
+        trialX = np.linspace(0, 10, 100)
+        trialY = func(trialX, *popt)
+        #print trialX, trialY
+        #raw_input()
+        ax.plot(trialX, trialY, label='fitting')
+
+        x20 = []
+        y20 = []
+        for d in zip(xaxis, yaxis):
+            if d[0] > 10 and d[0] <= 20:
+                x20.append(d[0])
+                y20.append(d[1])
+        #print x20, y20
+        popt, pcov = curve_fit(func, x20, y20, method='trf', bounds=([10., -np.inf, 0], [20., np.inf, 1]))
+        print popt
+        self.cal_tf_score(tfs, 10, 20, popt)
+        trialX = np.linspace(10, 20, 100)
+        trialY = func(trialX, *popt)
+
+        return trialX, trialY
+
+
     def plot_single_tfc_constraints_rel_tf(self, query_length, x_func, 
             _method, plot_ratio=True, plot_total_or_avg=True,
             plot_rel_or_all=True, performance_as_legend=True, 
@@ -729,6 +757,7 @@ class PlotTFRel(object):
 
         sum_rel = sum([data[x][0] for x in xaxis])
         sum_all = sum([data[x][1] for x in xaxis])
+        print sum_rel, sum_all
         y_prob = [[data[x][0]*1.0/sum_rel for x in xaxis], [data[x][1]*1.0/sum_all for x in xaxis]]
         yprob_labels = ['PDF of rel docs', 'PDF of docs']
         
