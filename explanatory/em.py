@@ -35,7 +35,7 @@ class EM(object):
         """
         two mixture of exponential
         """
-        xaxis = np.array(len(data))
+        xaxis = np.arange(len(data))
         print xaxis
         data = np.asarray(data)
         idx = 1
