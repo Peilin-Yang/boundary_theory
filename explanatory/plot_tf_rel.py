@@ -719,7 +719,6 @@ class PlotTFRel(object):
                 xlimit=xlimit,
                 ylimit=ylimit)
         else:
-            
             self.plot_single_tfc_constraints_draw_pdf_dot(
                 axs, 
                 xaxis, 

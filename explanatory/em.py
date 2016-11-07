@@ -31,7 +31,7 @@ class EM(object):
     def __init__(self):
         super(EM, self).__init__()
 
-    def exponential(self, data=[], init_lambdas=[1,0.5], max_iteration=50):
+    def exponential(self, data=[], init_lambdas=[1,1], max_iteration=50):
         """
         two mixture of exponential
         """
@@ -43,14 +43,9 @@ class EM(object):
             y = [lmbda*np.exp(data*(-lmbda)) for lmbda in lambdas]
             weights = y/np.sum(y, axis=0)
             coefficients = np.mean(weights, axis=1)
-            print y, weights, coefficients, data
             lambdas = np.sum(weights, axis=1)/np.sum(weights*data, axis=1)
-            print lambdas
-            #raw_input()
-            idx+=1
-        print
-        print lambdas
-        print coefficients
+            idx+=1 
+        return lambdas, coefficients
 
 
 class Test(unittest.TestCase):
