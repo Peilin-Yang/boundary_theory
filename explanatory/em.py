@@ -41,7 +41,7 @@ class EM(object):
         idx = 1
         lambdas = np.array(init_lambdas)
         while idx < max_iteration:
-            y = [lmbda*np.exp(xaxis*lmbda) for lmbda in lambdas]
+            y = [lmbda*np.exp(xaxis*(-lmbda)) for lmbda in lambdas]
             weights = y/np.sum(y, axis=0)
             coefficients = np.mean(weights, axis=1)
             print y, weights, coefficients, data
