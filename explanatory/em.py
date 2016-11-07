@@ -50,4 +50,5 @@ class Test(unittest.TestCase):
 if __name__ == '__main__':
     #unittest.main()
     em = EM()
-    em.exponential([70,40,20,10,9,8,7,6,5,4,3,2,2,2,2,2,2,1,1,1,1,1])
+    a = [70,40,20,10,9,8,7,6,5,4,3,2,2,2,2,2,2,1,1,1,1,1]
+    em.exponential(np.asarray(a)/np.sum(a))
