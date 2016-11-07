@@ -759,6 +759,10 @@ class PlotTFRel(object):
         sum_rel = sum([data[x][0] for x in xaxis])
         sum_all = sum([data[x][1] for x in xaxis])
         y_prob = [[data[x][0]*1.0/sum_rel for x in xaxis], [data[x][1]*1.0/sum_all for x in xaxis]]
+        y_fitting_paras = [EM().exponential(ele) for ele in y_prob]
+        y_fitting = [[y_fitting_paras[0][0][0]*math.exp(-x*y_fitting_paras[0][0][0])*y_fitting_paras[0][1][0]+y_fitting_paras[0][0][1]*math.exp(-x*y_fitting_paras[0][0][1])*y_fitting_paras[0][1][1] for x in xaxis], 
+            [y_fitting_paras[1][0][0]*math.exp(-x*y_fitting_paras[1][0][0])*y_fitting_paras[1][1][0]+y_fitting_paras[1][0][1]*math.exp(-x*y_fitting_paras[1][0][1])*y_fitting_paras[1][1][1] for x in xaxis]]
+        print y_fitting
         yprob_labels = ['PDF of rel docs', 'PDF of docs']
         
         if compact_x:
