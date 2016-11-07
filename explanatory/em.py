@@ -37,9 +37,9 @@ class EM(object):
         """
         xaxis = np.arange(1, len(data)+1)
         print xaxis
-        data = np.asarray(data)
+        data = np.array(data)
         idx = 1
-        lambdas = np.asarray(init_lambdas)
+        lambdas = np.array(init_lambdas)
         while idx < max_iteration:
             x = [lmbda*np.exp(xaxis*lmbda) for lmbda in lambdas]
             weights = x/np.sum(x, axis=0)
