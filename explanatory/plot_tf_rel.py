@@ -357,7 +357,7 @@ class PlotTFRel(object):
         if query_length == 0:
             queries = Query(self.collection_path).get_queries()
         else:
-            queries = Query(self.collection_path).get_queries_of_length(1)
+            queries = Query(self.collection_path).get_queries_of_length(query_length)
         queries = {ele['num']:ele['title'] for ele in queries}
         #print qids
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
