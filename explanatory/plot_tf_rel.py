@@ -721,6 +721,7 @@ class PlotTFRel(object):
         xlimit = float(xlimit)
         ylimit = float(ylimit)
         zoom_x = int(zoom_x)
+        compact_x = False if drawline == '0' else True
 
         xaxis = sorted(data.keys())
         yaxis = [[data[x][0]*1./data[x][1] for x in xaxis], [data[x][0] for x in xaxis], [data[x][1] for x in xaxis]]
