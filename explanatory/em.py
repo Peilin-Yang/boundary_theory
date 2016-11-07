@@ -48,7 +48,10 @@ class EM(object):
             print lambdas
             #raw_input()
             idx+=1
+        print
         print lambdas
+        print coefficients
+
 
 class Test(unittest.TestCase):
     pass
