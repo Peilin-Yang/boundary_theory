@@ -527,7 +527,7 @@ class PlotTFRel(object):
 
         collection_legend = ''
         if performance_as_legend:
-            collection_legend = '$MAP:%.4f$' % (np.mean([p[qid]['map'] if p[qid] else 0 for qid in p]))
+            collection_legend = '$MAP:%.4f$' % (np.mean([p[qid]['map'] if p[qid] else 0 for qid in queries]))
             collection_legend += '\n$MAP_E:%.4f$' % (np.mean(all_expected_maps))
 
         zoom_xaxis = xaxis[zoom_x:]
