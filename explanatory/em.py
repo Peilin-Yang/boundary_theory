@@ -38,7 +38,7 @@ class EM(object):
         data = np.asarray(data)
         lambdas = np.asarray(init_lambdas)
         #x = np.array([np.array(lambdas[0]*np.exp(data*lambdas[0])), np.array(lambdas[1]*np.exp(data*lambdas[1]))])
-        x = np.array([lmbda*np.exp(data*lmbda) for lmbda in lambdas])
+        x = [lmbda*np.exp(data*lmbda) for lmbda in lambdas]
         weights = x/np.sum(x, axis=0)
         print x
         print weights
