@@ -36,6 +36,7 @@ class EM(object):
         two mixture of exponential
         """
         xaxis = np.array(len(data))
+        print xaxis
         data = np.asarray(data)
         idx = 1
         lambdas = np.asarray(init_lambdas)
