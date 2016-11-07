@@ -45,6 +45,7 @@ class EM(object):
             coefficients = np.mean(weights, axis=1)
             lambdas = np.sum(weights, axis=1)/np.sum(weights*data, axis=1)
             idx+=1 
+        print lambdas, coefficients
         return lambdas, coefficients
 
 
