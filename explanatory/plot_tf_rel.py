@@ -757,7 +757,6 @@ class PlotTFRel(object):
 
         sum_rel = sum([data[x][0] for x in xaxis])
         sum_all = sum([data[x][1] for x in xaxis])
-        print sum_rel, sum_all
         y_prob = [[data[x][0]*1.0/sum_rel for x in xaxis], [data[x][1]*1.0/sum_all for x in xaxis]]
         yprob_labels = ['PDF of rel docs', 'PDF of docs']
         
@@ -797,6 +796,6 @@ class PlotTFRel(object):
                     ylimit, 
                     oformat) )
             self.plot_with_data_single(xaxis, y_prob[i], title, legend, 'projected doc score', 
-                ylabels[i], output_fn, query_length, method_name, plot_ratio, 
+                yprob_labels[i], output_fn, query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
                 drawline, numbins, xlimit, ylimit, zoom_x, oformat)
