@@ -42,7 +42,10 @@ class EM(object):
             x = [lmbda*np.exp(data*lmbda) for lmbda in lambdas]
             weights = x/np.sum(x, axis=0)
             coefficients = np.mean(weights, axis=1)
-            lambdas = weights*data
+            lambdas = len(data)*1./(weights*data)
+
+            print lambdas
+            raw_input()
             idx+=1
         print weights
 
