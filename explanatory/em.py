@@ -36,16 +36,13 @@ class EM(object):
         two mixture of exponential
         """
         data = np.asarray(data)
-        lambdas = np.asarray(init_lambdas)
-        #x = np.array([np.array(lambdas[0]*np.exp(data*lambdas[0])), np.array(lambdas[1]*np.exp(data*lambdas[1]))])
-        x = [lmbda*np.exp(data*lmbda) for lmbda in lambdas]
-        weights = x/np.sum(x, axis=0)
-        print x
-        print weights
         idx = 1
+        lambdas = np.asarray(init_lambdas)
         while idx < max_iteration:
+            x = [lmbda*np.exp(data*lmbda) for lmbda in lambdas]
+            weights = x/np.sum(x, axis=0)
             coefficients = np.mean(weights, axis=1)
-            print coefficients
+            lambdas = weights*data
             idx+=1
         print weights
 
