@@ -44,6 +44,7 @@ class EM(object):
         idx = 1
         while idx < max_iteration:
             coefficients = np.mean(weights)
+            print coefficients
             idx+=1
 
 class Test(unittest.TestCase):
