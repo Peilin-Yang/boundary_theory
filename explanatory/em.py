@@ -51,4 +51,4 @@ if __name__ == '__main__':
     #unittest.main()
     em = EM()
     a = [70,40,20,10,9,8,7,6,5,4,3,2,2,2,2,2,2,1,1,1,1,1]
-    em.exponential(np.asarray(a)/np.sum(a))
+    em.exponential(np.asarray(a)*1./np.sum(a))
