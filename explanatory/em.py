@@ -46,6 +46,7 @@ class EM(object):
             coefficients = np.mean(weights, axis=1)
             print coefficients
             idx+=1
+        print weights
 
 class Test(unittest.TestCase):
     pass
