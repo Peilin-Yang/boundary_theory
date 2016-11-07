@@ -8,6 +8,8 @@ import copy
 from operator import itemgetter
 from subprocess import Popen, PIPE
 
+from em import EM
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from collection_stats import CollectionStats
 from gen_doc_details import GenDocDetails
