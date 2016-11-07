@@ -43,7 +43,7 @@ class EM(object):
         print weights
         idx = 1
         while idx < max_iteration:
-            coefficients = np.mean(weights)
+            coefficients = weights/np.sum(x, axis=0)
             print coefficients
             idx+=1
 
