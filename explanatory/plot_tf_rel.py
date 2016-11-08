@@ -315,6 +315,8 @@ class PlotTFRel(object):
         ax.plot(trialX, trialY, label='fitting')
 
 
+    def mixture_exponential_1(self, xaxis, l):
+        return scipy.stats.expon(scale=1.0/l1).pdf(xaxis)
     def mixture_exponential_2(self, xaxis, pi, l1, l2):
         return pi*scipy.stats.expon(scale=1.0/l1).pdf(xaxis) + (1-pi)*scipy.stats.expon(scale=1.0/l2).pdf(xaxis)
     def mixture_exponential_3(self, xaxis, pi1, pi2, l1, l2, l3):
@@ -322,11 +324,14 @@ class PlotTFRel(object):
 
     def cal_curve_fit(self, ax, xaxis, yaxis, mode=1, paras=[], bounds=(-np.inf, np.inf)):
         if mode == 1:
+            func = self.mixture_exponential_1
+        elif mode == 2:
             func = self.mixture_exponential_2
         elif mode == 2:
             func = self.mixture_exponential_3
         popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
-        print popt
+        perr = np.sqrt(np.diag(pcov))
+        print mode, popt, perr
         trialX = xaxis
         trialY = func(xaxis, *popt)
         return trialX, trialY
@@ -777,10 +782,11 @@ class PlotTFRel(object):
 
         y_prob_fitting = []
         for i, ele in enumerate(y_prob):
-            y_fitting = self.cal_curve_fit(None, xaxis, ele, 2, [0.3, 0.3, 2, 1, 0.5], ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf]))
+            y_fitting = self.cal_curve_fit(None, xaxis, ele, 1, [1], ([0], [np.inf]))
+            y_fitting = self.cal_curve_fit(None, xaxis, ele, 2, [0.5, 2, 0.5], ([0, 0, 0,], [1, np.inf, np.inf]))
+            y_fitting = self.cal_curve_fit(None, xaxis, ele, 3, [0.3, 0.3, 2, 1, 0.5], ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf]))
             y_prob_fitting.append(y_fitting[1])
-        print y_prob_fitting
-
+            
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
             os.makedirs(os.path.join(self.all_results_root, output_root))
