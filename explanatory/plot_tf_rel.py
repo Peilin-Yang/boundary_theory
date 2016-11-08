@@ -321,6 +321,10 @@ class PlotTFRel(object):
         return pi*scipy.stats.expon(scale=1.0/l1).pdf(xaxis) + (1-pi)*scipy.stats.expon(scale=1.0/l2).pdf(xaxis)
     def mixture_exponential_3(self, xaxis, pi1, pi2, l1, l2, l3):
         return pi1*scipy.stats.expon(scale=1.0/l1).pdf(xaxis) + pi2*scipy.stats.expon(scale=1.0/l2).pdf(xaxis) + (1-pi1-pi2)*scipy.stats.expon(scale=1.0/l3).pdf(xaxis)
+    def mixture_expdecay_1(self, xaxis, n0, l):
+        return n0*np.exp(-l*xaxis)
+    def mixture_expdecay_2(self, xaxis, pi, n01, n02, l1, l2):
+        return pi*n01*np.exp(-l1*xaxis) + (1-pi)*n02*np.exp(-l2*xaxis)
 
     def cal_curve_fit_cdf(self, x):
         pass
@@ -332,6 +336,10 @@ class PlotTFRel(object):
             func = self.mixture_exponential_2
         elif mode == 3:
             func = self.mixture_exponential_3
+        elif mode == 4:
+            func = self.mixture_expdecay_1
+        elif mode == 5:
+            func = self.mixture_expdecay_2
         popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
         perr = np.sqrt(np.diag(pcov))
         trialY = func(xaxis, *popt)
@@ -785,14 +793,16 @@ class PlotTFRel(object):
         y_prob_fitting = []
         for i, ele in enumerate(y_prob):
             paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 1, [1], ([0], [np.inf]))
-            trialY = self.mixture_exponential_1(xaxis, *paras)
-            print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
+            # trialY = self.mixture_exponential_1(xaxis, *paras)
+            # print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
             paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 2, [0.5, 2, 0.5], ([0, 0, 0,], [1, np.inf, np.inf]))
-            trialY = self.mixture_exponential_2(xaxis, *paras)
-            print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
+            # trialY = self.mixture_exponential_2(xaxis, *paras)
+            # print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
             paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 3, [0.3, 0.3, 2, 1, 0.5], ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf]))
-            trialY = self.mixture_exponential_3(xaxis, *paras)
-            print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
+            # trialY = self.mixture_exponential_3(xaxis, *paras)
+            # print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
+            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 4, [1, 1], ([0, 0], [np.inf, np.inf]))
+            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 5, [0.5, 1, 0.5, 1, 0.5], ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf]))
             y_prob_fitting.append(y_fitting)
 
         output_root = os.path.join('collection_figures', query_length)
