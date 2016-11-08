@@ -325,6 +325,8 @@ class PlotTFRel(object):
         return n0*np.exp(-l*xaxis)
     def mixture_expdecay_2(self, xaxis, pi, n01, n02, l1, l2):
         return pi*n01*np.exp(-l1*xaxis) + (1-pi)*n02*np.exp(-l2*xaxis)
+    def radioactive_decay(self, xaxis, n0, halflife):
+        return n0*np.power(2, -1.*xaxis/halflife)
 
     def cal_curve_fit_cdf(self, x):
         pass
@@ -340,6 +342,8 @@ class PlotTFRel(object):
             func = self.mixture_expdecay_1
         elif mode == 5:
             func = self.mixture_expdecay_2
+        elif mode == 6:
+            func = self.radioactive_decay
         xaxis = np.array(xaxis)
         popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
         perr = np.sqrt(np.diag(pcov))
@@ -803,7 +807,8 @@ class PlotTFRel(object):
             # trialY = self.mixture_exponential_3(xaxis, *paras)
             # print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
             paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 4, [1, 1], ([0, 0], [np.inf, np.inf]))
-            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 5, [0.5, 1, 0.2, 2, 0.5], ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf]))
+            #paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 5, [0.5, 1, 0.2, 2, 0.5], ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf]))
+            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 6, [1, 2], ([0, 0], [np.inf, np.inf]))
             y_prob_fitting.append(y_fitting)
 
         output_root = os.path.join('collection_figures', query_length)
