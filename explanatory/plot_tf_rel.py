@@ -331,10 +331,9 @@ class PlotTFRel(object):
             func = self.mixture_exponential_3
         popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
         perr = np.sqrt(np.diag(pcov))
-        print mode, popt, perr
-        trialX = xaxis
         trialY = func(xaxis, *popt)
-        return trialX, trialY
+        print mode, popt, trialY - yaxis
+        return trialY
 
     def plot_single_tfc_constraints_rel_tf(self, query_length, x_func, 
             _method, plot_ratio=True, plot_total_or_avg=True,
@@ -785,7 +784,7 @@ class PlotTFRel(object):
             y_fitting = self.cal_curve_fit(None, xaxis, ele, 1, [1], ([0], [np.inf]))
             y_fitting = self.cal_curve_fit(None, xaxis, ele, 2, [0.5, 2, 0.5], ([0, 0, 0,], [1, np.inf, np.inf]))
             y_fitting = self.cal_curve_fit(None, xaxis, ele, 3, [0.3, 0.3, 2, 1, 0.5], ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf]))
-            y_prob_fitting.append(y_fitting[1])
+            y_prob_fitting.append(y_fitting)
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
