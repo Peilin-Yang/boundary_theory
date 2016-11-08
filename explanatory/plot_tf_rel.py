@@ -316,7 +316,7 @@ class PlotTFRel(object):
 
 
     def mixture_exponential_1(self, xaxis, l):
-        return scipy.stats.expon(scale=1.0/l1).pdf(xaxis)
+        return scipy.stats.expon(scale=1.0/l).pdf(xaxis)
     def mixture_exponential_2(self, xaxis, pi, l1, l2):
         return pi*scipy.stats.expon(scale=1.0/l1).pdf(xaxis) + (1-pi)*scipy.stats.expon(scale=1.0/l2).pdf(xaxis)
     def mixture_exponential_3(self, xaxis, pi1, pi2, l1, l2, l3):
@@ -786,7 +786,7 @@ class PlotTFRel(object):
             y_fitting = self.cal_curve_fit(None, xaxis, ele, 2, [0.5, 2, 0.5], ([0, 0, 0,], [1, np.inf, np.inf]))
             y_fitting = self.cal_curve_fit(None, xaxis, ele, 3, [0.3, 0.3, 2, 1, 0.5], ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf]))
             y_prob_fitting.append(y_fitting[1])
-            
+
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
             os.makedirs(os.path.join(self.all_results_root, output_root))
