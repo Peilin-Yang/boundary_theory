@@ -322,6 +322,9 @@ class PlotTFRel(object):
     def mixture_exponential_3(self, xaxis, pi1, pi2, l1, l2, l3):
         return pi1*scipy.stats.expon(scale=1.0/l1).pdf(xaxis) + pi2*scipy.stats.expon(scale=1.0/l2).pdf(xaxis) + (1-pi1-pi2)*scipy.stats.expon(scale=1.0/l3).pdf(xaxis)
 
+    def cal_curve_fit_cdf(self, x):
+
+
     def cal_curve_fit(self, ax, xaxis, yaxis, mode=1, paras=[], bounds=(-np.inf, np.inf)):
         if mode == 1:
             func = self.mixture_exponential_1
@@ -332,7 +335,7 @@ class PlotTFRel(object):
         popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
         perr = np.sqrt(np.diag(pcov))
         trialY = func(xaxis, *popt)
-        print mode, popt, np.absolute(trialY-yaxis).sum()
+        print mode, popt, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
         return trialY
 
     def plot_single_tfc_constraints_rel_tf(self, query_length, x_func, 
