@@ -775,6 +775,7 @@ class PlotTFRel(object):
         for i, ele in enumerate(y_prob):
             y_fitting = self.cal_curve_fit(None, xaxis, ele, 1, [0.55, 1.1, 0.9], ([0., 0, 0], [1., np.inf, np.inf]))
             y_prob_fitting.append(y_fitting[1])
+        print y_prob_fitting
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
@@ -808,7 +809,7 @@ class PlotTFRel(object):
                     xlimit,
                     ylimit, 
                     oformat) )
-            self.plot_with_data_single(xaxis, y_prob[i], y_fitting[i], title, legend, 'projected doc score', 
+            self.plot_with_data_single(xaxis, y_prob[i], y_prob_fitting[i], title, legend, 'projected doc score', 
                 yprob_labels[i], output_fn, query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
                 drawline, numbins, xlimit, ylimit, zoom_x, oformat)
