@@ -322,7 +322,6 @@ class PlotTFRel(object):
     def mixture_exponential_3(self, xaxis, pi1, pi2, l1, l2, l3):
         return pi1*scipy.stats.expon(scale=1.0/l1).pdf(xaxis) + pi2*scipy.stats.expon(scale=1.0/l2).pdf(xaxis) + (1-pi1-pi2)*scipy.stats.expon(scale=1.0/l3).pdf(xaxis)
     def mixture_expdecay_1(self, xaxis, n0, l):
-        print xaxis, n0, l, n0*np.exp(-l*xaxis)
         return n0*np.exp(-l*xaxis)
     def mixture_expdecay_2(self, xaxis, pi, n01, n02, l1, l2):
         return pi*n01*np.exp(-l1*xaxis) + (1-pi)*n02*np.exp(-l2*xaxis)
@@ -345,7 +344,6 @@ class PlotTFRel(object):
         popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
         perr = np.sqrt(np.diag(pcov))
         trialY = func(xaxis, *popt)
-        print trialY, yaxis
         print mode, popt, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
         return popt, trialY
 
