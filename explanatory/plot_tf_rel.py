@@ -754,7 +754,7 @@ class PlotTFRel(object):
             xaxis = range(1, len(xaxis)+1)
 
         for i, ele in enumerate(y_prob):
-            y_fitting = self.cal_curve_fit(None, xaxis, ele, 1, [0.5, 1, 1])
+            y_fitting = self.cal_curve_fit(None, xaxis, ele[0], 1, [0.55, 1.1, 0.9])
             y_prob[i].append(y_fitting[1])
 
         print y_prob
