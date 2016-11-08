@@ -318,10 +318,10 @@ class PlotTFRel(object):
     def mixture_exponential(self, xaxis, pi, l1, l2):
         return pi*scipy.stats.expon(l1).pdf(xaxis) + (1-pi)*scipy.stats.expon(l2).pdf(xaxis)
 
-    def cal_curve_fit(self, ax, xaxis, yaxis, mode=1):
+    def cal_curve_fit(self, ax, xaxis, yaxis, mode=1, paras=[]):
         if mode == 1:
             func = self.mixture_exponential
-        popt, pcov = curve_fit(func, xaxis, yaxis, method='trf')
+        popt, pcov = curve_fit(func, xaxis, yaxis, method='lm', p0=paras)
         print popt
         trialX = xaxis
         trialY = func(xaxis, *popt)
@@ -753,7 +753,7 @@ class PlotTFRel(object):
         if compact_x:
             xaxis = range(1, len(xaxis)+1)
 
-        y_fitting = self.cal_curve_fit(None, xaxis, y_prob[0], p0=[0.5, 1.5, 0.5])
+        y_fitting = self.cal_curve_fit(None, xaxis, y_prob[0], 1, [0.5, 1.5, 0.5])
         print y_fitting
 
         output_root = os.path.join('collection_figures', query_length)
