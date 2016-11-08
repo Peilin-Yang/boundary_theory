@@ -323,7 +323,6 @@ class PlotTFRel(object):
             func = self.mixture_exponential
         popt, pcov = curve_fit(func, xaxis, yaxis, method='trf')
         print popt
-        self.cal_tf_score(tfs, 0, 10, popt)
         trialX = xaxis
         trialY = func(xaxis, *popt)
         return trialX, trialY
