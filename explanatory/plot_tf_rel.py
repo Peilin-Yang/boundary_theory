@@ -318,10 +318,10 @@ class PlotTFRel(object):
     def mixture_exponential(self, xaxis, pi, l1, l2):
         return pi*scipy.stats.expon(l1).pdf(xaxis) + (1-pi)*scipy.stats.expon(l2).pdf(xaxis)
 
-    def cal_curve_fit(self, ax, xaxis, yaxis, mode=1, paras=[]):
+    def cal_curve_fit(self, ax, xaxis, yaxis, mode=1, paras=[], bounds=(-np.inf, np.inf)):
         if mode == 1:
             func = self.mixture_exponential
-        popt, pcov = curve_fit(func, xaxis, yaxis, method='lm', p0=paras)
+        popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
         print popt
         trialX = xaxis
         trialY = func(xaxis, *popt)
@@ -678,7 +678,7 @@ class PlotTFRel(object):
             oformat
         )
 
-    def plot_with_data_single(self, xaxis, yaxis, title, legend, xlabel, ylabel, 
+    def plot_with_data_single(self, xaxis, yaxis1, yaxis2, title, legend, xlabel, ylabel, 
             output_fn, query_length, method_name, plot_ratio, 
             plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
             drawline, numbins, xlimit, ylimit, zoom_x=20, oformat='eps'):
@@ -686,19 +686,19 @@ class PlotTFRel(object):
         font = {'size' : 12}
         plt.rc('font', **font)
         zoom_xaxis = xaxis[zoom_x:]
-        zoom_yaxis = yaxis[zoom_x:]
+        zoom_yaxis1 = yaxis1[zoom_x:]
         if drawline:
             self.plot_single_tfc_constraints_draw_pdf_line(
                 axs, 
                 xaxis, 
-                yaxis, 
+                yaxis1, 
                 title, 
                 legend, 
                 xlabel=xlabel,
                 ylabel=ylabel,
                 zoom=zoom_x > 0,
                 zoom_xaxis=zoom_xaxis,
-                zoom_yaxis=zoom_yaxis,
+                zoom_yaxis=zoom_yaxis1,
                 legend_pos='best',
                 xlimit=xlimit,
                 ylimit=ylimit)
@@ -706,14 +706,32 @@ class PlotTFRel(object):
             self.plot_single_tfc_constraints_draw_pdf_dot(
                 axs, 
                 xaxis, 
-                yaxis, 
+                yaxis1, 
                 title, 
                 legend, 
                 xlabel=xlabel,
                 ylabel=ylabel,
                 zoom=zoom_x > 0,
                 zoom_xaxis=zoom_xaxis,
-                zoom_yaxis=zoom_yaxis,
+                zoom_yaxis=zoom_yaxis1,
+                legend_pos='best',
+                xlimit=xlimit,
+                ylimit=ylimit)
+
+        if yaxis2:
+            zoom_yaxis2 = yaxis2[zoom_x:]
+            self.plot_single_tfc_constraints_draw_pdf_line(
+                axs, 
+                xaxis, 
+                yaxis2, 
+                title, 
+                legend, 
+                linestyle='--',
+                xlabel=xlabel,
+                ylabel=ylabel,
+                zoom=zoom_x > 0,
+                zoom_xaxis=zoom_xaxis,
+                zoom_yaxis=zoom_yaxis2,
                 legend_pos='best',
                 xlimit=xlimit,
                 ylimit=ylimit)
@@ -742,7 +760,7 @@ class PlotTFRel(object):
 
         sum_rel = sum([data[x][0] for x in xaxis])
         sum_all = sum([data[x][1] for x in xaxis])
-        y_prob = [[[data[x][0]*1.0/sum_rel for x in xaxis]], [[data[x][1]*1.0/sum_all for x in xaxis]]]
+        y_prob = [[data[x][0]*1.0/sum_rel for x in xaxis], [data[x][1]*1.0/sum_all for x in xaxis]]
         # y_fitting_paras = [EM().exponential(ele) for ele in y_prob]
         # y_fitting = [[y_fitting_paras[0][0][0]*math.exp(-x*y_fitting_paras[0][0][0])*y_fitting_paras[0][1][0]+y_fitting_paras[0][0][1]*math.exp(-x*y_fitting_paras[0][0][1])*y_fitting_paras[0][1][1] for x in xaxis], 
         #     [y_fitting_paras[1][0][0]*math.exp(-x*y_fitting_paras[1][0][0])*y_fitting_paras[1][1][0]+y_fitting_paras[1][0][1]*math.exp(-x*y_fitting_paras[1][0][1])*y_fitting_paras[1][1][1] for x in xaxis]]
@@ -753,11 +771,10 @@ class PlotTFRel(object):
         if compact_x:
             xaxis = range(1, len(xaxis)+1)
 
+        y_prob_fitting = []
         for i, ele in enumerate(y_prob):
-            y_fitting = self.cal_curve_fit(None, xaxis, ele[0], 1, [0.55, 1.1, 0.9])
-            y_prob[i].append(y_fitting[1])
-
-        print y_prob
+            y_fitting = self.cal_curve_fit(None, xaxis, ele, 1, [0.55, 1.1, 0.9], ([0., 0, 0], [1., np.inf, np.inf]))
+            y_prob_fitting.append(y_fitting[1])
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
@@ -775,7 +792,7 @@ class PlotTFRel(object):
                     xlimit,
                     ylimit, 
                     oformat) )
-            self.plot_with_data_single(xaxis, yaxis[i], title, legend, 'projected doc score', 
+            self.plot_with_data_single(xaxis, yaxis[i], None, title, legend, 'projected doc score', 
                 ylabels[i], output_fn, query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
                 drawline, numbins, xlimit, ylimit, zoom_x, oformat)
@@ -791,7 +808,7 @@ class PlotTFRel(object):
                     xlimit,
                     ylimit, 
                     oformat) )
-            self.plot_with_data_single(xaxis, y_prob[i], title, legend, 'projected doc score', 
+            self.plot_with_data_single(xaxis, y_prob[i], y_fitting[i], title, legend, 'projected doc score', 
                 yprob_labels[i], output_fn, query_length, method_name, plot_ratio, 
                 plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
                 drawline, numbins, xlimit, ylimit, zoom_x, oformat)
