@@ -757,6 +757,8 @@ class PlotTFRel(object):
             y_fitting = self.cal_curve_fit(None, xaxis, ele, 1, [0.5, 1, 1])
             y_prob[i].append(y_fitting[1])
 
+        print y_prob
+
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
             os.makedirs(os.path.join(self.all_results_root, output_root))
