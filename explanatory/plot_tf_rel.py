@@ -749,6 +749,7 @@ class PlotTFRel(object):
         #     [y_fitting_paras[1][0][0]*math.exp(-x*y_fitting_paras[1][0][0])*y_fitting_paras[1][1][0]+y_fitting_paras[1][0][1]*math.exp(-x*y_fitting_paras[1][0][1])*y_fitting_paras[1][1][1] for x in xaxis]]
         # print y_fitting
         y_fitting = self.cal_curve_fit(None, xaxis, y_prob[0])
+        print y_fitting
         yprob_labels = ['PDF of rel docs', 'PDF of docs']
         
         if compact_x:
