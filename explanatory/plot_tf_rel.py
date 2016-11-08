@@ -327,7 +327,7 @@ class PlotTFRel(object):
             func = self.mixture_exponential_1
         elif mode == 2:
             func = self.mixture_exponential_2
-        elif mode == 2:
+        elif mode == 3:
             func = self.mixture_exponential_3
         popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
         perr = np.sqrt(np.diag(pcov))
