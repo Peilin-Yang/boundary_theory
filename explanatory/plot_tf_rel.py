@@ -316,7 +316,7 @@ class PlotTFRel(object):
 
 
     def mixture_exponential(self, xaxis, pi, l1, l2):
-        return pi*scipy.stats.expon(l1).pdf(xaxis) + (1-pi)*scipy.stats.expon(l2).pdf(xaxis)
+        return pi*scipy.stats.expon(scale=1.0/l1).pdf(xaxis) + (1-pi)*scipy.stats.expon(scale=1.0/l2).pdf(xaxis)
 
     def cal_curve_fit(self, ax, xaxis, yaxis, mode=1, paras=[], bounds=(-np.inf, np.inf)):
         if mode == 1:
