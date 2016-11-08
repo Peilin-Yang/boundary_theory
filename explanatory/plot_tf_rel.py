@@ -336,7 +336,7 @@ class PlotTFRel(object):
         perr = np.sqrt(np.diag(pcov))
         trialY = func(xaxis, *popt)
         print mode, popt, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
-        return trialY
+        return popt, trialY
 
     def plot_single_tfc_constraints_rel_tf(self, query_length, x_func, 
             _method, plot_ratio=True, plot_total_or_avg=True,
@@ -784,9 +784,13 @@ class PlotTFRel(object):
 
         y_prob_fitting = []
         for i, ele in enumerate(y_prob):
-            y_fitting = self.cal_curve_fit(None, xaxis, ele, 1, [1], ([0], [np.inf]))
-            y_fitting = self.cal_curve_fit(None, xaxis, ele, 2, [0.5, 2, 0.5], ([0, 0, 0,], [1, np.inf, np.inf]))
-            y_fitting = self.cal_curve_fit(None, xaxis, ele, 3, [0.3, 0.3, 2, 1, 0.5], ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf]))
+            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 1, [1], ([0], [np.inf]))
+            trialY = func(xaxis, *popt)
+            print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
+            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 2, [0.5, 2, 0.5], ([0, 0, 0,], [1, np.inf, np.inf]))
+            print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
+            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 3, [0.3, 0.3, 2, 1, 0.5], ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf]))
+            print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
             y_prob_fitting.append(y_fitting)
 
         output_root = os.path.join('collection_figures', query_length)
