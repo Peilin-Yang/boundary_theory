@@ -341,6 +341,7 @@ class PlotTFRel(object):
             func = self.mixture_expdecay_1
         elif mode == 5:
             func = self.mixture_expdecay_2
+        xaxis = np.array(xaxis)
         popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
         perr = np.sqrt(np.diag(pcov))
         trialY = func(xaxis, *popt)
