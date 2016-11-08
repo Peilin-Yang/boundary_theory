@@ -153,7 +153,7 @@ class PlotTFRel(object):
                    width="70%",  # width = 50% of parent_bbox
                    height="70%",  # height : 1 inch
                    loc=7) # center right
-            axins.plot(zoom_xaxis, zoom_yaxis, marker, ms=4)
+            axins.plot(zoom_xaxis, zoom_yaxis, marker if marker else '+', ms=4)
             axins.vlines(zoom_xaxis, [0], zoom_yaxis)
             axins.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
             #axins.set_xlim(0, 20)
