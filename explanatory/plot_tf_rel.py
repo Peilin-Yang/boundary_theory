@@ -747,12 +747,14 @@ class PlotTFRel(object):
         # y_fitting = [[y_fitting_paras[0][0][0]*math.exp(-x*y_fitting_paras[0][0][0])*y_fitting_paras[0][1][0]+y_fitting_paras[0][0][1]*math.exp(-x*y_fitting_paras[0][0][1])*y_fitting_paras[0][1][1] for x in xaxis], 
         #     [y_fitting_paras[1][0][0]*math.exp(-x*y_fitting_paras[1][0][0])*y_fitting_paras[1][1][0]+y_fitting_paras[1][0][1]*math.exp(-x*y_fitting_paras[1][0][1])*y_fitting_paras[1][1][1] for x in xaxis]]
         # print y_fitting
-        y_fitting = self.cal_curve_fit(None, xaxis, y_prob[0])
-        print y_fitting
+        
         yprob_labels = ['PDF of rel docs', 'PDF of docs']
         
         if compact_x:
             xaxis = range(1, len(xaxis)+1)
+
+        y_fitting = self.cal_curve_fit(None, xaxis, y_prob[0], p0=[0.5, 1.5, 0.5])
+        print y_fitting
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
