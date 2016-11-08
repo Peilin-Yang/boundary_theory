@@ -818,7 +818,7 @@ class PlotTFRel(object):
             # trialY = self.mixture_exponential_3(xaxis, *paras)
             # print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
             fitting = self.cal_curve_fit(None, xaxis, ele, 4, [1, 1], ([0, 0], [np.inf, np.inf]))
-            fitting = self.cal_curve_fit(None, xaxis, ele, 5, [0.5, 1, 0.2, 2, 0.5], ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf]))
+            fitting = self.cal_curve_fit(None, xaxis, ele, 5, [0.5, 1, 1, 2, 0.5], ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf]))
             fitting = self.cal_curve_fit(None, xaxis, ele, 6, [1, 2], ([0, 0], [np.inf, np.inf]))
             fitting = self.cal_curve_fit(None, xaxis, ele, 7, [1, 0.5], ([0, 0], [np.inf, np.inf]))
             fitting = self.cal_curve_fit(None, xaxis, ele, 8, [1, 2], ([0, 0], [np.inf, np.inf]))
