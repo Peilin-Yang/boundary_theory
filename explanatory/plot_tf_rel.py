@@ -329,6 +329,8 @@ class PlotTFRel(object):
         return n0*np.power(2, -1.*xaxis/halflife)
     def asymptotic_decay(self, xaxis, n0, halflife):
         return n0*(1 - xaxis/(xaxis+halflife))
+    def power_decay(self, xaxis, n0, halflife):
+        return n0*np.power(xaxis, -halflife)
 
     def cal_curve_fit_cdf(self, x):
         pass
@@ -348,11 +350,16 @@ class PlotTFRel(object):
             func = self.radioactive_decay
         elif mode == 7:
             func = self.asymptotic_decay
+        elif mode == 8:
+            func = self.power_decay
         xaxis = np.array(xaxis)
-        popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
-        perr = np.sqrt(np.diag(pcov))
-        trialY = func(xaxis, *popt)
-        print mode, popt, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
+        try:
+            popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
+            perr = np.sqrt(np.diag(pcov))
+            trialY = func(xaxis, *popt)
+            print mode, popt, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
+        except:
+            return 
         return popt, trialY
 
     def plot_single_tfc_constraints_rel_tf(self, query_length, x_func, 
@@ -814,6 +821,7 @@ class PlotTFRel(object):
             #paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 5, [0.5, 1, 0.2, 2, 0.5], ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf]))
             paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 6, [1, 2], ([0, 0], [np.inf, np.inf]))
             paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 7, [1, 0.5], ([0, 0], [np.inf, np.inf]))
+            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 8, [1, 2], ([0, 0], [np.inf, np.inf]))
             y_prob_fitting.append(y_fitting)
 
         output_root = os.path.join('collection_figures', query_length)
