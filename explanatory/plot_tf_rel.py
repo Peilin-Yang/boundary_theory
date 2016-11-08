@@ -332,7 +332,7 @@ class PlotTFRel(object):
         popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
         perr = np.sqrt(np.diag(pcov))
         trialY = func(xaxis, *popt)
-        print mode, popt, (trialY-yaxis).absolute().sum()
+        print mode, popt, np.absolute(trialY-yaxis).sum()
         return trialY
 
     def plot_single_tfc_constraints_rel_tf(self, query_length, x_func, 
