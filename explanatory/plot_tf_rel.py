@@ -808,21 +808,21 @@ class PlotTFRel(object):
 
         y_prob_fitting = []
         for i, ele in enumerate(y_prob):
-            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 1, [1], ([0], [np.inf]))
+            fitting = self.cal_curve_fit(None, xaxis, ele, 1, [1], ([0], [np.inf]))
             # trialY = self.mixture_exponential_1(xaxis, *paras)
             # print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
-            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 2, [0.5, 2, 0.5], ([0, 0, 0,], [1, np.inf, np.inf]))
+            fitting = self.cal_curve_fit(None, xaxis, ele, 2, [0.5, 2, 0.5], ([0, 0, 0,], [1, np.inf, np.inf]))
             # trialY = self.mixture_exponential_2(xaxis, *paras)
             # print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
-            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 3, [0.3, 0.3, 2, 1, 0.5], ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf]))
+            fitting = self.cal_curve_fit(None, xaxis, ele, 3, [0.3, 0.3, 2, 1, 0.5], ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf]))
             # trialY = self.mixture_exponential_3(xaxis, *paras)
             # print np.absolute(trialY*sum_rel-yaxis[1]).sum(), scipy.stats.ks_2samp(yaxis[1], trialY)
-            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 4, [1, 1], ([0, 0], [np.inf, np.inf]))
-            #paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 5, [0.5, 1, 0.2, 2, 0.5], ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf]))
-            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 6, [1, 2], ([0, 0], [np.inf, np.inf]))
-            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 7, [1, 0.5], ([0, 0], [np.inf, np.inf]))
-            paras, y_fitting = self.cal_curve_fit(None, xaxis, ele, 8, [1, 2], ([0, 0], [np.inf, np.inf]))
-            y_prob_fitting.append(y_fitting)
+            fitting = self.cal_curve_fit(None, xaxis, ele, 4, [1, 1], ([0, 0], [np.inf, np.inf]))
+            fitting = self.cal_curve_fit(None, xaxis, ele, 5, [0.5, 1, 0.2, 2, 0.5], ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf]))
+            fitting = self.cal_curve_fit(None, xaxis, ele, 6, [1, 2], ([0, 0], [np.inf, np.inf]))
+            fitting = self.cal_curve_fit(None, xaxis, ele, 7, [1, 0.5], ([0, 0], [np.inf, np.inf]))
+            fitting = self.cal_curve_fit(None, xaxis, ele, 8, [1, 2], ([0, 0], [np.inf, np.inf]))
+            #y_prob_fitting.append(y_fitting)
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
