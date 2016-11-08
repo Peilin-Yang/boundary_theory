@@ -753,8 +753,9 @@ class PlotTFRel(object):
         if compact_x:
             xaxis = range(1, len(xaxis)+1)
 
-        y_fitting = self.cal_curve_fit(None, xaxis, y_prob[0], 1, [0.5, 1.5, 0.5])
-        print y_fitting
+        for i, ele in enumerate(y_prob):
+            y_fitting = self.cal_curve_fit(None, xaxis, ele, 1, [0.5, 1, 1])
+            y_prob[i].append(y_fitting[1])
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
