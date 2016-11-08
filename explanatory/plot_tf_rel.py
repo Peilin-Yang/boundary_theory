@@ -718,7 +718,7 @@ class PlotTFRel(object):
                 xlimit=xlimit,
                 ylimit=ylimit)
 
-        if yaxis2 not None:
+        if not yaxis2 None:
             zoom_yaxis2 = yaxis2[zoom_x:]
             self.plot_single_tfc_constraints_draw_pdf_line(
                 axs, 
