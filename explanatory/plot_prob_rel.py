@@ -55,7 +55,7 @@ class PlotRelProb(object):
             ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
         else: #draw dots 
             ax.plot(xaxis, yaxis, marker=marker if marker else 'o', markerfacecolor='r', ms=4, ls='None', label=legend)
-            ax.vlines(xaxis, [0], yaxis)
+            #ax.vlines(xaxis, [0], yaxis)
         if xlog:
             ax.set_xscale('log')
         if ylog:
@@ -82,7 +82,7 @@ class PlotRelProb(object):
                 zoom_ax.plot(zoom_xaxis, zoom_yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-')
             else: #draw dots 
                 zoom_ax.plot(zoom_xaxis, zoom_yaxis, marker=marker if marker else 'o', markerfacecolor='r', ms=4, ls='None')
-                zoom_ax.vlines(zoom_xaxis, [0], zoom_yaxis)
+                #zoom_ax.vlines(zoom_xaxis, [0], zoom_yaxis)
             if new_zoom_ax:
                 zoom_ax.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
                 mark_inset(ax, zoom_ax, loc1=2, loc2=4, fc="none", ec="0.5")
