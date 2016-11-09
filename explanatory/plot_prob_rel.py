@@ -402,17 +402,17 @@ class PlotRelProb(object):
         if compact_x:
             xaxis = range(1, len(xaxis)+1)
 
-        y_prob_fitting = []
-        for i, ele in enumerate(y_prob):
-            fitting = FittingModels().cal_curve_fit(xaxis, ele, 1, [1], ([0], [np.inf]))
-            fitting = FittingModels().cal_curve_fit(xaxis, ele, 2, [0.5, 2, 0.5], ([0, 0, 0,], [1, np.inf, np.inf]))
-            fitting = FittingModels().cal_curve_fit(xaxis, ele, 3, [0.3, 0.3, 2, 1, 0.5], ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf]))
-            fitting = FittingModels().cal_curve_fit(xaxis, ele, 4, [1, 1], ([0, 0], [np.inf, np.inf]))
-            fitting = FittingModels().cal_curve_fit(xaxis, ele, 5, [0.5, 1, 1, 2, 0.5], ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf]))
-            fitting = FittingModels().cal_curve_fit(xaxis, ele, 6, [1, 2], ([0, 0], [np.inf, np.inf]))
-            fitting = FittingModels().cal_curve_fit(xaxis, ele, 7, [1, 0.5], ([0, 0], [np.inf, np.inf]))
-            fitting = FittingModels().cal_curve_fit(xaxis, ele, 8, [1, 2], ([0, 0], [np.inf, np.inf]))
-            #y_prob_fitting.append(y_fitting)
+        if fit_curve:
+            y_prob_fitting = []
+            for i, ele in enumerate(y_prob):
+                all_fittings = []
+                for j in range(1, 8):
+                    fitting = FittingModels().cal_curve_fit(xaxis, ele, j)
+                    if not fitting is None:
+                        all_fittings.append(fitting)
+                all_fittings.sort(key=itemgetter(3), reverse=True)
+                print all_fittings[0]
+                y_prob_fitting.append(all_fittings[0][2])
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
@@ -447,7 +447,8 @@ class PlotRelProb(object):
                     xlimit,
                     ylimit, 
                     oformat) )
-            self.plot_with_data_single(xaxis, y_prob[i], y_prob_fitting[i], 
+            self.plot_with_data_single(xaxis, y_prob[i], 
+                y_prob_fitting[i] if fit_curve else None, 
                 title, legend, 'projected doc score', yprob_labels[i], 
                 output_fn, query_length, formal_method_name, 
                 plot_ratio, plot_total_or_avg, plot_rel_or_all, 

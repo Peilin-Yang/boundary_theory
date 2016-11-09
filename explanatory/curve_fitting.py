@@ -118,30 +118,44 @@ class FittingModels(object):
     def power_decay(self, xaxis, n0, halflife):
         return n0*np.power(xaxis, -halflife)
 
-    def cal_curve_fit(self, xaxis, yaxis, mode=1, paras=[], bounds=(-np.inf, np.inf)):
+    def cal_curve_fit(self, xaxis, yaxis, mode=1):
         if mode == 1:
             func = self.mix_expon1
+            p0 = [1]
+            bounds = ([0], [np.inf])
         elif mode == 2:
             func = self.mix_expon2
+            p0 = [0.5, 2, 0.5]
+            bounds = ([0, 0, 0,], [1, np.inf, np.inf])
         elif mode == 3:
             func = self.mix_expon3
+            p0 = [0.3, 0.3, 2, 1, 0.5]
+            bounds = ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf])
         elif mode == 4:
             func = self.mix_expdecay1
+            p0 = [1, 1]
+            bounds = ([0, 0], [np.inf, np.inf])
         elif mode == 5:
             func = self.mix_expdecay2
+            p0 = [0.5, 1, 1, 2, 0.5]
+            bounds = ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
         elif mode == 6:
             func = self.asymptotic_decay
+            p0 = [1, 2]
+            bounds = ([0, 0], [np.inf, np.inf])
         elif mode == 7:
             func = self.power_decay
+            p0 = [1, 2]
+            bounds = ([0, 0], [np.inf, np.inf])
         xaxis = np.array(xaxis)
         try:
-            popt, pcov = curve_fit(func, xaxis, yaxis, p0=paras, method='trf', bounds=bounds)
+            popt, pcov = curve_fit(func, xaxis, yaxis, p0=p0, method='trf', bounds=bounds)
             perr = np.sqrt(np.diag(pcov))
             trialY = func(xaxis, *popt)
-            print mode, popt, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
+            #print mode, popt, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
         except:
             return None
-        return popt, trialY, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
+        return mode, popt, trialY, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
 
 class EM(object):
     """
