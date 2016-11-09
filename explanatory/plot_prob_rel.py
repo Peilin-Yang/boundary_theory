@@ -331,7 +331,7 @@ class PlotRelProb(object):
             xlabel, ylabel, output_fn, query_length, method_name, 
             method_para_str, plot_ratio, plot_total_or_avg, plot_rel_or_all, 
             performance_as_legend, drawline, numbins, xlimit, ylimit, 
-            zoom_x=20, fit_curve=False, oformat='eps'):
+            zoom_x=20, oformat='eps'):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 12}
         plt.rc('font', **font)
