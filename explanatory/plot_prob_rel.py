@@ -329,7 +329,7 @@ class PlotRelProb(object):
 
     def plot_with_data_single(self, xaxis, yaxis, yaxis_fitting, title, legend, 
             xlabel, ylabel, output_fn, query_length, method_name, 
-            method_para_str, plot_ratio, plot_total_or_avg, plot_rel_or_all, 
+            plot_ratio, plot_total_or_avg, plot_rel_or_all, 
             performance_as_legend, drawline, numbins, xlimit, ylimit, 
             zoom_x=20, oformat='eps'):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
@@ -411,7 +411,7 @@ class PlotRelProb(object):
                     fitting = FittingModels().cal_curve_fit(xaxis, ele, j)
                     if not fitting is None:
                         all_fittings.append(fitting)
-                all_fittings.sort(key=itemgetter(3), reverse=True)
+                all_fittings.sort(key=itemgetter(3))
                 print all_fittings[0][0], all_fittings[0][1], all_fittings[0][3]
                 y_prob_fitting.append(all_fittings[0][2])
 
