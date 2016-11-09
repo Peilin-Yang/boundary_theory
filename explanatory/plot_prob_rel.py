@@ -312,7 +312,7 @@ class PlotRelProb(object):
         return self.plot_rel_prob(
             int(query_length),
             x_func,
-            formal_method_name
+            formal_method_name,
             False if plot_ratio == '0' else True,
             False if plot_total_or_avg == '0' else True,
             False if plot_rel_or_all == '0' else True,
