@@ -404,14 +404,14 @@ class PlotRelProb(object):
 
         y_prob_fitting = []
         for i, ele in enumerate(y_prob):
-            fitting = FittingModels().cal_curve_fit(None, xaxis, ele, 1, [1], ([0], [np.inf]))
-            fitting = FittingModels().cal_curve_fit(None, xaxis, ele, 2, [0.5, 2, 0.5], ([0, 0, 0,], [1, np.inf, np.inf]))
-            fitting = FittingModels().cal_curve_fit(None, xaxis, ele, 3, [0.3, 0.3, 2, 1, 0.5], ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf]))
-            fitting = FittingModels().cal_curve_fit(None, xaxis, ele, 4, [1, 1], ([0, 0], [np.inf, np.inf]))
-            fitting = FittingModels().cal_curve_fit(None, xaxis, ele, 5, [0.5, 1, 1, 2, 0.5], ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf]))
-            fitting = FittingModels().cal_curve_fit(None, xaxis, ele, 6, [1, 2], ([0, 0], [np.inf, np.inf]))
-            fitting = FittingModels().cal_curve_fit(None, xaxis, ele, 7, [1, 0.5], ([0, 0], [np.inf, np.inf]))
-            fitting = FittingModels().cal_curve_fit(None, xaxis, ele, 8, [1, 2], ([0, 0], [np.inf, np.inf]))
+            fitting = FittingModels().cal_curve_fit(xaxis, ele, 1, [1], ([0], [np.inf]))
+            fitting = FittingModels().cal_curve_fit(xaxis, ele, 2, [0.5, 2, 0.5], ([0, 0, 0,], [1, np.inf, np.inf]))
+            fitting = FittingModels().cal_curve_fit(xaxis, ele, 3, [0.3, 0.3, 2, 1, 0.5], ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf]))
+            fitting = FittingModels().cal_curve_fit(xaxis, ele, 4, [1, 1], ([0, 0], [np.inf, np.inf]))
+            fitting = FittingModels().cal_curve_fit(xaxis, ele, 5, [0.5, 1, 1, 2, 0.5], ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf]))
+            fitting = FittingModels().cal_curve_fit(xaxis, ele, 6, [1, 2], ([0, 0], [np.inf, np.inf]))
+            fitting = FittingModels().cal_curve_fit(xaxis, ele, 7, [1, 0.5], ([0, 0], [np.inf, np.inf]))
+            fitting = FittingModels().cal_curve_fit(xaxis, ele, 8, [1, 2], ([0, 0], [np.inf, np.inf]))
             #y_prob_fitting.append(y_fitting)
 
         output_root = os.path.join('collection_figures', query_length)
