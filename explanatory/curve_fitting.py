@@ -72,7 +72,7 @@ class RealModels(object):
         """
         return round((np.log(float(row['total_tf']))+delta)/np.log(float(row['doc_len'])), 3) 
 
-    def get_func_mapping(self, method='tf1', para_str=''):
+    def get_func_mapping(self, method_name='tf1', para_str=''):
         formal_method_name = method_name
         if method_name == 'okapi':
             x_func = self.okapi
