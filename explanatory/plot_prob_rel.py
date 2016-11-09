@@ -88,11 +88,11 @@ class PlotRelProb(object):
                 mark_inset(ax, zoom_ax, loc1=2, loc2=4, fc="none", ec="0.5")
         return ax, zoom_ax
 
-    def plot_rel_prob(self, query_length, x_func, 
-            _method, plot_ratio=True, plot_total_or_avg=True,
-            plot_rel_or_all=True, performance_as_legend=True, 
-            drawline=True, numbins=60, xlimit=0, 
-            ylimit=0, zoom_x=0, compact_x=False, oformat='eps'):
+    def plot_rel_prob(self, query_length, x_func, _method, plot_ratio=True, 
+            plot_total_or_avg=True, plot_rel_or_all=True, 
+            performance_as_legend=True, drawline=True, numbins=60, xlimit=0, 
+            ylimit=0, zoom_x=0, compact_x=False, curve_fitting=False, 
+            oformat='eps'):
         """
         plot the P(D=1|TF=x)
 
@@ -312,8 +312,7 @@ class PlotRelProb(object):
         return self.plot_rel_prob(
             int(query_length),
             x_func,
-            formal_method_name,
-            method_para_str,
+            formal_method_name+','+method_para_str,
             False if plot_ratio == '0' else True,
             False if plot_total_or_avg == '0' else True,
             False if plot_rel_or_all == '0' else True,
