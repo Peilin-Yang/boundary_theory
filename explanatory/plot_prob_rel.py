@@ -81,7 +81,7 @@ class PlotRelProb(object):
             if drawline:
                 zoom_ax.plot(zoom_xaxis, zoom_yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-')
             else: #draw dots 
-                zoom_ax.plot(zoom_xaxis, zoom_yaxis, marker=marker if marker else 'o', markerfacecolor='r', ms=4)
+                zoom_ax.plot(zoom_xaxis, zoom_yaxis, marker=marker if marker else 'o', markerfacecolor='r', ms=4, ls='None')
                 zoom_ax.vlines(zoom_xaxis, [0], zoom_yaxis)
             if new_zoom_ax:
                 zoom_ax.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
