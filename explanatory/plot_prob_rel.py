@@ -284,7 +284,7 @@ class PlotRelProb(object):
             zoom_yaxis=zoom_yaxis)
 
         output_fn = os.path.join(self.all_results_root, output_root, 
-            '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-all.%s' % (
+            '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-all.%s' % (
                 collection_name, 
                 _method, 
                 'ratio' if plot_ratio else 'abscnt', 
@@ -293,7 +293,10 @@ class PlotRelProb(object):
                 'line' if drawline else 'dots', 
                 numbins, 
                 xlimit,
-                ylimit, 
+                ylimit,
+                zoom_x, 
+                'compact' if compact_x else 'raw',
+                'fit' if curve_fitting else 'plain',
                 oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
@@ -419,7 +422,7 @@ class PlotRelProb(object):
             os.makedirs(os.path.join(self.all_results_root, output_root))
         for i in range(3):
             output_fn = os.path.join(self.all_results_root, output_root, 
-                '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f.%s' % (
+                '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s.%s' % (
                     'all_collections', 
                     formal_method_name, 
                     'ratio' if i==0 else 'abscnt', 
@@ -429,6 +432,9 @@ class PlotRelProb(object):
                     numbins, 
                     xlimit,
                     ylimit, 
+                    zoom_x, 
+                    'compact' if compact_x else 'raw',
+                    'fit' if fit_curve else 'plain',
                     oformat) )
             self.plot_with_data_single(xaxis, yaxis[i], None, title, legend, 
                 'projected doc score', ylabels[i], output_fn, query_length, 
@@ -437,7 +443,7 @@ class PlotRelProb(object):
                 xlimit, ylimit, zoom_x, oformat)
         for i in range(2):
             output_fn = os.path.join(self.all_results_root, output_root, 
-                '%s-%s-%s-%s-%s-%d-%.1f-%.1f.%s' % (
+                '%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s.%s' % (
                     'all_collections', 
                     formal_method_name, 
                     'rel_dist' if i==0 else 'all_dist', 
@@ -446,6 +452,9 @@ class PlotRelProb(object):
                     numbins, 
                     xlimit,
                     ylimit, 
+                    zoom_x, 
+                    'compact' if compact_x else 'raw',
+                    'fit' if fit_curve else 'plain',
                     oformat) )
             self.plot_with_data_single(xaxis, y_prob[i], 
                 y_prob_fitting[i] if fit_curve else None, 
