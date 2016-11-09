@@ -53,11 +53,11 @@ class PlotRelProb(object):
             legend_pos='best', xlabel_format=0, xlimit=0, ylimit=0):
         print drawline
         if drawline:
-            ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
-        else: #draw dots 
             pass
-            #ax.plot(xaxis, yaxis, marker=marker if marker else 'o', markerfacecolor='r', ms=4, label=legend)
-            #ax.vlines(xaxis, [0], yaxis)
+            #ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
+        else: #draw dots 
+            ax.plot(xaxis, yaxis, marker=marker if marker else 'o', markerfacecolor='r', ms=4, label=legend)
+            ax.vlines(xaxis, [0], yaxis)
         if xlog:
             ax.set_xscale('log')
         if ylog:
@@ -81,7 +81,8 @@ class PlotRelProb(object):
                        height="70%",  # height : 1 inch
                        loc=7) # center right
             if drawline:
-                zoom_ax.plot(zoom_xaxis, zoom_yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-')
+                pass
+                #zoom_ax.plot(zoom_xaxis, zoom_yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-')
             else: #draw dots 
                 zoom_ax.plot(zoom_xaxis, zoom_yaxis, marker=marker if marker else 'o', markerfacecolor='r', ms=4)
                 zoom_ax.vlines(zoom_xaxis, [0], zoom_yaxis)
