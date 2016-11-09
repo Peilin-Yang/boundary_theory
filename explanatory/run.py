@@ -37,7 +37,7 @@ from utils import Utils
 from collection_stats import CollectionStats
 from baselines import Baselines
 from gen_doc_details import GenDocDetails
-from plot_tf_rel import PlotRelProb
+from plot_prob_rel import PlotRelProb
 from plot_synthetic_map import PlotSyntheticMAP
 from prints import Prints
 import g
