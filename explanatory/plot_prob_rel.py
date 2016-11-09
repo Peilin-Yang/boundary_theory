@@ -335,6 +335,7 @@ class PlotRelProb(object):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 12}
         plt.rc('font', **font)
+        print zoom_x
         zoom_xaxis = xaxis[zoom_x:]
         zoom_yaxis = yaxis[zoom_x:]
         ax, zoom_ax = self.plot_figure(axs, xaxis, yaxis, title, legend, 
@@ -411,7 +412,7 @@ class PlotRelProb(object):
                     if not fitting is None:
                         all_fittings.append(fitting)
                 all_fittings.sort(key=itemgetter(3), reverse=True)
-                print all_fittings[0]
+                print all_fittings[0][0], all_fittings[0][1], all_fittings[0][3]
                 y_prob_fitting.append(all_fittings[0][2])
 
         output_root = os.path.join('collection_figures', query_length)
