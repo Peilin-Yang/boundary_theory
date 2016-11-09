@@ -308,7 +308,7 @@ class PlotRelProb(object):
         We parse the CLI arguments and convert them to the values required 
         for the function.
         """
-        x_func, formal_method_name = RealModels().get_func_mapping(method_name, para_str)
+        x_func, formal_method_name = RealModels().get_func_mapping(method_name, method_para_str)
         return self.plot_rel_prob(
             int(query_length),
             x_func,
