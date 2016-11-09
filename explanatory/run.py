@@ -37,7 +37,7 @@ from utils import Utils
 from collection_stats import CollectionStats
 from baselines import Baselines
 from gen_doc_details import GenDocDetails
-from plot_tf_rel import PlotTFRel
+from plot_tf_rel import PlotRelProb
 from plot_synthetic_map import PlotSyntheticMAP
 from prints import Prints
 import g
@@ -107,7 +107,7 @@ def plot_tf_rel_all(paras):
         collection_name = q['collection']
         collection_path = os.path.join(collection_root, collection_name)
         print 'Getting the data and plotting for %s' % collection_name
-        results = PlotTFRel(collection_path, q['collection_formal_name']).wrapper(*paras)
+        results = PlotRelProb(collection_path, q['collection_formal_name']).wrapper(*paras)
         this_data = results[1]
         for x in this_data:
           if x not in data:
@@ -115,7 +115,7 @@ def plot_tf_rel_all(paras):
           data[x][0] += this_data[x][0]
           data[x][1] += this_data[x][1]
 
-    PlotTFRel(collection_path, q['collection_formal_name']).plot_with_data(data, 
+    PlotRelProb(collection_path, q['collection_formal_name']).plot_with_data(data, 
       'All Collections(query len=%s)' % paras[0], '', *paras)    
 
 def gen_plot_tf_rel_batch(paras):
@@ -133,7 +133,7 @@ def plot_tf_rel_atom(para_file):
         reader = csv.reader(f)
         for row in reader:
             collection_path = row[0]
-            PlotTFRel(collection_path, q['collection_formal_name']).wrapper(*row[1:])
+            PlotRelProb(collection_path, q['collection_formal_name']).wrapper(*row[1:])
 
 def gen_lambdarank_batch():
     all_paras = []
@@ -229,11 +229,13 @@ if __name__ == '__main__':
     parser.add_argument('-121', '--gen_plot_tf_rel_batch', nargs='+',
                        help='plot P( D is a relevant document | f(tf,doclen)=x ), \
                        args: [query_len(0 for all queries)] [method_name(method_with_para)] \
+                       [method_para_str(string, this is for finding the evaluation results)] \
                        [plot_ratio(boolean)] [avg_or_total(boolean, only if the plot_ratio is false)] \
                        [rel_or_all(boolean, only if the plot_ratio is false)] \
                        [performance_as_legend(boolean)] \
                        [drawline(boolean)] [plotbins(boolean)] [numbins(int)] \
-                       [xlimit(float)] [ylimit(float)] [output_format(eps|png)]')
+                       [xlimit(float)] [ylimit(float)] [zoom_x(int)] [compact_x(boolean)] \
+                       [curve_fitting(boolean)] [output_format(eps|png)]')
     parser.add_argument('-122', '--plot_tf_rel_atom', nargs=1, help='')
     parser.add_argument('-120', '--plot_tf_rel_all', nargs='+',
                        help='plot for all collections (a combined plot)')
