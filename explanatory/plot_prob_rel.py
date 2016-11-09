@@ -335,7 +335,6 @@ class PlotRelProb(object):
         fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
         font = {'size' : 12}
         plt.rc('font', **font)
-        print zoom_x
         zoom_xaxis = xaxis[zoom_x:]
         zoom_yaxis = yaxis[zoom_x:]
         ax, zoom_ax = self.plot_figure(axs, xaxis, yaxis, title, legend, 
@@ -355,7 +354,7 @@ class PlotRelProb(object):
             self.plot_figure(
                 axs, 
                 xaxis, 
-                zoom_yaxis_fitting, 
+                yaxis_fitting, 
                 title, 
                 legend, 
                 drawline=True, 
