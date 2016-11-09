@@ -312,7 +312,7 @@ class PlotRelProb(object):
         return self.plot_rel_prob(
             int(query_length),
             x_func,
-            formal_method_name+','+method_para_str,
+            formal_method_name
             False if plot_ratio == '0' else True,
             False if plot_total_or_avg == '0' else True,
             False if plot_rel_or_all == '0' else True,
@@ -387,6 +387,8 @@ class PlotRelProb(object):
         zoom_x = int(zoom_x)
         compact_x = False if drawline == '0' else True
         compact_x = False if drawline == '0' else True
+        x_func, formal_method_name = RealModels().get_func_mapping(method_name, method_para_str)
+        
 
         xaxis = sorted(data.keys())
         yaxis = [[data[x][0]*1./data[x][1] for x in xaxis], [data[x][0] for x in xaxis], [data[x][1] for x in xaxis]]
@@ -419,7 +421,7 @@ class PlotRelProb(object):
             output_fn = os.path.join(self.all_results_root, output_root, 
                 '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f.%s' % (
                     'all_collections', 
-                    method_name+','+method_para_str, 
+                    formal_method_name, 
                     'ratio' if i==0 else 'abscnt', 
                     'total',
                     'rel' if i==1 else 'all',
@@ -430,14 +432,14 @@ class PlotRelProb(object):
                     oformat) )
             self.plot_with_data_single(xaxis, yaxis[i], None, title, legend, 
                 'projected doc score', ylabels[i], output_fn, query_length, 
-                method_name+','+method_para_str, plot_ratio, plot_total_or_avg, 
+                formal_method_name, plot_ratio, plot_total_or_avg, 
                 plot_rel_or_all, performance_as_legend, drawline, numbins, 
                 xlimit, ylimit, zoom_x, oformat)
         for i in range(2):
             output_fn = os.path.join(self.all_results_root, output_root, 
                 '%s-%s-%s-%s-%s-%d-%.1f-%.1f.%s' % (
                     'all_collections', 
-                    method_name+','+method_para_str, 
+                    formal_method_name, 
                     'rel_dist' if i==0 else 'all_dist', 
                     'total',
                     'line' if drawline else 'dots', 
@@ -447,7 +449,7 @@ class PlotRelProb(object):
                     oformat) )
             self.plot_with_data_single(xaxis, y_prob[i], y_prob_fitting[i], 
                 title, legend, 'projected doc score', yprob_labels[i], 
-                output_fn, query_length, method_name+','+method_para_str, 
+                output_fn, query_length, formal_method_name, 
                 plot_ratio, plot_total_or_avg, plot_rel_or_all, 
                 performance_as_legend, drawline, numbins, 
                 xlimit, ylimit, zoom_x, oformat)
