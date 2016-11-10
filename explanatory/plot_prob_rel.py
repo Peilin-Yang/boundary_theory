@@ -296,6 +296,8 @@ class PlotRelProb(object):
                 if not fitting is None:
                     all_fittings.append(fitting)
                     print fitting[0], fitting[1], fitting[3]
+                else:
+                    print j, 'None'
             all_fittings.sort(key=itemgetter(3))
             print all_fittings[0][0], all_fittings[0][1], all_fittings[0][3]
             y_fitting = all_fittings[0][2]
