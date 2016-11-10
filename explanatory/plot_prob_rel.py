@@ -268,6 +268,10 @@ class PlotRelProb(object):
         if compact_x:
             xaxis = range(1, len(xaxis)+1)
 
+        if curve_fitting and not plot_ratio:
+            xaxis /= np.sum(xaxis)
+            yaxis /= np.sum(yaxis)
+
         collection_legend = ''
         if performance_as_legend:
             collection_legend = '$MAP:%.4f$' % (np.mean([p[qid]['map'] if p[qid] else 0 for qid in queries]))
@@ -283,7 +287,7 @@ class PlotRelProb(object):
             zoom_xaxis=zoom_xaxis,
             zoom_yaxis=zoom_yaxis)
 
-        if curve_fitting:
+        if curve_fitting:     
             all_fittings = []
             for j in range(1, 16):
                 fitting = FittingModels().cal_curve_fit(xaxis, yaxis, j)
