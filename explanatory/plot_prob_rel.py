@@ -445,7 +445,7 @@ class PlotRelProb(object):
                     fitting = FittingModels().cal_curve_fit(xaxis, ele, j)
                     if not fitting is None:
                         all_fittings.append(fitting)
-                all_fittings.sort(key=itemgetter(3))
+                all_fittings.sort(key=itemgetter(4))
                 print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
                 y_prob_fitting.append(all_fittings[0][3])
 
