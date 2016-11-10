@@ -10,7 +10,6 @@ from subprocess import Popen, PIPE
 from inspect import currentframe, getframeinfo
 import argparse
 
-
 class Query(object):
     """
     Get the judgments of a corpus.
@@ -128,6 +127,20 @@ class Query(object):
 
         return all_queries_dict
         
+
+    def print_query_len_dist(self):
+        queries = self.get_queries()
+        lens = {}
+        for q in queries:
+            l = len(q[part].split())
+            if l not in lens:
+                lens[l] = 0
+            lens[l] += 1
+
+        for k in sorted(lens):
+            print k, lens[k], k*1.0/len(queries)
+
+
     def get_queries_lengths(self, part='title'):
         """
         For a set of queries, return the lengths of the queries
@@ -215,10 +228,16 @@ if __name__ == '__main__':
         nargs=1,
         help="Generate the standard queries for Indri. Please give the collection path!")
 
+    parser.add_argument("-2", "--print_query_len_dist",
+        nargs=1,
+        help="Print the distribution of query lengths. Please give the collection path!")
+
+
     args = parser.parse_args()
 
     if args.gen_standard_queries:
         Query(args.gen_standard_queries[0]).gen_query_file_for_indri()
 
-
+    if args.print_query_len_dist:
+        Query(args.print_query_len_dist[0]).print_query_len_dist()
 
