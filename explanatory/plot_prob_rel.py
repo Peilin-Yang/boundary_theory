@@ -295,12 +295,13 @@ class PlotRelProb(object):
                 fitting = FittingModels().cal_curve_fit(xaxis, yaxis, j)
                 if not fitting is None:
                     all_fittings.append(fitting)
-                    print fitting[0], fitting[1], fitting[3]
+                    #print fitting[0], fitting[1], fitting[3]
                 else:
-                    print j, 'None'
-            all_fittings.sort(key=itemgetter(3))
-            print all_fittings[0][0], all_fittings[0][1], all_fittings[0][3]
-            y_fitting = all_fittings[0][2]
+                    #print j, 'None'
+                    pass
+            all_fittings.sort(key=itemgetter(4))
+            print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
+            y_fitting = all_fittings[0][3]
 
             zoom_yaxis_fitting = y_fitting[zoom_x:]
             self.plot_figure(axs, xaxis, y_fitting, collection_name, collection_legend, 
@@ -445,8 +446,8 @@ class PlotRelProb(object):
                     if not fitting is None:
                         all_fittings.append(fitting)
                 all_fittings.sort(key=itemgetter(3))
-                print all_fittings[0][0], all_fittings[0][1], all_fittings[0][3]
-                y_prob_fitting.append(all_fittings[0][2])
+                print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
+                y_prob_fitting.append(all_fittings[0][3])
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):

@@ -140,62 +140,77 @@ class FittingModels(object):
             func = self.mix_expon1
             p0 = [1]
             bounds = ([0], [np.inf])
+            func_name = 'exponential'
         elif mode == 2:
             func = self.mix_expon2
             p0 = [0.5, 2, 0.5]
             bounds = ([0, 0, 0], [1, np.inf, np.inf])
+            func_name = '2-exponential'
         elif mode == 3:
             func = self.mix_expon3
             p0 = [0.3, 0.3, 2, 1, 0.5]
             bounds = ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf])
+            func_name = '3-exponential'
         elif mode == 4:
             func = self.mix_expdecay1
             p0 = [1, 1]
             bounds = ([0, 0], [np.inf, np.inf])
+            func_name = 'exponential_decay'
         elif mode == 5:
             func = self.mix_expdecay2
             p0 = [0.5, 1, 1, 2, 0.5]
             bounds = ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
+            func_name = '2-exponential_decay'
         elif mode == 6:
             func = self.asymptotic_decay
             p0 = [1, 2]
             bounds = ([0, 0], [np.inf, np.inf])
+            func_name = 'asymptotic_decay'
         elif mode == 7:
             func = self.power_decay
             p0 = [1, 2]
             bounds = ([0, 0], [np.inf, np.inf])
+            func_name = 'power_decay'
         elif mode == 8:
             func = self.mix_lognormal1
             p0 = [1]
             bounds = ([-np.inf], [np.inf])
+            func_name = 'lognormal'
         elif mode == 9:
             func = self.mix_lognormal2
             p0 = [0.45, 1, 1]
             bounds = ([0, -np.inf, -np.inf], [1, np.inf, np.inf])
+            func_name = '2-lognormal'
         elif mode == 10:
             func = self.mix_normal1
             p0 = [0, 1]
             bounds = ([-np.inf, 0], [np.inf, np.inf])
+            func_name = 'normal'
         elif mode == 11:
             func = self.mix_normal2
             p0 = [0.45, 0, 0, 1, 1]
             bounds = ([0, -np.inf, -np.inf, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
+            func_name = '2-normal'
         elif mode == 12:
             func = self.mix_gamma1
             p0 = [0, 1]
             bounds = ([0, 0], [np.inf, np.inf])
+            func_name = 'gamma'
         elif mode == 13:
             func = self.mix_gamma2
             p0 = [0.45, 0, 0, 1, 1]
             bounds = ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
+            func_name = '2-gamma'
         elif mode == 14:
             func = self.mix_poisson1
             p0 = [1]
             bounds = ([0], [np.inf])
+            func_name = 'poisson'
         elif mode == 15:
             func = self.mix_poisson2
             p0 = [0.45, 1, 1]
             bounds = ([0, 0, 0], [1, np.inf, np.inf])
+            func_name = '2-poisson'
         xaxis = np.array(xaxis)
         try:
             popt, pcov = curve_fit(func, xaxis, yaxis, p0=p0, method='trf', bounds=bounds)
@@ -204,7 +219,7 @@ class FittingModels(object):
             #print mode, popt, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
         except:
             return None
-        return mode, popt, trialY, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
+        return mode, func_name, popt, trialY, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
 
 class EM(object):
     """
