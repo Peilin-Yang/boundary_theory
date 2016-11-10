@@ -295,6 +295,7 @@ class PlotRelProb(object):
             y_fitting.append(all_fittings[0][2])
 
             zoom_yaxis_fitting = y_fitting[zoom_x:]
+            print len(xaxis), len(y_fitting), len(zoom_xaxis), len(zoom_yaxis_fitting)
             self.plot_figure(axs, xaxis, y_fitting, collection_name, collection_legend, 
                 drawline=True, 
                 linestyle='--',
