@@ -275,13 +275,36 @@ class PlotRelProb(object):
 
         zoom_xaxis = xaxis[zoom_x:]
         zoom_yaxis = yaxis[zoom_x:]
-        self.plot_figure(axs, xaxis, yaxis, collection_name, collection_legend, 
+        axs, zoom_axs = self.plot_figure(axs, xaxis, yaxis, collection_name, collection_legend, 
             drawline=drawline,
             xlimit=xlimit,
             ylimit=ylimit,
             zoom=zoom_x > 0,
             zoom_xaxis=zoom_xaxis,
             zoom_yaxis=zoom_yaxis)
+
+        if curve_fitting:
+            y_fitting = []
+            all_fittings = []
+            for j in range(1, 16):
+                fitting = FittingModels().cal_curve_fit(xaxis, yaxis, j)
+                if not fitting is None:
+                    all_fittings.append(fitting)
+            all_fittings.sort(key=itemgetter(3))
+            print all_fittings[0][0], all_fittings[0][1], all_fittings[0][3]
+            y_fitting.append(all_fittings[0][2])
+
+            zoom_yaxis_fitting = y_fitting[zoom_x:]
+            self.plot_figure(axs, xaxis, y_fitting, collection_name, collection_legend, 
+                drawline=True, 
+                linestyle='--',
+                zoom=zoom_x > 0,
+                zoom_ax = zoom_ax,
+                zoom_xaxis=zoom_xaxis,
+                zoom_yaxis=zoom_yaxis_fitting,
+                legend_pos='best',
+                xlimit=xlimit,
+                ylimit=ylimit)
 
         output_fn = os.path.join(self.all_results_root, output_root, 
             '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-all.%s' % (
