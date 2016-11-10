@@ -143,7 +143,7 @@ class FittingModels(object):
         elif mode == 2:
             func = self.mix_expon2
             p0 = [0.5, 2, 0.5]
-            bounds = ([0, 0, 0,], [1, np.inf, np.inf])
+            bounds = ([0, 0, 0], [1, np.inf, np.inf])
         elif mode == 3:
             func = self.mix_expon3
             p0 = [0.3, 0.3, 2, 1, 0.5]
@@ -170,7 +170,7 @@ class FittingModels(object):
             bounds = ([-np.inf], [np.inf])
         elif mode == 9:
             func = self.mix_lognormal2
-            p0 = [0.5, 1, 1]
+            p0 = [0.45, 1, 1]
             bounds = ([0, -np.inf, -np.inf], [1, np.inf, np.inf])
         elif mode == 10:
             func = self.mix_normal1
@@ -178,7 +178,7 @@ class FittingModels(object):
             bounds = ([-np.inf, 0], [np.inf, np.inf])
         elif mode == 11:
             func = self.mix_normal2
-            p0 = [0.5, 0, 0, 1, 1]
+            p0 = [0.45, 0, 0, 1, 1]
             bounds = ([0, -np.inf, -np.inf, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
         elif mode == 12:
             func = self.mix_gamma1
@@ -186,7 +186,7 @@ class FittingModels(object):
             bounds = ([0, 0], [np.inf, np.inf])
         elif mode == 13:
             func = self.mix_gamma2
-            p0 = [0.5, 0, 0, 1, 1]
+            p0 = [0.45, 0, 0, 1, 1]
             bounds = ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
         elif mode == 14:
             func = self.mix_poisson1
@@ -194,7 +194,7 @@ class FittingModels(object):
             bounds = ([0], [np.inf])
         elif mode == 15:
             func = self.mix_poisson2
-            p0 = [0.5, 1, 1]
+            p0 = [0.45, 1, 1]
             bounds = ([0, 0, 0], [1, np.inf, np.inf])
         xaxis = np.array(xaxis)
         try:
