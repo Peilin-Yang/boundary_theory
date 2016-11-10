@@ -284,7 +284,6 @@ class PlotRelProb(object):
             zoom_yaxis=zoom_yaxis)
 
         if curve_fitting:
-            y_fitting = []
             all_fittings = []
             for j in range(1, 16):
                 fitting = FittingModels().cal_curve_fit(xaxis, yaxis, j)
@@ -292,10 +291,9 @@ class PlotRelProb(object):
                     all_fittings.append(fitting)
             all_fittings.sort(key=itemgetter(3))
             print all_fittings[0][0], all_fittings[0][1], all_fittings[0][3]
-            y_fitting.append(all_fittings[0][2])
+            y_fitting = all_fittings[0][2])
 
             zoom_yaxis_fitting = y_fitting[zoom_x:]
-            print len(xaxis), len(y_fitting), len(zoom_xaxis), len(zoom_yaxis_fitting)
             self.plot_figure(axs, xaxis, y_fitting, collection_name, collection_legend, 
                 drawline=True, 
                 linestyle='--',
