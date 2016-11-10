@@ -138,7 +138,7 @@ class Query(object):
             lens[l] += 1
 
         for k in sorted(lens):
-            print k, lens[k], round(k*100.0/len(queries), 2)
+            print k, lens[k], round(lens[k]*100.0/len(queries), 2)
 
 
     def get_queries_lengths(self, part='title'):
