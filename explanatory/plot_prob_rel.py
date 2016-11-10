@@ -270,11 +270,9 @@ class PlotRelProb(object):
 
         xaxis = np.array(xaxis, dtype=np.float32)
         yaxis = np.array(yaxis, dtype=np.float32)
-        print xaxis, yaxis
         if curve_fitting and not plot_ratio:
             xaxis /= np.sum(xaxis)
             yaxis /= np.sum(yaxis)
-            print xaxis, yaxis
 
         collection_legend = ''
         if performance_as_legend:
