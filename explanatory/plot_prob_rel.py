@@ -293,7 +293,7 @@ class PlotRelProb(object):
             all_fittings = []
             fitting_xaxis = []
             fitting_yaxis = []
-            for i, ele in yaxis:
+            for i, ele in enumerate(yaxis):
                 if ele != 0:
                     fitting_xaxis.append(xaxis[i])
                     fitting_yaxis.append(ele)
