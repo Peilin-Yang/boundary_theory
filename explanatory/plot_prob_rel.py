@@ -409,7 +409,7 @@ class PlotRelProb(object):
             y_prob_fitting = []
             for i, ele in enumerate(y_prob):
                 all_fittings = []
-                for j in range(1, 8):
+                for j in range(1, 16):
                     fitting = FittingModels().cal_curve_fit(xaxis, ele, j)
                     if not fitting is None:
                         all_fittings.append(fitting)

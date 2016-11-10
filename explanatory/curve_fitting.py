@@ -117,6 +117,23 @@ class FittingModels(object):
         return n0*(1 - xaxis/(xaxis+halflife))
     def power_decay(self, xaxis, n0, halflife):
         return n0*np.power(xaxis, -halflife)
+    def mix_lognormal1(self, xaxis, sigma):
+        return scipy.stats.lognorm(xaxis, sigma)
+    def mix_lognormal2(self, xaxis, pi, sigma1, sigma2):
+        return pi*scipy.stats.lognorm(xaxis, sigma1)+(1-pi)*scipy.stats.lognorm(xaxis, sigma2)
+    def mix_normal1(self, xaxis, mu, sigma):
+        return scipy.stats.norm(xaxis, loc=mu, scale=sigma)
+    def mix_normal2(self, xaxis, pi, mu1, mu2, sigma1, sigma2):
+        return pi*scipy.stats.norm(xaxis, loc=mu1, scale=sigma1)+(1-pi)*scipy.stats.norm(xaxis, loc=mu2, scale=sigma2)
+    def mix_gamma1(self, xaxis, l, s):
+        return scipy.stats.gamma(xaxis, loc=l, scale=s)
+    def mix_gamma2(self, xaxis, pi, l1, l2, s1, s2):
+        return pi*scipy.stats.gamma(xaxis, loc=l1, scale=s1)+(1-pi)*scipy.stats.norm(xaxis, loc=l2, scale=s2)
+    def mix_poisson1(self, xaxis, mu):
+        return scipy.stats.poisson(xaxis, mu)
+    def mix_poisson2(self, xaxis, pi, mu1, mu2):
+        return pi*scipy.stats.poisson(xaxis, mu1)+(1-pi)*scipy.stats.poisson(xaxis, mu2)
+
 
     def cal_curve_fit(self, xaxis, yaxis, mode=1):
         if mode == 1:
@@ -147,6 +164,38 @@ class FittingModels(object):
             func = self.power_decay
             p0 = [1, 2]
             bounds = ([0, 0], [np.inf, np.inf])
+        elif mode == 8:
+            func = self.mix_lognormal1
+            p0 = [1]
+            bounds = ([-np.inf], [np.inf])
+        elif mode == 9:
+            func = self.mix_lognormal2
+            p0 = [0.5, 1, 1]
+            bounds = ([0, -np.inf, -np.inf], [1, np.inf, np.inf])
+        elif mode == 10:
+            func = self.mix_normal1
+            p0 = [0, 1]
+            bounds = ([-np.inf, 0], [np.inf, np.inf])
+        elif mode == 11:
+            func = self.mix_normal2
+            p0 = [0.5, 0, 0, 1, 1]
+            bounds = ([0, -np.inf, -np.inf, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
+        elif mode == 12:
+            func = self.mix_gamma1
+            p0 = [0, 1]
+            bounds = ([0, 0], [np.inf, np.inf])
+        elif mode == 13:
+            func = self.mix_gamma2
+            p0 = [0.5, 0, 0, 1, 1]
+            bounds = ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
+        elif mode == 14:
+            func = self.mix_poisson1
+            p0 = [1]
+            bounds = ([0], [np.inf])
+        elif mode == 15:
+            func = self.mix_poisson2
+            p0 = [0.5, 1, 1]
+            bounds = ([0, 0, 0], [1, np.inf, np.inf])
         xaxis = np.array(xaxis)
         try:
             popt, pcov = curve_fit(func, xaxis, yaxis, p0=p0, method='trf', bounds=bounds)
