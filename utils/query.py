@@ -128,7 +128,7 @@ class Query(object):
         return all_queries_dict
         
 
-    def print_query_len_dist(self):
+    def print_query_len_dist(self, part='title'):
         queries = self.get_queries()
         lens = {}
         for q in queries:
