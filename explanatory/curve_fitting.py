@@ -118,21 +118,21 @@ class FittingModels(object):
     def power_decay(self, xaxis, n0, halflife):
         return n0*np.power(xaxis, -halflife)
     def mix_lognormal1(self, xaxis, sigma):
-        return scipy.stats.lognorm(xaxis, sigma)
+        return scipy.stats.lognorm.pdf(xaxis, sigma)
     def mix_lognormal2(self, xaxis, pi, sigma1, sigma2):
-        return pi*scipy.stats.lognorm(xaxis, sigma1)+(1-pi)*scipy.stats.lognorm(xaxis, sigma2)
+        return pi*scipy.stats.lognorm.pdf(xaxis, sigma1)+(1-pi)*scipy.stats.lognorm.pdf(xaxis, sigma2)
     def mix_normal1(self, xaxis, mu, sigma):
-        return scipy.stats.norm(xaxis, loc=mu, scale=sigma)
+        return scipy.stats.norm.pdf(xaxis, loc=mu, scale=sigma)
     def mix_normal2(self, xaxis, pi, mu1, mu2, sigma1, sigma2):
-        return pi*scipy.stats.norm(xaxis, loc=mu1, scale=sigma1)+(1-pi)*scipy.stats.norm(xaxis, loc=mu2, scale=sigma2)
-    def mix_gamma1(self, xaxis, l, s):
-        return scipy.stats.gamma(xaxis, loc=l, scale=s)
-    def mix_gamma2(self, xaxis, pi, l1, l2, s1, s2):
-        return pi*scipy.stats.gamma(xaxis, loc=l1, scale=s1)+(1-pi)*scipy.stats.norm(xaxis, loc=l2, scale=s2)
+        return pi*scipy.stats.norm.pdf(xaxis, loc=mu1, scale=sigma1)+(1-pi)*scipy.stats.norm.pdf(xaxis, loc=mu2, scale=sigma2)
+    def mix_gamma1(self, xaxis, a):
+        return scipy.stats.gamma.pdf(xaxis, a)
+    def mix_gamma2(self, xaxis, pi, a1, a2):
+        return pi*scipy.stats.gamma.pdf(xaxis, a1)+(1-pi)*scipy.stats.gamma.pdf(xaxis, a2)
     def mix_poisson1(self, xaxis, mu):
-        return scipy.stats.poisson(xaxis, mu)
+        return scipy.stats.poisson.pmf(xaxis, mu)
     def mix_poisson2(self, xaxis, pi, mu1, mu2):
-        return pi*scipy.stats.poisson(xaxis, mu1)+(1-pi)*scipy.stats.poisson(xaxis, mu2)
+        return pi*scipy.stats.poisson.pmf(xaxis, mu1)+(1-pi)*scipy.stats.poisson.pmf(xaxis, mu2)
 
 
     def cal_curve_fit(self, xaxis, yaxis, mode=1):
