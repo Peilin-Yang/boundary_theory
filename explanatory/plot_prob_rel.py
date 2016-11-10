@@ -268,6 +268,8 @@ class PlotRelProb(object):
         if compact_x:
             xaxis = range(1, len(xaxis)+1)
 
+        xaxis = np.array(xaxis)
+        yaxis = np.array(yaxis)
         if curve_fitting and not plot_ratio:
             xaxis /= np.sum(xaxis)
             yaxis /= np.sum(yaxis)
