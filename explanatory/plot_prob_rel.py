@@ -299,7 +299,7 @@ class PlotRelProb(object):
                 drawline=True, 
                 linestyle='--',
                 zoom=zoom_x > 0,
-                zoom_ax = zoom_ax,
+                zoom_ax = zoom_axs,
                 zoom_xaxis=zoom_xaxis,
                 zoom_yaxis=zoom_yaxis_fitting,
                 legend_pos='best',
