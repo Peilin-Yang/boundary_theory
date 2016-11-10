@@ -244,7 +244,7 @@ class PlotRelProb(object):
                 yaxis = [(collection_x_dict[x][0]) if plot_rel_or_all else (collection_x_dict[x][1]) for x in xaxis] 
             else:
                 yaxis = [(collection_x_dict[x][0]/len(idfs)) if plot_rel_or_all else (collection_x_dict[x][1]/len(idfs)) for x in xaxis]
-            print np.sum(yaxis[20:]), np.sum(yaxis[20:])
+            #print np.sum(yaxis[20:]), np.sum(yaxis[20:])
         if numbins > 0:
             interval = collection_level_maxX*1.0/numbins
             newxaxis = [i for i in np.arange(0, collection_level_maxX+1e-10, interval)]
