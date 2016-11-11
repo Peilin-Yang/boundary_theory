@@ -313,8 +313,8 @@ class PlotRelProb(object):
                     idx = fitting_xaxis.index(x)
                     fitted_y[idx] = all_fittings[0][3][idx]
 
-            zoom_yaxis_fitting = y_fitting[zoom_x:]
-            self.plot_figure(axs, xaxis, y_fitting, collection_name, collection_legend, 
+            zoom_yaxis_fitting = fitted_y[zoom_x:]
+            self.plot_figure(axs, xaxis, fitted_y, collection_name, collection_legend, 
                 drawline=True, 
                 linestyle='--',
                 zoom=zoom_x > 0,
