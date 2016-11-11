@@ -459,7 +459,13 @@ class PlotRelProb(object):
                         all_fittings.append(fitting)
                 all_fittings.sort(key=itemgetter(4))
                 print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
-                y_prob_fitting.append(all_fittings[0][3])
+                fitted_y = []
+                for i, x in enumerate(xaxis):
+                    if x not in fitting_xaxis:
+                        fitted_y.append(0)
+                    else:
+                        fitted_y.append(all_fittings[0][3][i])
+                y_prob_fitting.append(fitted_y)
             print y_prob_fitting
 
         output_root = os.path.join('collection_figures', query_length)
