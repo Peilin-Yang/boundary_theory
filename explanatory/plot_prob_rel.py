@@ -157,7 +157,7 @@ class PlotRelProb(object):
         #idfs.sort(key=itemgetter(1))
         all_expected_maps = []
         if curve_fitting:
-            all_fitting_results = [{'sr': []} for i in range(15)]
+            all_fitting_results = [{'sr': []} for i in range(13)]
         for qid in sorted(queries):
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
@@ -226,7 +226,7 @@ class PlotRelProb(object):
                         if ele != 0:
                             fitting_xaxis.append(xaxis[i])
                             fitting_yaxis.append(ele)
-                    for j in range(1, 16):
+                    for j in range(1, 14):
                         fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                         if not fitting is None:
                             all_fittings.append(fitting)
@@ -275,8 +275,8 @@ class PlotRelProb(object):
             plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
             if curve_fitting:
-                all_data = [all_fitting_results[j]['sr'] for j in range(15) if 'sr' in all_fitting_results[j] and len(all_fitting_results[j]['sr']) == len(queries)]
-                all_labels = [all_fitting_results[j]['name'] for j in range(15) if 'sr' in all_fitting_results[j] and len(all_fitting_results[j]['sr']) == len(queries) and 'name' in all_fitting_results[j]]
+                all_data = [all_fitting_results[j]['sr'] for j in range(13) if 'sr' in all_fitting_results[j] and len(all_fitting_results[j]['sr']) == len(queries)]
+                all_labels = [all_fitting_results[j]['name'] for j in range(13) if 'sr' in all_fitting_results[j] and len(all_fitting_results[j]['sr']) == len(queries) and 'name' in all_fitting_results[j]]
                 fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
                 font = {'size' : 8}
                 plt.rc('font', **font)
@@ -364,7 +364,7 @@ class PlotRelProb(object):
                     if ele != 0:
                         fitting_xaxis.append(xaxis[i])
                         fitting_yaxis.append(ele)
-                for j in range(1, 16):
+                for j in range(1, 14):
                     fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                     if not fitting is None:
                         all_fittings.append(fitting)
@@ -527,7 +527,7 @@ class PlotRelProb(object):
                     if y != 0:
                         fitting_xaxis.append(xaxis[j])
                         fitting_yaxis.append(y)
-                for k in range(1, 16):
+                for k in range(1, 14):
                     fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, k)
                     if not fitting is None:
                         all_fittings.append(fitting)
