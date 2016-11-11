@@ -121,9 +121,10 @@ def plot_tf_rel_all(paras):
 def gen_plot_tf_rel_batch(paras):
     all_paras = []
     for q in g.query:
-        collection_name = q['collection']
-        collection_path = os.path.join(collection_root, collection_name)
+        collection_name = q['collection_formal_name']
+        collection_path = os.path.join(collection_root, q['collection'])
         p = copy.deepcopy(paras)
+        p.insert(0, collection_name)
         p.insert(0, collection_path)
         all_paras.append((p))
     gen_batch_framework('plot_tf_rel', '122', all_paras)
@@ -133,7 +134,8 @@ def plot_tf_rel_atom(para_file):
         reader = csv.reader(f)
         for row in reader:
             collection_path = row[0]
-            PlotRelProb(collection_path, q['collection_formal_name']).wrapper(*row[1:])
+            collection_name = row[1]
+            PlotRelProb(collection_path, collection_name).wrapper(*row[2:])
 
 def gen_lambdarank_batch():
     all_paras = []
