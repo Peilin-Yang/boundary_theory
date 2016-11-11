@@ -280,7 +280,7 @@ class PlotRelProb(object):
                 fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
                 font = {'size' : 8}
                 plt.rc('font', **font)
-                #print all_data, all_labels
+                print all_data, all_labels
                 ax.boxplot(all_data, labels=all_labels)
                 output_fn = os.path.join(self.all_results_root, output_root, 
                     '%s-%s-fitting.%s' % (collection_name, _method, oformat) )
