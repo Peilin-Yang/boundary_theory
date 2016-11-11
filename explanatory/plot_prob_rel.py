@@ -462,6 +462,7 @@ class PlotRelProb(object):
                 fitted_y = [0 for i in range(len(xaxis))]
                 for x in enumerate(xaxis):
                     if x in fitting_xaxis:
+                        print 'here'
                         idx = fitting_xaxis.index(x)
                         fitted_y[idx] = all_fittings[0][3][idx]
                 y_prob_fitting.append(fitted_y)
