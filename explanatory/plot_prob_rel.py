@@ -156,6 +156,8 @@ class PlotRelProb(object):
         #idfs = [(qid, math.log(cs.get_term_IDF1(queries[qid]))) for qid in rel_docs]
         #idfs.sort(key=itemgetter(1))
         all_expected_maps = []
+        if curve_fitting:
+            all_fitting_results = [{'sr': []} for i in range(15)]
         for qid in sorted(queries):
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
@@ -228,10 +230,12 @@ class PlotRelProb(object):
                         fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                         if not fitting is None:
                             all_fittings.append(fitting)
+                            all_fitting_results[j]['name'] = fitting[1]
+                            all_fitting_results[j]['sr'].append(fitting[3]) # sum of squared error
                             #print fitting[0], fitting[1], fitting[3]
                         else:
                             #print j, 'None'
-                            pass
+                            all_fitting_results[j]['sr'].append(0)
                     all_fittings.sort(key=itemgetter(4))
                     print qid, query_term, all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
                     fitted_y = [0 for i in range(len(xaxis))]
@@ -269,6 +273,17 @@ class PlotRelProb(object):
                     'fit' if curve_fitting else 'plain',
                     oformat) )
             plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+
+            if curve_fitting:
+                all_data = [all_fitting_results[j]['sr'] for j in range(1, 16)]
+                all_labels = [all_fitting_results[j]['name'] for j in range(1, 16)]
+                fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
+                font = {'size' : 8}
+                plt.rc('font', **font)
+                ax.boxplot(all_data, label=all_labels)
+                output_fn = os.path.join(self.all_results_root, output_root, 
+                    '%s-%s-fitting.%s' % (collection_name, _method, oformat) )
+                plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
         # draw the figure for the whole collection
         collection_vocablulary_stat = cs.get_vocabulary_stats()
