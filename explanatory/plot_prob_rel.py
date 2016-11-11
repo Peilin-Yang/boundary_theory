@@ -281,8 +281,8 @@ class PlotRelProb(object):
 
             if curve_fitting:
                 all_fitting_results = [ele for ele in all_fitting_results if 'name' in ele and ele['name'] not in ['AD', 'PD', 'ED', '2-ED']]
-                all_data = [ele['sr'] for ele in all_fitting_results if 'sr' in ele and len(ele['sr']) == len(queries)]
-                all_labels = [ele['name'] for ele in all_fitting_results if 'sr' in ele and len(ele['sr']) == len(queries) and 'name' in ele]
+                all_data = [ele['sr'] for ele in all_fitting_results if 'sr' in ele]
+                all_labels = [ele['name'] for ele in all_fitting_results if 'sr' in ele and 'name' in ele]
                 fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
                 font = {'size' : 8}
                 plt.rc('font', **font)
