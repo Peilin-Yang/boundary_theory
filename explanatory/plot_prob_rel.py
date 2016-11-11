@@ -202,6 +202,8 @@ class PlotRelProb(object):
             all_expected_maps.append(EMAP().cal_expected_map(ranking_list))
 
             if draw_individual:
+                if np.sum(xaxis) or np.sum(yaxis):
+                    continue
                 xaxis = np.array(xaxis, dtype=np.float32)
                 yaxis = np.array(yaxis, dtype=np.float32)
                 if curve_fitting and not plot_ratio:
