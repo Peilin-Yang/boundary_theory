@@ -289,7 +289,8 @@ class PlotRelProb(object):
             zoom_xaxis=zoom_xaxis,
             zoom_yaxis=zoom_yaxis)
 
-        if curve_fitting:     
+        if curve_fitting:  
+            print xaxis, yaxis   
             all_fittings = []
             fitting_xaxis = []
             fitting_yaxis = []
