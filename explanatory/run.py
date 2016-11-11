@@ -135,6 +135,7 @@ def plot_tf_rel_atom(para_file):
         for row in reader:
             collection_path = row[0]
             collection_name = row[1]
+            print row
             PlotRelProb(collection_path, collection_name).wrapper(*row[2:])
 
 def gen_lambdarank_batch():
