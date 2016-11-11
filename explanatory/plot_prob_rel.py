@@ -237,7 +237,10 @@ class PlotRelProb(object):
                             #print j, 'None'
                             pass
                     all_fittings.sort(key=itemgetter(4))
-                    print qid, query_term, all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
+                    try:
+                        print qid, query_term, all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
+                    except:
+                        pass
                     fitted_y = [0 for i in range(len(xaxis))]
                     for x in xaxis:
                         if x in fitting_xaxis:
@@ -281,7 +284,6 @@ class PlotRelProb(object):
                 fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
                 font = {'size' : 8}
                 plt.rc('font', **font)
-                print all_data, all_labels
                 ax.boxplot(all_data, labels=all_labels)
                 output_fn = os.path.join(self.all_results_root, output_root, 
                     '%s-%s-fitting.%s' % (collection_name, _method, oformat) )
@@ -374,7 +376,10 @@ class PlotRelProb(object):
                         #print j, 'None'
                         pass
                 all_fittings.sort(key=itemgetter(4))
-                print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
+                try:
+                    print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
+                except:
+                    pass
                 fitted_y = [0 for i in range(len(xaxis))]
                 for x in xaxis:
                     if x in fitting_xaxis:
@@ -533,7 +538,10 @@ class PlotRelProb(object):
                     if not fitting is None:
                         all_fittings.append(fitting)
                 all_fittings.sort(key=itemgetter(4))
-                print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
+                try:
+                    print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
+                except:
+                    pass
                 fitted_y = [0 for i in range(len(xaxis))]
 
                 for x in xaxis:
