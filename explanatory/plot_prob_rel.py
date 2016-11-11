@@ -92,7 +92,7 @@ class PlotRelProb(object):
             plot_total_or_avg=True, plot_rel_or_all=True, 
             performance_as_legend=True, drawline=True, numbins=60, xlimit=0, 
             ylimit=0, zoom_x=0, compact_x=False, curve_fitting=False, 
-            oformat='eps'):
+            draw_individual=False, draw_all=True, oformat='eps'):
         """
         plot the P(D=1|TF=x)
 
@@ -198,74 +198,77 @@ class PlotRelProb(object):
                 yaxis = [(x_dict[x][0]) if plot_rel_or_all else (x_dict[x][1]) for x in xaxis]
             ranking_list = [(x_dict[x][0], x_dict[x][1]) for x in xaxis]
             all_expected_maps.append(EMAP().cal_expected_map(ranking_list))
-            xaxis = np.array(xaxis, dtype=np.float32)
-            yaxis = np.array(yaxis, dtype=np.float32)
-            if curve_fitting and not plot_ratio:
-                xaxis /= np.sum(xaxis)
-                yaxis /= np.sum(yaxis)
-            query_stat = cs.get_term_stats(query_term)
-            zoom_xaxis = xaxis[zoom_x:]
-            zoom_yaxis = yaxis[zoom_x:]
-            ax, zoom_ax = self.plot_figure(ax, xaxis, yaxis, qid+'-'+query_term, legend,
-                drawline=drawline,
-                xlimit=xlimit,
-                ylimit=ylimit,
-                zoom=zoom_x > 0,
-                zoom_xaxis=zoom_xaxis,
-                zoom_yaxis=zoom_yaxis,
-                legend_markscale=0.5)
-            if curve_fitting:
-                all_fittings = []
-                fitting_xaxis = []
-                fitting_yaxis = []
-                for i, ele in enumerate(yaxis):
-                    if ele != 0:
-                        fitting_xaxis.append(xaxis[i])
-                        fitting_yaxis.append(ele)
-                for j in range(1, 16):
-                    fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
-                    if not fitting is None:
-                        all_fittings.append(fitting)
-                        #print fitting[0], fitting[1], fitting[3]
-                    else:
-                        #print j, 'None'
-                        pass
-                all_fittings.sort(key=itemgetter(4))
-                print qid, query_term, all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
-                fitted_y = [0 for i in range(len(xaxis))]
-                for x in xaxis:
-                    if x in fitting_xaxis:
-                        idx = fitting_xaxis.index(x)
-                        fitted_y[idx] = all_fittings[0][3][idx]
 
-                zoom_yaxis_fitting = fitted_y[zoom_x:]
-                self.plot_figure(ax, xaxis, fitted_y, qid+'-'+query_term, all_fittings[0][1], 
-                    drawline=True, 
-                    linestyle='--',
-                    zoom=zoom_x > 0,
-                    zoom_ax = zoom_ax,
-                    zoom_xaxis=zoom_xaxis,
-                    zoom_yaxis=zoom_yaxis_fitting,
-                    legend_pos='best',
+            if draw_individual:
+                xaxis = np.array(xaxis, dtype=np.float32)
+                yaxis = np.array(yaxis, dtype=np.float32)
+                if curve_fitting and not plot_ratio:
+                    xaxis /= np.sum(xaxis)
+                    yaxis /= np.sum(yaxis)
+                query_stat = cs.get_term_stats(query_term)
+                zoom_xaxis = xaxis[zoom_x:]
+                zoom_yaxis = yaxis[zoom_x:]
+                ax, zoom_ax = self.plot_figure(ax, xaxis, yaxis, qid+'-'+query_term, legend,
+                    drawline=drawline,
                     xlimit=xlimit,
                     ylimit=ylimit,
+                    zoom=zoom_x > 0,
+                    zoom_xaxis=zoom_xaxis,
+                    zoom_yaxis=zoom_yaxis,
                     legend_markscale=0.5)
-        output_fn = os.path.join(self.all_results_root, output_root, 
-            '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-individual.%s' % (
-                collection_name, 
-                _method, 
-                'ratio' if plot_ratio else 'abscnt', 
-                'total' if plot_total_or_avg else 'avg',
-                'rel' if plot_rel_or_all else 'all',
-                'line' if drawline else 'dots', 
-                numbins, 
-                xlimit,
-                ylimit,
-                zoom_x, 
-                'compact' if compact_x else 'raw',
-                'fit' if curve_fitting else 'plain',
-                oformat) )
-        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+                if curve_fitting:
+                    all_fittings = []
+                    fitting_xaxis = []
+                    fitting_yaxis = []
+                    for i, ele in enumerate(yaxis):
+                        if ele != 0:
+                            fitting_xaxis.append(xaxis[i])
+                            fitting_yaxis.append(ele)
+                    for j in range(1, 16):
+                        fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
+                        if not fitting is None:
+                            all_fittings.append(fitting)
+                            #print fitting[0], fitting[1], fitting[3]
+                        else:
+                            #print j, 'None'
+                            pass
+                    all_fittings.sort(key=itemgetter(4))
+                    print qid, query_term, all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
+                    fitted_y = [0 for i in range(len(xaxis))]
+                    for x in xaxis:
+                        if x in fitting_xaxis:
+                            idx = fitting_xaxis.index(x)
+                            fitted_y[idx] = all_fittings[0][3][idx]
+
+                    zoom_yaxis_fitting = fitted_y[zoom_x:]
+                    self.plot_figure(ax, xaxis, fitted_y, qid+'-'+query_term, all_fittings[0][1], 
+                        drawline=True, 
+                        linestyle='--',
+                        zoom=zoom_x > 0,
+                        zoom_ax = zoom_ax,
+                        zoom_xaxis=zoom_xaxis,
+                        zoom_yaxis=zoom_yaxis_fitting,
+                        legend_pos='best',
+                        xlimit=xlimit,
+                        ylimit=ylimit,
+                        legend_markscale=0.5)
+        if draw_individual:
+            output_fn = os.path.join(self.all_results_root, output_root, 
+                '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-individual.%s' % (
+                    collection_name, 
+                    _method, 
+                    'ratio' if plot_ratio else 'abscnt', 
+                    'total' if plot_total_or_avg else 'avg',
+                    'rel' if plot_rel_or_all else 'all',
+                    'line' if drawline else 'dots', 
+                    numbins, 
+                    xlimit,
+                    ylimit,
+                    zoom_x, 
+                    'compact' if compact_x else 'raw',
+                    'fit' if curve_fitting else 'plain',
+                    oformat) )
+            plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
         # draw the figure for the whole collection
         collection_vocablulary_stat = cs.get_vocabulary_stats()
@@ -311,89 +314,91 @@ class PlotRelProb(object):
         # we do not care about the actual values of x
         # so we just map the actual values to integer values
         return_data = copy.deepcopy(collection_x_dict)
-        if compact_x:
-            xaxis = range(1, len(xaxis)+1)
 
-        xaxis = np.array(xaxis, dtype=np.float32)
-        yaxis = np.array(yaxis, dtype=np.float32)
-        if curve_fitting and not plot_ratio:
-            xaxis /= np.sum(xaxis)
-            yaxis /= np.sum(yaxis)
+        if draw_all:
+            if compact_x:
+                xaxis = range(1, len(xaxis)+1)
 
-        collection_legend = ''
-        if performance_as_legend:
-            collection_legend = '$MAP:%.4f$' % (np.mean([p[qid]['map'] if p[qid] else 0 for qid in queries]))
-            #collection_legend += '\n$MAP_E:%.4f$' % (np.mean(all_expected_maps))
+            xaxis = np.array(xaxis, dtype=np.float32)
+            yaxis = np.array(yaxis, dtype=np.float32)
+            if curve_fitting and not plot_ratio:
+                xaxis /= np.sum(xaxis)
+                yaxis /= np.sum(yaxis)
 
-        zoom_xaxis = xaxis[zoom_x:]
-        zoom_yaxis = yaxis[zoom_x:]
-        axs, zoom_axs = self.plot_figure(axs, xaxis, yaxis, collection_name, collection_legend, 
-            drawline=drawline,
-            xlimit=xlimit,
-            ylimit=ylimit,
-            zoom=zoom_x > 0,
-            zoom_xaxis=zoom_xaxis,
-            zoom_yaxis=zoom_yaxis)
+            collection_legend = ''
+            if performance_as_legend:
+                collection_legend = '$MAP:%.4f$' % (np.mean([p[qid]['map'] if p[qid] else 0 for qid in queries]))
+                #collection_legend += '\n$MAP_E:%.4f$' % (np.mean(all_expected_maps))
 
-        if curve_fitting:
-            all_fittings = []
-            fitting_xaxis = []
-            fitting_yaxis = []
-            for i, ele in enumerate(yaxis):
-                if ele != 0:
-                    fitting_xaxis.append(xaxis[i])
-                    fitting_yaxis.append(ele)
-            for j in range(1, 16):
-                fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
-                if not fitting is None:
-                    all_fittings.append(fitting)
-                    #print fitting[0], fitting[1], fitting[3]
-                else:
-                    #print j, 'None'
-                    pass
-            all_fittings.sort(key=itemgetter(4))
-            print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
-            fitted_y = [0 for i in range(len(xaxis))]
-            for x in xaxis:
-                if x in fitting_xaxis:
-                    idx = fitting_xaxis.index(x)
-                    fitted_y[idx] = all_fittings[0][3][idx]
-
-            zoom_yaxis_fitting = fitted_y[zoom_x:]
-            self.plot_figure(axs, xaxis, fitted_y, collection_name, all_fittings[0][1], 
-                drawline=True, 
-                linestyle='--',
-                zoom=zoom_x > 0,
-                zoom_ax = zoom_axs,
-                zoom_xaxis=zoom_xaxis,
-                zoom_yaxis=zoom_yaxis_fitting,
-                legend_pos='best',
+            zoom_xaxis = xaxis[zoom_x:]
+            zoom_yaxis = yaxis[zoom_x:]
+            axs, zoom_axs = self.plot_figure(axs, xaxis, yaxis, collection_name, collection_legend, 
+                drawline=drawline,
                 xlimit=xlimit,
-                ylimit=ylimit)
+                ylimit=ylimit,
+                zoom=zoom_x > 0,
+                zoom_xaxis=zoom_xaxis,
+                zoom_yaxis=zoom_yaxis)
 
-        output_fn = os.path.join(self.all_results_root, output_root, 
-            '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-all.%s' % (
-                collection_name, 
-                _method, 
-                'ratio' if plot_ratio else 'abscnt', 
-                'total' if plot_total_or_avg else 'avg',
-                'rel' if plot_rel_or_all else 'all',
-                'line' if drawline else 'dots', 
-                numbins, 
-                xlimit,
-                ylimit,
-                zoom_x, 
-                'compact' if compact_x else 'raw',
-                'fit' if curve_fitting else 'plain',
-                oformat) )
-        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+            if curve_fitting:
+                all_fittings = []
+                fitting_xaxis = []
+                fitting_yaxis = []
+                for i, ele in enumerate(yaxis):
+                    if ele != 0:
+                        fitting_xaxis.append(xaxis[i])
+                        fitting_yaxis.append(ele)
+                for j in range(1, 16):
+                    fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
+                    if not fitting is None:
+                        all_fittings.append(fitting)
+                        #print fitting[0], fitting[1], fitting[3]
+                    else:
+                        #print j, 'None'
+                        pass
+                all_fittings.sort(key=itemgetter(4))
+                print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
+                fitted_y = [0 for i in range(len(xaxis))]
+                for x in xaxis:
+                    if x in fitting_xaxis:
+                        idx = fitting_xaxis.index(x)
+                        fitted_y[idx] = all_fittings[0][3][idx]
 
-        return collection_name, return_data, legend, _method
+                zoom_yaxis_fitting = fitted_y[zoom_x:]
+                self.plot_figure(axs, xaxis, fitted_y, collection_name, all_fittings[0][1], 
+                    drawline=True, 
+                    linestyle='--',
+                    zoom=zoom_x > 0,
+                    zoom_ax = zoom_axs,
+                    zoom_xaxis=zoom_xaxis,
+                    zoom_yaxis=zoom_yaxis_fitting,
+                    legend_pos='best',
+                    xlimit=xlimit,
+                    ylimit=ylimit)
+
+            output_fn = os.path.join(self.all_results_root, output_root, 
+                '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-all.%s' % (
+                    collection_name, 
+                    _method, 
+                    'ratio' if plot_ratio else 'abscnt', 
+                    'total' if plot_total_or_avg else 'avg',
+                    'rel' if plot_rel_or_all else 'all',
+                    'line' if drawline else 'dots', 
+                    numbins, 
+                    xlimit,
+                    ylimit,
+                    zoom_x, 
+                    'compact' if compact_x else 'raw',
+                    'fit' if curve_fitting else 'plain',
+                    oformat) )
+            plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+
+        return collection_name, return_data
 
     def wrapper(self, query_length, method_name, method_para_str, 
             plot_ratio, plot_total_or_avg, plot_rel_or_all, 
             performance_as_legend, drawline, numbins, xlimit, ylimit, 
-            zoom_x, compact_x, fit_curve, oformat='eps'):
+            zoom_x, compact_x, fit_curve, draw_individual, draw_all, oformat='eps'):
         """
         This is the wrapper of the actual function. 
         We parse the CLI arguments and convert them to the values required 
@@ -415,6 +420,8 @@ class PlotRelProb(object):
             int(zoom_x),
             False if compact_x == '0' else True,
             False if fit_curve == '0' else True,
+            False if draw_individual == '0' else True,
+            False if draw_all == '0' else True,
             oformat
         )
 
@@ -466,7 +473,8 @@ class PlotRelProb(object):
             query_length, method_name, method_para_str, plot_ratio, 
             plot_total_or_avg, plot_rel_or_all, performance_as_legend, 
             drawline, numbins, xlimit, ylimit, zoom_x=20, 
-            compact_x=False, fit_curve=False, oformat='eps'):
+            compact_x=False, fit_curve=False, draw_individual=False, 
+            draw_all=True, oformat='eps'):
         plot_ratio = False if plot_ratio == '0' else True
         plot_total_or_avg = False if plot_total_or_avg == '0' else True
         plot_rel_or_all = False if plot_rel_or_all == '0' else True

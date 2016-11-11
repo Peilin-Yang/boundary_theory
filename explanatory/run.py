@@ -238,7 +238,10 @@ if __name__ == '__main__':
                        [performance_as_legend(boolean)] \
                        [drawline(boolean)] [plotbins(boolean)] [numbins(int)] \
                        [xlimit(float)] [ylimit(float)] [zoom_x(int)] [compact_x(boolean)] \
-                       [curve_fitting(boolean)] [output_format(eps|png)]')
+                       [curve_fitting(boolean)] \
+                       [draw_individual(boolean, draw the plot for each query)] \
+                       [draw_all(boolean, draw the plot for the collection)] \
+                       [output_format(eps|png)]')
     parser.add_argument('-122', '--plot_tf_rel_atom', nargs=1, help='')
     parser.add_argument('-120', '--plot_tf_rel_all', nargs='+',
                        help='plot for all collections (a combined plot)')
