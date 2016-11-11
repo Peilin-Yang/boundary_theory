@@ -147,66 +147,61 @@ class FittingModels(object):
             bounds = ([0, 0, 0], [1, np.inf, np.inf])
             func_name = '2-EXP'
         elif mode == 3:
-            func = self.mix_expon3
-            p0 = [0.3, 0.3, 2, 1, 0.5]
-            bounds = ([0, 0, 0, 0, 0], [1, 1, np.inf, np.inf, np.inf])
-            func_name = '3-EXP'
-        elif mode == 4:
             func = self.mix_lognormal1
             p0 = [1]
             bounds = ([-np.inf], [np.inf])
             func_name = 'LN'
-        elif mode == 5:
+        elif mode == 4:
             func = self.mix_lognormal2
             p0 = [0.45, 1, 1]
             bounds = ([0, -np.inf, -np.inf], [1, np.inf, np.inf])
             func_name = '2-LN'
-        elif mode == 6:
+        elif mode == 5:
             func = self.mix_normal1
             p0 = [0, 1]
             bounds = ([-np.inf, 0], [np.inf, np.inf])
             func_name = 'NN'
-        elif mode == 7:
+        elif mode == 6:
             func = self.mix_normal2
             p0 = [0.45, 0, 0, 1, 1]
             bounds = ([0, -np.inf, -np.inf, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
             func_name = '2-NN'
-        elif mode == 8:
+        elif mode == 7:
             func = self.mix_gamma1
             p0 = [0, 1]
             bounds = ([0, 0], [np.inf, np.inf])
             func_name = 'GA'
-        elif mode == 9:
+        elif mode == 8:
             func = self.mix_gamma2
             p0 = [0.45, 0, 0, 1, 1]
             bounds = ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
             func_name = '2-GA'
-        elif mode == 10:
+        elif mode == 9:
             func = self.mix_poisson1
             p0 = [1]
             bounds = ([0], [np.inf])
             func_name = 'PO'
-        elif mode == 11:
+        elif mode == 10:
             func = self.mix_poisson2
             p0 = [0.45, 1, 1]
             bounds = ([0, 0, 0], [1, np.inf, np.inf])
             func_name = '2-PO'
-        elif mode == 12:
+        elif mode == 11:
             func = self.asymptotic_decay
             p0 = [1, 2]
             bounds = ([0, 0], [np.inf, np.inf])
             func_name = 'AD'
-        elif mode == 13:
+        elif mode == 12:
             func = self.power_decay
             p0 = [1, 2]
             bounds = ([0, 0], [np.inf, np.inf])
             func_name = 'PD'
-        elif mode == 14:
+        elif mode == 13:
             func = self.mix_expdecay1
             p0 = [1, 1]
             bounds = ([0, 0], [np.inf, np.inf])
             func_name = 'ED'
-        elif mode == 15:
+        elif mode == 14:
             func = self.mix_expdecay2
             p0 = [0.5, 1, 1, 2, 0.5]
             bounds = ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])

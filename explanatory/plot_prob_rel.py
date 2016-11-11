@@ -228,7 +228,7 @@ class PlotRelProb(object):
                         if ele != 0:
                             fitting_xaxis.append(xaxis[i])
                             fitting_yaxis.append(ele)
-                    for j in range(1, 16):
+                    for j in range(1, 15):
                         fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                         if not fitting is None:
                             all_fittings.append(fitting)
@@ -370,7 +370,7 @@ class PlotRelProb(object):
                     if ele != 0:
                         fitting_xaxis.append(xaxis[i])
                         fitting_yaxis.append(ele)
-                for j in range(1, 16):
+                for j in range(1, 15):
                     fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                     if not fitting is None:
                         all_fittings.append(fitting)
@@ -534,7 +534,7 @@ class PlotRelProb(object):
                     if y != 0:
                         fitting_xaxis.append(xaxis[j])
                         fitting_yaxis.append(y)
-                for k in range(1, 16):
+                for k in range(1, 15):
                     fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, k)
                     if not fitting is None:
                         all_fittings.append(fitting)
