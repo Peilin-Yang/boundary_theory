@@ -145,12 +145,11 @@ class PlotRelProb(object):
             metrics=['map']
         )
         collection_x_dict = {}
-        collection_level_maxTF = 0
         collection_level_maxX = 0.0
-        num_cols = 4
+        num_cols = min(4, len(queries))
         num_rows = int(math.ceil(len(rel_docs)*1.0/num_cols))
-        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(1.5*num_cols, 1.5*num_rows))
-        font = {'size' : 6}
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
+        font = {'size' : 5}
         plt.rc('font', **font)
         row_idx = 0
         col_idx = 0
@@ -172,8 +171,6 @@ class PlotRelProb(object):
             #legend = 'idf:%.2f'%idf
             if performance_as_legend:
                 legend = '\nmap:%.4f' % (p[qid]['map'] if p[qid] else 0)
-            if maxTF > collection_level_maxTF:
-                collection_level_maxTF = maxTF
             x_dict = {}
             qid_docs_len = 0
             #for row in cs.get_qid_details(qid):
