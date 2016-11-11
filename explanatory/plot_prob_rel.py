@@ -460,9 +460,10 @@ class PlotRelProb(object):
                 all_fittings.sort(key=itemgetter(4))
                 print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
                 fitted_y = [0 for i in range(len(xaxis))]
-                for i, x in enumerate(fitting_xaxis):
-                    if x not in xaxis:
-                        fitted_y[i] = all_fittings[0][3][i]
+                for x in enumerate(xaxis):
+                    if x in fitting_xaxis:
+                        idx = fitting_xaxis.index(x)
+                        fitted_y[idx] = all_fittings[0][3][idx]
                 y_prob_fitting.append(fitted_y)
             print y_prob_fitting
 
