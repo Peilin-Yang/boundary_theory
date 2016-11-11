@@ -7,7 +7,6 @@ qs_file_content = Template("""
 #$$ -l m_mem_free=$memory,h_rt=4:00:00
 
 vpkg_require python-matplotlib
-vpkg_require python-scipy
 source ~/ENV/bin/activate
 
 SEEDFILE=$seedfile
@@ -22,7 +21,7 @@ qs_file_content_no_para = Template("""
 #$$ -l m_mem_free=$memory
 
 vpkg_require python-matplotlib
-vpkg_require python-scipy
+source ~/ENV/bin/activate
 
 $s
 """)
