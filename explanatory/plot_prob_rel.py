@@ -235,7 +235,7 @@ class PlotRelProb(object):
                             #print fitting[0], fitting[1], fitting[3]
                         else:
                             #print j, 'None'
-                            all_fitting_results[j-1]['sr'].append(0)
+                            pass
                     all_fittings.sort(key=itemgetter(4))
                     print qid, query_term, all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
                     fitted_y = [0 for i in range(len(xaxis))]
@@ -275,8 +275,8 @@ class PlotRelProb(object):
             plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
             if curve_fitting:
-                all_data = [all_fitting_results[j]['sr'] for j in range(15)]
-                all_labels = [all_fitting_results[j]['name'] for j in range(15)]
+                all_data = [all_fitting_results[j]['sr'] for j in range(15) if 'sr' in all_fitting_results[j] and len(all_fitting_results[j]['sr']) == len(queries)]
+                all_labels = [all_fitting_results[j]['name'] for j in range(15) if 'sr' in all_fitting_results[j] and len(all_fitting_results[j]['sr']) == len(queries) and 'name' in all_fitting_results[j]]
                 fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
                 font = {'size' : 8}
                 plt.rc('font', **font)
