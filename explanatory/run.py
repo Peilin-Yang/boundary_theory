@@ -127,7 +127,7 @@ def gen_plot_tf_rel_batch(paras):
         p.insert(0, collection_name)
         p.insert(0, collection_path)
         all_paras.append((p))
-    gen_batch_framework('plot_tf_rel', '122', all_paras)
+    gen_batch_framework('plot_rel_prob', '122', all_paras)
 
 def plot_tf_rel_atom(para_file):
     with open(para_file) as f:
