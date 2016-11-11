@@ -376,27 +376,25 @@ class PlotRelProb(object):
                         #print j, 'None'
                         pass
                 all_fittings.sort(key=itemgetter(4))
-                try:
+                if all_fittings:
                     print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
-                except:
-                    continue
-                fitted_y = [0 for i in range(len(xaxis))]
-                for x in xaxis:
-                    if x in fitting_xaxis:
-                        idx = fitting_xaxis.index(x)
-                        fitted_y[idx] = all_fittings[0][3][idx]
+                    fitted_y = [0 for i in range(len(xaxis))]
+                    for x in xaxis:
+                        if x in fitting_xaxis:
+                            idx = fitting_xaxis.index(x)
+                            fitted_y[idx] = all_fittings[0][3][idx]
 
-                zoom_yaxis_fitting = fitted_y[zoom_x:]
-                self.plot_figure(axs, xaxis, fitted_y, collection_name, all_fittings[0][1], 
-                    drawline=True, 
-                    linestyle='--',
-                    zoom=zoom_x > 0,
-                    zoom_ax = zoom_axs,
-                    zoom_xaxis=zoom_xaxis,
-                    zoom_yaxis=zoom_yaxis_fitting,
-                    legend_pos='best',
-                    xlimit=xlimit,
-                    ylimit=ylimit)
+                    zoom_yaxis_fitting = fitted_y[zoom_x:]
+                    self.plot_figure(axs, xaxis, fitted_y, collection_name, all_fittings[0][1], 
+                        drawline=True, 
+                        linestyle='--',
+                        zoom=zoom_x > 0,
+                        zoom_ax = zoom_axs,
+                        zoom_xaxis=zoom_xaxis,
+                        zoom_yaxis=zoom_yaxis_fitting,
+                        legend_pos='best',
+                        xlimit=xlimit,
+                        ylimit=ylimit)
 
             output_fn = os.path.join(self.all_results_root, output_root, 
                 '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-all.%s' % (
