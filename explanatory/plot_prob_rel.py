@@ -198,6 +198,11 @@ class PlotRelProb(object):
                 yaxis = [(x_dict[x][0]) if plot_rel_or_all else (x_dict[x][1]) for x in xaxis]
             ranking_list = [(x_dict[x][0], x_dict[x][1]) for x in xaxis]
             all_expected_maps.append(EMAP().cal_expected_map(ranking_list))
+            xaxis = np.array(xaxis, dtype=np.float32)
+            yaxis = np.array(yaxis, dtype=np.float32)
+            if curve_fitting and not plot_ratio:
+                xaxis /= np.sum(xaxis)
+                yaxis /= np.sum(yaxis)
             query_stat = cs.get_term_stats(query_term)
             zoom_xaxis = xaxis[zoom_x:]
             zoom_yaxis = yaxis[zoom_x:]
