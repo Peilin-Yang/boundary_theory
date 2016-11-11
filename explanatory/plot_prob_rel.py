@@ -285,7 +285,7 @@ class PlotRelProb(object):
             if plot_total_or_avg:
                 yaxis = [(collection_x_dict[x][0]) if plot_rel_or_all else (collection_x_dict[x][1]) for x in xaxis] 
             else:
-                yaxis = [(collection_x_dict[x][0]/len(idfs)) if plot_rel_or_all else (collection_x_dict[x][1]/len(idfs)) for x in xaxis]
+                yaxis = [(collection_x_dict[x][0]/len(queries)) if plot_rel_or_all else (collection_x_dict[x][1]/len(queries)) for x in xaxis]
             #print np.sum(yaxis[20:]), np.sum(yaxis[20:])
         if numbins > 0:
             interval = collection_level_maxX*1.0/numbins
@@ -302,7 +302,7 @@ class PlotRelProb(object):
                 if plot_total_or_avg:
                     yaxis = [(ele[0]) if plot_rel_or_all else (ele[1]) for ele in newyaxis] 
                 else:
-                    yaxis = [(ele[0]/len(idfs)) if plot_rel_or_all else (ele[1]/len(idfs)) for ele in newyaxis]
+                    yaxis = [(ele[0]/len(queries)) if plot_rel_or_all else (ele[1]/len(queries)) for ele in newyaxis]
 
         # we do not care about the actual values of x
         # so we just map the actual values to integer values
