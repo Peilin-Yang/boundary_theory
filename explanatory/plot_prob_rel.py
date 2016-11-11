@@ -444,9 +444,8 @@ class PlotRelProb(object):
             xaxis = range(1, len(xaxis)+1)
 
         if fit_curve:
-
             y_prob_fitting = []
-            for i, ele in enumerate(y_prob):
+            for ele in y_prob:
                 all_fittings = []
                 fitting_xaxis = []
                 fitting_yaxis = []
@@ -461,6 +460,7 @@ class PlotRelProb(object):
                 all_fittings.sort(key=itemgetter(4))
                 print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
                 y_prob_fitting.append(all_fittings[0][3])
+            print y_prob_fitting
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
