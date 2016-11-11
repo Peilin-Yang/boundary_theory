@@ -307,10 +307,14 @@ class PlotRelProb(object):
                     pass
             all_fittings.sort(key=itemgetter(4))
             print all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
-            y_fitting = all_fittings[0][3]
+            fitted_y = []
+            for x in xaxis:
+                if x in fitting_xaxis:
+                    idx = fitting_xaxis.index(x)
+                    fitted_y[idx] = all_fittings[0][3][idx]
 
             zoom_yaxis_fitting = y_fitting[zoom_x:]
-            self.plot_figure(axs, fitting_xaxis, y_fitting, collection_name, collection_legend, 
+            self.plot_figure(axs, xaxis, y_fitting, collection_name, collection_legend, 
                 drawline=True, 
                 linestyle='--',
                 zoom=zoom_x > 0,
@@ -463,11 +467,9 @@ class PlotRelProb(object):
 
                 for x in xaxis:
                     if x in fitting_xaxis:
-                        print 'here'
                         idx = fitting_xaxis.index(x)
                         fitted_y[idx] = all_fittings[0][3][idx]
                 y_prob_fitting.append(fitted_y)
-            print y_prob_fitting
 
         output_root = os.path.join('collection_figures', query_length)
         if not os.path.exists(os.path.join(self.all_results_root, output_root)):
