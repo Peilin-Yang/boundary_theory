@@ -236,7 +236,7 @@ class PlotRelProb(object):
                         fitted_y[idx] = all_fittings[0][3][idx]
 
                 zoom_yaxis_fitting = fitted_y[zoom_x:]
-                self.plot_figure(ax, xaxis, fitted_y, collection_name, collection_legend, 
+                self.plot_figure(ax, xaxis, fitted_y, qid+'-'+query_term, legend, 
                     drawline=True, 
                     linestyle='--',
                     zoom=zoom_x > 0,
