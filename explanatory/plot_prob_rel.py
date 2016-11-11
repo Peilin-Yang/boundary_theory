@@ -231,7 +231,7 @@ class PlotRelProb(object):
                         if not fitting is None:
                             all_fittings.append(fitting)
                             all_fitting_results[j-1]['name'] = fitting[1]
-                            all_fitting_results[j-1]['sr'].append(fitting[3]) # sum of squared error
+                            all_fitting_results[j-1]['sr'].append(fitting[4]) # sum of squared error
                             #print fitting[0], fitting[1], fitting[3]
                         else:
                             #print j, 'None'
@@ -280,7 +280,7 @@ class PlotRelProb(object):
                 fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
                 font = {'size' : 8}
                 plt.rc('font', **font)
-                print all_data, all_labels
+                #print all_data, all_labels
                 ax.boxplot(all_data, labels=all_labels)
                 output_fn = os.path.join(self.all_results_root, output_root, 
                     '%s-%s-fitting.%s' % (collection_name, _method, oformat) )
