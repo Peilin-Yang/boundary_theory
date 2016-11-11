@@ -149,15 +149,15 @@ class PlotRelProb(object):
         collection_level_maxX = 0.0
         num_cols = 4
         num_rows = int(math.ceil(len(rel_docs)*1.0/num_cols))
-        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(0.5*num_cols, 0.5*num_rows))
-        font = {'size' : 8}
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(1.5*num_cols, 1.5*num_rows))
+        font = {'size' : 6}
         plt.rc('font', **font)
         row_idx = 0
         col_idx = 0
-        idfs = [(qid, math.log(cs.get_term_IDF1(queries[qid]))) for qid in rel_docs]
-        idfs.sort(key=itemgetter(1))
+        #idfs = [(qid, math.log(cs.get_term_IDF1(queries[qid]))) for qid in rel_docs]
+        #idfs.sort(key=itemgetter(1))
         all_expected_maps = []
-        for qid,idf in idfs:
+        for qid in sorted(queries):
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
             else:
@@ -169,9 +169,9 @@ class PlotRelProb(object):
             query_term = queries[qid]
             maxTF = cs.get_term_maxTF(query_term)
             #idf = math.log(cs.get_term_IDF1(query_term))
-            legend = 'idf:%.2f'%idf
+            #legend = 'idf:%.2f'%idf
             if performance_as_legend:
-                legend += '\nmap:%.4f' % (p[qid]['map'] if p[qid] else 0)
+                legend = '\nmap:%.4f' % (p[qid]['map'] if p[qid] else 0)
             if maxTF > collection_level_maxTF:
                 collection_level_maxTF = maxTF
             x_dict = {}
@@ -236,7 +236,7 @@ class PlotRelProb(object):
                         fitted_y[idx] = all_fittings[0][3][idx]
 
                 zoom_yaxis_fitting = fitted_y[zoom_x:]
-                self.plot_figure(ax, xaxis, fitted_y, qid+'-'+query_term, legend, 
+                self.plot_figure(ax, xaxis, fitted_y, qid+'-'+query_term, all_fittings[0][1], 
                     drawline=True, 
                     linestyle='--',
                     zoom=zoom_x > 0,
@@ -356,7 +356,7 @@ class PlotRelProb(object):
                     fitted_y[idx] = all_fittings[0][3][idx]
 
             zoom_yaxis_fitting = fitted_y[zoom_x:]
-            self.plot_figure(axs, xaxis, fitted_y, collection_name, collection_legend, 
+            self.plot_figure(axs, xaxis, fitted_y, collection_name, all_fittings[0][1], 
                 drawline=True, 
                 linestyle='--',
                 zoom=zoom_x > 0,
