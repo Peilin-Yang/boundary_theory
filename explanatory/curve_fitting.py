@@ -175,17 +175,17 @@ class FittingModels(object):
             func = self.mix_lognormal1
             p0 = [1]
             bounds = ([-np.inf], [np.inf])
-            func_name = 'L'
+            func_name = 'LN'
         elif mode == 9:
             func = self.mix_lognormal2
             p0 = [0.45, 1, 1]
             bounds = ([0, -np.inf, -np.inf], [1, np.inf, np.inf])
-            func_name = '2-LL'
+            func_name = '2-LN'
         elif mode == 10:
             func = self.mix_normal1
             p0 = [0, 1]
             bounds = ([-np.inf, 0], [np.inf, np.inf])
-            func_name = 'N'
+            func_name = 'NN'
         elif mode == 11:
             func = self.mix_normal2
             p0 = [0.45, 0, 0, 1, 1]
