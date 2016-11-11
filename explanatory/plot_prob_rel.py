@@ -444,11 +444,18 @@ class PlotRelProb(object):
             xaxis = range(1, len(xaxis)+1)
 
         if fit_curve:
+
             y_prob_fitting = []
             for i, ele in enumerate(y_prob):
                 all_fittings = []
+                fitting_xaxis = []
+                fitting_yaxis = []
+                for i, y in enumerate(ele):
+                    if y != 0:
+                        fitting_xaxis.append(xaxis[i])
+                        fitting_yaxis.append(y)
                 for j in range(1, 16):
-                    fitting = FittingModels().cal_curve_fit(xaxis, ele, j)
+                    fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                     if not fitting is None:
                         all_fittings.append(fitting)
                 all_fittings.sort(key=itemgetter(4))
