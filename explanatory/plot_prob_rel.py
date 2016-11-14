@@ -235,7 +235,7 @@ class PlotRelProb(object):
                             all_fitting_results[j-1]['name'] = fitting[1]
                             all_fitting_results[j-1]['sr'].append(fitting[4]) # sum of squared error
                             if re.search(r'^tf\d+$', _method):
-                                estimated_map = CalEstMAP.cal_map(
+                                estimated_map = CalEstMAP().cal_map(
                                     mode=1
                                 )
                             else:
