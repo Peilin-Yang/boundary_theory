@@ -9,6 +9,8 @@ import copy
 from subprocess import Popen, PIPE
 from operator import itemgetter
 
+from emap import EMAP
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from collection_stats import CollectionStats
 from query import Query
@@ -102,6 +104,9 @@ class FittingModels(object):
     """
     def __init__(self):
         super(FittingModels, self).__init__()
+
+    def size(self):
+        return 14
 
     def mix_expon1(self, xaxis, l):
         return scipy.stats.expon(scale=1.0/l).pdf(xaxis)
@@ -215,6 +220,31 @@ class FittingModels(object):
         except:
             return None
         return mode, func_name, popt, trialY, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
+
+
+class CalEstMAP(object):
+    """
+    compute the estimated MAP for the fitted models for relevant docs and non-relevant docs
+    """
+
+    def __init__(self):
+        super(CalEstMAP, self).__init__()
+
+    def cal_map(self, rel_docs=[], non_reldocs=[], all_docs=[], mode=1):
+        """
+        @mode: how to calculate the MAP
+        1 - using discrete distributions for all docs and the rel docs. this is suitable for TF functions.
+        2 - using continuous distributions for rel docs and non-rel docs.
+        """
+        if mode == 1:
+            assert len(rel_docs) == len(all_docs)
+            return EMAP().cal_expected_map(zip(rel_docs, all_docs))
+        elif mode == 2:
+            # TODO: implement
+            return 0.0
+        else:
+            raise RuntimeError('mode must be in [1,2]')
+
 
 class EM(object):
     """

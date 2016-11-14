@@ -5,13 +5,13 @@ import argparse
 import json
 import ast
 import copy
+import re
 from operator import itemgetter
 from subprocess import Popen, PIPE
 
 from emap import EMAP
 from curve_fitting import EM
-from curve_fitting import FittingModels
-from curve_fitting import RealModels
+from curve_fitting import RealModels, FittingModels, CalEstMAP
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from collection_stats import CollectionStats
@@ -157,7 +157,7 @@ class PlotRelProb(object):
         #idfs.sort(key=itemgetter(1))
         all_expected_maps = []
         if curve_fitting:
-            all_fitting_results = [{'sr': []} for i in range(15)]
+            all_fitting_results = [{'sr': [], 'ap':[], 'ap_diff':[]} for i in range(FittingModels().size())]
         for qid in sorted(queries):
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
@@ -207,8 +207,8 @@ class PlotRelProb(object):
                 xaxis = np.array(xaxis, dtype=np.float32)
                 yaxis = np.array(yaxis, dtype=np.float32)
                 if curve_fitting and not plot_ratio:
-                    xaxis /= np.sum(xaxis)
-                    yaxis /= np.sum(yaxis)
+                    sum_yaxis = np.sum(yaxis)
+                    yaxis /= sum_yaxis
                 query_stat = cs.get_term_stats(query_term)
                 zoom_xaxis = xaxis[zoom_x:]
                 zoom_yaxis = yaxis[zoom_x:]
@@ -228,12 +228,19 @@ class PlotRelProb(object):
                         if ele != 0:
                             fitting_xaxis.append(xaxis[i])
                             fitting_yaxis.append(ele)
-                    for j in range(1, 15):
+                    for j in range(1, FittingModels().size()+1):
                         fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                         if not fitting is None:
                             all_fittings.append(fitting)
                             all_fitting_results[j-1]['name'] = fitting[1]
                             all_fitting_results[j-1]['sr'].append(fitting[4]) # sum of squared error
+                            if re.search(r'^tf\d+$', _method):
+                                estimated_map = CalEstMAP.cal_map(
+                                    mode=1
+                                )
+                            else:
+                                pass
+                            all_fitting_results[j-1]['ap'].append(fitting[4]) # average precision    
                             #print fitting[0], fitting[1], fitting[3]
                         else:
                             #print j, 'None'
@@ -370,7 +377,7 @@ class PlotRelProb(object):
                     if ele != 0:
                         fitting_xaxis.append(xaxis[i])
                         fitting_yaxis.append(ele)
-                for j in range(1, 15):
+                for j in range(1, FittingModels().size()+1):
                     fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                     if not fitting is None:
                         all_fittings.append(fitting)
@@ -534,7 +541,7 @@ class PlotRelProb(object):
                     if y != 0:
                         fitting_xaxis.append(xaxis[j])
                         fitting_yaxis.append(y)
-                for k in range(1, 15):
+                for k in range(1, FittingModels().size()+1):
                     fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, k)
                     if not fitting is None:
                         all_fittings.append(fitting)
