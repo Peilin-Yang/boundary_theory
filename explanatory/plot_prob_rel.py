@@ -235,17 +235,17 @@ class PlotRelProb(object):
                             all_fitting_results[j-1]['name'] = fitting[1]
                             all_fitting_results[j-1]['sr'].append(fitting[4]) # sum of squared error
                             if re.search(r'^tf\d+$', _method):
-                                print fitting[3]*sum_yaxis, [x_dict[x][1] for x in xaxis]
-                                # estimated_map = CalEstMAP().cal_map(
-                                #     rel_docs = fitting[3]*sum_yaxis,
-                                #     all_docs = [x_dict[x][1] for x in xaxis],
-                                #     mode=1
-                                # )
+                                #print fitting[3]*sum_yaxis, [x_dict[x][1] for x in xaxis]
+                                estimated_map = CalEstMAP().cal_map(
+                                    rel_docs = np.rint(fitting[3]*sum_yaxis),
+                                    all_docs = [x_dict[x][1] for x in xaxis],
+                                    mode=1
+                                )
                             else:
                                 pass
-                            #all_fitting_results[j-1]['ap'].append(estimated_map) # average precision
-                            #actual_map = p[qid]['map'] if p[qid] else 0
-                            #all_fitting_results[j-1]['ap_diff'].append(math.fabs(estimated_map-actual_map))    
+                            all_fitting_results[j-1]['ap'].append(estimated_map) # average precision
+                            actual_map = p[qid]['map'] if p[qid] else 0
+                            all_fitting_results[j-1]['ap_diff'].append(math.fabs(estimated_map-actual_map))    
                             #print fitting[0], fitting[1], fitting[3]
                         else:
                             #print j, 'None'
