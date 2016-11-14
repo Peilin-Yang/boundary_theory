@@ -158,6 +158,7 @@ class PlotRelProb(object):
         all_expected_maps = []
         if curve_fitting:
             all_fitting_results = [{'sr': [], 'ap':[], 'ap_diff':[]} for i in range(FittingModels().size())]
+            all_fitting_performances = {}
         for qid in sorted(queries):
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
@@ -231,7 +232,8 @@ class PlotRelProb(object):
                     for j in range(1, FittingModels().size()+1):
                         fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                         if not fitting is None:
-                            all_fitting_results[j-1]['name'] = fitting[1]
+                            fitting_func_name = fitting[1]
+                            all_fitting_results[j-1]['name'] = fitting_func_name
                             all_fitting_results[j-1]['sr'].append(fitting[4]) # sum of squared error
                             if re.search(r'^tf\d+$', _method):
                                 estimated_map = CalEstMAP().cal_map(
@@ -246,8 +248,10 @@ class PlotRelProb(object):
                             all_fitting_results[j-1]['ap_diff'].append(math.fabs(estimated_map-actual_map))    
                             fitting.append(estimated_map)
                             fitting.append(math.fabs(estimated_map-actual_map))
-
                             all_fittings.append(fitting)
+                            if fitting_func_name not in all_fitting_performances:
+                                all_fitting_performances[fitting_func_name] = {}
+                            all_fitting_performances[fitting_func_name][qid] = estimated_map
                             #print fitting[0], fitting[1], fitting[3]
                         else:
                             #print j, 'None'
@@ -362,6 +366,16 @@ class PlotRelProb(object):
         # we do not care about the actual values of x
         # so we just map the actual values to integer values
         return_data = copy.deepcopy(collection_x_dict)
+
+        if curve_fitting:
+            #### calculate the stats
+            for fitting_func_name in all_fitting_performances:
+                actual_maps = [p[qid]['map'] for qid in queries]
+                estimated_maps = [all_fitting_performances[fitting_func_name][qid] for qid in queries]
+                print fitting_func_name, 
+                print scipy.stats.pearsonr(actual_maps, estimated_maps),
+                print scipy.stats.kendalltau(actual_maps, estimated_maps)
+                print '-'*30
 
         if draw_all:
             if compact_x:
