@@ -291,16 +291,26 @@ class PlotRelProb(object):
             plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
             if curve_fitting:
+                # plot the goodness of fit
                 all_fitting_results = [ele for ele in all_fitting_results if 'name' in ele]
-                all_data = [ele['sr'] for ele in all_fitting_results if 'sr' in ele]
-                all_labels = [ele['name'] for ele in all_fitting_results if 'sr' in ele and 'name' in ele]
+                goodness_fit_data = [ele['sr'] for ele in all_fitting_results if 'sr' in ele]
+                labels = [ele['name'] for ele in all_fitting_results if 'sr' in ele and 'name' in ele]
                 fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
                 font = {'size' : 8}
                 plt.rc('font', **font)
-                print all_data, all_labels
-                ax.boxplot(all_data, labels=all_labels)
+                ax.boxplot(goodness_fit_data, labels=labels)
                 output_fn = os.path.join(self.all_results_root, output_root, 
                     '%s-%s-fitting.%s' % (collection_name, _method, oformat) )
+                plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+                # plot the AP diff
+                ap_diff_data = [ele['ap_diff'] for ele in all_fitting_results if 'ap_diff' in ele]
+                labels = [ele['name'] for ele in all_fitting_results if 'ap_diff' in ele and 'name' in ele]
+                fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
+                font = {'size' : 8}
+                plt.rc('font', **font)
+                ax.boxplot(ap_diff_data, labels=labels)
+                output_fn = os.path.join(self.all_results_root, output_root, 
+                    '%s-%s-apdiff.%s' % (collection_name, _method, oformat) )
                 plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
         # draw the figure for the whole collection
