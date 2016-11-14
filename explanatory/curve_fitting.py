@@ -219,7 +219,7 @@ class FittingModels(object):
             #print mode, popt, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
         except:
             return None
-        return mode, func_name, popt, trialY, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
+        return [mode, func_name, popt, trialY, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)]
 
 
 class CalEstMAP(object):
