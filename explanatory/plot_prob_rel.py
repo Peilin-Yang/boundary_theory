@@ -237,7 +237,7 @@ class PlotRelProb(object):
                             if re.search(r'^tf\d+$', _method):
                                 #print fitting[3]*sum_yaxis, [x_dict[x][1] for x in xaxis]
                                 estimated_map = CalEstMAP().cal_map(
-                                    rel_docs = np.rint(fitting[3]*sum_yaxis),
+                                    rel_docs = np.rint(fitting[3]*sum_yaxis).astype(int),
                                     all_docs = [x_dict[x][1] for x in xaxis],
                                     mode=1
                                 )
