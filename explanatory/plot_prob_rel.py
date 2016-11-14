@@ -238,7 +238,7 @@ class PlotRelProb(object):
                                 print fitting[3]*sum_yaxis
                                 estimated_map = CalEstMAP().cal_map(
                                     rel_docs = fitting[3]*sum_yaxis,
-                                    all_docs = [x_dict[x][0]*1./x_dict[x][1] for x in xaxis]
+                                    all_docs = [x_dict[x][0]*1./x_dict[x][1] for x in xaxis],
                                     mode=1
                                 )
                             else:
