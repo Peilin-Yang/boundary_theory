@@ -238,6 +238,7 @@ class CalEstMAP(object):
         """
         if mode == 1:
             assert len(rel_docs) == len(all_docs)
+            print rel_docs, all_docs
             return EMAP().cal_expected_map(zip(rel_docs, all_docs))
         elif mode == 2:
             # TODO: implement
