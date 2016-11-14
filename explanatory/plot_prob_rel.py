@@ -22,6 +22,7 @@ from evaluation import Evaluation
 from performance import Performances
 
 import numpy as np
+import scipy.stats
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
