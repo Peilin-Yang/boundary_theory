@@ -371,7 +371,7 @@ class PlotRelProb(object):
         if curve_fitting:
             #### calculate the stats
             for fitting_func_name in all_fitting_performances:
-                actual_maps = [p[qid]['map'] for qid in queries]
+                actual_maps = [p[qid]['map'] if p[qid] else 0 for qid in queries]
                 estimated_maps = [all_fitting_performances[fitting_func_name][qid] for qid in queries]
                 print fitting_func_name, 
                 print scipy.stats.pearsonr(actual_maps, estimated_maps),
