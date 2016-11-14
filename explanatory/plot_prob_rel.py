@@ -231,7 +231,6 @@ class PlotRelProb(object):
                     for j in range(1, FittingModels().size()+1):
                         fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                         if not fitting is None:
-                            all_fittings.append(fitting)
                             all_fitting_results[j-1]['name'] = fitting[1]
                             all_fitting_results[j-1]['sr'].append(fitting[4]) # sum of squared error
                             if re.search(r'^tf\d+$', _method):
@@ -245,6 +244,10 @@ class PlotRelProb(object):
                             all_fitting_results[j-1]['ap'].append(estimated_map) # average precision
                             actual_map = p[qid]['map'] if p[qid] else 0
                             all_fitting_results[j-1]['ap_diff'].append(math.fabs(estimated_map-actual_map))    
+                            fitting.append(estimated_map)
+                            fitting.append(math.fabs(estimated_map-actual_map))
+
+                            all_fittings.append(fitting)
                             #print fitting[0], fitting[1], fitting[3]
                         else:
                             #print j, 'None'
@@ -259,9 +262,11 @@ class PlotRelProb(object):
                         if x in fitting_xaxis:
                             idx = fitting_xaxis.index(x)
                             fitted_y[idx] = all_fittings[0][3][idx]
-
+                    best_fit_func_name = all_fittings[0][1]
+                    all_fittings.sort(key=itemgetter(-1))
                     zoom_yaxis_fitting = fitted_y[zoom_x:]
-                    self.plot_figure(ax, xaxis, fitted_y, qid+'-'+query_term, all_fittings[0][1], 
+                    self.plot_figure(ax, xaxis, fitted_y, qid+'-'+query_term, 
+                        '%s\n%s(%.4f)' % (best_fit_func_name, all_fittings[0][1], all_fittings[0][-2]), 
                         drawline=True, 
                         linestyle='--',
                         zoom=zoom_x > 0,
@@ -292,7 +297,7 @@ class PlotRelProb(object):
 
             if curve_fitting:
                 # plot the goodness of fit
-                all_fitting_results = [ele for ele in all_fitting_results if 'name' in ele]
+                all_fitting_results = [ele for ele in all_fitting_results if 'name' in ele and ele['name'] not in ['AD']]
                 goodness_fit_data = [ele['sr'] for ele in all_fitting_results if 'sr' in ele]
                 labels = [ele['name'] for ele in all_fitting_results if 'sr' in ele and 'name' in ele]
                 fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
