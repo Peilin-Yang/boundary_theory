@@ -225,9 +225,9 @@ class PlotRelProb(object):
                     fitting_xaxis = []
                     fitting_yaxis = []
                     for i, ele in enumerate(yaxis):
-                        if ele != 0:
-                            fitting_xaxis.append(xaxis[i])
-                            fitting_yaxis.append(ele)
+                    #if ele != 0:
+                        fitting_xaxis.append(xaxis[i])
+                        fitting_yaxis.append(ele)
                     for j in range(1, FittingModels().size()+1):
                         fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                         if not fitting is None:
@@ -236,11 +236,11 @@ class PlotRelProb(object):
                             all_fitting_results[j-1]['sr'].append(fitting[4]) # sum of squared error
                             if re.search(r'^tf\d+$', _method):
                                 print fitting[3]*sum_yaxis, [x_dict[x][1] for x in xaxis]
-                                estimated_map = CalEstMAP().cal_map(
-                                    rel_docs = fitting[3]*sum_yaxis,
-                                    all_docs = [x_dict[x][1] for x in xaxis],
-                                    mode=1
-                                )
+                                # estimated_map = CalEstMAP().cal_map(
+                                #     rel_docs = fitting[3]*sum_yaxis,
+                                #     all_docs = [x_dict[x][1] for x in xaxis],
+                                #     mode=1
+                                # )
                             else:
                                 pass
                             all_fitting_results[j-1]['ap'].append(estimated_map) # average precision
@@ -356,7 +356,6 @@ class PlotRelProb(object):
             xaxis = np.array(xaxis, dtype=np.float32)
             yaxis = np.array(yaxis, dtype=np.float32)
             if curve_fitting and not plot_ratio:
-                xaxis /= np.sum(xaxis)
                 yaxis /= np.sum(yaxis)
 
             collection_legend = ''
