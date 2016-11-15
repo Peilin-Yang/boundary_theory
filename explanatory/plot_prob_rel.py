@@ -206,9 +206,8 @@ class PlotRelProb(object):
             if draw_individual:
                 if np.sum(xaxis) == 0 or np.sum(yaxis) == 0:
                     continue
-                print xaxis
+                raw_xaxis = copy.deepcopy(xaxis)
                 xaxis = np.array(xaxis, dtype=np.float32)
-                print xaxis
                 yaxis = np.array(yaxis, dtype=np.float32)
                 if curve_fitting and not plot_ratio:
                     sum_yaxis = np.sum(yaxis)
@@ -241,7 +240,7 @@ class PlotRelProb(object):
                             if re.search(r'^tf\d+$', _method):
                                 estimated_map = CalEstMAP().cal_map(
                                     rel_docs = np.rint(fitting[3]*sum_yaxis).astype(int),
-                                    all_docs = [x_dict[x][1] for x in xaxis],
+                                    all_docs = [x_dict[x][1] for x in raw_xaxis],
                                     mode=1
                                 )
                             else:
