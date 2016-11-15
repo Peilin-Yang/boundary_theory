@@ -139,6 +139,7 @@ class PlotRelProb(object):
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
         #print np.mean([len(rel_docs[qid]) for qid in rel_docs])
         eval_class = Evaluation(self.collection_path)
+        print _method
         p = eval_class.get_all_performance_of_some_queries(
             method=_method,
             qids=queries.keys(), 
