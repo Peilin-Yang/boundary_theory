@@ -206,7 +206,9 @@ class PlotRelProb(object):
             if draw_individual:
                 if np.sum(xaxis) == 0 or np.sum(yaxis) == 0:
                     continue
+                print xaxis
                 xaxis = np.array(xaxis, dtype=np.float32)
+                print xaxis
                 yaxis = np.array(yaxis, dtype=np.float32)
                 if curve_fitting and not plot_ratio:
                     sum_yaxis = np.sum(yaxis)
