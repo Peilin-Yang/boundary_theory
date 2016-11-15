@@ -57,18 +57,18 @@ class RealModels(object):
         tf/(tf+k) * idf  k=1.0 default
         """
         return round(int(row['total_tf']) / (1.0 + int(row['total_tf'])), 4)
-    def tf_dl_1(self, collection_stats, row):
+    def tfln1(self, collection_stats, row):
         """
         tf/dl
         """
         return round(float(row['total_tf'])/float(row['doc_len']), 3) 
 
-    def tf_dl_3(self, collection_stats, row):
+    def tfln3(self, collection_stats, row):
         """
         log(tf)/(tf+log(dl))
         """
         return round(np.log(float(row['total_tf']))/(float(row['total_tf'])+np.log(float(row['doc_len']))), 3) 
-    def tf_dl_5(self, collection_stats, row, delta=2.75):
+    def tfln5(self, collection_stats, row, delta=2.75):
         """
         (log(tf)+delta)/(tf+log(dl))
         """
@@ -85,15 +85,12 @@ class RealModels(object):
             x_func = self.tf4
         elif method_name == 'tf5':
             x_func = self.tf5
-        elif method_name == 'tf_ln_1':
-            x_func = self.tf_dl_1
-            formal_method_name = 'hypothesis_stq_tf_ln_1'
-        elif method_name == 'tf_ln_3':
-            x_func = self.tf_dl_3
-            formal_method_name = 'hypothesis_stq_tf_ln_3'
-        elif method_name == 'tf_ln_5':
-            x_func = self.tf_dl_5
-            formal_method_name = 'hypothesis_stq_tf_ln_5'
+        elif method_name == 'tfln1':
+            x_func = self.tfln1
+        elif method_name == 'tfln3':
+            x_func = self.tfln3
+        elif method_name == 'tfln5':
+            x_func = self.tfln5
 
         return x_func, formal_method_name
 
