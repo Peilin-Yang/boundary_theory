@@ -245,7 +245,11 @@ class PlotRelProb(object):
                                     mode=1
                                 )
                             else:
-                                pass
+                                estimated_map = CalEstMAP().cal_map(
+                                    rel_docs = np.rint(fitting[3]*sum_yaxis).astype(int),
+                                    all_docs = [x_dict[x][1] for x in raw_xaxis],
+                                    mode=1
+                                )
                             all_fitting_results[j-1]['ap'].append(estimated_map) # average precision
                             actual_map = p[qid]['map'] if p[qid] else 0
                             all_fitting_results[j-1]['ap_diff'].append(math.fabs(estimated_map-actual_map))    
