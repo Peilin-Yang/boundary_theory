@@ -40,7 +40,7 @@ class Judgment(object):
                 if line:
                     row = line.split()
                     _qid = str(int(row[0]))
-                    if re.search(r'[MQ07|MQ08]', self.corpus_path):
+                    if 'mq07' in self.corpus_path or 'mq08' in self.corpus_path:
                         doc_id = row[1]
                         relevant_score = ast.literal_eval(row[2])
                     else:
