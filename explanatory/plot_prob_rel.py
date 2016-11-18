@@ -319,6 +319,7 @@ class PlotRelProb(object):
                 fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
                 font = {'size' : 8}
                 plt.rc('font', **font)
+                print goodness_fit_data, labels
                 ax.boxplot(goodness_fit_data, labels=labels)
                 output_fn = os.path.join(self.all_results_root, output_root, 
                     '%s-%s-fitting.%s' % (collection_name, _method, oformat) )
