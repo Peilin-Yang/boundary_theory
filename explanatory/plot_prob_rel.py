@@ -150,7 +150,6 @@ class PlotRelProb(object):
         collection_level_maxX = 0.0
         num_cols = min(4, len(queries))
         num_rows = int(math.ceil(len(rel_docs)*1.0/num_cols))
-        print num_rows, num_cols
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
         font = {'size' : 5}
         plt.rc('font', **font)
