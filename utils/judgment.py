@@ -1,5 +1,6 @@
 import sys,os
 import ast
+import re
 from inspect import currentframe, getframeinfo
 
 
@@ -39,8 +40,12 @@ class Judgment(object):
                 if line:
                     row = line.split()
                     _qid = str(int(row[0]))
-                    doc_id = row[2]
-                    relevant_score = ast.literal_eval(row[3])
+                    if re.search(r'[MQ07|MQ08]', self.corpus_path):
+                        doc_id = row[1]
+                        relevant_score = ast.literal_eval(row[2])
+                    else:
+                        doc_id = row[2]
+                        relevant_score = ast.literal_eval(row[3])
                     if callback:
                         callback_paras.append([_qid, doc_id, relevant_score])
                         #print callback_paras
