@@ -207,6 +207,8 @@ class PlotRelProb(object):
             ranking_list = [(x_dict[x][0], x_dict[x][1]) for x in xaxis]
             all_expected_maps.append(EMAP().cal_expected_map(ranking_list))
 
+            print xaxis, yaxis
+
             if draw_individual:
                 if np.sum(xaxis) == 0 or np.sum(yaxis) == 0:
                     continue
