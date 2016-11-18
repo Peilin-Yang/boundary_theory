@@ -166,7 +166,10 @@ class PlotRelProb(object):
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
             else:
-                ax = axs[col_idx]
+                if num_cols > 1:
+                    ax = axs[col_idx]
+                else:
+                    ax = axs
             col_idx += 1
             if col_idx >= num_cols:
                 row_idx += 1
