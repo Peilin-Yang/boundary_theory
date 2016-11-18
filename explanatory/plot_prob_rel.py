@@ -238,6 +238,7 @@ class PlotRelProb(object):
                         fitting_xaxis.append(xaxis[i])
                         fitting_yaxis.append(ele)
                     for j in range(1, FittingModels().size()+1):
+                        print fitting_xaxis, fitting_yaxis
                         fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                         if not fitting is None:
                             fitting_func_name = fitting[1]
