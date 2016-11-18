@@ -207,8 +207,6 @@ class PlotRelProb(object):
             ranking_list = [(x_dict[x][0], x_dict[x][1]) for x in xaxis]
             all_expected_maps.append(EMAP().cal_expected_map(ranking_list))
 
-            print xaxis, yaxis
-
             if draw_individual:
                 if np.sum(xaxis) == 0 or np.sum(yaxis) == 0:
                     continue
@@ -240,7 +238,6 @@ class PlotRelProb(object):
                         fitting_xaxis.append(xaxis[i])
                         fitting_yaxis.append(ele)
                     for j in range(1, FittingModels().size()+1):
-                        print fitting_xaxis, fitting_yaxis
                         fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                         if not fitting is None:
                             fitting_func_name = fitting[1]
@@ -322,7 +319,6 @@ class PlotRelProb(object):
                 fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
                 font = {'size' : 8}
                 plt.rc('font', **font)
-                print goodness_fit_data, labels
                 ax.boxplot(goodness_fit_data, labels=labels)
                 output_fn = os.path.join(self.all_results_root, output_root, 
                     '%s-%s-fitting.%s' % (collection_name, _method, oformat) )
