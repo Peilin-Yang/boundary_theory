@@ -203,7 +203,8 @@ class PlotRelProb(object):
             xaxis = x_dict.keys()
             xaxis.sort()
             xaxis = xaxis[:1000]
-            print qid, sum([x_dict[x][0] for x in xaxis])
+            if sum([x_dict[x][0] for x in xaxis]) == 0:
+                continue
             if plot_ratio:
                 yaxis = [x_dict[x][0]*1./x_dict[x][1] for x in xaxis]
             else:
