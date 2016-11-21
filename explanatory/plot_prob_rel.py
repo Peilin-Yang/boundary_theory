@@ -205,7 +205,6 @@ class PlotRelProb(object):
             xaxis = xaxis[:1000]
             if sum([x_dict[x][0] for x in xaxis]) == 0:
                 continue
-            print qid, sum([x_dict[x][0] for x in xaxis])
             if plot_ratio:
                 yaxis = [x_dict[x][0]*1./x_dict[x][1] for x in xaxis]
             else:
