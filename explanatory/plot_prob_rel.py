@@ -200,9 +200,6 @@ class PlotRelProb(object):
                 collection_x_dict[x][1] += 1
             xaxis = x_dict.keys()
             xaxis.sort()
-            print '-'*30
-            print qid
-            print xaxis
             xaxis = xaxis[:1000]
             print xaxis
             if plot_ratio:
