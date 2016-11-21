@@ -201,7 +201,6 @@ class PlotRelProb(object):
             xaxis = x_dict.keys()
             xaxis.sort()
             xaxis = xaxis[:1000]
-            print xaxis
             if plot_ratio:
                 yaxis = [x_dict[x][0]*1./x_dict[x][1] for x in xaxis]
             else:
