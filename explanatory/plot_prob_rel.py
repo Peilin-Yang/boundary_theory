@@ -137,6 +137,8 @@ class PlotRelProb(object):
         queries = {ele['num']:ele['title'] for ele in queries}
         #print qids
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
+        print rel_docs
+        #queries = 
         #print np.mean([len(rel_docs[qid]) for qid in rel_docs])
         eval_class = Evaluation(self.collection_path)
         print _method
