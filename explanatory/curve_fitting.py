@@ -136,79 +136,72 @@ class FittingModels(object):
     def mix_poisson2(self, xaxis, pi, mu1, mu2):
         return pi*scipy.stats.poisson.pmf(xaxis, mu1)+(1-pi)*scipy.stats.poisson.pmf(xaxis, mu2)
 
+    def curve_fit_mapping(self, i):
+        fitting_list = [self.mix_expon1, self.mix_expon2, self.mix_lognormal1, 
+            self.mix_lognormal2, self.mix_normal1, self.mix_normal2, self.mix_gamma1, 
+            self.mix_gamma2, self.mix_poisson1, self.mix_poisson2, self.asymptotic_decay, 
+            self.power_decay, self.mix_expdecay1, self.mix_expdecay2] 
+        return curve_fit_mapping[i-1]
 
     def cal_curve_fit(self, xaxis, yaxis, mode=1):
         if mode == 1:
-            func = self.mix_expon1
             p0 = [1]
             bounds = ([0], [np.inf])
             func_name = 'EXP'
         elif mode == 2:
-            func = self.mix_expon2
             p0 = [0.5, 2, 0.5]
             bounds = ([0, 0, 0], [1, np.inf, np.inf])
             func_name = '2-EXP'
         elif mode == 3:
-            func = self.mix_lognormal1
             p0 = [1]
             bounds = ([-np.inf], [np.inf])
             func_name = 'LN'
         elif mode == 4:
-            func = self.mix_lognormal2
             p0 = [0.45, 1, 1]
             bounds = ([0, -np.inf, -np.inf], [1, np.inf, np.inf])
             func_name = '2-LN'
         elif mode == 5:
-            func = self.mix_normal1
             p0 = [0, 1]
             bounds = ([-np.inf, 0], [np.inf, np.inf])
             func_name = 'NN'
         elif mode == 6:
-            func = self.mix_normal2
             p0 = [0.45, 0, 0, 1, 1]
             bounds = ([0, -np.inf, -np.inf, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
             func_name = '2-NN'
         elif mode == 7:
-            func = self.mix_gamma1
             p0 = [0, 1]
             bounds = ([0, 0], [np.inf, np.inf])
             func_name = 'GA'
         elif mode == 8:
-            func = self.mix_gamma2
             p0 = [0.45, 0, 0, 1, 1]
             bounds = ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
             func_name = '2-GA'
         elif mode == 9:
-            func = self.mix_poisson1
             p0 = [1]
             bounds = ([0], [np.inf])
             func_name = 'PO'
         elif mode == 10:
-            func = self.mix_poisson2
             p0 = [0.45, 1, 1]
             bounds = ([0, 0, 0], [1, np.inf, np.inf])
             func_name = '2-PO'
         elif mode == 11:
-            func = self.asymptotic_decay
             p0 = [1, 2]
             bounds = ([0, 0], [np.inf, np.inf])
             func_name = 'AD'
         elif mode == 12:
-            func = self.power_decay
             p0 = [1, 2]
             bounds = ([0, 0], [np.inf, np.inf])
             func_name = 'PD'
         elif mode == 13:
-            func = self.mix_expdecay1
             p0 = [1, 1]
             bounds = ([0, 0], [np.inf, np.inf])
             func_name = 'ED'
         elif mode == 14:
-            func = self.mix_expdecay2
             p0 = [0.5, 1, 1, 2, 0.5]
             bounds = ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
             func_name = '2-ED'
         xaxis = np.array(xaxis)
+        func = self.curve_fit_mapping(mode)
         try:
             popt, pcov = curve_fit(func, xaxis, yaxis, p0=p0, method='trf', bounds=bounds)
             perr = np.sqrt(np.diag(pcov))

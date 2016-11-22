@@ -262,7 +262,8 @@ class PlotRelProb(object):
                                 )
                             all_fitting_results[j-1]['ap'].append(estimated_map) # average precision
                             actual_map = p[qid]['map'] if p[qid] else 0
-                            all_fitting_results[j-1]['ap_diff'].append(math.fabs(estimated_map-actual_map))    
+                            all_fitting_results[j-1]['ap_diff'].append(math.fabs(estimated_map-actual_map))   
+                            fitting.append(j) 
                             fitting.append(estimated_map)
                             fitting.append(math.fabs(estimated_map-actual_map))
                             all_fittings.append(fitting)
@@ -278,15 +279,17 @@ class PlotRelProb(object):
                         print qid, query_term, all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
                     except:
                         continue
-                    fitted_y = [0 for i in range(len(xaxis))]
-                    for x in xaxis:
-                        if x in fitting_xaxis:
-                            idx = fitting_xaxis.index(x)
-                            fitted_y[idx] = all_fittings[0][3][idx]
+                    fit_curve_x = np.linspace(xaxis[0], xaxis[-1], 100)
+                    fit_curve_y = FittingModels().curve_fit_mapping(all_fittings[0][-3])(fit_curve_x, *all_fittings[0][2])
+                    # fitted_y = [0 for i in range(len(xaxis))]
+                    # for x in xaxis:
+                    #     if x in fitting_xaxis:
+                    #         idx = fitting_xaxis.index(x)
+                    #         fitted_y[idx] = all_fittings[0][3][idx]
                     best_fit_func_name = all_fittings[0][1]
                     all_fittings.sort(key=itemgetter(-1))
                     zoom_yaxis_fitting = fitted_y[zoom_x:]
-                    self.plot_figure(ax, xaxis, fitted_y, qid+'-'+query_term, 
+                    self.plot_figure(ax, fit_curve_x, fit_curve_y, qid+'-'+query_term, 
                         '%s\n%s(%.4f)' % (best_fit_func_name, all_fittings[0][1], all_fittings[0][-2]), 
                         drawline=True, 
                         linestyle='--',
