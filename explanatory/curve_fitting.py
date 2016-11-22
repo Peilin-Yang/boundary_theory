@@ -141,7 +141,7 @@ class FittingModels(object):
             self.mix_lognormal2, self.mix_normal1, self.mix_normal2, self.mix_gamma1, 
             self.mix_gamma2, self.mix_poisson1, self.mix_poisson2, self.asymptotic_decay, 
             self.power_decay, self.mix_expdecay1, self.mix_expdecay2] 
-        return curve_fit_mapping[i-1]
+        return fitting_list[i-1]
 
     def cal_curve_fit(self, xaxis, yaxis, mode=1):
         if mode == 1:
