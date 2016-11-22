@@ -293,7 +293,7 @@ class PlotRelProb(object):
                         '%s\n%s(%.4f)' % (best_fit_func_name, all_fittings[0][1], all_fittings[0][-2]), 
                         drawline=True, 
                         linestyle='--',
-                        marker="", #nothing
+                        marker=" ", #nothing
                         zoom=zoom_x > 0,
                         zoom_ax = zoom_ax,
                         zoom_xaxis=zoom_xaxis,
