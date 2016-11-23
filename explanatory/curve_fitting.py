@@ -226,6 +226,7 @@ class CalEstMAP(object):
         1 - using discrete distributions for all docs and the rel docs. this is suitable for TF functions.
         2 - using continuous distributions for rel docs and non-rel docs.
         """
+        print rel_docs, all_docs
         if mode == 1:
             assert len(rel_docs) == len(all_docs)
             for i, ele in enumerate(rel_docs):
