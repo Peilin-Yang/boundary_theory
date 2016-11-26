@@ -204,7 +204,7 @@ class FittingModels(object):
             p0 = [0.5, 1, 1, 2, 0.5]
             bounds = ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
             func_name = '2-ED'
-        xaxis = np.array(xaxis)
+        xaxis = np.asarray(xaxis)
         func = self.curve_fit_mapping(mode)
         try:
             popt, pcov = curve_fit(func, xaxis, yaxis, p0=p0, method='trf', bounds=bounds)
