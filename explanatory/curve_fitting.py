@@ -112,6 +112,9 @@ class FittingModels(object):
     def mix_expon3(self, xaxis, pi1, pi2, l1, l2, l3):
         return pi1*scipy.stats.expon(scale=1.0/l1).pdf(xaxis) + pi2*scipy.stats.expon(scale=1.0/l2).pdf(xaxis) + (1-pi1-pi2)*scipy.stats.expon(scale=1.0/l3).pdf(xaxis)
     def mix_expdecay1(self, xaxis, n0, l):
+        print -l*xaxis
+        print np.exp(-l*xaxis)
+        print n0*np.exp(-l*xaxis)
         return n0*np.exp(-l*xaxis)
     def mix_expdecay2(self, xaxis, pi, n01, n02, l1, l2):
         return pi*n01*np.exp(-l1*xaxis) + (1-pi)*n02*np.exp(-l2*xaxis)
