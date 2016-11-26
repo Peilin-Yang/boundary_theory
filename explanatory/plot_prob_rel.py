@@ -251,8 +251,9 @@ class PlotRelProb(object):
                             if re.search(r'^tf\d+$', _method):
                                 estimated_map = CalEstMAP().cal_map(
                                     rel_docs = np.rint(fitting[3]*sum_yaxis).astype(int),
+                                    all_docs = [x_dict[x][1] for x in fitting_xaxis],
                                     #rel_docs = np.rint(FittingModels().curve_fit_mapping(fitting[0])(np.array([x_dict[x][1] for x in raw_xaxis]), *fitting[2])*sum_yaxis).astype(int),
-                                    all_docs = [x_dict[x][1] for x in raw_xaxis],
+                                    #all_docs = [x_dict[x][1] for x in raw_xaxis],
                                     mode=1
                                 )
                             else:
