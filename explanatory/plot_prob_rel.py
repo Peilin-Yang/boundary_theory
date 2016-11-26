@@ -239,9 +239,9 @@ class PlotRelProb(object):
                     fitting_xaxis = []
                     fitting_yaxis = []
                     for i, ele in enumerate(yaxis):
-                        #if ele != 0:
-                        fitting_xaxis.append(xaxis[i])
-                        fitting_yaxis.append(ele)
+                        if ele != 0:
+                            fitting_xaxis.append(xaxis[i])
+                            fitting_yaxis.append(ele)
                     for j in range(1, FittingModels().size()+1):
                         fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                         if not fitting is None:
@@ -250,8 +250,8 @@ class PlotRelProb(object):
                             all_fitting_results[j-1]['sr'].append(fitting[4]) # sum of squared error
                             if re.search(r'^tf\d+$', _method):
                                 estimated_map = CalEstMAP().cal_map(
-                                    #rel_docs = np.rint(fitting[3]*sum_yaxis).astype(int),
-                                    rel_docs = np.rint(FittingModels().curve_fit_mapping(fitting[0])(np.array([x_dict[x][1] for x in raw_xaxis]), *fitting[2])*sum_yaxis).astype(int),
+                                    rel_docs = np.rint(fitting[3]*sum_yaxis).astype(int),
+                                    #rel_docs = np.rint(FittingModels().curve_fit_mapping(fitting[0])(np.array([x_dict[x][1] for x in raw_xaxis]), *fitting[2])*sum_yaxis).astype(int),
                                     all_docs = [x_dict[x][1] for x in raw_xaxis],
                                     mode=1
                                 )
