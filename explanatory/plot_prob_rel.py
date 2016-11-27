@@ -289,6 +289,8 @@ class PlotRelProb(object):
                     #         idx = fitting_xaxis.index(x)
                     #         fitted_y[idx] = all_fittings[0][3][idx]
                     zoom_yaxis_fitting = fit_curve_y[zoom_x:]
+                    print all_fittings[0]
+                    print fit_curve_y
                     self.plot_figure(ax, fit_curve_x, fit_curve_y, qid+'-'+query_term, 
                         '%s(%.4f)' % (all_fittings[0][1], all_fittings[0][-2]), 
                         drawline=True, 
@@ -305,6 +307,8 @@ class PlotRelProb(object):
                     
                     all_fittings.sort(key=itemgetter(-1))
                     fit_curve_y = FittingModels().curve_fit_mapping(all_fittings[0][-3])(fit_curve_x, *all_fittings[0][2])
+                    print all_fittings[0]
+                    print fit_curve_y
                     zoom_yaxis_fitting = fit_curve_y[zoom_x:]
                     self.plot_figure(ax, fit_curve_x, fit_curve_y, qid+'-'+query_term, 
                         '%s(%.4f)' % (all_fittings[0][1], all_fittings[0][-2]), 
