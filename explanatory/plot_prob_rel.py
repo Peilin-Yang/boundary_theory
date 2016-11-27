@@ -49,11 +49,11 @@ class PlotRelProb(object):
 
     def plot_figure(self, ax, xaxis, yaxis, title='', legend='', 
             drawline=True, legend_outside=False, marker=None, 
-            linestyle=None, xlabel='', ylabel='', xlog=False, ylog=False, 
+            linestyle=None, color=None, xlabel='', ylabel='', xlog=False, ylog=False, 
             zoom=False, zoom_ax=None, zoom_xaxis=[], zoom_yaxis=[], 
             legend_pos='best', xlabel_format=0, xlimit=0, ylimit=0, legend_markscale=1.0):
         if drawline:
-            ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
+            ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', color=color, label=legend)
         else: #draw dots 
             ax.plot(xaxis, yaxis, marker=marker if marker else 'o', markerfacecolor='r', ms=4, ls='None', label=legend)
             #ax.vlines(xaxis, [0], yaxis)
@@ -289,8 +289,6 @@ class PlotRelProb(object):
                     #         idx = fitting_xaxis.index(x)
                     #         fitted_y[idx] = all_fittings[0][3][idx]
                     zoom_yaxis_fitting = fit_curve_y[zoom_x:]
-                    print all_fittings[0]
-                    print fit_curve_y
                     self.plot_figure(ax, fit_curve_x, fit_curve_y, qid+'-'+query_term, 
                         '%s(%.4f)' % (all_fittings[0][1], all_fittings[0][-2]), 
                         drawline=True, 
@@ -307,8 +305,6 @@ class PlotRelProb(object):
                     
                     all_fittings.sort(key=itemgetter(-1))
                     fit_curve_y = FittingModels().curve_fit_mapping(all_fittings[0][-3])(fit_curve_x, *all_fittings[0][2])
-                    print all_fittings[0]
-                    print fit_curve_y
                     zoom_yaxis_fitting = fit_curve_y[zoom_x:]
                     self.plot_figure(ax, fit_curve_x, fit_curve_y, qid+'-'+query_term, 
                         '%s(%.4f)' % (all_fittings[0][1], all_fittings[0][-2]), 
