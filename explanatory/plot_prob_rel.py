@@ -411,8 +411,8 @@ class PlotRelProb(object):
             best_fitting_func = ''
             paras_array = None
             legend = ''
+            actual_maps = np.array([p[qid]['map'] if p[qid] else 0 for qid in queries])
             for fitting_func_name in all_fitting_performances:
-                actual_maps = np.array([p[qid]['map'] if p[qid] else 0 for qid in queries])
                 estimated_maps = np.array([all_fitting_performances[fitting_func_name][qid]['ap'] if qid in all_fitting_performances[fitting_func_name] else 0 for qid in queries])
                 ap_diff = np.sum( np.fabs(actual_maps - estimated_maps) )
                 if ap_diff < best_fitting:
@@ -425,7 +425,7 @@ class PlotRelProb(object):
                     kendalltau = round(scipy.stats.kendalltau(actual_maps, estimated_maps)[0], 3)
                     legend = '%.3f,%.3f' % (pearsonr, kendalltau)
             para_fig, para_axs = plt.subplots(nrows=1, ncols=paras_array.shape[0], sharex=False, sharey=False, figsize=(paras_array.shape[0], 1))
-            para_font = {'size' : 8}
+            para_font = {'size' : 5}
             plt.rc('font', **font)
             col_idx = 0
             for row in paras_array:
