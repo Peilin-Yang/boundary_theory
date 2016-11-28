@@ -271,6 +271,7 @@ class PlotRelProb(object):
                             all_fittings.append(fitting)
                             if fitting_func_name not in all_fitting_performances:
                                 all_fitting_performances[fitting_func_name] = {}
+                            print fitting[2]
                             all_fitting_performances[fitting_func_name][qid] = {'ap':estimated_map, 'para':fitting[2]}
                             #print fitting[0], fitting[1], fitting[3]
                         else:
