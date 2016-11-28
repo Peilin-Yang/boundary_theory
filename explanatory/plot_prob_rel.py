@@ -271,16 +271,16 @@ class PlotRelProb(object):
                             all_fittings.append(fitting)
                             if fitting_func_name not in all_fitting_performances:
                                 all_fitting_performances[fitting_func_name] = {}
-                            all_fitting_performances[fitting_func_name][qid] = estimated_map
+                            all_fitting_performances[fitting_func_name][qid] = {'ap':estimated_map, 'para':fitting[2]}
                             #print fitting[0], fitting[1], fitting[3]
                         else:
                             #print j, 'None'
                             pass
                     all_fittings.sort(key=itemgetter(4))
-                    try:
-                        print qid, query_term, all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
-                    except:
-                        continue
+                    # try:
+                    #     print qid, query_term, all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
+                    # except:
+                    #     continue
                     fit_curve_x = np.linspace(xaxis[0], xaxis[-1], 100)
                     fit_curve_y = FittingModels().curve_fit_mapping(all_fittings[0][-3])(fit_curve_x, *all_fittings[0][2])
                     # fitted_y = [0 for i in range(len(xaxis))]
@@ -407,13 +407,44 @@ class PlotRelProb(object):
 
         if curve_fitting:
             #### calculate the stats
+            best_fitting = 9999999
+            best_fitting_func = ''
             for fitting_func_name in all_fitting_performances:
                 actual_maps = [p[qid]['map'] if p[qid] else 0 for qid in queries]
-                estimated_maps = [all_fitting_performances[fitting_func_name][qid] if qid in all_fitting_performances[fitting_func_name] else 0 for qid in queries]
-                print fitting_func_name, 
-                print scipy.stats.pearsonr(actual_maps, estimated_maps),
-                print scipy.stats.kendalltau(actual_maps, estimated_maps)
-                print '-'*30
+                estimated_maps = [all_fitting_performances[fitting_func_name][qid]['ap'] if qid in all_fitting_performances[fitting_func_name] else 0 for qid in queries]
+                ap_diff = np.sum( np.fabs(actual_maps - estimated_maps) )
+                if ap_diff < best_fitting:
+                    best_fitting = ap_diff
+                    best_fitting_func = fitting_func_name 
+                    paras_array = np.array([np.array(all_fitting_performances[fitting_func_name][qid]['para']) for qid in queries if qid in all_fitting_performances[fitting_func_name]])
+                    paras_array.transpose()
+                    fig, axs = plt.subplots(nrows=1, ncols=paras_array.shape[0], sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
+                    font = {'size' : 8}
+                    plt.rc('font', **font)
+                    col_idx = 0
+                    for row in paras_array:
+                        ax = axs[col_idx]
+                        ax.hist(row)
+                        col_idx += 1
+                    pearsonr = round(scipy.stats.pearsonr(actual_maps, estimated_maps)[0], 3)
+                    kendalltau = round(scipy.stats.kendalltau(actual_maps, estimated_maps)[0], 3)
+                    output_fn = os.path.join(self.all_results_root, output_root, 
+                        '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-bestfitpara.%s' % (
+                            collection_name, 
+                            _method, 
+                            'ratio' if plot_ratio else 'abscnt', 
+                            'total' if plot_total_or_avg else 'avg',
+                            'rel' if plot_rel_or_all else 'all',
+                            'line' if drawline else 'dots', 
+                            numbins, 
+                            xlimit,
+                            ylimit,
+                            zoom_x, 
+                            'compact' if compact_x else 'raw',
+                            'fit' if curve_fitting else 'plain',
+                            oformat) 
+                        )
+                    plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
         if draw_all:
             if compact_x:
