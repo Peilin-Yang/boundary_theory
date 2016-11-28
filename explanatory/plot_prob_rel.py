@@ -423,8 +423,8 @@ class PlotRelProb(object):
                     #print paras_array.shape[0]
                     pearsonr = round(scipy.stats.pearsonr(actual_maps, estimated_maps)[0], 3)
                     kendalltau = round(scipy.stats.kendalltau(actual_maps, estimated_maps)[0], 3)
-                    legend = '%f,%f' % (pearsonr, kendalltau)
-            para_fig, para_axs = plt.subplots(nrows=1, ncols=paras_array.shape[0], sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
+                    legend = '%.3f,%.3f' % (pearsonr, kendalltau)
+            para_fig, para_axs = plt.subplots(nrows=1, ncols=paras_array.shape[0], sharex=False, sharey=False, figsize=(paras_array.shape[0], 1))
             para_font = {'size' : 8}
             plt.rc('font', **font)
             col_idx = 0
