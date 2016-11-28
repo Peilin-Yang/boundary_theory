@@ -409,6 +409,8 @@ class PlotRelProb(object):
             #### calculate the stats
             best_fitting = 9999999
             best_fitting_func = ''
+            paras_array = None
+            legend = ''
             for fitting_func_name in all_fitting_performances:
                 actual_maps = np.array([p[qid]['map'] if p[qid] else 0 for qid in queries])
                 estimated_maps = np.array([all_fitting_performances[fitting_func_name][qid]['ap'] if qid in all_fitting_performances[fitting_func_name] else 0 for qid in queries])
@@ -418,37 +420,40 @@ class PlotRelProb(object):
                     best_fitting_func = fitting_func_name 
                     paras_array = np.array([np.array(all_fitting_performances[fitting_func_name][qid]['para']) for qid in queries if qid in all_fitting_performances[fitting_func_name]])
                     paras_array.transpose()
-                    print paras_array.shape[0]
-                    fig, axs = plt.subplots(nrows=1, ncols=paras_array.shape[0], sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
-                    font = {'size' : 8}
-                    plt.rc('font', **font)
-                    col_idx = 0
-                    for row in paras_array:
-                        if paras_array.shape[0] > 1:
-                            ax = axs[col_idx]
-                        else:
-                            ax = axs
-                        ax.hist(row)
-                        col_idx += 1
+                    #print paras_array.shape[0]
                     pearsonr = round(scipy.stats.pearsonr(actual_maps, estimated_maps)[0], 3)
                     kendalltau = round(scipy.stats.kendalltau(actual_maps, estimated_maps)[0], 3)
-                    output_fn = os.path.join(self.all_results_root, output_root, 
-                        '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-bestfitpara.%s' % (
-                            collection_name, 
-                            _method, 
-                            'ratio' if plot_ratio else 'abscnt', 
-                            'total' if plot_total_or_avg else 'avg',
-                            'rel' if plot_rel_or_all else 'all',
-                            'line' if drawline else 'dots', 
-                            numbins, 
-                            xlimit,
-                            ylimit,
-                            zoom_x, 
-                            'compact' if compact_x else 'raw',
-                            'fit' if curve_fitting else 'plain',
-                            oformat) 
-                        )
-                    plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+                    legend = '%f,%f' % (pearsonr, kendalltau)
+            fig, axs = plt.subplots(nrows=1, ncols=paras_array.shape[0], sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
+            font = {'size' : 8}
+            plt.rc('font', **font)
+            col_idx = 0
+            print paras_array
+            for row in paras_array:
+                if paras_array.shape[0] > 1:
+                    ax = axs[col_idx]
+                else:
+                    ax = axs
+                ax.hist(row)
+                col_idx += 1
+            fig.title(best_fitting_func)
+            output_fn = os.path.join(self.all_results_root, output_root, 
+                '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-bestfitpara.%s' % (
+                    collection_name, 
+                    _method, 
+                    'ratio' if plot_ratio else 'abscnt', 
+                    'total' if plot_total_or_avg else 'avg',
+                    'rel' if plot_rel_or_all else 'all',
+                    'line' if drawline else 'dots', 
+                    numbins, 
+                    xlimit,
+                    ylimit,
+                    zoom_x, 
+                    'compact' if compact_x else 'raw',
+                    'fit' if curve_fitting else 'plain',
+                    oformat) 
+                )
+            plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
         if draw_all:
             if compact_x:
