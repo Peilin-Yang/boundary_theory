@@ -271,7 +271,6 @@ class PlotRelProb(object):
                             all_fittings.append(fitting)
                             if fitting_func_name not in all_fitting_performances:
                                 all_fitting_performances[fitting_func_name] = {}
-                            print fitting[2]
                             all_fitting_performances[fitting_func_name][qid] = {'ap':estimated_map, 'para':fitting[2]}
                             #print fitting[0], fitting[1], fitting[3]
                         else:
@@ -420,6 +419,7 @@ class PlotRelProb(object):
                     best_fitting = ap_diff
                     best_fitting_func = fitting_func_name 
                     paras_array = np.array([np.array(all_fitting_performances[fitting_func_name][qid]['para']) for qid in queries if qid in all_fitting_performances[fitting_func_name]])
+                    print paras_array
                     paras_array.transpose()
                     #print paras_array.shape[0]
                     pearsonr = round(scipy.stats.pearsonr(actual_maps, estimated_maps)[0], 3)
