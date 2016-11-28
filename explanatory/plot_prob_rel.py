@@ -405,7 +405,7 @@ class PlotRelProb(object):
         # so we just map the actual values to integer values
         return_data = copy.deepcopy(collection_x_dict)
 
-        if curve_fitting:
+        if curve_fitting and len(queries) > 1:
             #### calculate the stats
             best_fitting = 9999999
             best_fitting_func = ''
