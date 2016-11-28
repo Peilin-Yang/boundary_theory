@@ -424,18 +424,18 @@ class PlotRelProb(object):
                     pearsonr = round(scipy.stats.pearsonr(actual_maps, estimated_maps)[0], 3)
                     kendalltau = round(scipy.stats.kendalltau(actual_maps, estimated_maps)[0], 3)
                     legend = '%f,%f' % (pearsonr, kendalltau)
-            fig, axs = plt.subplots(nrows=1, ncols=paras_array.shape[0], sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
-            font = {'size' : 8}
+            para_fig, para_axs = plt.subplots(nrows=1, ncols=paras_array.shape[0], sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
+            para_font = {'size' : 8}
             plt.rc('font', **font)
             col_idx = 0
             for row in paras_array:
                 if paras_array.shape[0] > 1:
-                    ax = axs[col_idx]
+                    ax = para_axs[col_idx]
                 else:
-                    ax = axs
+                    ax = para_axs
                 ax.hist(row)
                 col_idx += 1
-            fig.suptitle(best_fitting_func+'('+legend+')')
+            para_fig.suptitle(best_fitting_func+'('+legend+')')
             output_fn = os.path.join(self.all_results_root, output_root, 
                 '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-bestfitpara.%s' % (
                     collection_name, 
