@@ -410,8 +410,8 @@ class PlotRelProb(object):
             best_fitting = 9999999
             best_fitting_func = ''
             for fitting_func_name in all_fitting_performances:
-                actual_maps = [p[qid]['map'] if p[qid] else 0 for qid in queries]
-                estimated_maps = [all_fitting_performances[fitting_func_name][qid]['ap'] if qid in all_fitting_performances[fitting_func_name] else 0 for qid in queries]
+                actual_maps = np.array([p[qid]['map'] if p[qid] else 0 for qid in queries])
+                estimated_maps = np.array([all_fitting_performances[fitting_func_name][qid]['ap'] if qid in all_fitting_performances[fitting_func_name] else 0 for qid in queries])
                 ap_diff = np.sum( np.fabs(actual_maps - estimated_maps) )
                 if ap_diff < best_fitting:
                     best_fitting = ap_diff
