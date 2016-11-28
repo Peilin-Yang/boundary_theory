@@ -418,6 +418,7 @@ class PlotRelProb(object):
                     best_fitting_func = fitting_func_name 
                     paras_array = np.array([np.array(all_fitting_performances[fitting_func_name][qid]['para']) for qid in queries if qid in all_fitting_performances[fitting_func_name]])
                     paras_array.transpose()
+                    print paras_array.shape[0]
                     fig, axs = plt.subplots(nrows=1, ncols=paras_array.shape[0], sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
                     font = {'size' : 8}
                     plt.rc('font', **font)
