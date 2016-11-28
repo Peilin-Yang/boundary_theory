@@ -424,9 +424,7 @@ class PlotRelProb(object):
                     pearsonr = round(scipy.stats.pearsonr(actual_maps, estimated_maps)[0], 3)
                     kendalltau = round(scipy.stats.kendalltau(actual_maps, estimated_maps)[0], 3)
                     legend = '%.3f,%.3f' % (pearsonr, kendalltau)
-            para_fig, para_axs = plt.subplots(nrows=1, ncols=paras_array.shape[0], sharex=False, sharey=False, figsize=(paras_array.shape[0], 1))
-            para_font = {'size' : 5}
-            plt.rc('font', **font)
+            para_fig, para_axs = plt.subplots(nrows=1, ncols=paras_array.shape[0], sharex=False, sharey=False, figsize=(3*paras_array.shape[0], 3))
             col_idx = 0
             for row in paras_array:
                 if paras_array.shape[0] > 1:
