@@ -420,7 +420,7 @@ class PlotRelProb(object):
                     best_fitting_func = fitting_func_name 
                     paras_array = np.array([np.array(all_fitting_performances[fitting_func_name][qid]['para']) for qid in queries if qid in all_fitting_performances[fitting_func_name]])
                     print paras_array
-                    paras_array.transpose()
+                    paras_array = paras_array.transpose()
                     #print paras_array.shape[0]
                     pearsonr = round(scipy.stats.pearsonr(actual_maps, estimated_maps)[0], 3)
                     kendalltau = round(scipy.stats.kendalltau(actual_maps, estimated_maps)[0], 3)
