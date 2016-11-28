@@ -428,7 +428,6 @@ class PlotRelProb(object):
             font = {'size' : 8}
             plt.rc('font', **font)
             col_idx = 0
-            print best_fitting_func, paras_array
             for row in paras_array:
                 if paras_array.shape[0] > 1:
                     ax = axs[col_idx]
@@ -436,8 +435,7 @@ class PlotRelProb(object):
                     ax = axs
                 ax.hist(row)
                 col_idx += 1
-            fig.suptitle(best_fitting_func)
-            fig.legend(legend)
+            fig.suptitle(best_fitting_func+'('+legend+')')
             output_fn = os.path.join(self.all_results_root, output_root, 
                 '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-bestfitpara.%s' % (
                     collection_name, 
