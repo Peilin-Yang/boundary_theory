@@ -419,7 +419,6 @@ class PlotRelProb(object):
                     best_fitting = ap_diff
                     best_fitting_func = fitting_func_name 
                     paras_array = np.array([np.array(all_fitting_performances[fitting_func_name][qid]['para']) for qid in queries if qid in all_fitting_performances[fitting_func_name]])
-                    print paras_array
                     paras_array = paras_array.transpose()
                     #print paras_array.shape[0]
                     pearsonr = round(scipy.stats.pearsonr(actual_maps, estimated_maps)[0], 3)
@@ -437,7 +436,8 @@ class PlotRelProb(object):
                     ax = axs
                 ax.hist(row)
                 col_idx += 1
-            fig.title(best_fitting_func)
+            fig.suptitle(best_fitting_func)
+            fig.legend(legend)
             output_fn = os.path.join(self.all_results_root, output_root, 
                 '%s-%s-%s-%s-%s-%s-%d-%.1f-%.1f-zoom%d-%s-%s-bestfitpara.%s' % (
                     collection_name, 
