@@ -428,7 +428,7 @@ class PlotRelProb(object):
             font = {'size' : 8}
             plt.rc('font', **font)
             col_idx = 0
-            print paras_array
+            print best_fitting_func, paras_array
             for row in paras_array:
                 if paras_array.shape[0] > 1:
                     ax = axs[col_idx]
