@@ -424,7 +424,10 @@ class PlotRelProb(object):
                     plt.rc('font', **font)
                     col_idx = 0
                     for row in paras_array:
-                        ax = axs[col_idx]
+                        if paras_array.shape[0] > 1:
+                            ax = axs[col_idx]
+                        else:
+                            ax = axs
                         ax.hist(row)
                         col_idx += 1
                     pearsonr = round(scipy.stats.pearsonr(actual_maps, estimated_maps)[0], 3)
