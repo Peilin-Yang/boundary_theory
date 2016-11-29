@@ -202,7 +202,7 @@ class PlotRelProb(object):
                 if rel:
                     collection_x_dict[x][0] += 1
                 collection_x_dict[x][1] += 1
-            ranking_list_for_sd.sort(itemgetter=key(0), reverse=True)
+            ranking_list_for_sd.sort(key=itemgetter(0), reverse=True)
             print qid, GammaSD(ranking_list_for_sd, debug=True), LognormalSD(ranking_list_for_sd, debug=True)
             xaxis = x_dict.keys()
             xaxis.sort()
