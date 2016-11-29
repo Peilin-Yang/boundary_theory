@@ -238,20 +238,26 @@ class PlotRelProb(object):
                     all_fittings = []
                     fitting_xaxis = []
                     fitting_yaxis = []
+                    fitting_xaxis_mapping = []
                     for i, y in enumerate(yaxis):
                         if y != 0:
                             fitting_xaxis.append(xaxis[i])
                             fitting_yaxis.append(y)
+                            fitting_xaxis_mapping.append(i)
                     for j in range(1, FittingModels().size()+1):
                         fitting = FittingModels().cal_curve_fit(fitting_xaxis, fitting_yaxis, j)
                         if not fitting is None:
                             fitting_func_name = fitting[1]
                             all_fitting_results[j-1]['name'] = fitting_func_name
                             all_fitting_results[j-1]['sr'].append(fitting[4]) # sum of squared error
-                            rel_docs = np.rint(np.array([fitting[3][i] if x in fitting_xaxis else 0 for i, x in enumerate(xaxis)])*sum_yaxis).astype(int)
+                            rel_docs = [0 for x in raw_xaxis]
+                            fitting_array_idx = 0
+                            for idx in fitting_xaxis_mapping:
+                                rel_docs[idx] = fitting[3][fitting_array_idx]*sum_yaxis
+                                fitting_array_idx += 1
                             if re.search(r'^tf\d+$', _method):
                                 estimated_map = CalEstMAP().cal_map(
-                                    rel_docs = rel_docs,
+                                    rel_docs = np.rint(rel_docs).astype(int),
                                     #rel_docs = np.rint(fitting[3]*sum_yaxis).astype(int),
                                     all_docs = [x_dict[x][1] for x in raw_xaxis],
                                     #rel_docs = np.rint(FittingModels().curve_fit_mapping(fitting[0])(np.array([x_dict[x][1] for x in raw_xaxis]), *fitting[2])*sum_yaxis).astype(int),
@@ -260,7 +266,7 @@ class PlotRelProb(object):
                                 )
                             else:
                                 estimated_map = CalEstMAP().cal_map(
-                                    rel_docs = rel_docs,
+                                    rel_docs = np.rint(rel_docs).astype(int),
                                     all_docs = [x_dict[x][1] for x in raw_xaxis],
                                     mode=1
                                 )
