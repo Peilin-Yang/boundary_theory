@@ -304,7 +304,7 @@ class SD(object):
         self._rel_distribution = None
 
     def _compute_stat_from_list(self, l):
-        temp = np.array(self.l)
+        temp = np.array(l)
         mean = np.mean(temp)
         var = np.var(temp)
         return mean,var
