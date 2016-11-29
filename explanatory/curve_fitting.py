@@ -68,7 +68,7 @@ class RealModels(object):
             df = collection_stats.get_term_df(w)    
             idf = math.log((collection_stats.get_doc_counts() + 1)/df)
             s += idf * tf / (tf + 1)
-        return round(s, 4)
+        return round(s, 3)
     def tfln1(self, collection_stats, row):
         """
         tf/dl
