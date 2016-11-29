@@ -334,7 +334,7 @@ class SD(object):
         self._lambda = estimated_lambda
 
         if self._debug :
-            print "m1: %f, v1: %f, m0: %f, v0: %f" %(m1,v1,m0,v0)
+            print "m1: %f, v1: %f, m0: %f, v0: %f" %(self._m1,self._v1,self._m0,self._v0)
             print "lambda: %f" %(estimated_lambda)
              
     def _compute_rel_likelihood(self, score):
@@ -398,7 +398,7 @@ class GammaSD(SD):
     def _estimate_para(self, qrel=None):
         #estimate parameters for models
         self._estimate_stats_with_rel_info()
-        self._k1 = (self._m1)**2 / v1
+        self._k1 = (self._m1)**2 / self._v1
         self._theta1 = self._v1 / self._m1     
         self._k0 = (self._m0)**2 / self._v0
         self._theta0 = self._v0 / self._m0
