@@ -415,7 +415,7 @@ class LognormalSD(SD):
     def __init__(self,run,debug=False):
         super(LognormalSD,self).__init__(run,"lognormal",debug)
 
-    def _estimate_para(self,index_stats,queries,qrel=None):
+    def _estimate_para(self, qrel=None):
         #estimate parameters for models
         self._estimate_stats_with_rel_info()
         self._mu1 = math.log(self._m1) - 0.5*(1 + (self._v1/(self._m1**2)) )
