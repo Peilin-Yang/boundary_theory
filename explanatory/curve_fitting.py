@@ -349,7 +349,8 @@ class SD(object):
     def _compute_fallout(self, score):
         return 1-self._non_rel_distribution.cdf(score)
 
-    def _compute_aupr(self, lambda_value):
+    def _compute_aupr(self):
+        lambda_value = self._lambda
         N = len(self._ranking_list)
         ap = .0
         s1 = self._ranking_list[0][0]
