@@ -314,17 +314,17 @@ class SD(object):
         distributions(mean/variance: m/v). Note that the subscripts
         "1,0" corresponds statistics of relevant/non-relevant
         """
-        non_rel = []
-        rel = []
+        nonrel_list = []
+        rel_list = []
         for ele in self._ranking_list:
             score = ele[0]
             rel = ele[1]
             if rel:
-                rel.append(score)
+                rel_list.append(score)
             else:
-                non_rel.append(score)
-        m1,v1 = _compute_stat_from_list(rel)  
-        m0,v0 = _compute_stat_from_list(non_rel)
+                nonrel_list.append(score)
+        m1,v1 = _compute_stat_from_list(rel_list)  
+        m0,v0 = _compute_stat_from_list(nonrel_list)
         estimated_lambda = len(rel)*1.0/len(self._ranking_list)
 
         self._m1 = m1
