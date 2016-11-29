@@ -51,7 +51,12 @@ class RealModels(object):
         """
         tf/(tf+k)  k=1.0 default
         """
-        return round(int(row['total_tf']) / (1.0 + int(row['total_tf'])), 4)
+        s = 0.0
+        for ele in row['tf'].split(','):
+            w = ele.split('-')[0]
+            tf = float(ele.split('-')[1])
+            s += tf / (tf + 1)
+        return round(s, 4)
     def tfidf1(self, collection_stats, row):
         """
         tf/(tf+k) * idf  k=1.0 default
