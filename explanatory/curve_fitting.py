@@ -325,7 +325,7 @@ class SD(object):
                 nonrel_list.append(score)
         m1,v1 = self._compute_stat_from_list(rel_list)  
         m0,v0 = self._compute_stat_from_list(nonrel_list)
-        estimated_lambda = len(rel)*1.0/len(self._ranking_list)
+        estimated_lambda = len(rel_list)*1.0/len(self._ranking_list)
 
         self._m1 = m1
         self._v1 = v1
