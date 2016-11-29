@@ -10,7 +10,7 @@ from operator import itemgetter
 from subprocess import Popen, PIPE
 
 from emap import EMAP
-from curve_fitting import EM
+from curve_fitting import GammaSD, LognormalSD
 from curve_fitting import RealModels, FittingModels, CalEstMAP
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
@@ -184,12 +184,14 @@ class PlotRelProb(object):
             x_dict = {}
             qid_docs_len = 0
             #for row in cs.get_qid_details(qid):
+            ranking_list_for_sd = []# ranking list for score distribution estimation
             for row in doc_details.get_qid_details(qid):
                 qid_docs_len += 1
                 x = x_func(cs, row)
                 if x > collection_level_maxX:
                     collection_level_maxX = x
                 rel = (int(row['rel_score'])>=1)
+                ranking_list_for_sd.append((x, rel))
                 if x not in x_dict:
                     x_dict[x] = [0, 0] # [rel_docs, total_docs]
                 if rel:
@@ -200,6 +202,8 @@ class PlotRelProb(object):
                 if rel:
                     collection_x_dict[x][0] += 1
                 collection_x_dict[x][1] += 1
+            ranking_list_for_sd.sort(itemgetter=key(0), reverse=True)
+            print qid, GammaSD(ranking_list_for_sd, debug=True), LognormalSD(ranking_list_for_sd, debug=True)
             xaxis = x_dict.keys()
             xaxis.sort()
             xaxis = xaxis[:1000]

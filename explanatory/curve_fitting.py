@@ -8,6 +8,7 @@ import ast
 import copy
 from subprocess import Popen, PIPE
 from operator import itemgetter
+from abc import ABCMeta,abstractmethod
 
 from emap import EMAP
 
@@ -280,7 +281,156 @@ class EM(object):
 
 class Test(unittest.TestCase):
     pass
-    
+
+
+class SD(object):
+    """base class of 
+    score distribution for rankings
+    """
+    __metaclass__ = ABCMeta
+    def __init__(self, ranking_list, distribution_method, debug):
+        """
+        ranking_list for a specific query(one qid)
+        """
+        self._ranking_list, self._distribution_method, self._debug = \
+            ranking_list, distribution_method, debug
+        self._m1 = None
+        self._v1 = None
+        self._m0 = None
+        self._v0 = None
+        self._lambda = None
+        self._aupr = None
+        self._non_rel_distribution = None
+        self._rel_distribution = None
+
+    def _compute_stat_from_list(self):
+        temp = np.array(self._ranking_list)
+        mean = np.mean(temp)
+        var = np.var(temp)
+        return mean,var
+
+    def _estimate_stats_with_rel_info(self):
+        """estimate the statistics of relevant/non-relevant
+        distributions(mean/variance: m/v). Note that the subscripts
+        "1,0" corresponds statistics of relevant/non-relevant
+        """
+        non_rel = []
+        rel = []
+        for ele in self._ranking_list:
+            score = ele[0]
+            rel = ele[1]
+            if rel:
+                rel.append(score)
+            else:
+                non_rel.append(score)
+        m1,v1 = _compute_stat_from_list(rel)  
+        m0,v0 = _compute_stat_from_list(non_rel)
+        estimated_lambda = len(rel)*1.0/len(self._ranking_list)
+
+        self._m1 = m1
+        self._v1 = v1
+        self._m0 = m0
+        self._v0 = v0
+        self._lambda = estimated_lambda
+
+        if self._debug :
+            print "m1: %f, v1: %f, m0: %f, v0: %f" %(m1,v1,m0,v0)
+            print "lambda: %f" %(estimated_lambda)
+             
+    def _compute_rel_likelihood(self, score):
+        return self._rel_distribution.pdf(score)
+
+    def _compute_nonrel_likelihood(self, score):
+        return self._non_rel_distribution.pdf(score)
+
+    def _compute_recall(self, score):
+        return 1-self._rel_distribution.cdf(score)
+
+    def _compute_fallout(self, score):
+        return 1-self._non_rel_distribution.cdf(score)
+
+    def _compute_aupr(self, lambda_value):
+        N = len(self._ranking_list)
+        ap = .0
+        s1 = self._ranking_list[0][0]
+        if self._debug:
+            print "for query %s, top score is %f" %(s1)
+        score = 2*s1
+        recall = 0
+        fallout = 0
+        prec = [0]*N
+        rec = [0]*N
+        ds = score/N
+        for i in range(N):
+            score = score - ds
+            #recall += self._compute_re_likelihood(qid,score)*ds
+            #fallout += self._compute_non_re_likelihood(qid,score)*ds
+            recall = self._compute_recall(score)
+            fallout = self._compute_fallout(score)
+            #if qid == "429":
+            #    print "recall %f" %recall
+            #    print "fallot %f" %fallout
+            denominator = lambda_value*recall + (1-lambda_value)*fallout
+            if recall == 0:
+                prec[i] = 0
+            else:
+                prec[i] = (lambda_value*recall)/denominator
+            rec[i] = recall
+            if i>0:
+                ap += (rec[i]-rec[i-1]) * (prec[i]+prec[i-1])/2
+        if self._debug:
+            print "ap = %f" % (ap)
+
+        return ap 
+
+    @property
+    def aupr(self):
+        if not self._aupr:
+            raise RuntimeError("Parameters are not estimated!")
+        else:
+            
+            return self._aupr
+
+class GammaSD(SD):
+    def __init__(self, run, debug=False):
+        super(GammaSD, self).__init__(run,"gamma",debug)
+
+    def _estimate_para(self, qrel=None):
+        #estimate parameters for models
+        self._estimate_stats_with_rel_info()
+        self._k1 = (self._m1)**2 / v1
+        self._theta1 = self._v1 / self._m1     
+        self._k0 = (self._m0)**2 / self._v0
+        self._theta0 = self._v0 / self._m0
+        if self._debug :
+            print "k1: %f, theta1: %f, k0: %f, theta0: %f" %(self._k1, self._theta1,self._k0,self._theta0)
+
+    def estimate_distribution(self, qrel=None):
+        self._estimate_para()
+        self._rel_distribution = scipy.stats.gamma(self._k1,1/self._theta1) 
+        self._non_rel_distribution = scipy.stats.gamma(self._k0,1/self._theta0)  
+
+class LognormalSD(SD):
+    def __init__(self,run,debug=False):
+        super(LognormalSD,self).__init__(run,"lognormal",debug)
+
+    def _estimate_para(self,index_stats,queries,qrel=None):
+        #estimate parameters for models
+        self._estimate_stats_with_rel_info()
+        self._mu1 = math.log(self._m1) - 0.5*(1 + (self._v1/(self._m1**2)) )
+        var1 = math.log(1 + (self._v1/(self._m1**2)) )
+        self._sigma1 = math.sqrt(var1)
+        self._mu0 = math.log(self._m0) - 0.5*(1 + (self._v0/(self._m0**2)) )
+        var0 = math.log(1 + (self._v0/(self._m0**2)) )
+        self._sigma0 = math.sqrt(var0)
+        if self._debug :
+            print "mu1: %f, sigma1: %f, mu0: %f, sigma0: %f" %(self._mu1,self._sigma1,self._mu0,self._sigma0)
+
+    def estimate_distribution(self, qrel=None):
+        self._estimate_para()
+        self._rel_distribution = scipy.stats.lognorm(self._sigma1, scale = math.exp(self._mu1)) 
+        self._non_rel_distribution = scipy.stats.lognorm(self._sigma0, scale = math.exp(self._mu0))
+
 
 if __name__ == '__main__':
     #unittest.main()
