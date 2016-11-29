@@ -303,8 +303,8 @@ class SD(object):
         self._non_rel_distribution = None
         self._rel_distribution = None
 
-    def _compute_stat_from_list(self):
-        temp = np.array(self._ranking_list)
+    def _compute_stat_from_list(self, l):
+        temp = np.array(self.l)
         mean = np.mean(temp)
         var = np.var(temp)
         return mean,var
