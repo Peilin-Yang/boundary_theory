@@ -355,7 +355,7 @@ class SD(object):
         ap = .0
         s1 = self._ranking_list[0][0]
         if self._debug:
-            print "for query %s, top score is %f" %(s1)
+            print "top score is %f" % (s1)
         score = 2*s1
         recall = 0
         fallout = 0
