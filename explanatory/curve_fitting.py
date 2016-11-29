@@ -183,12 +183,12 @@ class FittingModels(object):
             bounds = ([0, -np.inf, -np.inf, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
             func_name = '2-NN'
         elif mode == 7:
-            p0 = [0, 1]
-            bounds = ([0, 0], [np.inf, np.inf])
+            p0 = [1]
+            bounds = ([0], [np.inf])
             func_name = 'GA'
         elif mode == 8:
-            p0 = [0.45, 0, 0, 1, 1]
-            bounds = ([0, 0, 0, 0, 0], [1, np.inf, np.inf, np.inf, np.inf])
+            p0 = [0.45, 1, 1]
+            bounds = ([0, 0, 0], [1, np.inf, np.inf])
             func_name = '2-GA'
         elif mode == 9:
             p0 = [1]
