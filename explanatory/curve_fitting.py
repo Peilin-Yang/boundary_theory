@@ -56,7 +56,7 @@ class RealModels(object):
             w = ele.split('-')[0]
             tf = float(ele.split('-')[1])
             s += tf / (tf + 1)
-        return round(s, 4)
+        return s
     def tfidf1(self, collection_stats, row):
         """
         tf/(tf+k) * idf  k=1.0 default
@@ -68,7 +68,7 @@ class RealModels(object):
             df = collection_stats.get_term_df(w)    
             idf = math.log((collection_stats.get_doc_counts() + 1)/df)
             s += idf * tf / (tf + 1)
-        return round(s, 3)
+        return s
     def tfln1(self, collection_stats, row):
         """
         tf/dl
