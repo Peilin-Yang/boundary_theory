@@ -274,8 +274,8 @@ class PlotRelProb(object):
                             all_fitting_performances[fitting_func_name][qid] = {'ap':estimated_map, 'para':fitting[2]}
                             #print fitting[0], fitting[1], fitting[3]
                         else:
-                            #print j, 'None'
-                            pass
+                            print j, 'None'
+                            #pass
                     all_fittings.sort(key=itemgetter(4))
                     # try:
                     #     print qid, query_term, all_fittings[0][0], all_fittings[0][1], all_fittings[0][2], all_fittings[0][4]
