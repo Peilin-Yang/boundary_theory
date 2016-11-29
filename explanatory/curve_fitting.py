@@ -56,7 +56,14 @@ class RealModels(object):
         """
         tf/(tf+k) * idf  k=1.0 default
         """
-        return round(int(row['total_tf']) / (1.0 + int(row['total_tf'])), 4)
+        s = 0.0
+        for ele in row['tf'].split(','):
+            w = ele.split('-')[0]
+            tf = float(ele.split('-')[1])
+            df = collection_stats.get_term_df(w)    
+            idf = math.log((collection_stats.get_doc_counts() + 1)/df)
+            s += idf * tf / (tf + 1)
+        return round(s, 4)
     def tfln1(self, collection_stats, row):
         """
         tf/dl
@@ -91,6 +98,8 @@ class RealModels(object):
             x_func = self.tfln3
         elif method_name == 'tfln5':
             x_func = self.tfln5
+        elif method_name == 'tfidf1':
+            x_func = self.tfidf1
 
         return x_func, formal_method_name
 
