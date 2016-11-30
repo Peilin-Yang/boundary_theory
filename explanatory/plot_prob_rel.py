@@ -250,8 +250,8 @@ class PlotRelProb(object):
                 raw_xaxis = copy.deepcopy(xaxis)
                 xaxis = np.array(xaxis, dtype=np.float32)
                 yaxis = np.array(yaxis, dtype=np.float32)
-                # if compact_x:
-                #     xaxis = range(1, len(xaxis)+1)
+                if compact_x:
+                    xaxis = range(1, len(xaxis)+1)
                 if curve_fitting and not plot_ratio:
                     sum_yaxis = np.sum(yaxis)
                     yaxis /= sum_yaxis
@@ -349,7 +349,7 @@ class PlotRelProb(object):
                     self.plot_figure(ax, fit_curve_x, fit_curve_y, qid+'-'+query_term, 
                         '%s(%.4f)\n2-LL(%.4f)' % (all_fittings[0][1], all_fittings[0][-2], aupr_lognormal), 
                         drawline=True, 
-                        linestyle='-.',
+                        linestyle='.',
                         marker=" ", #nothing
                         zoom=zoom_x > 0,
                         zoom_ax = zoom_ax,
