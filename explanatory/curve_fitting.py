@@ -66,6 +66,7 @@ class RealModels(object):
         tf/(tf+k) * idf  k=1.0 default
         """
         idfs = np.log((collection_stats.get_doc_counts() + 1)/df)
+        print idfs
         r = np.apply_along_axis(self.tfidf1_apply, 1, idfs)
         return np.sum(r, axis=0)
     def tfln1_apply(self, tf, doclen):
