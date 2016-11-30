@@ -187,9 +187,9 @@ class PlotRelProb(object):
             tfs, doclens, rels = doc_details.get_qid_details_as_numpy_arrays(qid)
             xaxis = x_func(cs, tfs, doclens)
             xaxis = np.around(xaxis, decimals=4)
+            xaxis = np.sort(xaxis)
+            xaxis = xaxis[::-1][:1000]
             ranking_list = zip(xaxis, rels)
-            ranking_list.sort(key=itemgetter(0, 1), reverse=True)
-            decending_ranking_list = ranking_list[:1000]
             # for row in doc_details.get_qid_details(qid):
             #     x = x_func(cs, row)
             #     if x > collection_level_maxX:
@@ -210,14 +210,14 @@ class PlotRelProb(object):
             # xaxis.sort()
             # xaxis = xaxis[:1000]
             #print qid, p[qid],
-            gamma_sd = GammaSD(decending_ranking_list)
-            lognormal_sd = LognormalSD(decending_ranking_list)
+            gamma_sd = GammaSD(ranking_list)
+            lognormal_sd = LognormalSD(ranking_list)
             gamma_sd.estimate_distribution()
             aupr_gamma = gamma_sd._compute_aupr(),
             lognormal_sd.estimate_distribution()
             aupr_lognormal = lognormal_sd._compute_aupr()
             #exit()
-            for ele in decending_ranking_list:
+            for ele in ranking_list:
                 x = ele[0]
                 rel = ele[1]
                 if x not in x_dict:
