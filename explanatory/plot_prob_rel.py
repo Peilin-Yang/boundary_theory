@@ -206,17 +206,31 @@ class PlotRelProb(object):
             #     if rel:
             #         collection_x_dict[x][0] += 1
             #     collection_x_dict[x][1] += 1
-            print qid, p[qid],
+            # xaxis = x_dict.keys()
+            # xaxis.sort()
+            # xaxis = xaxis[:1000]
+            #print qid, p[qid],
             gamma_sd = GammaSD(decending_ranking_list)
             lognormal_sd = LognormalSD(decending_ranking_list)
             gamma_sd.estimate_distribution()
-            print gamma_sd._compute_aupr(),
+            aupr_gamma = gamma_sd._compute_aupr(),
             lognormal_sd.estimate_distribution()
-            print lognormal_sd._compute_aupr()
+            aupr_lognormal = lognormal_sd._compute_aupr()
             #exit()
-            xaxis = x_dict.keys()
-            xaxis.sort()
-            xaxis = xaxis[:1000]
+            for ele in decending_ranking_list:
+                x = ele[0]
+                rel = ele[1]
+                if x not in x_dict:
+                    x_dict[x] = [0, 0] # [rel_docs, total_docs]
+                if rel:
+                    x_dict[x][0] += 1
+                x_dict[x][1] += 1
+                if x not in collection_x_dict:
+                    collection_x_dict[x] = [0, 0] # [rel_docs, total_docs]
+                if rel:
+                    collection_x_dict[x][0] += 1
+                collection_x_dict[x][1] += 1
+                
             if sum([x_dict[x][0] for x in xaxis]) == 0:
                 continue
             if plot_ratio:
