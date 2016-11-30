@@ -189,7 +189,7 @@ class PlotRelProb(object):
             xaxis = np.around(xaxis, decimals=4)
             xaxis = np.sort(xaxis)
             xaxis = xaxis[::-1][:1000]
-            print xaxis
+            print qid, xaxis
             ranking_list = zip(xaxis, rels)
             # for row in doc_details.get_qid_details(qid):
             #     x = x_func(cs, row)
