@@ -117,9 +117,8 @@ class GenDocDetails(object):
         rows = [row for row in self.get_qid_details(qid)]
         tf_len = len(rows[0]['tf'].split(','))
         tfs = np.array([[float(row['tf'].split(',')[i].split('-')[1]) for row in rows] for i in range(tf_len)])
-        doclens = np.array([float(row['doc_len']) for row in rows])
-        rels = np.array([int(row['rel_score']) for row in rows])
-        return tfs, doclens, rels
+        doclens_n_rels = [(np.array([int(row['rel_score'])]), np.array([float(row['doc_len'])])) for row in rows]
+        return tfs, doclens_n_rels[1], doclens_n_rels[0]
 
 
 
