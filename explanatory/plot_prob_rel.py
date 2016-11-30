@@ -185,6 +185,8 @@ class PlotRelProb(object):
             #for row in cs.get_qid_details(qid):
             ranking_list_for_sd = []# ranking list for score distribution estimation
             tfs, doclens, rels = doc_details.get_qid_details_as_numpy_arrays(qid)
+            if doclens.size == 0:
+                continue
             scores = x_func(cs, tfs, doclens)
             scores = np.around(scores, decimals=4)
             scores = np.sort(scores)
