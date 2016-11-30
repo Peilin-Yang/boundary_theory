@@ -186,10 +186,9 @@ class PlotRelProb(object):
             ranking_list_for_sd = []# ranking list for score distribution estimation
             tfs, doclens, rels = doc_details.get_qid_details_as_numpy_arrays(qid)
             xaxis = x_func(cs, tfs, doclens)
-            print zip(xaxis, rels)
-            xaxis.sort()
-            xaxis = xaxis[::-1]
-            print xaxis 
+            ranking_list = zip(xaxis, rels)
+            ranking_list.sort(key=itemgetter(0, 1), reverse=True)
+            print ranking_list 
             exit()
             # for row in doc_details.get_qid_details(qid):
             #     x = x_func(cs, row)
