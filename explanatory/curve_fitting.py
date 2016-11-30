@@ -49,7 +49,16 @@ class RealModels(object):
         1+log(1+log(tf))
         """
         return round(1+math.log(1+math.log(int(row['total_tf']))), 3)
+    def tf5_apply(self, a, k):
+        return a/(a+k)
     def tf5(self, collection_stats, tf, doclen):
+        """
+        tf/(tf+k)  k=1.0 default
+        """
+        k = 1.0
+        r = np.apply_along_axis(self.tf5_apply, 1, tf, [k])
+        return np.sum(r, axis=0)
+    def tfidf1(self, collection_stats, tf, doclen):
         """
         tf/(tf+k) * idf  k=1.0 default
         """
