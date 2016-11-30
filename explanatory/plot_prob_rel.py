@@ -230,7 +230,7 @@ class PlotRelProb(object):
                 if rel:
                     collection_x_dict[x][0] += 1
                 collection_x_dict[x][1] += 1
-            print x_dict
+            print x_dict, xaxis
             if sum([x_dict[x][0] for x in xaxis]) == 0:
                 continue
             if plot_ratio:
