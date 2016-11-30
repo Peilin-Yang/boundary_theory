@@ -349,7 +349,7 @@ class PlotRelProb(object):
                     self.plot_figure(ax, fit_curve_x, fit_curve_y, qid+'-'+query_term, 
                         '%s(%.4f)\n2-LL(%.4f)' % (all_fittings[0][1], all_fittings[0][-2], aupr_lognormal), 
                         drawline=True, 
-                        linestyle='dotted',
+                        linestyle=':',
                         marker=" ", #nothing
                         zoom=zoom_x > 0,
                         zoom_ax = zoom_ax,
