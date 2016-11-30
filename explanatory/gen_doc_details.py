@@ -10,6 +10,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from query import Query
 from judgment import Judgment
 
+import numpy as np
+
 class GenDocDetails(object):
     def __init__(self, path):
         self.collection_path = os.path.abspath(path)
