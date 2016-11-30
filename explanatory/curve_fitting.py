@@ -59,7 +59,6 @@ class RealModels(object):
         r = np.apply_along_axis(self.tf5_apply, 1, tf, [k])
         return np.sum(r, axis=0)
     def tfidf1_apply(self, tf, doclen):
-        print tf, doclen, tf/doclen
         return tf/doclen
     def tfidf1(self, collection_stats, tf, doclen):
         """
@@ -73,10 +72,9 @@ class RealModels(object):
             idf = math.log((collection_stats.get_doc_counts() + 1)/df)
             s += idf * tf / (tf + 1)
         return s
-        # r = np.apply_along_axis(self.tfln1_apply, 1, tf, [doclen])
+        # r = np.apply_along_axis(self.tfln1_apply, 1, tf, doclen)
         # return np.sum(r, axis=0)
     def tfln1_apply(self, tf, doclen):
-        print tf, doclen, tf/doclen
         return tf/doclen
     def tfln1(self, collection_stats, tf, doclen):
         """
