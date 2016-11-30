@@ -182,32 +182,31 @@ class PlotRelProb(object):
             if performance_as_legend:
                 legend = '\nAP:%.4f' % (p[qid]['map'] if p[qid] else 0)
             x_dict = {}
-            qid_docs_len = 0
             #for row in cs.get_qid_details(qid):
             ranking_list_for_sd = []# ranking list for score distribution estimation
-            tfs, doclens = doc_details.get_qid_details_as_numpy_arrays(qid)
+            tfs, doclens, rels = doc_details.get_qid_details_as_numpy_arrays(qid)
             xaxis = x_func(cs, tfs, doclens)
+            print np.dstack(xaxis, rels)
             xaxis.sort()
             xaxis = xaxis[::-1]
             print xaxis 
             exit()
-            for row in doc_details.get_qid_details(qid):
-                qid_docs_len += 1
-                x = x_func(cs, row)
-                if x > collection_level_maxX:
-                    collection_level_maxX = x
-                rel = (int(row['rel_score'])>=1)
-                ranking_list_for_sd.append((x, rel))
-                if x not in x_dict:
-                    x_dict[x] = [0, 0] # [rel_docs, total_docs]
-                if rel:
-                    x_dict[x][0] += 1
-                x_dict[x][1] += 1
-                if x not in collection_x_dict:
-                    collection_x_dict[x] = [0, 0] # [rel_docs, total_docs]
-                if rel:
-                    collection_x_dict[x][0] += 1
-                collection_x_dict[x][1] += 1
+            # for row in doc_details.get_qid_details(qid):
+            #     x = x_func(cs, row)
+            #     if x > collection_level_maxX:
+            #         collection_level_maxX = x
+            #     rel = (int(row['rel_score'])>=1)
+            #     ranking_list_for_sd.append((x, rel))
+            #     if x not in x_dict:
+            #         x_dict[x] = [0, 0] # [rel_docs, total_docs]
+            #     if rel:
+            #         x_dict[x][0] += 1
+            #     x_dict[x][1] += 1
+            #     if x not in collection_x_dict:
+            #         collection_x_dict[x] = [0, 0] # [rel_docs, total_docs]
+            #     if rel:
+            #         collection_x_dict[x][0] += 1
+            #     collection_x_dict[x][1] += 1
             ranking_list_for_sd.sort(key=itemgetter(0), reverse=True)
             print qid, p[qid],
             gamma_sd = GammaSD(ranking_list_for_sd)

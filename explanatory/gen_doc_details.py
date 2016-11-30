@@ -118,7 +118,8 @@ class GenDocDetails(object):
         tf_len = len(rows[0]['tf'].split(','))
         tfs = np.array([[float(row['tf'].split(',')[i].split('-')[1]) for row in rows] for i in range(tf_len)])
         doclens = np.array([float(row['doc_len']) for row in rows])
-        return tfs, doclens
+        rels = np.array([int(row['rel_score']) for row in rows])
+        return tfs, doclens, rels
 
 
 
