@@ -217,6 +217,7 @@ class PlotRelProb(object):
             aupr_gamma = gamma_sd._compute_aupr(),
             lognormal_sd.estimate_distribution()
             aupr_lognormal = lognormal_sd._compute_aupr()
+            print aupr_gamma, aupr_lognormal
             for ele in decending_ranking_list:
                 x = ele[0]
                 rel = ele[1]
