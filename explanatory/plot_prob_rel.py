@@ -184,10 +184,10 @@ class PlotRelProb(object):
             x_dict = {}
             #for row in cs.get_qid_details(qid):
             ranking_list_for_sd = []# ranking list for score distribution estimation
-            tfs, doclens, rels = doc_details.get_qid_details_as_numpy_arrays(qid)
+            tfs, dfs, doclens, rels = doc_details.get_qid_details_as_numpy_arrays(qid)
             if doclens.size == 0:
                 continue
-            scores = x_func(cs, tfs, doclens)
+            scores = x_func(cs, tfs, dfs, doclens)
             scores = np.around(scores, decimals=3)
             scores = np.sort(scores)
             scores = scores[::-1][:1000]
