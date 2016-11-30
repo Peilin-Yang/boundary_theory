@@ -189,7 +189,7 @@ class PlotRelProb(object):
             xaxis = np.around(xaxis, decimals=4)
             xaxis = np.sort(xaxis)
             xaxis = xaxis[::-1][:1000]
-            print qid, xaxis
+            #print qid, xaxis
             ranking_list = zip(xaxis, rels)
             # for row in doc_details.get_qid_details(qid):
             #     x = x_func(cs, row)
@@ -217,7 +217,6 @@ class PlotRelProb(object):
             aupr_gamma = gamma_sd._compute_aupr(),
             lognormal_sd.estimate_distribution()
             aupr_lognormal = lognormal_sd._compute_aupr()
-            #exit()
             for ele in ranking_list:
                 x = ele[0]
                 rel = ele[1]
@@ -231,7 +230,7 @@ class PlotRelProb(object):
                 if rel:
                     collection_x_dict[x][0] += 1
                 collection_x_dict[x][1] += 1
-            #print x_dict, xaxis
+            print x_dict
             if sum([x_dict[x][0] for x in xaxis]) == 0:
                 continue
             if plot_ratio:
