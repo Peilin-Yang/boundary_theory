@@ -205,8 +205,8 @@ class PlotRelProb(object):
             #         collection_x_dict[x][0] += 1
             #     collection_x_dict[x][1] += 1
             print qid, p[qid],
-            gamma_sd = GammaSD(ranking_list_for_sd)
-            lognormal_sd = LognormalSD(ranking_list_for_sd)
+            gamma_sd = GammaSD(ranking_list)
+            lognormal_sd = LognormalSD(ranking_list)
             gamma_sd.estimate_distribution()
             print gamma_sd._compute_aupr(),
             lognormal_sd.estimate_distribution()
