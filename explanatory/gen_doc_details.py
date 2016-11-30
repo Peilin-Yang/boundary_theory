@@ -123,6 +123,7 @@ class GenDocDetails(object):
             dfs = np.array([cs.get_term_df(rows[0]['tf'].split(',')[i].split('-')[0]) for i in range(tf_len)])          
             doclens = np.array([float(row['doc_len']) for row in rows])
             rels = np.array([int(row['rel_score']) for row in rows])
+            print tfs
             return tfs, dfs, doclens, rels
         return np.array([[]]), np.array([]), np.array([]), np.array([])
 
