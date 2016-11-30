@@ -59,7 +59,6 @@ class RealModels(object):
         r = np.apply_along_axis(self.tf5_apply, 0, tf, [k])
         return np.sum(r, axis=0)
     def tfidf1_apply(self, tf, idf):
-        print tf, idf, idf*tf/(tf+1)
         return idf*tf/(tf+1)
     def tfidf1(self, collection_stats, tf, df, doclen):
         """
