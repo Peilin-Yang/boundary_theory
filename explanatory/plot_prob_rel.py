@@ -180,7 +180,7 @@ class PlotRelProb(object):
             #idf = math.log(cs.get_term_IDF1(query_term))
             #legend = 'idf:%.2f'%idf
             if performance_as_legend:
-                legend = '\nAP:%.4f' % (p[qid]['map'] if p[qid] else 0)
+                legend = 'AP:%.4f' % (p[qid]['map'] if p[qid] else 0)
             x_dict = {}
             #for row in cs.get_qid_details(qid):
             ranking_list_for_sd = []# ranking list for score distribution estimation
