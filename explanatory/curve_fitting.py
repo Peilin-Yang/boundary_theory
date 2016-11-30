@@ -82,7 +82,7 @@ class RealModels(object):
         """
         tf/dl
         """
-        r = np.apply_along_axis(self.tfln1_apply, 1, tf, [doclen])
+        r = np.apply_along_axis(self.tfln1_apply, 1, tf, doclen)
         return np.sum(r, axis=0)
 
     def tfln3(self, collection_stats, row):
