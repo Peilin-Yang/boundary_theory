@@ -56,7 +56,7 @@ class PlotRelProb(object):
             ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
         else: #draw dots 
             #ax.plot(xaxis, yaxis, marker=marker if marker else 'o', ms=4, ls='None', label=legend)
-            ax.vlines(xaxis, [0], yaxis)
+            ax.vlines(xaxis, [0], yaxis, label=legend)
         if xlog:
             ax.set_xscale('log')
         if ylog:
