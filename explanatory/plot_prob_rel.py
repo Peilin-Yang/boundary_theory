@@ -188,6 +188,7 @@ class PlotRelProb(object):
             xaxis = x_func(cs, tfs, doclens)
             ranking_list = zip(xaxis, rels)
             ranking_list.sort(key=itemgetter(0, 1), reverse=True)
+            ranking_list = [ranking_list:1000]
             # for row in doc_details.get_qid_details(qid):
             #     x = x_func(cs, row)
             #     if x > collection_level_maxX:
@@ -211,7 +212,7 @@ class PlotRelProb(object):
             print gamma_sd._compute_aupr(),
             lognormal_sd.estimate_distribution()
             print lognormal_sd._compute_aupr()
-        
+            exit()
             xaxis = x_dict.keys()
             xaxis.sort()
             xaxis = xaxis[:1000]

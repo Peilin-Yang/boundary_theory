@@ -43,7 +43,6 @@ class RealModels(object):
         tf - numpy matrix (even if there is only one term), each row is the tf values for each term
         doclen - numpy array
         """
-        print tf, doclen
         return np.sum(tf, axis=0)
     def tf4(self, collection_stats, row):
         """
