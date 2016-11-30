@@ -471,6 +471,7 @@ class PlotRelProb(object):
                 else:
                     ax = para_axs
                 ax.hist(row)
+                ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
                 col_idx += 1
             para_fig.suptitle(best_fitting_func+'('+legend+')')
             output_fn = os.path.join(self.all_results_root, output_root, 
