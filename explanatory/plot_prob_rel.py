@@ -185,12 +185,12 @@ class PlotRelProb(object):
             #for row in cs.get_qid_details(qid):
             ranking_list_for_sd = []# ranking list for score distribution estimation
             tfs, doclens, rels = doc_details.get_qid_details_as_numpy_arrays(qid)
-            xaxis = x_func(cs, tfs, doclens)
-            xaxis = np.around(xaxis, decimals=4)
-            xaxis = np.sort(xaxis)
-            xaxis = xaxis[::-1][:1000]
-            #print qid, xaxis
-            ranking_list = zip(xaxis, rels)
+            scores = x_func(cs, tfs, doclens)
+            scores = np.around(scores, decimals=4)
+            scores = np.sort(scores)
+            scores = scores[::-1][:1000]
+            #print qid, scores
+            decending_ranking_list = zip(scores, rels)
             # for row in doc_details.get_qid_details(qid):
             #     x = x_func(cs, row)
             #     if x > collection_level_maxX:
@@ -211,13 +211,13 @@ class PlotRelProb(object):
             # xaxis.sort()
             # xaxis = xaxis[:1000]
             #print qid, p[qid],
-            gamma_sd = GammaSD(ranking_list)
-            lognormal_sd = LognormalSD(ranking_list)
+            gamma_sd = GammaSD(decending_ranking_list)
+            lognormal_sd = LognormalSD(decending_ranking_list)
             gamma_sd.estimate_distribution()
             aupr_gamma = gamma_sd._compute_aupr(),
             lognormal_sd.estimate_distribution()
             aupr_lognormal = lognormal_sd._compute_aupr()
-            for ele in ranking_list:
+            for ele in decending_ranking_list:
                 x = ele[0]
                 rel = ele[1]
                 if x not in x_dict:
@@ -230,7 +230,8 @@ class PlotRelProb(object):
                 if rel:
                     collection_x_dict[x][0] += 1
                 collection_x_dict[x][1] += 1
-            print x_dict
+
+            xaxis = sorted(x_dict)
             if sum([x_dict[x][0] for x in xaxis]) == 0:
                 continue
             if plot_ratio:
@@ -242,7 +243,7 @@ class PlotRelProb(object):
             # all_expected_maps.append(EMAP().cal_expected_map(ranking_list))
 
             if draw_individual:
-                if np.sum(xaxis) == 0 or np.sum(yaxis) == 0:
+                if np.sum(yaxis) == 0:
                     continue
                 raw_xaxis = copy.deepcopy(xaxis)
                 xaxis = np.array(xaxis, dtype=np.float32)
