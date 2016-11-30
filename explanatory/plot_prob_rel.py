@@ -185,6 +185,10 @@ class PlotRelProb(object):
             qid_docs_len = 0
             #for row in cs.get_qid_details(qid):
             ranking_list_for_sd = []# ranking list for score distribution estimation
+            tfs, doclens = doc_details.get_qid_details_as_numpy_arrays(qid)
+            xaxis = x_func(cs, tfs, doclens)
+            print xaxis 
+            exit()
             for row in doc_details.get_qid_details(qid):
                 qid_docs_len += 1
                 x = x_func(cs, row)

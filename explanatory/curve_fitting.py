@@ -38,27 +38,18 @@ class RealModels(object):
         okapi
         """
         return round((k1+1)*float(row['total_tf'])/(float(row['total_tf']) + k1*(1-b+b*float(row['doc_len'])/float(collection_stats.get_avdl()))), 3) 
-    def tf1(self, collection_stats, row):
+    def tf1(self, collection_stats, tf, doclen):
         """
-        tf
+        tf - numpy matrix (even if there is only one term), each row is the tf values for each term
+        doclen - numpy array
         """
-        return int(row['total_tf'])
+        return np.sum(tf, axis=0)
     def tf4(self, collection_stats, row):
         """
         1+log(1+log(tf))
         """
         return round(1+math.log(1+math.log(int(row['total_tf']))), 3)
-    def tf5(self, collection_stats, row):
-        """
-        tf/(tf+k)  k=1.0 default
-        """
-        s = 0.0
-        for ele in row['tf'].split(','):
-            w = ele.split('-')[0]
-            tf = float(ele.split('-')[1])
-            s += tf / (tf + 1)
-        return s
-    def tfidf1(self, collection_stats, row):
+    def tf5(self, collection_stats, tf, doclen):
         """
         tf/(tf+k) * idf  k=1.0 default
         """
