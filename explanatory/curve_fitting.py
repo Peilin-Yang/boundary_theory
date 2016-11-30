@@ -425,10 +425,10 @@ class LognormalSD(SD):
     def _estimate_para(self, qrel=None):
         #estimate parameters for models
         self._estimate_stats_with_rel_info()
-        self._mu1 = math.log(self._m1) - 0.5*(1 + (self._v1/(self._m1**2)) )
+        self._mu1 = math.log(self._m1+1e-6) - 0.5*(1 + (self._v1/(self._m1**2)) )
         var1 = math.log(1 + (self._v1/(self._m1**2)) )
         self._sigma1 = math.sqrt(var1)
-        self._mu0 = math.log(self._m0) - 0.5*(1 + (self._v0/(self._m0**2)) )
+        self._mu0 = math.log(self._m01e-6) - 0.5*(1 + (self._v0/(self._m0**2)) )
         var0 = math.log(1 + (self._v0/(self._m0**2)) )
         self._sigma0 = math.sqrt(var0)
         if self._debug :
