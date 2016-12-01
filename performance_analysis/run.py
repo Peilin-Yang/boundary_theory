@@ -24,6 +24,7 @@ import g
 import ArrayJob
 from analysis import PerformaceAnalysis
 
+collection_root = '../../../reproduce/collections/'
 
 def gen_batch_framework(para_label, batch_pythonscript_para, all_paras, \
         quote_command=False, memory='2G', max_task_per_node=50000, num_task_per_node=20):
