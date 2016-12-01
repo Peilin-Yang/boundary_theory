@@ -93,7 +93,7 @@ def output_rel_tf_stats_batch():
     for q in g.query:
         collection_name = q['collection']
         collection_path = os.path.join(collection_root, collection_name)
-        all_paras.extend(Prints(collection_path).batch_output_rel_tf_stats_paras())
+        all_paras.append(Prints(collection_path).batch_output_rel_tf_stats_paras())
     #print all_paras
     gen_batch_framework('output_rel_tf_stats', '22', all_paras)
 
