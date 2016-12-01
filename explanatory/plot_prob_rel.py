@@ -188,6 +188,7 @@ class PlotRelProb(object):
             if doclens.size == 0:
                 continue
             scores = x_func(cs, tfs, dfs, doclens)
+            print scores
             scores = np.around(scores, decimals=4)
             scores = np.sort(scores)
             scores = scores[:1000]
