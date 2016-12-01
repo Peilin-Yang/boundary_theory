@@ -16,6 +16,7 @@ from query import Query
 from judgment import Judgment
 from evaluation import Evaluation
 from performance import Performances
+from gen_doc_details import GenDocDetails
 
 import numpy as np
 import scipy.stats
@@ -75,5 +76,32 @@ class Prints(object):
                 print 'b:', para, 'beta:', 1.2*para/avdl, 'c2:', 1.2*(1-para)
             if 'pivoted' in label:
                 print 's:', para, 'beta:', para/avdl, 'c2:', 1-para
+    
+    def batch_output_rel_tf_stats_paras(self):
+        """
+        Output the term frequency of query terms for relevant documents.
+        For example, a query {journalist risks} will output 
+        {
+            'journalist': {'mean': 6.8, 'std': 1.0}, the average TF for journalist in relevant docs is 6.8
+            'risks': {'mean': 1.6, 'std': 5.0}
+        }
+        """
+        paras = []
+        output_root = os.path.join(self.collection_path, 'rel_tf_stats')
+        if not os.path.exists(output_root):
+            os.makedirs(output_root)
 
-            
+        queries = Query(self.collection_path).get_queries()
+        queries = {ele['num']:ele['title'] for ele in queries}
+        for qid, query in self.queries.items():
+            if not os.path.exists(os.path.join(output_root, qid)):
+                paras.append((self.collection_path, qid))
+        return paras
+
+    def print_rel_tf_stats(self, qid):
+        queries = Query(self.collection_path).get_queries()
+        queries = {ele['num']:ele['title'] for ele in queries}
+        cs = CollectionStats(self.collection_path)
+        doc_details = GenDocDetails(self.collection_path)
+        tfs, dfs, doclens, rels = doc_details.get_only_rels(qid)
+        print tfs
