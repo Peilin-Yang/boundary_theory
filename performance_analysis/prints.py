@@ -112,4 +112,6 @@ class Prints(object):
             'AP': {'okapi': okapi_perform},
             'terms': terms_stats
         }
-        print json.dumps(output)
+        output_root = os.path.join(self.collection_path, 'rel_tf_stats')
+        with open(os.path.join(output_root, qid)) as f:
+            json.dump(output, f, indent=2)
