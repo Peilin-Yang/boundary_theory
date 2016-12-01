@@ -23,6 +23,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 import g
 import ArrayJob
 from analysis import PerformaceAnalysis
+from prints import Prints
 
 collection_root = '../../../reproduce/collections/'
 
