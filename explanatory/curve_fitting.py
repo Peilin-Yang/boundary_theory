@@ -64,7 +64,7 @@ class RealModels(object):
         """
         tf/(tf+k) * idf  k=1.0 default
         """
-        idfs = np.log((collection_stats.get_doc_counts() + 1)/df)
+        idfs = np.log((collection_stats.get_doc_counts() + 1)/(df+1e-4))
         r = np.apply_along_axis(self.tfidf1_apply, 0, tf, idfs)
         print tf, idfs, r
         return np.sum(r, axis=0)
