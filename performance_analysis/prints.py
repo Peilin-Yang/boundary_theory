@@ -102,10 +102,10 @@ class Prints(object):
         cs = CollectionStats(self.collection_path)
         doc_details = GenDocDetails(self.collection_path)
         terms, tfs, dfs, doclens = doc_details.get_only_rels(qid)
-        tf_mean = np.mean(tfs, axis=1)
-        tf_std = np.std(tfs, axis=1)
-        idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
-        okapi_perform = Performances(self.collection_path).gen_optimal_performances_queries('okapi', [qid])
+        tf_mean = np.around(np.mean(tfs, axis=1), decimal=2)
+        tf_std = np.around(np.std(tfs, axis=1), decimal=2)
+        idfs = np.around(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), decimal=4)
+        okapi_perform = Performances(self.collection_path).gen_optimal_performances_queries('okapi', [qid])[0]['title-okapi']
         terms_stats = {t:{'mean': tf_mean[idx], 'std': tf_std[idx], 
             'df': dfs[idx], 'idf': idfs[idx]} for idx, t in enumerate(terms)}
         output = {
