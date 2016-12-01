@@ -221,7 +221,7 @@ class FittingModels(object):
             fit_sigma = range(1, len(xaxis)+1)[::-1] # we want the points with larger value has larger weights,
                                                      # this is suitable for non-continuous metrics like AP and nDCG
             print fit_sigma
-            popt, pcov = curve_fit(func, xaxis, yaxis, p0=p0, method='trf', bounds=bounds, sigma=fit_sigma)
+            popt, pcov = curve_fit(func, xaxis, yaxis, p0=p0, method='trf', bounds=bounds, sigma=fit_sigma, absolute_sigma=True)
             perr = np.sqrt(np.diag(pcov))
             trialY = func(xaxis, *popt)
             #print mode, popt, np.absolute(trialY-yaxis).sum(), scipy.stats.ks_2samp(yaxis, trialY)
