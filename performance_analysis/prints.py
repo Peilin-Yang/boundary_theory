@@ -103,5 +103,5 @@ class Prints(object):
         queries = {ele['num']:ele['title'] for ele in queries}
         cs = CollectionStats(self.collection_path)
         doc_details = GenDocDetails(self.collection_path)
-        tfs, dfs, doclens, rels = doc_details.get_only_rels(qid)
-        print tfs
+        tfs, dfs, doclens = doc_details.get_only_rels(qid)
+        print tfs, dfs, doclens
