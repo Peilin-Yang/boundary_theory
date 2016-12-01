@@ -109,10 +109,13 @@ class GenDocDetails(object):
                 writer.writerow(this_doc)
 
     def get_qid_details(self, qid):
-        with open(os.path.join(self.doc_details_root, qid)) as f:
-            rows = csv.DictReader(f)
-            for row in rows:
-                yield row
+        try:
+            with open(os.path.join(self.doc_details_root, qid)) as f:
+                rows = csv.DictReader(f)
+                for row in rows:
+                    yield row
+        except:
+            return []
 
     def get_qid_details_as_numpy_arrays(self, qid):
         cs = CollectionStats(self.collection_path)
