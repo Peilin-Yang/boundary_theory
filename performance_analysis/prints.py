@@ -93,7 +93,7 @@ class Prints(object):
 
         queries = Query(self.collection_path).get_queries()
         queries = {ele['num']:ele['title'] for ele in queries}
-        for qid, query in self.queries.items():
+        for qid, query in queries:
             if not os.path.exists(os.path.join(output_root, qid)):
                 paras.append((self.collection_path, qid))
         return paras
