@@ -218,7 +218,7 @@ class FittingModels(object):
         xaxis = np.asarray(xaxis)
         func = self.curve_fit_mapping(mode)
         try:
-            fit_sigma = np.linspace(0.001, 0.01, len(xaxis)) # we want the points with larger value has larger weights,
+            fit_sigma = np.linspace(100, 10000, len(xaxis)) # we want the points with larger value has larger weights,
                                                      # this is suitable for non-continuous metrics like AP and nDCG
             popt, pcov = curve_fit(func, xaxis, yaxis, p0=p0, method='trf', bounds=bounds, sigma=fit_sigma, absolute_sigma=True)
             perr = np.sqrt(np.diag(pcov))
