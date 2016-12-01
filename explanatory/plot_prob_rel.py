@@ -190,7 +190,7 @@ class PlotRelProb(object):
             scores = x_func(cs, tfs, dfs, doclens)
             scores = np.around(scores, decimals=3)
             scores = np.sort(scores)
-            scores = scores[::-1][:1000]
+            scores = scores[:1000]
             #print qid, scores
             decending_ranking_list = zip(scores, rels)
             # for row in doc_details.get_qid_details(qid):
