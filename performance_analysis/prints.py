@@ -90,28 +90,27 @@ class Prints(object):
         output_root = os.path.join(self.collection_path, 'rel_tf_stats')
         if not os.path.exists(output_root):
             os.makedirs(output_root)
-
-        queries = Query(self.collection_path).get_queries()
-        queries = {ele['num']:ele['title'] for ele in queries}
-        for qid in queries:
-            if not os.path.exists(os.path.join(output_root, qid)):
-                paras.append((self.collection_path, qid))
+        paras.append((self.collection_path))
         return paras
 
-    def print_rel_tf_stats(self, qid):
+    def print_rel_tf_stats(self):
+        queries = Query(self.collection_path).get_queries()
+        queries = {ele['num']:ele['title'] for ele in queries}
         cs = CollectionStats(self.collection_path)
         doc_details = GenDocDetails(self.collection_path)
-        terms, tfs, dfs, doclens = doc_details.get_only_rels(qid)
-        tf_mean = np.around(np.mean(tfs, axis=1), 2)
-        tf_std = np.around(np.std(tfs, axis=1), 2)
-        idfs = np.around(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), 4)
-        okapi_perform = Performances(self.collection_path).gen_optimal_performances_queries('okapi', [qid])[0][1]
-        terms_stats = {t:{'mean': '%.2f' % tf_mean[idx], 'std': '%.2f' % tf_std[idx], 
-            'df': dfs[idx], 'idf': '%.4f' % idfs[idx]} for idx, t in enumerate(terms)}
-        output = {
-            'AP': {'okapi': okapi_perform},
-            'terms': terms_stats
-        }
-        output_root = os.path.join(self.collection_path, 'rel_tf_stats')
-        with open(os.path.join(output_root, qid), 'w') as f:
-            json.dump(output, f, indent=2)
+        for qid in queries:
+            #if not os.path.exists(os.path.join(output_root, qid)):
+            terms, tfs, dfs, doclens = doc_details.get_only_rels(qid)
+            tf_mean = np.around(np.mean(tfs, axis=1), 2)
+            tf_std = np.around(np.std(tfs, axis=1), 2)
+            idfs = np.around(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), 4)
+            okapi_perform = Performances(self.collection_path).gen_optimal_performances_queries('okapi', [qid])[0][1]
+            terms_stats = {t:{'mean': '%.2f' % tf_mean[idx], 'std': '%.2f' % tf_std[idx], 
+                'df': dfs[idx], 'idf': '%.4f' % idfs[idx]} for idx, t in enumerate(terms) if dfs[idx] != 0}
+            output = {
+                'AP': {'okapi': okapi_perform},
+                'terms': terms_stats
+            }
+            output_root = os.path.join(self.collection_path, 'rel_tf_stats')
+            with open(os.path.join(output_root, qid), 'w') as f:
+                json.dump(output, f, indent=2)
