@@ -102,8 +102,7 @@ def output_rel_tf_stats_atom(para_file):
         reader = csv.reader(f)
         for row in reader:
             collection_path = row[0]
-            qid = row[1]
-            Prints(collection_path).print_rel_tf_stats(qid)
+            Prints(collection_path).print_rel_tf_stats()
 
 
 if __name__ == '__main__':
