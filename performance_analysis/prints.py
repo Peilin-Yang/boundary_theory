@@ -113,5 +113,5 @@ class Prints(object):
             'terms': terms_stats
         }
         output_root = os.path.join(self.collection_path, 'rel_tf_stats')
-        with open(os.path.join(output_root, qid)) as f:
+        with open(os.path.join(output_root, qid), 'w') as f:
             json.dump(output, f, indent=2)
