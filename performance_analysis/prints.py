@@ -99,9 +99,17 @@ class Prints(object):
         return paras
 
     def print_rel_tf_stats(self, qid):
-        queries = Query(self.collection_path).get_queries()
-        queries = {ele['num']:ele['title'] for ele in queries}
         cs = CollectionStats(self.collection_path)
         doc_details = GenDocDetails(self.collection_path)
-        tfs, dfs, doclens = doc_details.get_only_rels(qid)
-        print tfs, dfs, doclens
+        terms, tfs, dfs, doclens = doc_details.get_only_rels(qid)
+        tf_mean = np.mean(tfs, axis=1)
+        tf_std = np.std(tfs, axis=1)
+        idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
+        okapi_perform = Performances(self.collection_path).gen_optimal_performances_queries('okapi', [qid])
+        terms_stats = {t:{'mean': tf_mean[idx], 'std': tf_std[idx], 
+            'df': dfs[idx], 'idf': idfs[idx]} for idx, t in enumerate(terms)}
+        output = {
+            'AP': {'okapi': okapi_perform}
+            'terms': terms_stats
+        }
+        print json.dumps(output)
