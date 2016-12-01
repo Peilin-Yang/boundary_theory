@@ -109,7 +109,7 @@ class Prints(object):
         terms_stats = {t:{'mean': tf_mean[idx], 'std': tf_std[idx], 
             'df': dfs[idx], 'idf': idfs[idx]} for idx, t in enumerate(terms)}
         output = {
-            'AP': {'okapi': okapi_perform}
+            'AP': {'okapi': okapi_perform},
             'terms': terms_stats
         }
         print json.dumps(output)
