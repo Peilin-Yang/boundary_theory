@@ -95,7 +95,7 @@ class PlotCorrTFPeformance(object):
             all_data[qid]['AP']['okapi']) for qid in all_data]
         print gen_data
         plt.plot(gen_data)
-        output_fn = os.path.join(self.output_root, 'least_appear_term-%d.%s' % (query_length, oformat) )
+        output_fn = os.path.join(self.output_root, '%s-least_appear_term-%d.%s' % (collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
     def read_data(self, query_length=0):
