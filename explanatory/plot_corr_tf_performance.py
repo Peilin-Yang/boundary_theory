@@ -85,6 +85,18 @@ class PlotCorrTFPeformance(object):
         font = {'size' : 10}
         plt.rc('font', **font)
         row_idx = 0
+        red_points = [[0,0], [0,0]]
+        max_pearsonr = -1
+        min_pearsonr = 1
+        for i, ele in enumerate(all_xaxis):
+            for j, xaxis in enumerate(ele[1]):
+                pr = scipy.stats.pearsonr(xaxis, yaxis)[0]
+                if pr > max_pearsonr:
+                    max_pearsonr = pr
+                    red_points[1] = [i, j]
+                if pr < min_pearsonr:
+                    min_pearsonr = pr
+                    red_points[0] = [i, j]
         for i, ele in enumerate(all_xaxis):
             col_idx = 0
             for j, xaxis in enumerate(ele[1]):
@@ -100,7 +112,10 @@ class PlotCorrTFPeformance(object):
                 xaxis_plot = zip(*zipped)[0]
                 yaxis_plot = zip(*zipped)[1]
                 legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
-                ax.plot(xaxis_plot, yaxis_plot, marker='o', ms=4, ls='None', label=legend)
+                if [i, j] in red_points:
+                    ax.plot(xaxis_plot, yaxis_plot, marker='o', markerfacecolor='r', ms=4, ls='None', label=legend)
+                else:
+                    ax.plot(xaxis_plot, yaxis_plot, marker='o', ms=4, ls='None', label=legend)
                 ax.set_title(ele[0])
                 if i == len(all_xaxis) - 1:
                     ax.set_xlabel(xlabels[j])
