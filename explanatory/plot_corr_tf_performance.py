@@ -48,73 +48,9 @@ class PlotCorrTFPeformance(object):
         if not os.path.exists(self.output_root):
             os.makedirs(self.output_root)
 
-    def plot_figure(self, ax, xaxis, yaxis, title='', legend='', 
-            drawline=True, legend_outside=False, marker=None, 
-            linestyle=None, xlabel='', ylabel='', xlog=False, ylog=False, 
-            zoom=False, zoom_ax=None, zoom_xaxis=[], zoom_yaxis=[], 
-            legend_pos='best', xlabel_format=0, xlimit=0, ylimit=0, legend_markscale=1.0):
-        if drawline:
-            ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
-        else: #draw dots 
-            #ax.plot(xaxis, yaxis, marker=marker if marker else 'o', ms=4, ls='None', label=legend)
-            ax.vlines(xaxis, [0], yaxis, label=legend)
-        if xlog:
-            ax.set_xscale('log')
-        if ylog:
-            ax.set_yscale('log')
-        if xlimit > 0:
-            ax.set_xlim(0, ax.get_xlim()[1] if ax.get_xlim()[1]<xlimit else xlimit)
-        if ylimit > 0:
-            ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<ylimit else ylimit)
-        ax.set_title(title)
-        ax.legend(loc=legend_pos, markerscale=legend_markscale)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        ax.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
-        # zoom
-        if zoom:
-            new_zoom_ax = False
-            if zoom_ax is None:
-                new_zoom_ax = True  
-                zoom_ax = inset_axes(ax,
-                       width="70%",  # width = 50% of parent_bbox
-                       height="70%",  # height : 1 inch
-                       loc=7) # center right
-            if drawline:
-                zoom_ax.plot(zoom_xaxis, zoom_yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-')
-            else: #draw dots 
-                #zoom_ax.plot(zoom_xaxis, zoom_yaxis, marker=marker if marker else 'o', markerfacecolor='r', ms=4, ls='None')
-                zoom_ax.vlines(zoom_xaxis, [0], zoom_yaxis)
-            if new_zoom_ax:
-                zoom_ax.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
-                mark_inset(ax, zoom_ax, loc1=2, loc2=4, fc="none", ec="0.5")
-        return ax, zoom_ax
-
-    def relation_least_appear_term_performance(self, all_data, query_length=0, oformat='png'):
-        all_zero_cnts = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
-        data = [max(ele) for ele in all_zero_cnts]
-        return data
-    def relation_appear_max_min_diff_performance(self, all_data, query_length=0, oformat='png'):
-        all_zero_cnts = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
-        data = [max(ele)-min(ele) for ele in all_zero_cnts]
-        return data
-    def relation_appear_max_min_ratio_performance(self, all_data, query_length=0, oformat='png'):
-        all_zero_cnts = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
-        data = [(max(ele)+1e-8)/(min(ele)+1e-8) for ele in all_zero_cnts]
-        return data
-    def relation_appear_diff_mean_performance(self, all_data, query_length=0, oformat='png'):
-        all_zero_cnts = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
-        data = [np.mean(ele) for ele in all_zero_cnts]
-        return data
-    def relation_appear_diff_std_performance(self, all_data, query_length=0, oformat='png'):
-        all_zero_cnts = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
-        data = [np.std(ele) for ele in all_zero_cnts]
-        return data
-
     def get_data_with_label(self, all_data, label):
         req_data = [[all_data[qid]['terms'][t][label] for t in all_data[qid]['terms']] for qid in all_data]
         data = [[max(ele), max(ele)-min(ele), (max(ele)+1e-8)/(min(ele)+1e-8), np.mean(ele), np.std(ele)] for ele in req_data]
-        print np.array(data).transpose()
         return np.array(data).transpose()
 
     def read_data(self, query_length=0):
@@ -142,14 +78,13 @@ class PlotCorrTFPeformance(object):
             ('df', self.get_data_with_label(all_data, 'df')),
             ('idf', self.get_data_with_label(all_data, 'idf')),
         ]
-
+        xlabels = ['max', 'max-min', 'max/min', 'mean', 'std']
         num_cols = min(5, len(all_xaxis))
         num_rows = int(math.ceil(len(all_xaxis)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
         font = {'size' : 8}
         plt.rc('font', **font)
         row_idx = 0
-        col_idx = 0
         for ele in all_xaxis:
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
@@ -158,20 +93,20 @@ class PlotCorrTFPeformance(object):
                     ax = axs[col_idx]
                 else:
                     ax = axs
-            col_idx += 1
-            if col_idx >= num_cols:
-                row_idx += 1
-                col_idx = 0
-            xaxis = ele[1]
-            zipped = zip(xaxis, yaxis)
-            zipped.sort(key=itemgetter(0))
-            xaxis_plot = zip(*zipped)[0]
-            yaxis_plot = zip(*zipped)[1]
-            legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
-            ax.plot(xaxis_plot, yaxis_plot, marker='o', ms=4, ls='None', label=legend)
-            ax.set_title(ele[0])
-            ax.legend(loc='best', markerscale=0.5, fontsize=5)
+            col_idx = 0
+            for i, xaxis in enumerate(ele[1]):
+                zipped = zip(xaxis, yaxis)
+                zipped.sort(key=itemgetter(0))
+                xaxis_plot = zip(*zipped)[0]
+                yaxis_plot = zip(*zipped)[1]
+                legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
+                ax.plot(xaxis_plot, yaxis_plot, marker='o', ms=4, ls='None', label=legend)
+                ax.set_title(ele[0])
+                ax.set_xlabel(xlabels[i])
+                ax.legend(loc='best', markerscale=0.5, fontsize=5)
+                col_idx += 1
+            row_idx += 1
 
-        fig.suptitle(self.collection_name + 'qLen=%d' % query_length)
+        fig.suptitle(self.collection_name + 'qLen=%d' % query_length, y=1.01)
         output_fn = os.path.join(self.output_root, '%s-%d.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
