@@ -85,9 +85,9 @@ class PlotCorrTFPeformance(object):
         font = {'size' : 8}
         plt.rc('font', **font)
         row_idx = 0
-        for ele in all_xaxis:
+        for i, ele in enumerate(all_xaxis):
             col_idx = 0
-            for i, xaxis in enumerate(ele[1]):
+            for j, xaxis in enumerate(ele[1]):
                 if num_rows > 1:
                     ax = axs[row_idx][col_idx]
                 else:
@@ -102,11 +102,12 @@ class PlotCorrTFPeformance(object):
                 legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
                 ax.plot(xaxis_plot, yaxis_plot, marker='o', ms=4, ls='None', label=legend)
                 ax.set_title(ele[0])
-                ax.set_xlabel(xlabels[i])
+                if i == len(all_xaxis) - 1:
+                    ax.set_xlabel(xlabels[j])
                 ax.legend(loc='best', markerscale=0.5, fontsize=8)
                 col_idx += 1
             row_idx += 1
 
-        fig.suptitle(self.collection_name + 'qLen=%d' % query_length, y=0.99)
+        fig.suptitle(self.collection_name + 'qLen=%d' % query_length)
         output_fn = os.path.join(self.output_root, '%s-%d.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
