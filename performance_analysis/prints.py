@@ -101,9 +101,9 @@ class Prints(object):
         for qid in queries:
             #if not os.path.exists(os.path.join(output_root, qid)):
             terms, tfs, dfs, doclens = doc_details.get_only_rels(qid)
-            tf_mean = np.around(np.mean(tfs, axis=1), 2)
-            tf_std = np.around(np.std(tfs, axis=1), 2)
-            idfs = np.around(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), 4)
+            tf_mean = np.mean(tfs, axis=1)
+            tf_std = np.std(tfs, axis=1)
+            idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
             #try:
             okapi_perform = Performances(self.collection_path).gen_optimal_performances_queries('okapi', [qid])[0][1]
             terms_stats = {t:{'mean': tf_mean[idx], 'std': tf_std[idx], 
