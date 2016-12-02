@@ -26,7 +26,7 @@ class RelTFStats(object):
         self.data_root = os.path.join(self.collection_path, 'rel_tf_stats')
 
     def get_data(self, qids=[]):
-        all_data = []
+        all_data = {}
         for qid in qids:
             # try:
             with open(os.path.join(self.data_root, qid)) as f:
