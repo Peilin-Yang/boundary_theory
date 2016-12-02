@@ -50,7 +50,7 @@ class PlotCorrTFPeformance(object):
 
     def get_data_with_label(self, all_data, label):
         req_data = [[all_data[qid]['terms'][t][label] for t in all_data[qid]['terms']] for qid in all_data]
-        data = [[max(ele), max(ele)-min(ele), (max(ele)+1e-8)/(min(ele)+1e-8), np.mean(ele), np.std(ele)] for ele in req_data]
+        data = [[max(ele), min(ele) max(ele)-min(ele), (max(ele)+1e-8)/(min(ele)+1e-8), np.mean(ele), np.std(ele)] for ele in req_data]
         return np.array(data).transpose()
 
     def read_data(self, query_length=0):
@@ -78,7 +78,7 @@ class PlotCorrTFPeformance(object):
             ('df', self.get_data_with_label(all_data, 'df')),
             ('idf', self.get_data_with_label(all_data, 'idf')),
         ]
-        xlabels = ['max', 'max-min', 'max/min', 'mean', 'std']
+        xlabels = ['max', 'min', 'max-min', 'max/min', 'mean', 'std']
         num_cols = len(xlabels)
         num_rows = len(all_xaxis)
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
