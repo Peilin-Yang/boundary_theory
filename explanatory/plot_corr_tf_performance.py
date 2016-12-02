@@ -105,6 +105,7 @@ class PlotCorrTFPeformance(object):
                 if i == len(all_xaxis) - 1:
                     ax.set_xlabel(xlabels[j])
                 ax.legend(loc='best', markerscale=0.5)
+                ax.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
                 col_idx += 1
             row_idx += 1
 
