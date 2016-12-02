@@ -111,6 +111,12 @@ class PlotCorrTFPeformance(object):
         data = [np.std(ele) for ele in all_zero_cnts]
         return data
 
+    def get_data_with_label(self, all_data, label):
+        req_data = [[all_data[qid]['terms'][t][label] for t in all_data[qid]['terms']] for qid in all_data]
+        data = [[max(ele), max(ele)-min(ele), (max(ele)+1e-8)/(min(ele)+1e-8), np.mean(ele), np.std(ele)] for ele in req_data]
+        print data
+        return data
+
     def read_data(self, query_length=0):
         collection_name = self.collection_name
         cs = CollectionStats(self.collection_path)
@@ -130,11 +136,11 @@ class PlotCorrTFPeformance(object):
         all_data = self.read_data(query_length)
         yaxis = [all_data[qid]['AP']['okapi'] for qid in all_data] # yaxis is the performance, e.g. AP
         all_xaxis = [
-            ('least_appear_term_zero_ratio', self.relation_least_appear_term_performance(all_data, query_length, oformat)),
-            ('appear_zero_diff', self.relation_appear_max_min_diff_performance(all_data, query_length, oformat)),
-            ('appear_zero_ratio', self.relation_appear_max_min_ratio_performance(all_data, query_length, oformat)),
-            ('appear_zero_mean', self.relation_appear_diff_mean_performance(all_data, query_length, oformat)),
-            ('appear_zero_std', self.relation_appear_diff_std_performance(all_data, query_length, oformat)),
+            ('nonexisting_percent', self.get_data_with_label(all_data, 'zero_cnt_percentage')),
+            ('mean', self.get_data_with_label(all_data, 'mean')),
+            ('std', self.get_data_with_label(all_data, 'std')),
+            ('df', self.get_data_with_label(all_data, 'df')),
+            ('idf', self.get_data_with_label(all_data, 'idf')),
         ]
 
         num_cols = min(5, len(all_xaxis))
@@ -164,7 +170,7 @@ class PlotCorrTFPeformance(object):
             legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
             ax.plot(xaxis_plot, yaxis_plot, marker='o', ms=4, ls='None', label=legend)
             ax.set_title(ele[0])
-            ax.legend(loc='best', markerscale=0.5)
+            ax.legend(loc='best', markerscale=0.5, fontsize=5)
 
         fig.suptitle(self.collection_name + 'qLen=%d' % query_length)
         output_fn = os.path.join(self.output_root, '%s-%d.%s' % (self.collection_name, query_length, oformat) )
