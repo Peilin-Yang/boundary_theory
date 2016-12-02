@@ -148,7 +148,7 @@ def gen_plot_corr_tf_performance_batch(paras):
         p.insert(0, collection_name)
         p.insert(0, collection_path)
         all_paras.append((p))
-    gen_batch_framework('plot_corr_tf_performance', '122', all_paras)
+    gen_batch_framework('plot_corr_tf_performance', '222', all_paras)
 
 def plot_corr_tf_performance_atom(para_file):
     with open(para_file) as f:
