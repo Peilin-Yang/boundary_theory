@@ -161,7 +161,7 @@ class PlotCorrTFPeformance(object):
             zipped.sort(key=itemgetter(0))
             xaxis_plot = zip(*zipped)[0]
             yaxis_plot = zip(*zipped)[1]
-            legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot))
+            legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
             ax.plot(xaxis_plot, yaxis_plot, marker='o', ms=4, ls='None', label=legend)
             ax.set_title(ele[0])
 
