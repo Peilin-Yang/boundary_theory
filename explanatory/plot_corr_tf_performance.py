@@ -91,8 +91,9 @@ class PlotCorrTFPeformance(object):
         return ax, zoom_ax
 
     def relation_least_appear_term_performance(self, all_data, query_length=0, oformat='png'):
-        gen_data = [(min([all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']]), 
+        gen_data = [(max([all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']]), 
             all_data[qid]['AP']['okapi']) for qid in all_data]
+        print gen_data
         plt.plot(gen_data)
         output_fn = os.path.join(self.output_root, 'least_appear_term-%d.%s' % (query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
