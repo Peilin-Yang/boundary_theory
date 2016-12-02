@@ -87,14 +87,14 @@ class PlotCorrTFPeformance(object):
         row_idx = 0
         for ele in all_xaxis:
             col_idx = 0
-            if num_rows > 1:
-                ax = axs[row_idx][col_idx]
-            else:
-                if num_cols > 1:
-                    ax = axs[col_idx]
-                else:
-                    ax = axs
             for i, xaxis in enumerate(ele[1]):
+                if num_rows > 1:
+                    ax = axs[row_idx][col_idx]
+                else:
+                    if num_cols > 1:
+                        ax = axs[col_idx]
+                    else:
+                        ax = axs
                 zipped = zip(xaxis, yaxis)
                 zipped.sort(key=itemgetter(0))
                 xaxis_plot = zip(*zipped)[0]
