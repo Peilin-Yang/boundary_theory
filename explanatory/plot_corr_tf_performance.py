@@ -165,6 +165,6 @@ class PlotCorrTFPeformance(object):
             ax.plot(xaxis_plot, yaxis_plot, marker='o', ms=4, ls='None', label=legend)
             ax.set_title(ele[0])
 
-        fit.suptitle(self.collection_name + 'qLen=%d' % query_length)
+        fig.suptitle(self.collection_name + 'qLen=%d' % query_length)
         output_fn = os.path.join(self.output_root, '%s-%d.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
