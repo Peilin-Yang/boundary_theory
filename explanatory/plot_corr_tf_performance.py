@@ -107,6 +107,7 @@ class PlotCorrTFPeformance(object):
         else:
             queries = Query(self.collection_path).get_queries_of_length(query_length)
         queries = {ele['num']:ele['title'] for ele in queries}
+        rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
         queries = {k:v for k,v in queries.items() if k in rel_docs and len(rel_docs[k]) > 0}
         return RelTFStats(self.collection_path).get_data(queries.keys())
 
