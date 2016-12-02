@@ -82,7 +82,7 @@ class PlotCorrTFPeformance(object):
         num_cols = len(xlabels)
         num_rows = len(all_xaxis)
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
-        font = {'size' : 8}
+        font = {'size' : 10}
         plt.rc('font', **font)
         row_idx = 0
         for i, ele in enumerate(all_xaxis):
@@ -104,7 +104,7 @@ class PlotCorrTFPeformance(object):
                 ax.set_title(ele[0])
                 if i == len(all_xaxis) - 1:
                     ax.set_xlabel(xlabels[j])
-                ax.legend(loc='best', markerscale=0.5, fontsize=8)
+                ax.legend(loc='best', markerscale=0.5)
                 col_idx += 1
             row_idx += 1
 
