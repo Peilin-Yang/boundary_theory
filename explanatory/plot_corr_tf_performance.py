@@ -74,7 +74,7 @@ class PlotCorrTFPeformance(object):
         all_xaxis = [
             ('nonexisting_percent', self.get_data_with_label(all_data, 'zero_cnt_percentage')),
             ('mean', self.get_data_with_label(all_data, 'mean')),
-            ('std', self.get_data_with_label(all_data, 'std')),
+            #('std', self.get_data_with_label(all_data, 'std')),
             ('df', self.get_data_with_label(all_data, 'df')),
             ('idf', self.get_data_with_label(all_data, 'idf')),
         ]
@@ -104,11 +104,11 @@ class PlotCorrTFPeformance(object):
                 ax.set_title(ele[0])
                 if i == len(all_xaxis) - 1:
                     ax.set_xlabel(xlabels[j])
-                ax.legend(loc='best', markerscale=0.5)
+                ax.legend(loc='best', markerscale=0.5, fontsize=8)
                 ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
                 col_idx += 1
             row_idx += 1
 
-        fig.suptitle(self.collection_name + 'qLen=%d' % query_length)
+        fig.suptitle(self.collection_name + ',qLen=%d' % query_length)
         output_fn = os.path.join(self.output_root, '%s-%d.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
