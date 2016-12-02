@@ -108,6 +108,7 @@ class Prints(object):
                 okapi_perform = Performances(self.collection_path).gen_optimal_performances_queries('okapi', [qid])[0][1]
             except:
                 continue
+            print tfs[idx], np.count_nonzero(tfs[idx]), tfs[idx].size
             terms_stats = {t:{'mean': '%.2f' % tf_mean[idx], 'std': '%.2f' % tf_std[idx], 
                 'df': dfs[idx], 'idf': '%.4f' % idfs[idx], 
                 'zero_cnt': 1.0-np.count_nonzero(tfs[idx])/tfs[idx].size} for idx, t in enumerate(terms) if dfs[idx] != 0}
