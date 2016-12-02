@@ -97,7 +97,7 @@ class PlotCorrTFPeformance(object):
         output_fn = os.path.join(self.output_root, 'least_appear_term-%d.%s' % (query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-    def read_data(self, query_lengt=0):
+    def read_data(self, query_length=0):
         collection_name = self.collection_name
         cs = CollectionStats(self.collection_path)
         doc_details = GenDocDetails(self.collection_path)
