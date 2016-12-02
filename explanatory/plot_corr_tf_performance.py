@@ -91,15 +91,33 @@ class PlotCorrTFPeformance(object):
         return ax, zoom_ax
 
     def relation_least_appear_term_performance(self, all_data, query_length=0, oformat='png'):
-        gen_data = [(max([all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']]), 
-            all_data[qid]['AP']['okapi']) for qid in all_data]
-        gen_data.sort(key=itemgetter(0))
-        xaxis = zip(*gen_data)[0] # 
-        yaxis = zip(*gen_data)[1]
-        print scipy.stats.pearsonr(xaxis, yaxis)
-        plt.plot(xaxis, yaxis, marker='o', ms=4, ls='None', label=scipy.stats.pearsonr(xaxis, yaxis))
-        output_fn = os.path.join(self.output_root, '%s-least_appear_term-%d.%s' % (self.collection_name, query_length, oformat) )
-        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+        all_zero_cnts = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
+        data = [max(ele) for ele in all_zero_cnts]
+        return data
+    def relation_appear_max_min_diff_performance(self, all_data, query_length=0, oformat='png'):
+        all_zero_cnts = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
+        data = [max(ele)-min(ele) for ele in all_zero_cnts]
+        return data
+    def relation_appear_max_min_ratio_performance(self, all_data, query_length=0, oformat='png'):
+        all_zero_cnts = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
+        data = [(max(ele)+1e-8)/(min(ele)+1e-8) for ele in all_zero_cnts]
+        return data
+    def relation_appear_diff_mean_performance(self, all_data, query_length=0, oformat='png'):
+        all_zero_cnts = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
+        data = [np.mean(ele) for ele in all_zero_cnts]
+        return data
+    def relation_appear_diff_std_performance(self, all_data, query_length=0, oformat='png'):
+        all_zero_cnts = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
+        data = [np.std(ele) for ele in all_zero_cnts]
+        return data
+
+        # gen_data.sort(key=itemgetter(0))
+        # xaxis = zip(*gen_data)[0] # 
+        # yaxis = zip(*gen_data)[1]
+        # print scipy.stats.pearsonr(xaxis, yaxis)
+        # plt.plot(xaxis, yaxis, marker='o', ms=4, ls='None', label=scipy.stats.pearsonr(xaxis, yaxis))
+        # output_fn = os.path.join(self.output_root, '%s-least_appear_term-%d.%s' % (self.collection_name, query_length, oformat) )
+        # plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
     def read_data(self, query_length=0):
         collection_name = self.collection_name
@@ -118,4 +136,39 @@ class PlotCorrTFPeformance(object):
     def plot_all(self, query_length=0, oformat='png'):
         query_length = int(query_length)
         all_data = self.read_data(query_length)
-        self.relation_least_appear_term_performance(all_data, query_length, oformat)
+        yaxis = [all_data[qid]['AP']['okapi'] for qid in all_data] # yaxis is the performance, e.g. AP
+        all_xaxis = [
+            ('least_appear_term_zero_ratio', self.relation_least_appear_term_performance(all_data, query_length, oformat)),
+            ('appear_zero_diff', self.relation_appear_max_min_diff_performance(all_data, query_length, oformat)),
+            ('appear_zero_ratio', self.relation_appear_max_min_ratio_performance(all_data, query_length, oformat)),
+            ('appear_zero_mean', self.relation_appear_diff_mean_performance(all_data, query_length, oformat)),
+            ('appear_zero_std', self.relation_appear_diff_std_performance(all_data, query_length, oformat)),
+        ]
+
+        num_cols = min(5, len(all_xaxis))
+        num_rows = int(math.ceil(len(all_xaxis)*1.0/num_cols))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
+        font = {'size' : 8}
+        plt.rc('font', **font)
+        row_idx = 0
+        col_idx = 0
+        for ele in all_xaxis:
+            if num_rows > 1:
+                ax = axs[row_idx][col_idx]
+            else:
+                if num_cols > 1:
+                    ax = axs[col_idx]
+                else:
+                    ax = axs
+            col_idx += 1
+            if col_idx >= num_cols:
+                row_idx += 1
+                col_idx = 0
+            xaxis = ele[1]
+            legend = 'pearsonr:%.4f' % scipy.stats.pearsonr(xaxis, yaxis)
+            ax.plot(xaxis, yaxis, marker='o', ms=4, ls='None', label=legend)
+            ax.set_title(ele[0])
+
+        fit.suptitle(self.collection_name + 'qLen=%d' % query_length)
+        output_fn = os.path.join(self.output_root, '%s-%d.%s' % (self.collection_name, query_length, oformat) )
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
