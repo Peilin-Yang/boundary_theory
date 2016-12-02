@@ -28,12 +28,12 @@ class RelTFStats(object):
     def get_data(self, qids=[]):
         all_data = []
         for qid in qids:
-            try:
-                with open(os.path.join(self.data_root, qid)) as f:
-                    data = json.load(f)
-                    all_data[qid] = data
-            except:
-                print 'Loading ' + qid +' data failed!'
+            # try:
+            with open(os.path.join(self.data_root, qid)) as f:
+                data = json.load(f)
+                all_data[qid] = data
+            # except:
+            #     print 'Loading ' + qid +' data failed!'
         return all_data
 
 

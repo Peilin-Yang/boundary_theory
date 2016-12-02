@@ -90,7 +90,7 @@ class PlotCorrTFPeformance(object):
                 mark_inset(ax, zoom_ax, loc1=2, loc2=4, fc="none", ec="0.5")
         return ax, zoom_ax
 
-    def relation_least_appear_term_performance(self, all_data, oformat='png'):
+    def relation_least_appear_term_performance(self, all_data, query_length=0, oformat='png'):
         gen_data = [(min([all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']]), 
             all_data[qid]['AP']['okapi']) for qid in all_data]
         plt.plot(gen_data)
@@ -114,4 +114,4 @@ class PlotCorrTFPeformance(object):
     def plot_all(self, query_length=0, oformat='png'):
         query_length = int(query_length)
         all_data = self.read_data(query_length)
-        self.relation_least_appear_term_performance(all_data, oformat)
+        self.relation_least_appear_term_performance(all_data, query_length, oformat)
