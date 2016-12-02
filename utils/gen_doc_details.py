@@ -109,24 +109,24 @@ class GenDocDetails(object):
                 writer.writerow(this_doc)
 
     def get_qid_details(self, qid):
-        try:
-            with open(os.path.join(self.doc_details_root, qid)) as f:
-                rows = csv.DictReader(f)
-                for row in rows:
-                    yield row
-        except:
-            return []
+        with open(os.path.join(self.doc_details_root, qid)) as f:
+            rows = csv.DictReader(f)
+            for row in rows:
+                yield row
 
     def get_qid_details_as_numpy_arrays(self, qid):
         cs = CollectionStats(self.collection_path)
-        rows = [row for row in self.get_qid_details(qid)]
-        if rows:
-            tf_len = len(rows[0]['tf'].split(','))
-            tfs = np.array([[float(row['tf'].split(',')[i].split('-')[1]) for row in rows] for i in range(tf_len)])
-            dfs = np.array([cs.get_term_df(rows[0]['tf'].split(',')[i].split('-')[0]) for i in range(tf_len)])          
-            doclens = np.array([float(row['doc_len']) for row in rows])
-            rels = np.array([int(row['rel_score']) for row in rows])
-            return tfs, dfs, doclens, rels
+        try:
+            rows = [row for row in self.get_qid_details(qid)]
+            if rows:
+                tf_len = len(rows[0]['tf'].split(','))
+                tfs = np.array([[float(row['tf'].split(',')[i].split('-')[1]) for row in rows] for i in range(tf_len)])
+                dfs = np.array([cs.get_term_df(rows[0]['tf'].split(',')[i].split('-')[0]) for i in range(tf_len)])          
+                doclens = np.array([float(row['doc_len']) for row in rows])
+                rels = np.array([int(row['rel_score']) for row in rows])
+                return tfs, dfs, doclens, rels
+        except:
+            pass
         return np.array([[]]), np.array([]), np.array([]), np.array([])
 
     def get_only_rels(self, qid):
@@ -134,14 +134,17 @@ class GenDocDetails(object):
         get the info for only relevant documents
         """
         cs = CollectionStats(self.collection_path)
+        try:
         rows = [row for row in self.get_qid_details(qid)]
-        if rows:
-            tf_len = len(rows[0]['tf'].split(','))
-            terms = [rows[0]['tf'].split(',')[i].split('-')[0] for i in range(tf_len)]        
-            tfs = np.array([[float(row['tf'].split(',')[i].split('-')[1]) for row in rows if int(row['rel_score']) > 0] for i in range(tf_len)])
-            dfs = np.array([cs.get_term_df(rows[0]['tf'].split(',')[i].split('-')[0]) for i in range(tf_len)])          
-            doclens = np.array([float(row['doc_len']) for row in rows if int(row['rel_score']) > 0]) 
-            return terms, tfs, dfs, doclens
+            if rows:
+                tf_len = len(rows[0]['tf'].split(','))
+                terms = [rows[0]['tf'].split(',')[i].split('-')[0] for i in range(tf_len)]        
+                tfs = np.array([[float(row['tf'].split(',')[i].split('-')[1]) for row in rows if int(row['rel_score']) > 0] for i in range(tf_len)])
+                dfs = np.array([cs.get_term_df(rows[0]['tf'].split(',')[i].split('-')[0]) for i in range(tf_len)])          
+                doclens = np.array([float(row['doc_len']) for row in rows if int(row['rel_score']) > 0]) 
+                return terms, tfs, dfs, doclens
+        except:
+            pass
         return [], np.array([[]]), np.array([]), np.array([])
 
 
