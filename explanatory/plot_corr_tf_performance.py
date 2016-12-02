@@ -79,8 +79,8 @@ class PlotCorrTFPeformance(object):
             ('idf', self.get_data_with_label(all_data, 'idf')),
         ]
         xlabels = ['max', 'max-min', 'max/min', 'mean', 'std']
-        num_cols = min(5, len(all_xaxis))
-        num_rows = int(math.ceil(len(all_xaxis)*1.0/num_cols))
+        num_cols = len(xlabels)
+        num_rows = len(all_xaxis)
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
         font = {'size' : 8}
         plt.rc('font', **font)
