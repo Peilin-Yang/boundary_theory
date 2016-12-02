@@ -115,6 +115,7 @@ class Prints(object):
                     'zero_cnt_percentage': 1.0-np.count_nonzero(tfs[idx])/tfs[idx].size} for idx, t in enumerate(terms) if dfs[idx] != 0}
             except:
                 print terms, tfs, dfs
+                exit()
 
             output = {
                 'AP': {'okapi': okapi_perform},
