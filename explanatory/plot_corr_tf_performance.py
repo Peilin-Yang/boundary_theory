@@ -111,14 +111,6 @@ class PlotCorrTFPeformance(object):
         data = [np.std(ele) for ele in all_zero_cnts]
         return data
 
-        # gen_data.sort(key=itemgetter(0))
-        # xaxis = zip(*gen_data)[0] # 
-        # yaxis = zip(*gen_data)[1]
-        # print scipy.stats.pearsonr(xaxis, yaxis)
-        # plt.plot(xaxis, yaxis, marker='o', ms=4, ls='None', label=scipy.stats.pearsonr(xaxis, yaxis))
-        # output_fn = os.path.join(self.output_root, '%s-least_appear_term-%d.%s' % (self.collection_name, query_length, oformat) )
-        # plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
-
     def read_data(self, query_length=0):
         collection_name = self.collection_name
         cs = CollectionStats(self.collection_path)
@@ -165,8 +157,12 @@ class PlotCorrTFPeformance(object):
                 row_idx += 1
                 col_idx = 0
             xaxis = ele[1]
-            legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis, yaxis))
-            ax.plot(xaxis, yaxis, marker='o', ms=4, ls='None', label=legend)
+            zipped = zip(xaxis, yaxis)
+            zipped.sort(key=itemgetter(0))
+            xaxis_plot = zip(*zipped)[0]
+            yaxis_plot = zip(*zipped)[1]
+            legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot))
+            ax.plot(xaxis_plot, yaxis_plot, marker='o', ms=4, ls='None', label=legend)
             ax.set_title(ele[0])
 
         fit.suptitle(self.collection_name + 'qLen=%d' % query_length)
