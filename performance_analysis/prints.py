@@ -104,11 +104,13 @@ class Prints(object):
             tf_mean = np.mean(tfs, axis=1)
             tf_std = np.std(tfs, axis=1)
             idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
-            #try:
-            okapi_perform = Performances(self.collection_path).gen_optimal_performances_queries('okapi', [qid])[0][1]
-            terms_stats = {t:{'mean': tf_mean[idx], 'std': tf_std[idx], 
-                'df': dfs[idx], 'idf': idfs[idx], 
-                'zero_cnt_percentage': round(1.0-np.count_nonzero(tfs[idx])*1./tfs[idx].size, 2)} for idx, t in enumerate(terms) if dfs[idx] != 0}
+            try:
+                okapi_perform = Performances(self.collection_path).gen_optimal_performances_queries('okapi', [qid])[0][1]
+                terms_stats = {t:{'mean': tf_mean[idx], 'std': tf_std[idx], 
+                    'df': dfs[idx], 'idf': idfs[idx], 
+                    'zero_cnt_percentage': round(1.0-np.count_nonzero(tfs[idx])*1./tfs[idx].size, 2)} for idx, t in enumerate(terms) if dfs[idx] != 0}
+            except:
+                continue
             output = {
                 'AP': {'okapi': okapi_perform},
                 'terms': terms_stats
