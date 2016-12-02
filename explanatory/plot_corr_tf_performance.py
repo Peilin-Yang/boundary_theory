@@ -81,7 +81,7 @@ class PlotCorrTFPeformance(object):
         xlabels = ['max', 'max-min', 'max/min', 'mean', 'std']
         num_cols = len(xlabels)
         num_rows = len(all_xaxis)
-        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
         font = {'size' : 8}
         plt.rc('font', **font)
         row_idx = 0
@@ -103,10 +103,10 @@ class PlotCorrTFPeformance(object):
                 ax.plot(xaxis_plot, yaxis_plot, marker='o', ms=4, ls='None', label=legend)
                 ax.set_title(ele[0])
                 ax.set_xlabel(xlabels[i])
-                ax.legend(loc='best', markerscale=0.5, fontsize=5)
+                ax.legend(loc='best', markerscale=0.5, fontsize=8)
                 col_idx += 1
             row_idx += 1
 
-        fig.suptitle(self.collection_name + 'qLen=%d' % query_length, y=1.01)
+        fig.suptitle(self.collection_name + 'qLen=%d' % query_length, y=0.99)
         output_fn = os.path.join(self.output_root, '%s-%d.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
