@@ -113,7 +113,10 @@ class PlotCorrTFPeformance(object):
                 yaxis_plot = zip(*zipped)[1]
                 legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
                 if [i, j] in red_points:
-                    ax.plot(xaxis_plot, yaxis_plot, marker='o', markerfacecolor='r', ms=4, ls='None', label=legend)
+                    if [i, j] == red_points[0]:
+                        ax.plot(xaxis_plot, yaxis_plot, marker='o', markerfacecolor='r', ms=4, ls='None', label=legend)
+                    else:
+                        ax.plot(xaxis_plot, yaxis_plot, marker='o', markerfacecolor='g', ms=4, ls='None', label=legend)
                 else:
                     ax.plot(xaxis_plot, yaxis_plot, marker='o', ms=4, ls='None', label=legend)
                 ax.set_title(ele[0])
