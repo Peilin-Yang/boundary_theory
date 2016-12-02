@@ -112,6 +112,6 @@ class PlotCorrTFPeformance(object):
         return RelTFStats(self.collection_path).get_data(queries.keys())
 
     def plot_all(self, query_length=0, oformat='png'):
+        query_length = int(query_length)
         all_data = self.read_data(query_length)
         self.relation_least_appear_term_performance(all_data, oformat)
-        
