@@ -113,6 +113,7 @@ class Prints(object):
                 continue
             output = {
                 'AP': {'okapi': okapi_perform},
+                'rel_cnt': tfs.size,
                 'terms': terms_stats
             }
             output_root = os.path.join(self.collection_path, 'rel_tf_stats')
