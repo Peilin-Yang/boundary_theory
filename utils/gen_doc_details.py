@@ -135,7 +135,7 @@ class GenDocDetails(object):
         """
         cs = CollectionStats(self.collection_path)
         try:
-        rows = [row for row in self.get_qid_details(qid)]
+            rows = [row for row in self.get_qid_details(qid)]
             if rows:
                 tf_len = len(rows[0]['tf'].split(','))
                 terms = [rows[0]['tf'].split(',')[i].split('-')[0] for i in range(tf_len)]        
