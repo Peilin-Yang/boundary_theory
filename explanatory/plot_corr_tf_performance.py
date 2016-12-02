@@ -86,6 +86,7 @@ class PlotCorrTFPeformance(object):
         plt.rc('font', **font)
         row_idx = 0
         for ele in all_xaxis:
+            col_idx = 0
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
             else:
@@ -93,7 +94,6 @@ class PlotCorrTFPeformance(object):
                     ax = axs[col_idx]
                 else:
                     ax = axs
-            col_idx = 0
             for i, xaxis in enumerate(ele[1]):
                 zipped = zip(xaxis, yaxis)
                 zipped.sort(key=itemgetter(0))
