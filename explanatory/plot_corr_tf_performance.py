@@ -165,7 +165,7 @@ class PlotCorrTFPeformance(object):
                 row_idx += 1
                 col_idx = 0
             xaxis = ele[1]
-            legend = 'pearsonr:%.4f' % scipy.stats.pearsonr(xaxis, yaxis)
+            legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis, yaxis))
             ax.plot(xaxis, yaxis, marker='o', ms=4, ls='None', label=legend)
             ax.set_title(ele[0])
 
