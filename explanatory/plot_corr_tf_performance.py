@@ -50,7 +50,7 @@ class PlotCorrTFPeformance(object):
 
     def get_data_with_label(self, all_data, label):
         req_data = [[all_data[qid]['terms'][t][label] for t in all_data[qid]['terms']] for qid in all_data]
-        data = [[max(ele), min(ele) max(ele)-min(ele), (max(ele)+1e-8)/(min(ele)+1e-8), np.mean(ele), np.std(ele)] for ele in req_data]
+        data = [[max(ele), min(ele), max(ele)-min(ele), (max(ele)+1e-8)/(min(ele)+1e-8), np.mean(ele), np.std(ele)] for ele in req_data]
         return np.array(data).transpose()
 
     def read_data(self, query_length=0):
