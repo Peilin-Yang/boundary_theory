@@ -109,9 +109,13 @@ class Prints(object):
             except:
                 continue
             print tfs[0], np.count_nonzero(tfs[0]), tfs[0].size
-            terms_stats = {t:{'mean': '%.2f' % tf_mean[idx], 'std': '%.2f' % tf_std[idx], 
-                'df': dfs[idx], 'idf': '%.4f' % idfs[idx], 
-                'zero_cnt': 1.0-np.count_nonzero(tfs[idx])/tfs[idx].size} for idx, t in enumerate(terms) if dfs[idx] != 0}
+            try:
+                terms_stats = {t:{'mean': '%.2f' % tf_mean[idx], 'std': '%.2f' % tf_std[idx], 
+                    'df': dfs[idx], 'idf': '%.4f' % idfs[idx], 
+                    'zero_cnt_percentage': 1.0-np.count_nonzero(tfs[idx])/tfs[idx].size} for idx, t in enumerate(terms) if dfs[idx] != 0}
+            except:
+                print terms, tfs, dfs
+
             output = {
                 'AP': {'okapi': okapi_perform},
                 'terms': terms_stats
