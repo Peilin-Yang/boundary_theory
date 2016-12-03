@@ -27,7 +27,7 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 from sklearn.datasets import make_classification
 from sklearn.svm import LinearSVC, LinearSVR
-from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor
 from sklearn.feature_selection import SelectFromModel, mutual_info_regression
 
 
@@ -95,10 +95,10 @@ class PlotCorrTFPeformance(object):
         #print X
         #print y
         all_data_samples = np.concatenate([np.transpose(ele[1]) for ele in all_xaxis], axis=1)
-        #forest = ExtraTreesClassifier()
-        #forest.fit(all_data_samples, yaxis)
-        #importances = forest.feature_importances_
-        #print importances
+        forest = ExtraTreesRegressor()
+        forest.fit(all_data_samples, yaxis)
+        importances = forest.feature_importances_
+        print importances
         lsvr = LinearSVR(C=0.01).fit(all_data_samples, yaxis)
         model = SelectFromModel(lsvr, prefit=True)
         X_new = model.transform(all_data_samples)
