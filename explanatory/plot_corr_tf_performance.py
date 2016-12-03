@@ -99,6 +99,8 @@ class PlotCorrTFPeformance(object):
         forest.fit(all_data_samples, yaxis)
         print forest.score(all_data_samples, yaxis)
         print forest.decision_path(all_data_samples)
+        yfit = forest.predict(all_data_samples)
+        print zip(yaxis, yfit)
         importances = forest.feature_importances_
         print importances
         lsvr = LinearSVR(C=0.01).fit(all_data_samples, yaxis)
