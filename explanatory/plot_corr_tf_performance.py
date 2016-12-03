@@ -82,9 +82,8 @@ class PlotCorrTFPeformance(object):
 
         # learning related start
         print all_xaxis[0][1].shape
-        all_data_samples = []
-        for ele in all_xaxis:
-            np.concatenate((a, b), axis=1)
+        all_data_samples = np.concatenate([np.transpose(ele[1]) for ele in all_xaxis], axis=1)
+        print all_data_samples
         forest = ExtraTreesClassifier()
         forest.fit(X, y)
         importances = forest.feature_importances_
