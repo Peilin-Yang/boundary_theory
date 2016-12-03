@@ -95,7 +95,7 @@ class PlotCorrTFPeformance(object):
         #print X
         #print y
         all_data_samples = np.concatenate([np.transpose(ele[1]) for ele in all_xaxis], axis=1)
-        forest = ExtraTreesRegressor(max_depth=3)
+        forest = ExtraTreesRegressor(max_depth=2)
         forest.fit(all_data_samples, yaxis)
         print forest.score(all_data_samples, yaxis)
         print forest.decision_path(all_data_samples)
