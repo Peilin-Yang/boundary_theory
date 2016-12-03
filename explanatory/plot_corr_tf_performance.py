@@ -25,6 +25,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
+from sklearn.ensemble import ExtraTreesClassifier
 
 
 class PlotCorrTFPeformance(object):
@@ -74,10 +75,24 @@ class PlotCorrTFPeformance(object):
         all_xaxis = [
             ('nonexisting_percent', self.get_data_with_label(all_data, 'zero_cnt_percentage')),
             ('mean', self.get_data_with_label(all_data, 'mean')),
-            #('std', self.get_data_with_label(all_data, 'std')),
+            ('std', self.get_data_with_label(all_data, 'std')),
             ('df', self.get_data_with_label(all_data, 'df')),
             ('idf', self.get_data_with_label(all_data, 'idf')),
         ]
+
+        # learning related start
+        print all_xaxis[0][1].shape
+        all_data_samples = []
+        for ele in all_xaxis:
+            np.concatenate((a, b), axis=1)
+        forest = ExtraTreesClassifier()
+        forest.fit(X, y)
+        importances = forest.feature_importances_
+        print importances
+        # learning related end
+
+
+
         xlabels = ['max', 'min', 'max-min', 'max/min', 'mean', 'std']
         num_cols = len(xlabels)
         num_rows = len(all_xaxis)
