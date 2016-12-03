@@ -99,12 +99,10 @@ class PlotCorrTFPeformance(object):
         #forest.fit(all_data_samples, yaxis)
         #importances = forest.feature_importances_
         #print importances
-        print all_data_samples.shape
-        print mutual_info_regression(all_data_samples, yaxis)
-        lsvc = LinearSVC(C=0.01, penalty="l1", dual=False).fit(all_data_samples, yaxis)
-        model = SelectFromModel(lsvc, prefit=True)
+        lsvr = LinearSVR(C=0.01).fit(all_data_samples, yaxis)
+        model = SelectFromModel(lsvr, prefit=True)
         X_new = model.transform(all_data_samples)
-        X_new.shape
+        print X_new.shape
         # learning related end
 
 
