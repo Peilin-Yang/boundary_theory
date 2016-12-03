@@ -25,6 +25,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
+from sklearn.datasets import make_classification
 from sklearn.ensemble import ExtraTreesClassifier
 
 
@@ -81,8 +82,17 @@ class PlotCorrTFPeformance(object):
         ]
 
         # learning related start
+        X, y = make_classification(n_samples=1000,
+                           n_features=10,
+                           n_informative=3,
+                           n_redundant=0,
+                           n_repeated=0,
+                           n_classes=2,
+                           random_state=0,
+                           shuffle=False)
+        print X
+        print y
         all_data_samples = np.concatenate([np.transpose(ele[1]) for ele in all_xaxis], axis=1)
-        print all_data_samples
         forest = ExtraTreesClassifier()
         forest.fit(all_data_samples, yaxis)
         importances = forest.feature_importances_
