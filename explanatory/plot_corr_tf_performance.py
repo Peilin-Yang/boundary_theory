@@ -27,7 +27,8 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 from sklearn.datasets import make_classification
 from sklearn.svm import LinearSVC, LinearSVR
-from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor, DecisionTreeRegressor
+from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.feature_selection import SelectFromModel, mutual_info_regression
 
 
