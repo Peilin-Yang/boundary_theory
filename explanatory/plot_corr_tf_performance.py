@@ -145,8 +145,7 @@ class PlotCorrTFPeformance(object):
                 zipped.sort(key=itemgetter(0))
                 xaxis_plot = zip(*zipped)[0]
                 yaxis_plot = zip(*zipped)[1]
-                xaxis_plot = np.where(xaxis_plot!=0)
-                yaxis_plot = np.where(xaxis_plot!=0)
+                xaxis_plot, yaxis_plot = np.where(xaxis_plot!=0, xaxis_plot, yaxis_plot)
                 # xaxis_plot_real = []
                 # yaxis_plot_real = []
                 # for x_idx, x in xaxis_plot:
