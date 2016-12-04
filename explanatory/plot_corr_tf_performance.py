@@ -105,7 +105,7 @@ class PlotCorrTFPeformance(object):
         #print zip(yaxis, yfit)
         importances = forest.feature_importances_
         print importances
-        export_graphviz(forest, out_file='tree_%s-%d.dot' % (collection_name, query_length))
+        export_graphviz(forest, out_file=os.path.join(self.output_root, 'tree_%s-%d.dot' % (collection_name, query_length) ))
         lsvr = LinearSVR(C=0.01).fit(all_data_samples, yaxis)
         model = SelectFromModel(lsvr, prefit=True)
         X_new = model.transform(all_data_samples)
