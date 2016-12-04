@@ -145,15 +145,9 @@ class PlotCorrTFPeformance(object):
                 zipped.sort(key=itemgetter(0))
                 xaxis_plot = np.array(zip(*zipped)[0])
                 yaxis_plot = np.array(zip(*zipped)[1])
-                print xaxis_plot, np.nonzero(xaxis_plot)
-                yaxis_plot = yaxis_plot[np.nonzero(xaxis_plot)]
-                xaxis_plot = xaxis_plot[np.nonzero(xaxis_plot)]
-                # xaxis_plot_real = []
-                # yaxis_plot_real = []
-                # for x_idx, x in xaxis_plot:
-                #     if x != 0:
-                #         xaxis_plot_real.append(x)
-                #         yaxis_plot_real.append(yaxis_plot[x_idx])
+                #print xaxis_plot, np.nonzero(xaxis_plot)
+                #yaxis_plot = yaxis_plot[np.nonzero(xaxis_plot)]
+                #xaxis_plot = xaxis_plot[np.nonzero(xaxis_plot)]
                 legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
                 if [i, j] in red_points:
                     if [i, j] == red_points[0]:
