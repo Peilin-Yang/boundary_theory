@@ -31,7 +31,6 @@ from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor
 from sklearn.tree import DecisionTreeRegressor, export_graphviz
 from sklearn.feature_selection import SelectFromModel, mutual_info_regression
 from sklearn.model_selection import cross_val_score, cross_val_predict
-import pydotplus 
 
 
 class PlotCorrTFPeformance(object):
@@ -98,7 +97,7 @@ class PlotCorrTFPeformance(object):
         #print X
         #print y
         all_data_samples = np.concatenate([np.transpose(ele[1]) for ele in all_xaxis], axis=1)
-        forest = DecisionTreeRegressor(max_depth=2)
+        forest = DecisionTreesRegressor(max_depth=2)
         forest.fit(all_data_samples, yaxis)
         print forest.score(all_data_samples, yaxis)
         #print forest.decision_path(all_data_samples)
@@ -106,9 +105,7 @@ class PlotCorrTFPeformance(object):
         #print zip(yaxis, yfit)
         importances = forest.feature_importances_
         print importances
-        dot_data = export_graphviz(forest, out_file=None)
-        graph = pydotplus.graph_from_dot_data(dot_data) 
-        graph.write(os.path.join(self.output_root, 'tree_%s-%d.%s' % (self.collection_name, query_length, oformat) ), format=oformat) 
+        export_graphviz(forest, out_file=os.path.join(self.output_root, 'tree_%s-%d.dot' % (self.collection_name, query_length) ))
         lsvr = LinearSVR(C=0.01).fit(all_data_samples, yaxis)
         model = SelectFromModel(lsvr, prefit=True)
         X_new = model.transform(all_data_samples)
