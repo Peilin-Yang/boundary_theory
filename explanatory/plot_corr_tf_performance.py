@@ -28,7 +28,7 @@ from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 from sklearn.datasets import make_classification
 from sklearn.svm import LinearSVC, LinearSVR
 from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.tree import DecisionTreeRegressor, export_graphviz
 from sklearn.feature_selection import SelectFromModel, mutual_info_regression
 from sklearn.model_selection import cross_val_score, cross_val_predict
 
@@ -105,6 +105,7 @@ class PlotCorrTFPeformance(object):
         #print zip(yaxis, yfit)
         importances = forest.feature_importances_
         print importances
+        export_graphviz(forest, out_file='tree_%s-%d.dot' % (collection_name, query_length))
         lsvr = LinearSVR(C=0.01).fit(all_data_samples, yaxis)
         model = SelectFromModel(lsvr, prefit=True)
         X_new = model.transform(all_data_samples)
