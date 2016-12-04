@@ -30,6 +30,7 @@ from sklearn.svm import LinearSVC, LinearSVR
 from sklearn.ensemble import ExtraTreesClassifier, ExtraTreesRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.feature_selection import SelectFromModel, mutual_info_regression
+from sklearn.model_selection import cross_val_score, cross_val_predict
 
 
 class PlotCorrTFPeformance(object):
@@ -77,9 +78,9 @@ class PlotCorrTFPeformance(object):
         all_data = self.read_data(query_length)
         yaxis = [all_data[qid]['AP']['okapi'] for qid in all_data] # yaxis is the performance, e.g. AP
         all_xaxis = [
-            ('nonexisting_percent', self.get_data_with_label(all_data, 'zero_cnt_percentage')),
-            ('mean', self.get_data_with_label(all_data, 'mean')),
-            ('std', self.get_data_with_label(all_data, 'std')),
+            ('tf_nonexisting_percent', self.get_data_with_label(all_data, 'zero_cnt_percentage')),
+            ('tf_mean', self.get_data_with_label(all_data, 'mean')),
+            ('tf_std', self.get_data_with_label(all_data, 'std')),
             ('df', self.get_data_with_label(all_data, 'df')),
             ('idf', self.get_data_with_label(all_data, 'idf')),
         ]
