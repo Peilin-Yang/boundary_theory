@@ -32,7 +32,7 @@ class PlotTermRelationship(PlotCorrTFPeformance):
     Plot the relationship between the tf in relevant docs with performance
     """
     def __init__(self, corpus_path, corpus_name):
-        super(PlotTermRelationship, self).__init__()
+        super(PlotTermRelationship, self).__init__(corpus_path, corpus_name)
 
     def plot_all(self, query_length=2, oformat='png'):
         query_length = int(query_length)
