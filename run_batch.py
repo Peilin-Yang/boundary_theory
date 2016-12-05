@@ -16,6 +16,7 @@ from utils.ArrayJob import ArrayJob
 import g
 from tie_breaker import TieBreaker
 from utils.evaluation import Evaluation
+from utils.rel_tf_stats import RelTFStats
 
 
 _root = '../../reproduce/collections/'
@@ -211,7 +212,7 @@ def output_rel_tf_stats_batch():
     for q in g.query:
         collection_name = q['collection']
         collection_path = os.path.join(_root, collection_name)
-        all_paras.append(Prints(collection_path).batch_output_rel_tf_stats_paras())
+        all_paras.append(RelTFStats(collection_path).batch_output_rel_tf_stats_paras())
     #print all_paras
     gen_batch_framework('output_rel_tf_stats', '22', all_paras)
 
@@ -220,7 +221,7 @@ def output_rel_tf_stats_atom(para_file):
         reader = csv.reader(f)
         for row in reader:
             collection_path = row[0]
-            Prints(collection_path).print_rel_tf_stats()
+            RelTFStats(collection_path).print_rel_tf_stats()
 
 
 ###################################################
