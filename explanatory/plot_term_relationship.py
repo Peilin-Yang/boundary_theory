@@ -62,7 +62,20 @@ class PlotTermRelationship(object):
             all_data[qid] = doc_details.get_only_rels(qid)
         return all_data
 
-    def prepare_rel_data(self, data):
+    def rel_mapping(self, ele, dfs):
+        """
+        ele is the tfs of a doc, e.g. "this is a query" -> docid 155 -> [1, 2, 0, 3]
+        """
+        if np.count_nonzero(ele) == ele.size:
+            return 3
+        if np.count_nonzero(ele) == 1:
+            if dfs[0] > dfs[1] and ele[1] > 0 or dfs[1] > dfs[0] and ele[0] > 0:
+                return 2
+            else:
+                return 1
+        return 0
+
+    def prepare_rel_data(self, query_length, data):
         """
         data is read from doc_details
         """
@@ -72,8 +85,11 @@ class PlotTermRelationship(object):
             dfs = data[qid][2]
             doc_lens = data[qid][3]
             tf_in_docs = all_tfs.transpose()
-            print qid, all_tfs.size, all_tfs.shape, tf_in_docs, tf_in_docs.shape
-            print np.count_nonzero([np.count_nonzero(ele) == 2 for ele in tf_in_docs])
+            vfunc = np.vectorize(self.rel_mapping)
+            mapped = vfunc(tf_in_docs, dfs)
+            print mapped
+            unique, counts = np.unique(mapped, return_counts=True)
+            print unique, counts
             exit()
 
 
@@ -81,7 +97,7 @@ class PlotTermRelationship(object):
     def plot_all(self, query_length=2, oformat='png'):
         query_length = int(query_length)
         all_data = self.read_rel_data(query_length)
-        prepared_data = self.prepare_rel_data(all_data)
+        prepared_data = self.prepare_rel_data(query_length, all_data)
         zero_cnt_percentage = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
         highest_idf_term_idx = [np.argmax([all_data[qid]['terms'][t]['idf'] for t in all_data[qid]['terms']]) for qid in all_data]
         print zero_cnt_percentage, highest_idf_term_idx
