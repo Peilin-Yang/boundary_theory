@@ -72,7 +72,7 @@ class PlotTermRelationship(object):
             dfs = data[qid][2]
             doc_lens = data[qid][3]
             tf_in_docs = all_tfs.transpose()
-            print tf_in_docs, tf_in_docs.shape
+            print qid, tf_in_docs, tf_in_docs.shape
             print np.count_nonzero(tf_in_docs)
             exit()
 
