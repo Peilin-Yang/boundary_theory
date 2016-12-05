@@ -62,6 +62,21 @@ class PlotTermRelationship(object):
             all_data[qid] = doc_details.get_only_rels(qid)
         return all_data
 
+    def prepare_rel_data(self, data):
+        """
+        data is read from doc_details
+        """
+        for qid in data:
+            terms = data[qid][0]
+            all_tfs = data[qid][1]
+            dfs = data[qid][2]
+            doc_lens = data[qid][3]
+            tf_in_docs = all_tfs.transpose()
+            print tf_in_docs
+            exit()
+
+
+
     def plot_all(self, query_length=2, oformat='png'):
         query_length = int(query_length)
         all_data = self.read_rel_data(query_length)
