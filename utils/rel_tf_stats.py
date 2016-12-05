@@ -52,7 +52,6 @@ class RelTFStats(object):
             tf_mean = np.mean(tfs, axis=1)
             tf_std = np.std(tfs, axis=1)
             idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
-            ptCs = 
             try:
                 okapi_perform = Performances(self.collection_path).gen_optimal_performances_queries('okapi', [qid])[0]
                 lm_perform = Performances(self.collection_path).gen_optimal_performances_queries('dir', [qid])[0]
