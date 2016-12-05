@@ -11,6 +11,7 @@ from subprocess import Popen, PIPE
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from collection_stats import CollectionStats
+from results_file import ResultsFile
 from gen_doc_details import GenDocDetails
 from rel_tf_stats import RelTFStats
 from query import Query
@@ -50,6 +51,7 @@ class PlotCorrTFPeformance(object):
         if not os.path.exists(self.all_results_root):
             os.path.makedirs(self.all_results_root)
         self.rel_tf_stats_root = os.path.join(self.collection_path, 'rel_tf_stats')
+        self.split_results_root = os.path.join(self.collection_path, 'split_results')
         self.output_root = os.path.join(self.all_results_root, 'term_relationship')
         if not os.path.exists(self.output_root):
             os.makedirs(self.output_root)
@@ -60,9 +62,6 @@ class PlotCorrTFPeformance(object):
         return np.array(data).transpose()
 
     def read_data(self, query_length=0):
-        collection_name = self.collection_name
-        cs = CollectionStats(self.collection_path)
-        doc_details = GenDocDetails(self.collection_path)
         rel_tf_stats = RelTFStats(self.collection_path)
         if query_length == 0:
             queries = Query(self.collection_path).get_queries()
@@ -71,11 +70,16 @@ class PlotCorrTFPeformance(object):
         queries = {ele['num']:ele['title'] for ele in queries}
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
         queries = {k:v for k,v in queries.items() if k in rel_docs and len(rel_docs[k]) > 0}
-        return RelTFStats(self.collection_path).get_data(queries.keys())
+        return rel_tf_stats.get_data(queries.keys())
+
+    def get_optimal_okapi_ranking_list(self, rel_tf_stats_data):
+        for qid in rel_tf_stats_data:
+            ResultsFile().get_results_of_some_queries(qid)
 
     def plot_all(self, query_length=0, oformat='png'):
         query_length = int(query_length)
         all_data = self.read_data(query_length)
+        #self.get_optimal_okapi_ranking_list(all_data)
         yaxis = [all_data[qid]['AP']['okapi'] for qid in all_data] # yaxis is the performance, e.g. AP
         all_xaxis = [
             ('tf_nonexisting_percent', self.get_data_with_label(all_data, 'zero_cnt_percentage')),
@@ -126,9 +130,9 @@ class PlotCorrTFPeformance(object):
                 legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
                 if [i, j] in red_points:
                     if [i, j] == red_points[0]:
-                        ax.plot(xaxis_plot, yaxis_plot, marker='o', markerfacecolor='r', ms=4, ls='None', label=legend)
+                        ax.plot(xaxis_plot, yaxis_plot, marker='v', markerfacecolor='r', ms=4, ls='None', label=legend)
                     else:
-                        ax.plot(xaxis_plot, yaxis_plot, marker='o', markerfacecolor='g', ms=4, ls='None', label=legend)
+                        ax.plot(xaxis_plot, yaxis_plot, marker='^', markerfacecolor='g', ms=4, ls='None', label=legend)
                 else:
                     ax.plot(xaxis_plot, yaxis_plot, marker='o', ms=4, ls='None', label=legend)
                 ax.set_title(ele[0])
