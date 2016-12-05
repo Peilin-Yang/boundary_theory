@@ -10,6 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from query import Query
 from judgment import Judgment
 from collection_stats import CollectionStats
+from gen_doc_details import GenDocDetails
 
 import numpy as np
 
