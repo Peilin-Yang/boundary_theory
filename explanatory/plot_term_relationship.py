@@ -128,7 +128,6 @@ class PlotTermRelationship(object):
         markers = ['*', 's', '^', 'o']
         colors = ['k', 'r', 'g', 'b']
         for i, ele in enumerate(all_xaxis):
-            print ele
             col_idx = 0
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
@@ -138,6 +137,7 @@ class PlotTermRelationship(object):
                 else:
                     ax = axs
             for j, xaxis in enumerate(ele):
+                print xaxis
                 zipped = zip(details_data.keys(), xaxis, yaxis)
                 zipped.sort(key=itemgetter(1))
                 qids_plot = np.array(zip(*zipped)[0])
