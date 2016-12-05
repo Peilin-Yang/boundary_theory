@@ -9,6 +9,7 @@ from subprocess import Popen, PIPE
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from query import Query
 from judgment import Judgment
+from performance import Performances
 from collection_stats import CollectionStats
 from gen_doc_details import GenDocDetails
 
