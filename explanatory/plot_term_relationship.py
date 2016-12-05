@@ -74,6 +74,7 @@ class PlotTermRelationship(PlotCorrTFPeformance):
                         ax = axs[col_idx]
                     else:
                         ax = axs
+                print xaxis
                 zipped = zip(all_data.keys(), xaxis, yaxis)
                 zipped.sort(key=itemgetter(2))
                 qids_plot = np.array(zip(*zipped)[0])
