@@ -118,32 +118,18 @@ class PlotTermRelationship(object):
         rel_data = self.read_rel_data(query_length)
         prepared_data = self.prepare_rel_data(query_length, details_data, rel_data)
         all_xaxis = [[prepared_data[qid][i]['rel_ratio'] for qid in details_data] for i in range(4)]
-        print all_xaxis
-        exit()
-        plot_data = []
-        for i, ele in enumerate(zero_cnt_percentage):
-            if np.count_nonzero(ele)==query_length:
-                plot_data.append(3)
-            elif (ele[0] != 0 and highest_idf_term_idx[i] == 0) \
-                or (ele[1] != 0 and highest_idf_term_idx[i] == 1): 
-                plot_data.append(2)
-            elif ele[0] != 0 or ele[1] != 0:
-                plot_data.append(1)
-            else:
-                plot_data.append(0)
-        print plot_data
-        all_xaxis.append(('dist_in_rel_docs', plot_data))
-        yaxis = [float(all_data[qid]['AP']['okapi'][1]) for qid in all_data] # yaxis is the performance, e.g. AP
-        num_cols = 1
-        num_rows = 1
+        yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
+        num_rows, num_cols = all_xaxis.shape
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
         font = {'size' : 10}
         plt.rc('font', **font)
         row_idx = 0
-        for i, ele in enumerate(all_xaxis):
+        labels = ['NONE', 'LIDF', 'HIDF', 'ALL']
+        markers = ['*', 's', '^', 'o']
+        colors = ['k', 'r', 'g', 'b']
+        for i, xaxis in enumerate(all_xaxis):
             col_idx = 0
-            label = ele[0]
-            xaxis = ele[1]
+            label = labels[i]
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
             else:
@@ -151,26 +137,14 @@ class PlotTermRelationship(object):
                     ax = axs[col_idx]
                 else:
                     ax = axs
-            zipped = zip(all_data.keys(), xaxis, yaxis)
-            zipped.sort(key=itemgetter(2))
+            zipped = zip(details_data.keys(), xaxis, yaxis)
+            zipped.sort(key=itemgetter(1))
             qids_plot = np.array(zip(*zipped)[0])
             xaxis_plot = np.array(zip(*zipped)[1])
             yaxis_plot = np.array(zip(*zipped)[2])
-            markers = ['*', 's', '^', 'o']
-            colors = ['k', 'r', 'g', 'b']
-            legends = ['none', 'l-idf', 'h-idf', 'all']
-            draw_legend = [False, False, False, False]
-            print xaxis_plot, yaxis_plot
-            xidx = 1
-            for x,y in zip(xaxis_plot, yaxis_plot):
-                if not draw_legend[x]:
-                    draw_legend[x] = True
-                    ax.plot(xidx, y, marker=markers[x], mfc=colors[x], ms=4, ls='None', label=legends[x])
-                else:
-                    ax.plot(xidx, y, marker=markers[x], mfc=colors[x], ms=4, ls='None')
-                xidx += 1
+            ax.plot(xaxis_plot, yaxis_plot, marker=markers[i], mfc=colors[i], ms=4, ls='None')
             ax.set_title(label)
-            ax.set_xlabel('queries')
+            ax.set_xlabel('qids')
             ax.set_xticklabels(qids_plot)
             ax.legend(loc='best', markerscale=0.5, fontsize=8)
             col_idx += 1
