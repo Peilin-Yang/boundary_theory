@@ -59,7 +59,7 @@ class PlotTermRelationship(object):
         all_data = {}
         doc_details = GenDocDetails(self.collection_path)
         for qid in queries:
-            all_data[qid] = doc_details.get_only_rels(qid)
+            print doc_details.get_only_rels(qid)
         return all_data
 
     def plot_all(self, query_length=2, oformat='png'):
