@@ -80,8 +80,7 @@ class PlotTermRelationship(object):
     def plot_all(self, query_length=2, oformat='png'):
         query_length = int(query_length)
         all_data = self.read_rel_data(query_length)
-        print all_data
-        exit()
+        prepared_data = self.prepare_rel_data(all_data)
         zero_cnt_percentage = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
         highest_idf_term_idx = [np.argmax([all_data[qid]['terms'][t]['idf'] for t in all_data[qid]['terms']]) for qid in all_data]
         print zero_cnt_percentage, highest_idf_term_idx
