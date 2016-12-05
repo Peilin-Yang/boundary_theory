@@ -127,29 +127,19 @@ class PlotTermRelationship(object):
         labels = ['NONE', 'LIDF', 'HIDF', 'ALL']
         markers = ['*', 's', '^', 'o']
         colors = ['k', 'r', 'g', 'b']
-        for i, ele in enumerate(all_xaxis):
-            col_idx = 0
-            if num_rows > 1:
+        for row_idx, ele in enumerate(all_xaxis):
+            for col_idx, xaxis in enumerate(ele):
                 ax = axs[row_idx][col_idx]
-            else:
-                if num_cols > 1:
-                    ax = axs[col_idx]
-                else:
-                    ax = axs
-            for j, xaxis in enumerate(ele):
-                print xaxis
                 zipped = zip(details_data.keys(), xaxis, yaxis)
                 zipped.sort(key=itemgetter(1))
                 qids_plot = np.array(zip(*zipped)[0])
                 xaxis_plot = np.array(zip(*zipped)[1])
                 yaxis_plot = np.array(zip(*zipped)[2])
-                ax.plot(xaxis_plot, yaxis_plot, marker=markers[i], mfc=colors[i], ms=4, ls='None')
-                ax.set_title(labels[j])
+                ax.plot(xaxis_plot, yaxis_plot, marker=markers[col_idx], mfc=colors[col_idx], ms=4, ls='None')
+                ax.set_title(labels[col_idx])
                 #ax.set_xlabel('qids')
                 #ax.set_xticklabels(qids_plot)
                 ax.legend(loc='best', markerscale=0.5, fontsize=8)
-                col_idx += 1
-            row_idx += 1
 
         fig.suptitle(self.collection_name + ',qLen=%d' % query_length)
         output_fn = os.path.join(self.output_root, '%s-%d.%s' % (self.collection_name, query_length, oformat) )
