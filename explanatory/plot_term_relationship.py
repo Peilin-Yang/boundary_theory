@@ -48,7 +48,19 @@ class PlotTermRelationship(object):
         if not os.path.exists(self.output_root):
             os.makedirs(self.output_root)
 
-    def read_rel_data(self, query_length=2):
+
+    def read_rel_data(self, query_length=0):
+        rel_tf_stats = RelTFStats(self.collection_path)
+        if query_length == 0:
+            queries = Query(self.collection_path).get_queries()
+        else:
+            queries = Query(self.collection_path).get_queries_of_length(query_length)
+        queries = {ele['num']:ele['title'] for ele in queries}
+        rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
+        queries = {k:v for k,v in queries.items() if k in rel_docs and len(rel_docs[k]) > 0}
+        return rel_tf_stats.get_data(queries.keys())
+
+    def read_docdetails_data(self, query_length=2):
         if query_length == 0:
             queries = Query(self.collection_path).get_queries()
         else:
@@ -96,11 +108,12 @@ class PlotTermRelationship(object):
 
     def plot_all(self, query_length=2, oformat='png'):
         query_length = int(query_length)
-        all_data = self.read_rel_data(query_length)
-        countings = prepared_data = self.prepare_rel_data(query_length, all_data)
+        details_data = self.read_docdetails_data(query_length)
+        rel_data = self.read_rel_data(query_length)
+        countings = prepared_data = self.prepare_rel_data(query_length, details_data)
         for qid in countings:
             for value in countings[qid]:
-                countings[qid][value]['rel_ratio'] = countings[qid][value]['cnt']*1./all_data[qid]['rel_cnt']
+                countings[qid][value]['rel_ratio'] = countings[qid][value]['cnt']*1./rel_data[qid]['rel_cnt']
         print countings
         exit()
         all_xaxis = []
