@@ -57,7 +57,7 @@ class PlotTermRelationship(PlotCorrTFPeformance):
                 plot_data.append(0)
         print plot_data
         all_xaxis.append(('dist_in_rel_docs', plot_data))
-        yaxis = [all_data[qid]['AP']['okapi'] for qid in all_data] # yaxis is the performance, e.g. AP
+        yaxis = [float(all_data[qid]['AP']['okapi'][1]) for qid in all_data] # yaxis is the performance, e.g. AP
         num_cols = 1
         num_rows = 1
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
