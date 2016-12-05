@@ -57,13 +57,16 @@ class RelTFStats(object):
             # try:
             okapi_perform = Performances(self.collection_path).gen_optimal_performances_queries('okapi', [qid])[0]
             lm_perform = Performances(self.collection_path).gen_optimal_performances_queries('dir', [qid])[0]
-            terms_stats = {t:{'mean': tf_mean[idx], 'std': tf_std[idx], 
-                'df': dfs[idx], 'idf': idfs[idx], 'ptC': cs.get_term_collection_occur(t)*1./cs.get_total_terms(),
-                'zero_cnt_percentage': round(1.0-np.count_nonzero(tfs[idx])*1./tfs[idx].size, 2)} for idx, t in enumerate(terms) if dfs[idx] != 0}
+            terms_stats = {
+                t:{'mean': tf_mean[idx], 'std': tf_std[idx], 
+                'df': dfs[idx], 'idf': idfs[idx], 'tfc':cs.get_term_collection_occur(t), 
+                'ptC': cs.get_term_collection_occur(t)*1./cs.get_total_terms(),
+                'zero_cnt_percentage': round(1.0-np.count_nonzero(tfs[idx])*1./tfs[idx].size, 2)
+            } for idx, t in enumerate(terms) if dfs[idx] != 0}
             # except:
             #     continue
             output = {
-                'AP': {'okapi': okapi_perform},
+                'AP': {'okapi': okapi_perform, 'dir': lm_perform},
                 'rel_cnt': tfs.size,
                 'terms': terms_stats
             }
