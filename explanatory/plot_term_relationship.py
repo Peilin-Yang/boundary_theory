@@ -83,6 +83,7 @@ class PlotTermRelationship(PlotCorrTFPeformance):
             markers = ['o', 's', '*', '^']
             colors = ['r', 'g', 'b', 'k']
             legends = ['all', 'h-idf', 'l-idf', 'none']
+            print xaxis_plot, yaxis_plot
             for x,y in zip(xaxis_plot, yaxis_plot):
                 if x == 3:
                     ax.plot(x, y, marker=markers[x], mfc=colors[x], ms=4, ls='None', label=legends[x])
