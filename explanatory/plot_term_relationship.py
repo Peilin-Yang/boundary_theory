@@ -86,8 +86,9 @@ class PlotTermRelationship(object):
             dfs = data[qid][2]
             doc_lens = data[qid][3]
             tf_in_docs = all_tfs.transpose()
-            vfunc = np.vectorize(self.rel_mapping)
-            mapped = vfunc(tf_in_docs, dfs)
+            mapped = []
+            for ele in tf_in_docs:
+                mapped.append(self.rel_mapping(ele, dfs))
             print mapped
             unique, counts = np.unique(mapped, return_counts=True)
             print unique, counts
