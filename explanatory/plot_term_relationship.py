@@ -87,22 +87,27 @@ class PlotTermRelationship(object):
                 return 1
         return 0
 
-    def prepare_rel_data(self, query_length, data):
+    def prepare_rel_data(self, query_length, details_data, rel_data):
         """
         data is read from doc_details
         """
         countings = {}
-        for qid in data:
-            terms = data[qid][0]
-            all_tfs = data[qid][1]
-            dfs = data[qid][2]
-            doc_lens = data[qid][3]
+        for qid in details_data:
+            terms = details_data[qid][0]
+            all_tfs = details_data[qid][1]
+            dfs = details_data[qid][2]
+            doc_lens = details_data[qid][3]
             tf_in_docs = all_tfs.transpose()
             mapped = []
             for ele in tf_in_docs:
                 mapped.append(self.rel_mapping(ele, dfs))
             unique, counts = np.unique(mapped, return_counts=True)
-            countings[qid] = {value: {'cnt':counts[i]} for i, value in enumerate(unique)}
+            countings[qid] = {value: {'cnt':counts[i], 'rel_ratio': counts[i]*1./rel_data[qid]['rel_cnt']} for i, value in enumerate(unique)}
+            for i in range(1, 4):
+                if i not in countings[qid]:
+                    countings[qid][i] = 0
+            if 0 not in countings[qid]:
+                countings[qid][0] = rel_data[qid]['rel_cnt'] - sum([countings[qid][v]['cnt'] for v in countings[qid]])
         return countings
 
 
@@ -110,10 +115,7 @@ class PlotTermRelationship(object):
         query_length = int(query_length)
         details_data = self.read_docdetails_data(query_length)
         rel_data = self.read_rel_data(query_length)
-        countings = prepared_data = self.prepare_rel_data(query_length, details_data)
-        for qid in countings:
-            for value in countings[qid]:
-                countings[qid][value]['rel_ratio'] = countings[qid][value]['cnt']*1./rel_data[qid]['rel_cnt']
+        countings = prepared_data = self.prepare_rel_data(query_length, details_data, rel_data)
         print countings
         exit()
         all_xaxis = []
