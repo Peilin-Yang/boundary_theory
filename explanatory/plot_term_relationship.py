@@ -137,7 +137,7 @@ class PlotTermRelationship(object):
                     ax = axs[col_idx]
                 else:
                     ax = axs
-            for j, xaxis in ele:
+            for j, xaxis in enumerate(ele):
                 zipped = zip(details_data.keys(), xaxis, yaxis)
                 zipped.sort(key=itemgetter(1))
                 qids_plot = np.array(zip(*zipped)[0])
