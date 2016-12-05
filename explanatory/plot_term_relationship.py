@@ -117,7 +117,7 @@ class PlotTermRelationship(object):
         details_data = self.read_docdetails_data(query_length)
         rel_data = self.read_rel_data(query_length)
         prepared_data = self.prepare_rel_data(query_length, details_data, rel_data)
-        all_xaxis = [[[prepared_data[qid][i]['rel_ratio']] for qid in details_data] for i in range(4)]
+        all_xaxis = [[prepared_data[qid][i]['rel_ratio'] for qid in details_data] for i in range(4)]
         print all_xaxis
         exit()
         plot_data = []
