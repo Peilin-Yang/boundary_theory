@@ -32,7 +32,7 @@ class PlotTermRelationship(object):
     Plot the relationship between the tf in relevant docs with performance
     """
     def __init__(self, corpus_path, corpus_name):
-        super(PlotTermRelationship, self).__init__(corpus_path, corpus_name)
+        super(PlotTermRelationship, self).__init__()
         self.collection_path = os.path.abspath(corpus_path)
         if not os.path.exists(self.collection_path):
             print '[Evaluation Constructor]:Please provide valid corpus path'
