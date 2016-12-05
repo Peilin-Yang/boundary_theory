@@ -88,23 +88,6 @@ def plot_para_trending(para_file):
             PerformaceAnalysis().plot_para_trending(collection_path, query_part, metric, outfmt)
 
 
-def output_rel_tf_stats_batch():
-    all_paras = []
-    for q in g.query:
-        collection_name = q['collection']
-        collection_path = os.path.join(collection_root, collection_name)
-        all_paras.append(Prints(collection_path).batch_output_rel_tf_stats_paras())
-    #print all_paras
-    gen_batch_framework('output_rel_tf_stats', '22', all_paras)
-
-def output_rel_tf_stats_atom(para_file):
-    with open(para_file) as f:
-        reader = csv.reader(f)
-        for row in reader:
-            collection_path = row[0]
-            Prints(collection_path).print_rel_tf_stats()
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
@@ -115,13 +98,6 @@ if __name__ == '__main__':
         nargs='+',
         help='')
 
-    parser.add_argument('-21', '--output_rel_tf_stats_batch', 
-        action='store_true',
-        help='Output the term frequency of query terms for relevant documents.')
-    parser.add_argument('-22', '--output_rel_tf_stats_atom', 
-        nargs=1,
-        help='Output the term frequency of query terms for relevant documents.')
-
     args = parser.parse_args()
 
     if args.gen_plot_para_trending_batch_paras:
@@ -129,8 +105,4 @@ if __name__ == '__main__':
     if args.plot_para_trending:
         plot_para_trending(args.plot_para_trending[0])
 
-    if args.output_rel_tf_stats_batch:
-        output_rel_tf_stats_batch()
-    if args.output_rel_tf_stats_atom:
-        output_rel_tf_stats_atom(args.output_rel_tf_stats_atom[0])
 

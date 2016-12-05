@@ -85,33 +85,6 @@ class PlotCorrTFPeformance(object):
             ('idf', self.get_data_with_label(all_data, 'idf')),
         ]
 
-        # learning related start
-        # X, y = make_classification(n_samples=1000,
-        #                    n_features=10,
-        #                    n_informative=3,
-        #                    n_redundant=0,
-        #                    n_repeated=0,
-        #                    n_classes=2,
-        #                    random_state=0,
-        #                    shuffle=False)
-        # #print X
-        # #print y
-        # all_data_samples = np.concatenate([np.transpose(ele[1]) for ele in all_xaxis], axis=1)
-        # forest = ExtraTreesRegressor(max_depth=2)
-        # forest.fit(all_data_samples, yaxis)
-        # print forest.score(all_data_samples, yaxis)
-        # #print forest.decision_path(all_data_samples)
-        # yfit = forest.predict(all_data_samples)
-        # #print zip(yaxis, yfit)
-        # importances = forest.feature_importances_
-        # print importances
-        # #export_graphviz(forest, out_file=os.path.join(self.output_root, 'tree_%s-%d.dot' % (self.collection_name, query_length) ))
-        # lsvr = LinearSVR(C=0.01).fit(all_data_samples, yaxis)
-        # model = SelectFromModel(lsvr, prefit=True)
-        # X_new = model.transform(all_data_samples)
-        # print X_new.shape
-        # learning related end
-
         xlabels = ['max', 'min', 'max-min', 'max/min', 'mean', 'std']
         num_cols = len(xlabels)
         num_rows = len(all_xaxis)

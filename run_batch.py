@@ -206,6 +206,23 @@ def gen_detailed_doc_stats_atom(para_file):
             TieBreaker(collection_path).gen_doc_details_atom(result_fn, output_fn) 
 
 
+def output_rel_tf_stats_batch():
+    all_paras = []
+    for q in g.query:
+        collection_name = q['collection']
+        collection_path = os.path.join(collection_root, collection_name)
+        all_paras.append(Prints(collection_path).batch_output_rel_tf_stats_paras())
+    #print all_paras
+    gen_batch_framework('output_rel_tf_stats', '22', all_paras)
+
+def output_rel_tf_stats_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            Prints(collection_path).print_rel_tf_stats()
+
+
 ###################################################
 def run_all_baseline_results_atom(para_file):
     with open(para_file) as f:
@@ -341,6 +358,14 @@ if __name__ == '__main__':
         help="Generate the detailed document for the query. The input is \
             the result file.")
 
+
+    parser.add_argument('-31', '--output_rel_tf_stats_batch', 
+        action='store_true',
+        help='Output the term frequency of query terms for relevant documents.')
+    parser.add_argument('-32', '--output_rel_tf_stats_atom', 
+        nargs=1,
+        help='Output the term frequency of query terms for relevant documents.')
+
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
         help="Run all parameters for Pivoted, Okapi and Dirichlet.")
@@ -352,6 +377,8 @@ if __name__ == '__main__':
     parser.add_argument("-22", "--gen_baseline_best_results",
         nargs='+',
         help="Output the baseline best results.")
+
+
 
     args = parser.parse_args()
 
@@ -365,6 +392,11 @@ if __name__ == '__main__':
     if args.gen_detailed_doc_stats_atom:
         gen_detailed_doc_stats_atom(args.gen_detailed_doc_stats_atom[0])
 
+    if args.output_rel_tf_stats_batch:
+        output_rel_tf_stats_batch()
+    if args.output_rel_tf_stats_atom:
+        output_rel_tf_stats_atom(args.output_rel_tf_stats_atom[0])
+
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)
 
@@ -373,5 +405,4 @@ if __name__ == '__main__':
 
     if args.gen_baseline_best_results:
         gen_baseline_best_results(args.gen_baseline_best_results)    
-
 
