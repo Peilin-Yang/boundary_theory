@@ -84,10 +84,13 @@ class PlotTermRelationship(PlotCorrTFPeformance):
             colors = ['r', 'g', 'b', 'k']
             legends = ['all', 'h-idf', 'l-idf', 'none']
             print xaxis_plot, yaxis_plot
+            xidx = 1
             for x,y in zip(xaxis_plot, yaxis_plot):
-                ax.plot(x, y, marker=markers[x], mfc=colors[x], ms=4, ls='None')
+                ax.plot(xidx, y, marker=markers[x], mfc=colors[x], ms=4, ls='None')
+                xidx += 1
             ax.set_title(label)
             ax.set_xlabel('queries')
+            ax.set_xticklabels(qids_plot)
             ax.legend(loc='best', markerscale=0.5, fontsize=8)
             col_idx += 1
 
