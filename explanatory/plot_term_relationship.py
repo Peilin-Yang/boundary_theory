@@ -107,7 +107,7 @@ class PlotTermRelationship(object):
                 if i not in countings[qid]:
                     countings[qid][i] = {'cnt': 0, 'rel_ratio': 0}
             if 0 not in countings[qid]:
-                countings[qid][0] = rel_data[qid]['rel_cnt'] - np.sum([countings[qid][v]['cnt'] for v in countings[qid]])
+                countings[qid][0] = rel_data[qid]['rel_cnt'] - sum([countings[qid][v]['cnt'] for v in countings[qid]])
         return countings
 
 
