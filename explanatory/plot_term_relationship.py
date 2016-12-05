@@ -38,8 +38,17 @@ class PlotTermRelationship(PlotCorrTFPeformance):
         query_length = int(query_length)
         all_data = self.read_data(query_length)
         zero_cnt_percentage = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
+        highest_idf_term_idx = [np.argmax([all_data[qid]['terms'][t]['idf'] for t in all_data[qid]['terms']]) for qid in all_data]
         all_rel_cnts = [all_data[qid]['rel_cnt'] for qid in all_data]
-        rel_contain_all_terms = [np.count_nonzero(ele)==query_length for ele in zero_cnt_percentage]
-        #rel_contain_one_term = [np.count_nonzero()==1 for ele in zero_cnt_percentage]
-        #rel_contain_theother_term = [np.count_nonzero()==1 for ele in zero_cnt_percentage]
-        print rel_contain_all_terms
+        plot_data = []
+        for i, ele in enumerate(zero_cnt_percentage):
+            if np.count_nonzero(ele)==query_length:
+                plot_data.append(3)
+            elif (ele[0] != 0 and highest_idf_term_idx[i] == 0) 
+                or (ele[1 != 0 and highest_idf_term_idx[i] == 1): 
+                plot_data.append(2)
+            elif ele[0] != 0 or ele[1] != 0:
+                plot_data.append(1)
+            else:
+                plot_data.append(0)
+        print plot_data
