@@ -39,6 +39,7 @@ from baselines import Baselines
 from gen_doc_details import GenDocDetails
 from plot_prob_rel import PlotRelProb
 from plot_corr_tf_performance import PlotCorrTFPeformance
+from plot_term_relationship import PlotTermRelationship
 from plot_synthetic_map import PlotSyntheticMAP
 from prints import Prints
 import g
@@ -158,6 +159,25 @@ def plot_corr_tf_performance_atom(para_file):
             collection_name = row[1]
             PlotCorrTFPeformance(collection_path, collection_name).plot_all(*row[2:])
 
+def gen_plot_term_relationship_batch(paras):
+    all_paras = []
+    for q in g.query:
+        collection_name = q['collection_formal_name']
+        collection_path = os.path.join(collection_root, q['collection'])
+        p = copy.deepcopy(paras)
+        p.insert(0, collection_name)
+        p.insert(0, collection_path)
+        all_paras.append((p))
+    gen_batch_framework('plot_term_relationship', '322', all_paras)
+
+def plot_term_relationship_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            collection_name = row[1]
+            PlotTermRelationship(collection_path, collection_name).plot_all(*row[2:])
+
 def gen_lambdarank_batch():
     all_paras = []
     
@@ -271,6 +291,11 @@ if __name__ == '__main__':
                        [output_format(eps|png)]')
     parser.add_argument('-222', '--plot_corr_tf_performance_atom', nargs=1, help='')
 
+    parser.add_argument('-321', '--gen_plot_term_relationship_batch', nargs='+',
+                       help='args: [query_len(0 for all queries)] \
+                       [output_format(eps|png)]')
+    parser.add_argument('-322', '--plot_term_relationship_atom', nargs=1, help='')
+
     parser.add_argument('-syc1', '--plot_synthetic', nargs='+',
                        help='plot P( D is a relevant document | c(t,D)=x ), \
                        where x = 0,1,2,...maxTF(t) for the synthetic data set \
@@ -351,6 +376,11 @@ if __name__ == '__main__':
         gen_plot_corr_tf_performance_batch(args.gen_plot_corr_tf_performance_batch)
     if args.plot_corr_tf_performance_atom:
         plot_corr_tf_performance_atom(args.plot_corr_tf_performance_atom[0])
+
+    if args.gen_plot_term_relationship_batch:
+        gen_plot_term_relationship_batch(args.gen_plot_term_relationship_batch)
+    if args.plot_term_relationship_atom:
+        plot_term_relationship_atom(args.plot_term_relationship_atom[0])
 
     if args.plot_synthetic:
         PlotSyntheticMAP().plot(
