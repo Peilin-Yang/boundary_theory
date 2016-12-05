@@ -214,7 +214,7 @@ def output_rel_tf_stats_batch():
         collection_path = os.path.join(_root, collection_name)
         all_paras.append(RelTFStats(collection_path).batch_output_rel_tf_stats_paras())
     #print all_paras
-    gen_batch_framework('output_rel_tf_stats', '22', all_paras)
+    gen_batch_framework('output_rel_tf_stats', '32', all_paras)
 
 def output_rel_tf_stats_atom(para_file):
     with open(para_file) as f:
