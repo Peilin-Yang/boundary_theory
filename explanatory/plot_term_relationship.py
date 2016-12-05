@@ -80,13 +80,18 @@ class PlotTermRelationship(PlotCorrTFPeformance):
             qids_plot = np.array(zip(*zipped)[0])
             xaxis_plot = np.array(zip(*zipped)[1])
             yaxis_plot = np.array(zip(*zipped)[2])
-            markers = ['o', 's', '*', '^']
-            colors = ['r', 'g', 'b', 'k']
-            legends = ['all', 'h-idf', 'l-idf', 'none']
+            markers = ['*', 's', '^', 'o']
+            colors = ['k', 'r', 'g', 'b']
+            legends = ['none', 'l-idf', 'h-idf', 'all']
+            draw_legend = [False, False, False, False]
             print xaxis_plot, yaxis_plot
             xidx = 1
             for x,y in zip(xaxis_plot, yaxis_plot):
-                ax.plot(xidx, y, marker=markers[x], mfc=colors[x], ms=4, ls='None')
+                if not draw_legend[x]:
+                    draw_legend[x] = True
+                    ax.plot(xidx, y, marker=markers[x], mfc=colors[x], ms=4, ls='None', label=legends[x])
+                else:
+                    ax.plot(xidx, y, marker=markers[x], mfc=colors[x], ms=4, ls='None')
                 xidx += 1
             ax.set_title(label)
             ax.set_xlabel('queries')
