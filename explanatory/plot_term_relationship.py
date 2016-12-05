@@ -42,6 +42,7 @@ class PlotTermRelationship(PlotCorrTFPeformance):
         all_data = self.read_data(query_length)
         zero_cnt_percentage = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
         highest_idf_term_idx = [np.argmax([all_data[qid]['terms'][t]['idf'] for t in all_data[qid]['terms']]) for qid in all_data]
+        print zero_cnt_percentage, highest_idf_term_idx
         all_rel_cnts = [all_data[qid]['rel_cnt'] for qid in all_data]
         all_xaxis = []
         plot_data = []
