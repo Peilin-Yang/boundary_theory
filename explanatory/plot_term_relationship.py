@@ -66,31 +66,32 @@ class PlotTermRelationship(PlotCorrTFPeformance):
         row_idx = 0
         for i, ele in enumerate(all_xaxis):
             col_idx = 0
-            for j, xaxis in enumerate(ele[1]):
-                if num_rows > 1:
-                    ax = axs[row_idx][col_idx]
+            label = ele[0]
+            xaxis = ele[1]
+            if num_rows > 1:
+                ax = axs[row_idx][col_idx]
+            else:
+                if num_cols > 1:
+                    ax = axs[col_idx]
                 else:
-                    if num_cols > 1:
-                        ax = axs[col_idx]
-                    else:
-                        ax = axs
-                print xaxis
-                zipped = zip(all_data.keys(), xaxis, yaxis)
-                zipped.sort(key=itemgetter(2))
-                qids_plot = np.array(zip(*zipped)[0])
-                print i, j, qids_plot
-                xaxis_plot = np.array(zip(*zipped)[1])
-                yaxis_plot = np.array(zip(*zipped)[2])
-                markers = ['o', 's', '*', '^']
-                colors = ['r', 'g', 'b', 'k']
-                for x,y in zip(xaxis_plot, yaxis_plot):
-                    if x == 3:
-                        ax.plot(x, y, marker=markers[x], mfc=colors[x], ms=4, ls='None', label=legend)
-                ax.set_title(ele[0])
-                ax.set_xlabel('queries')
-                ax.legend(loc='best', markerscale=0.5, fontsize=8)
-                col_idx += 1
-            row_idx += 1
+                    ax = axs
+            print xaxis
+            zipped = zip(all_data.keys(), xaxis, yaxis)
+            zipped.sort(key=itemgetter(2))
+            qids_plot = np.array(zip(*zipped)[0])
+            print i, j, qids_plot
+            xaxis_plot = np.array(zip(*zipped)[1])
+            yaxis_plot = np.array(zip(*zipped)[2])
+            markers = ['o', 's', '*', '^']
+            colors = ['r', 'g', 'b', 'k']
+            legends = ['all', 'h-idf', 'l-idf', 'none']
+            for x,y in zip(xaxis_plot, yaxis_plot):
+                if x == 3:
+                    ax.plot(x, y, marker=markers[x], mfc=colors[x], ms=4, ls='None', label=legends[x])
+            ax.set_title(label)
+            ax.set_xlabel('queries')
+            ax.legend(loc='best', markerscale=0.5, fontsize=8)
+            col_idx += 1
 
         fig.suptitle(self.collection_name + ',qLen=%d' % query_length)
         output_fn = os.path.join(self.output_root, '%s-%d.%s' % (self.collection_name, query_length, oformat) )
