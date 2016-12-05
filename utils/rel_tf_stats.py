@@ -48,6 +48,7 @@ class RelTFStats(object):
         queries = {ele['num']:ele['title'] for ele in queries}
         cs = CollectionStats(self.collection_path)
         doc_details = GenDocDetails(self.collection_path)
+        rel_cnts = {qid:len(rel_docs_list) for qid, rel_docs_list in Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys()).items()}
         for qid in queries:
             #if not os.path.exists(os.path.join(output_root, qid)):
             terms, tfs, dfs, doclens = doc_details.get_only_rels(qid)
@@ -67,7 +68,7 @@ class RelTFStats(object):
                 continue
             output = {
                 'AP': {'okapi': okapi_perform, 'dir': lm_perform},
-                'rel_cnt': tfs.size,
+                'rel_cnt': rel_cnts[qid],
                 'terms': terms_stats
             }
             output_root = os.path.join(self.collection_path, 'rel_tf_stats')
