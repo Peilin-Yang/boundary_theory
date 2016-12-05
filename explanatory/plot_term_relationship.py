@@ -66,7 +66,6 @@ class PlotTermRelationship(object):
         """
         ele is the tfs of a doc, e.g. "this is a query" -> docid 155 -> [1, 2, 0, 3]
         """
-        print ele, dfs
         if np.count_nonzero(ele) == ele.size:
             return 3
         if np.count_nonzero(ele) == 1:
@@ -80,6 +79,7 @@ class PlotTermRelationship(object):
         """
         data is read from doc_details
         """
+        countings = {}
         for qid in data:
             terms = data[qid][0]
             all_tfs = data[qid][1]
@@ -89,21 +89,20 @@ class PlotTermRelationship(object):
             mapped = []
             for ele in tf_in_docs:
                 mapped.append(self.rel_mapping(ele, dfs))
-            print mapped
             unique, counts = np.unique(mapped, return_counts=True)
-            print unique, counts
-            exit()
-
+            countings[qid] = {value: {'cnt':counts[i]} for i, value in enumerate(unique)}
+        return countings
 
 
     def plot_all(self, query_length=2, oformat='png'):
         query_length = int(query_length)
         all_data = self.read_rel_data(query_length)
-        prepared_data = self.prepare_rel_data(query_length, all_data)
-        zero_cnt_percentage = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
-        highest_idf_term_idx = [np.argmax([all_data[qid]['terms'][t]['idf'] for t in all_data[qid]['terms']]) for qid in all_data]
-        print zero_cnt_percentage, highest_idf_term_idx
-        all_rel_cnts = [all_data[qid]['rel_cnt'] for qid in all_data]
+        countings = prepared_data = self.prepare_rel_data(query_length, all_data)
+        for qid in countings:
+            for value in countings[qid]:
+                countings[qid][value]['rel_ratio'] = countings[qid][value]['cnt']*1./all_data[qid]['rel_cnt']
+        print countings
+        exit()
         all_xaxis = []
         plot_data = []
         for i, ele in enumerate(zero_cnt_percentage):
