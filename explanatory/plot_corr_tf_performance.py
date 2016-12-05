@@ -141,7 +141,7 @@ class PlotCorrTFPeformance(object):
                         ax = axs[col_idx]
                     else:
                         ax = axs
-                zipped = zip(queries.keys(), xaxis, yaxis)
+                zipped = zip(all_data.keys(), xaxis, yaxis)
                 zipped.sort(key=itemgetter(1))
                 qids_plot = np.array(zip(*zipped)[0])
                 print i, j, qids_plot
