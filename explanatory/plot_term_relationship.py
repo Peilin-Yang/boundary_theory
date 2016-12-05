@@ -39,7 +39,7 @@ class PlotTermRelationship(PlotCorrTFPeformance):
         all_data = self.read_data(query_length)
         zero_cnt_percentage = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
         all_rel_cnts = [all_data[qid]['rel_cnt'] for qid in all_data]
-        rel_contain_all_terms = [np.count_nonzero()==query_length for ele in zero_cnt_percentage]
+        rel_contain_all_terms = [np.count_nonzero(ele)==query_length for ele in zero_cnt_percentage]
         #rel_contain_one_term = [np.count_nonzero()==1 for ele in zero_cnt_percentage]
         #rel_contain_theother_term = [np.count_nonzero()==1 for ele in zero_cnt_percentage]
         print rel_contain_all_terms
