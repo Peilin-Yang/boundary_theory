@@ -117,7 +117,7 @@ class PlotTermRelationship(object):
         details_data = self.read_docdetails_data(query_length)
         rel_data = self.read_rel_data(query_length)
         prepared_data = self.prepare_rel_data(query_length, details_data, rel_data)
-        all_xaxis = [[prepared_data[qid][i]['rel_ratio'] for qid in details_data] for i in range(4)]
+        all_xaxis = np.array([[prepared_data[qid][i]['rel_ratio'] for qid in details_data] for i in range(4)])
         yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
         num_rows, num_cols = all_xaxis.shape
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
