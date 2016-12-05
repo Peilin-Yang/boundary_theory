@@ -66,6 +66,7 @@ class PlotTermRelationship(object):
         """
         ele is the tfs of a doc, e.g. "this is a query" -> docid 155 -> [1, 2, 0, 3]
         """
+        print ele, dfs
         if np.count_nonzero(ele) == ele.size:
             return 3
         if np.count_nonzero(ele) == 1:
