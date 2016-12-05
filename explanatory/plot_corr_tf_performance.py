@@ -52,7 +52,7 @@ class PlotCorrTFPeformance(object):
             os.path.makedirs(self.all_results_root)
         self.rel_tf_stats_root = os.path.join(self.collection_path, 'rel_tf_stats')
         self.split_results_root = os.path.join(self.collection_path, 'split_results')
-        self.output_root = os.path.join(self.all_results_root, 'term_relationship')
+        self.output_root = os.path.join(self.all_results_root, 'tf_correlation')
         if not os.path.exists(self.output_root):
             os.makedirs(self.output_root)
 

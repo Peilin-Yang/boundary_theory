@@ -27,19 +27,45 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
-class PlotTermRelationship(PlotCorrTFPeformance):
+class PlotTermRelationship(object):
     """
     Plot the relationship between the tf in relevant docs with performance
     """
     def __init__(self, corpus_path, corpus_name):
         super(PlotTermRelationship, self).__init__(corpus_path, corpus_name)
+        self.collection_path = os.path.abspath(corpus_path)
+        if not os.path.exists(self.collection_path):
+            print '[Evaluation Constructor]:Please provide valid corpus path'
+            exit(1)
+
+        self.collection_name = corpus_name
+        self.all_results_root = '../../all_results'
+        if not os.path.exists(self.all_results_root):
+            os.path.makedirs(self.all_results_root)
+        self.rel_tf_stats_root = os.path.join(self.collection_path, 'rel_tf_stats')
+        self.split_results_root = os.path.join(self.collection_path, 'split_results')
         self.output_root = os.path.join(self.all_results_root, 'term_relationship')
         if not os.path.exists(self.output_root):
             os.makedirs(self.output_root)
 
+    def read_rel_data(self, query_length=2):
+        if query_length == 0:
+            queries = Query(self.collection_path).get_queries()
+        else:
+            queries = Query(self.collection_path).get_queries_of_length(query_length)
+        queries = {ele['num']:ele['title'] for ele in queries}
+        rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
+        queries = {k:v for k,v in queries.items() if k in rel_docs and len(rel_docs[k]) > 0}
+        all_data = {}
+        for qid in queries:
+            all_data[qid] = GenDocDetails(self.collection_path).get_only_rels(qid)
+        return all_data
+
     def plot_all(self, query_length=2, oformat='png'):
         query_length = int(query_length)
-        all_data = self.read_data(query_length)
+        all_data = self.read_rel_data(query_length)
+        print all_data
+        exit()
         zero_cnt_percentage = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
         highest_idf_term_idx = [np.argmax([all_data[qid]['terms'][t]['idf'] for t in all_data[qid]['terms']]) for qid in all_data]
         print zero_cnt_percentage, highest_idf_term_idx
