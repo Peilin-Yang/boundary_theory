@@ -86,7 +86,7 @@ class PlotTermRelationship(PlotCorrTFPeformance):
             print xaxis_plot, yaxis_plot
             xidx = 1
             for x,y in zip(xaxis_plot, yaxis_plot):
-                ax.plot(xidx, y, marker=markers[x], mfc=colors[x], ms=4, ls='None')
+                ax.plot(xidx, y, marker=markers[x], mfc=colors[x], ms=4, ls='None', label=legends[x])
                 xidx += 1
             ax.set_title(label)
             ax.set_xlabel('queries')
