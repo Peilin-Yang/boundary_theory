@@ -57,8 +57,9 @@ class PlotTermRelationship(object):
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
         queries = {k:v for k,v in queries.items() if k in rel_docs and len(rel_docs[k]) > 0}
         all_data = {}
+        doc_details = GenDocDetails(self.collection_path)
         for qid in queries:
-            all_data[qid] = GenDocDetails(self.collection_path).get_only_rels(qid)
+            all_data[qid] = doc_details.get_only_rels(qid)
         return all_data
 
     def plot_all(self, query_length=2, oformat='png'):
