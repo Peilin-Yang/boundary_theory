@@ -59,8 +59,7 @@ class PlotTermRelationship(object):
         all_data = {}
         doc_details = GenDocDetails(self.collection_path)
         print dir(doc_details)
-        print doc_details.__dict__
-
+        raw_input()
         for qid in queries:
             print doc_details.get_only_rels(qid)
         return all_data
