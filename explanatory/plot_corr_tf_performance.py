@@ -141,10 +141,12 @@ class PlotCorrTFPeformance(object):
                         ax = axs[col_idx]
                     else:
                         ax = axs
-                zipped = zip(xaxis, yaxis)
-                zipped.sort(key=itemgetter(0))
-                xaxis_plot = np.array(zip(*zipped)[0])
-                yaxis_plot = np.array(zip(*zipped)[1])
+                zipped = zip(queries.keys(), xaxis, yaxis)
+                zipped.sort(key=itemgetter(1))
+                qids_plot = np.array(zip(*zipped)[0])
+                print i, j, qids_plot
+                xaxis_plot = np.array(zip(*zipped)[1])
+                yaxis_plot = np.array(zip(*zipped)[2])
                 #print xaxis_plot, np.nonzero(xaxis_plot)
                 #yaxis_plot = yaxis_plot[np.nonzero(xaxis_plot)]
                 #xaxis_plot = xaxis_plot[np.nonzero(xaxis_plot)]
