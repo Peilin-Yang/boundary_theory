@@ -33,6 +33,9 @@ class PlotTermRelationship(PlotCorrTFPeformance):
     """
     def __init__(self, corpus_path, corpus_name):
         super(PlotTermRelationship, self).__init__(corpus_path, corpus_name)
+        self.output_root = os.path.join(self.all_results_root, 'term_relationship')
+        if not os.path.exists(self.output_root):
+            os.makedirs(self.output_root)
 
     def plot_all(self, query_length=2, oformat='png'):
         query_length = int(query_length)
@@ -40,6 +43,7 @@ class PlotTermRelationship(PlotCorrTFPeformance):
         zero_cnt_percentage = [[all_data[qid]['terms'][t]['zero_cnt_percentage'] for t in all_data[qid]['terms']] for qid in all_data]
         highest_idf_term_idx = [np.argmax([all_data[qid]['terms'][t]['idf'] for t in all_data[qid]['terms']]) for qid in all_data]
         all_rel_cnts = [all_data[qid]['rel_cnt'] for qid in all_data]
+        all_xaxis = []
         plot_data = []
         for i, ele in enumerate(zero_cnt_percentage):
             if np.count_nonzero(ele)==query_length:
@@ -52,3 +56,42 @@ class PlotTermRelationship(PlotCorrTFPeformance):
             else:
                 plot_data.append(0)
         print plot_data
+        all_xaxis.append(('dist_in_rel_docs', plot_data))
+        yaxis = [all_data[qid]['AP']['okapi'] for qid in all_data] # yaxis is the performance, e.g. AP
+        num_cols = 1
+        num_rows = 1
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
+        font = {'size' : 10}
+        plt.rc('font', **font)
+        row_idx = 0
+        for i, ele in enumerate(all_xaxis):
+            col_idx = 0
+            for j, xaxis in enumerate(ele[1]):
+                if num_rows > 1:
+                    ax = axs[row_idx][col_idx]
+                else:
+                    if num_cols > 1:
+                        ax = axs[col_idx]
+                    else:
+                        ax = axs
+                zipped = zip(all_data.keys(), xaxis, yaxis)
+                zipped.sort(key=itemgetter(2))
+                qids_plot = np.array(zip(*zipped)[0])
+                print i, j, qids_plot
+                xaxis_plot = np.array(zip(*zipped)[1])
+                yaxis_plot = np.array(zip(*zipped)[2])
+                markers = ['o', 's', '*', '^']
+                colors = ['r', 'g', 'b', 'k']
+                for x,y in zip(xaxis_plot, yaxis_plot):
+                    if x == 3:
+                        ax.plot(x, y, marker=markers[x], mfc=colors[x], ms=4, ls='None', label=legend)
+                ax.set_title(ele[0])
+                ax.set_xlabel('queries')
+                ax.legend(loc='best', markerscale=0.5, fontsize=8)
+                col_idx += 1
+            row_idx += 1
+
+        fig.suptitle(self.collection_name + ',qLen=%d' % query_length)
+        output_fn = os.path.join(self.output_root, '%s-%d.%s' % (self.collection_name, query_length, oformat) )
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+
