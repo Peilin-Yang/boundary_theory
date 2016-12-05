@@ -120,6 +120,7 @@ class PlotTermRelationship(object):
         all_xaxis = np.array([[prepared_data[qid][i]['rel_ratio'] for qid in details_data] for i in range(4)])
         yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
         num_rows, num_cols = all_xaxis.shape
+        print num_rows, num_cols, all_xaxis.shape
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
         font = {'size' : 10}
         plt.rc('font', **font)
@@ -144,8 +145,8 @@ class PlotTermRelationship(object):
             yaxis_plot = np.array(zip(*zipped)[2])
             ax.plot(xaxis_plot, yaxis_plot, marker=markers[i], mfc=colors[i], ms=4, ls='None')
             ax.set_title(label)
-            ax.set_xlabel('qids')
-            ax.set_xticklabels(qids_plot)
+            #ax.set_xlabel('qids')
+            #ax.set_xticklabels(qids_plot)
             ax.legend(loc='best', markerscale=0.5, fontsize=8)
             col_idx += 1
 
