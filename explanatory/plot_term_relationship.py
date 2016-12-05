@@ -107,7 +107,8 @@ class PlotTermRelationship(object):
                 if i not in countings[qid]:
                     countings[qid][i] = {'cnt': 0, 'rel_ratio': 0}
             if 0 not in countings[qid]:
-                countings[qid][0] = rel_data[qid]['rel_cnt'] - sum([countings[qid][v]['cnt'] for v in countings[qid]])
+                cnt = rel_data[qid]['rel_cnt'] - sum([countings[qid][v]['cnt'] for v in countings[qid]])
+                countings[qid][0] = {'cnt': cnt, 'rel_ratio':cnt*1./rel_data[qid]['rel_cnt']}
         return countings
 
 
@@ -116,7 +117,6 @@ class PlotTermRelationship(object):
         details_data = self.read_docdetails_data(query_length)
         rel_data = self.read_rel_data(query_length)
         prepared_data = self.prepare_rel_data(query_length, details_data, rel_data)
-        print [[prepared_data[qid][i] for i in range(4)] for qid in details_data]
         all_xaxis = [[[prepared_data[qid][i][t] for t in prepared_data[qid][i]] for i in range(4)] for qid in details_data]
         print all_xaxis
         exit()
