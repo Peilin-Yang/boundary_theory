@@ -45,7 +45,7 @@ class PlotTermRelationship(PlotCorrTFPeformance):
             if np.count_nonzero(ele)==query_length:
                 plot_data.append(3)
             elif (ele[0] != 0 and highest_idf_term_idx[i] == 0) \
-                or (ele[1 != 0 and highest_idf_term_idx[i] == 1): 
+                or (ele[1] != 0 and highest_idf_term_idx[i] == 1): 
                 plot_data.append(2)
             elif ele[0] != 0 or ele[1] != 0:
                 plot_data.append(1)
