@@ -120,6 +120,7 @@ class PlotTermRelationship(object):
         all_xaxis = np.array([[[prepared_data[qid][i][t] for qid in details_data] for i in range(4)] for t in ['cnt', 'rel_ratio']])
         yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
         num_rows, num_cols = all_xaxis.shape
+        print all_xaxis
         print num_rows, num_cols, all_xaxis.shape
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
         font = {'size' : 10}
