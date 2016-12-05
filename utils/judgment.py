@@ -120,7 +120,7 @@ class Judgment(object):
                     continue
                 judgment[k] = {docid:judgments[k][docid] for docid in judgments[k] if judgments[k][docid] >= split}
         elif format == 'tuple' or format == 'list':
-            judgment = {k:[e for e in judgments[k] if e[1] >= split] for k in judgments}
+            judgment = {qid:[doc for doc in judgments[qid] if doc[1] >= split] if judgments[qid] else qid:[] for qid in judgments}
 
         return judgment
 
