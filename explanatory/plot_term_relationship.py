@@ -217,7 +217,7 @@ class PlotTermRelationship(object):
             xaxis_plot = np.array(zip(*zipped)[1])
             yaxis_plot = np.array(zip(*zipped)[2])
             legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
-            ax.plot(xaxis_plot, yaxis_plot, ms=4, ls='None', label=legend)
+            ax.plot(xaxis_plot, yaxis_plot, marker='o' ms=4, ls='None', label=legend)
             ax.set_title(all_xlabels[row_idx*num_rows+col_idx])
             #ax.set_xlabel(row_labels[row_idx])
             #ax.set_xticklabels(qids_plot)
