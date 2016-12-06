@@ -178,6 +178,8 @@ class PlotTermRelationship(object):
 
     def plot_only_rel_with_all_qterms(self, data, details_data, rel_data, query_length=2, oformat='png'):
         all_xaxis = self.get_rel_all_features(data, details_data)
+        print data
+        print '-'*30
         print all_xaxis
         exit()
         yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
