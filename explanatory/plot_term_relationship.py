@@ -125,7 +125,7 @@ class PlotTermRelationship(object):
         return countings, rel_contain_alls
 
 
-    def plot_all_kinds_of_docs(self, query_length=2, oformat='png', data, details_data, rel_data):
+    def plot_all_kinds_of_docs(self, data, details_data, rel_data, query_length=2, oformat='png'):
         row_labels = ['cnt', 'rel_ratio', 'total_ratio']
         all_xaxis = np.array([[[data[qid][i][t] for qid in details_data] for i in range(4)] for t in row_labels])
         yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
@@ -176,7 +176,7 @@ class PlotTermRelationship(object):
         ] for qid, tfs in all_tfs.items()]
         return np.array(data).transpose()
 
-    def plot_only_rel_with_all_qterms(self, query_length=2, oformat='png', data, details_data, rel_data):
+    def plot_only_rel_with_all_qterms(self, data, details_data, rel_data, query_length=2, oformat='png'):
         all_xaxis = self.get_rel_all_features(data, details_data)
         print all_xaxis
         exit()
@@ -220,6 +220,6 @@ class PlotTermRelationship(object):
         prepared_data, rel_contain_alls = self.prepare_rel_data(query_length, details_data, rel_data)
         
         ##### plot all kinds of docs
-        #self.plot_all_kinds_of_docs(query_length, oformat, prepared_data, details_data, rel_data)
+        #self.plot_all_kinds_of_docs(prepared_data, details_data, rel_data, query_length, oformat)
         ##### plot ONLY the docs that contain all query terms
-        self.plot_only_rel_with_all_qterms(query_length, oformat, rel_contain_alls, details_data, rel_data)
+        self.plot_only_rel_with_all_qterms(rel_contain_alls, details_data, rel_data, query_length, oformat)
