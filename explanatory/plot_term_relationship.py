@@ -174,7 +174,7 @@ class PlotTermRelationship(object):
             print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] - np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
             print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] / np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
             print np.mean(tfs) 
-            print np.count_nonzero(np.fabs(np.diff(tfs)) == 0) / np.fabs(np.diff(tfs)).size,
+            print np.count_nonzero(np.fabs(np.diff(tfs)) == 0)*1. / np.fabs(np.diff(tfs)).size,
             raw_input()
         all_labels = [
             'avg TF of small IDF term',
