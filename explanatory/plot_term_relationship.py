@@ -183,8 +183,8 @@ class PlotTermRelationship(object):
             'avg TF ratio',
             'avg of all terms',
             'inner doc TF diff == 0',
-            'inner doc TF diff [1,3]',
-            'inner doc TF diff [3.10]',
+            'inner doc TF diff [1,5]',
+            'inner doc TF diff [5,10]',
             'inner doc TF diff > 10',
         ]
         data = []
@@ -202,8 +202,8 @@ class PlotTermRelationship(object):
                 np.mean(tfs, axis=0)[np.argmin(dfs)] / col_means[np.argmax(dfs)], # ratio
                 np.mean(tfs), # all counts avg
                 np.count_nonzero(abs_row_diffs == 0)*1. / abs_row_diffs.size,  
-                np.count_nonzero([1 if v >= 1 and v <= 3 else 0 for v in abs_row_diffs])*1. / abs_row_diffs.size, 
-                np.count_nonzero(abs_row_diffs > 3 and abs_row_diffs <= 10)*1. / abs_row_diffs.size, 
+                np.count_nonzero([1 if v >= 1 and v <= 5 else 0 for v in abs_row_diffs])*1. / abs_row_diffs.size, 
+                np.count_nonzero([1 if v > 5 and v <= 10 else 0 for v in abs_row_diffs])*1. / abs_row_diffs.size, 
                 np.count_nonzero(abs_row_diffs > 10)*1. / abs_row_diffs.size, 
             ])
         return all_labels, np.array(data).transpose()
