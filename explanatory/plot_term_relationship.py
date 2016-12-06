@@ -147,10 +147,9 @@ class PlotTermRelationship(object):
                 legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
                 ax.plot(xaxis_plot, yaxis_plot, marker=markers[col_idx], mfc=colors[col_idx], ms=4, ls='None', label=legend)
                 ax.set_title(labels[col_idx])
-                #ax.set_xlabel('qids')
+                ax.set_ylabel(row_labels[row_idx])
                 #ax.set_xticklabels(qids_plot)
-                if col_idx == 0:
-                    ax.set_ylabel(row_labels[row_idx])
+                ax.set_ylabel('AP (BM25)')
                 ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
                 ax.legend(loc='best', markerscale=0.5, fontsize=8)
 
