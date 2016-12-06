@@ -130,7 +130,7 @@ class PlotTermRelationship(object):
         all_xaxis = np.array([[[data[qid][i][t] for qid in details_data] for i in range(4)] for t in row_labels])
         yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
         num_rows, num_cols = all_xaxis.shape[:2]
-        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=True, figsize=(3*num_cols, 3*num_rows))
         font = {'size' : 10}
         plt.rc('font', **font)
         row_idx = 0
@@ -175,6 +175,13 @@ class PlotTermRelationship(object):
         #     print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] / np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
         #     print np.mean(tfs) 
         #     raw_input()
+        all_labels = [
+            'avg TF of small IDF term',
+            'avg TF of large IDF term',
+            'avg TF diff',
+            'avg TF ratio',
+            'avg of all terms',
+        ]
         data = [[
             np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])], # avg TF of terms with smaller IDF
             np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])], # avg TF of terms with larger IDF
@@ -182,41 +189,46 @@ class PlotTermRelationship(object):
             np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] / np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])], # ratio
             np.mean(tfs) # all counts avg
         ] for qid, tfs in all_tfs.items()]
-        return np.array(data).transpose()
+        return all_labels, np.array(data).transpose()
 
     def plot_only_rel_with_all_qterms(self, data, details_data, rel_data, query_length=2, oformat='png'):
-        all_xaxis = self.get_rel_all_features(data, details_data)
-        print data
-        print '-'*30
-        print all_xaxis
-        exit()
-        yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
-        num_rows, num_cols = all_xaxis.shape[:2]
-        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
+        all_xlabels, all_xaxis = self.get_rel_all_features(data, details_data)
+        qids = all_xaxis.keys()
+        yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in qids] # yaxis is the performance, e.g. AP
+        num_cols = min(3, len(all_xlabels))
+        num_rows = int(math.ceil(len(all_xlabels)*1.0/num_cols))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=True, figsize=(3*num_cols, 3*num_rows))
         font = {'size' : 10}
         plt.rc('font', **font)
         row_idx = 0
-        row_labels = ['cnt', 'rel_ratio', 'total_ratio']
-        labels = ['NONE', 'LIDF', 'HIDF', 'ALL']
-        markers = ['*', 's', '^', 'o']
-        colors = ['k', 'r', 'g', 'b']
-        for row_idx, ele in enumerate(all_xaxis):
-            for col_idx, xaxis in enumerate(ele):
+        col_idx = 0
+        for xaxis in all_xaxis:
+            if num_rows > 1:
                 ax = axs[row_idx][col_idx]
-                zipped = zip(details_data.keys(), xaxis, yaxis)
-                zipped.sort(key=itemgetter(1))
-                qids_plot = np.array(zip(*zipped)[0])
-                xaxis_plot = np.array(zip(*zipped)[1])
-                yaxis_plot = np.array(zip(*zipped)[2])
-                legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
-                ax.plot(xaxis_plot, yaxis_plot, marker=markers[col_idx], mfc=colors[col_idx], ms=4, ls='None', label=legend)
-                ax.set_title(labels[col_idx]+' - '+row_labels[row_idx])
-                #ax.set_xlabel(row_labels[row_idx])
-                #ax.set_xticklabels(qids_plot)
-                if col_idx == 0:
-                    ax.set_ylabel('AP (BM25)')
-                ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
-                ax.legend(loc='best', markerscale=0.5, fontsize=8)
+            else:
+                if num_cols > 1:
+                    ax = axs[col_idx]
+                else:
+                    ax = axs
+            zipped = zip(qids, xaxis, yaxis)
+            zipped.sort(key=itemgetter(1))
+            qids_plot = np.array(zip(*zipped)[0])
+            xaxis_plot = np.array(zip(*zipped)[1])
+            yaxis_plot = np.array(zip(*zipped)[2])
+            legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
+            ax.plot(xaxis_plot, yaxis_plot, ms=4, ls='None', label=legend)
+            ax.set_title(all_xlabels[row_idx*num_rows+col_idx])
+            #ax.set_xlabel(row_labels[row_idx])
+            #ax.set_xticklabels(qids_plot)
+            if col_idx == 0:
+                ax.set_ylabel('AP (BM25)')
+            ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
+            ax.legend(loc='best', markerscale=0.5, fontsize=8)
+
+            col_idx += 1
+            if col_idx >= num_cols:
+                row_idx += 1
+                col_idx = 0
 
         fig.suptitle(self.collection_name + ',qLen=%d' % query_length)
         output_fn = os.path.join(self.output_root, '%s-%d-subrel.%s' % (self.collection_name, query_length, oformat) )
