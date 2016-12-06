@@ -71,7 +71,7 @@ class PlotTermRelationship(object):
         all_data = {}
         doc_details = GenDocDetails(self.collection_path)
         for qid in queries:
-            all_data[qid] = doc_details.get_only_rels(qid)
+            all_data[qid] = doc_details.get_qid_details_as_numpy_arrays(qid)
         return all_data
 
     def rel_mapping(self, ele, dfs):
@@ -97,18 +97,26 @@ class PlotTermRelationship(object):
             all_tfs = details_data[qid][1]
             dfs = details_data[qid][2]
             doc_lens = details_data[qid][3]
+            rels = details_data[qid][4]
             tf_in_docs = all_tfs.transpose()
-            mapped = []
-            for ele in tf_in_docs:
-                mapped.append(self.rel_mapping(ele, dfs))
-            unique, counts = np.unique(mapped, return_counts=True)
-            countings[qid] = {value: {'cnt':counts[i], 'rel_ratio': counts[i]*1./rel_data[qid]['rel_cnt']} for i, value in enumerate(unique)}
+            rel_mapped = []
+            total_cnts = np.zeros(4)
+            for tf_idx, ele in enumerate(tf_in_docs):
+                if rels[tf_idx] > 0:
+                    mapped = self.rel_mapping(ele, dfs)
+                    rel_mapped.append(mapped)
+                total_cnts[mapped] += 1
+            unique, counts = np.unique(rel_mapped, return_counts=True)
+            countings[qid] = {value: {
+                'cnt':counts[i], 
+                'rel_ratio': counts[i]*1./rel_data[qid]['rel_cnt'],
+                'total_ratio': counts[i]*1./total_cnts[i]} for i, value in enumerate(unique)}
             for i in range(1, 4):
                 if i not in countings[qid]:
-                    countings[qid][i] = {'cnt': 0, 'rel_ratio': 0}
+                    countings[qid][i] = {'cnt': 0, 'rel_ratio': 0, 'total_ratio': 0}
             if 0 not in countings[qid]:
                 cnt = rel_data[qid]['rel_cnt'] - sum([countings[qid][v]['cnt'] for v in countings[qid]])
-                countings[qid][0] = {'cnt': cnt, 'rel_ratio':cnt*1./rel_data[qid]['rel_cnt']}
+                countings[qid][0] = {'cnt': cnt, 'rel_ratio':cnt*1./rel_data[qid]['rel_cnt'], 'total_ratio': 0}
         return countings
 
 
@@ -117,7 +125,7 @@ class PlotTermRelationship(object):
         details_data = self.read_docdetails_data(query_length)
         rel_data = self.read_rel_data(query_length)
         prepared_data = self.prepare_rel_data(query_length, details_data, rel_data)
-        all_xaxis = np.array([[[prepared_data[qid][i][t] for qid in details_data] for i in range(4)] for t in ['cnt', 'rel_ratio']])
+        all_xaxis = np.array([[[prepared_data[qid][i][t] for qid in details_data] for i in range(4)] for t in ['cnt', 'rel_ratio', 'total_ratio']])
         yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
         num_rows, num_cols = all_xaxis.shape[:2]
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))

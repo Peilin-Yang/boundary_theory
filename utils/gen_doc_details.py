@@ -120,14 +120,15 @@ class GenDocDetails(object):
             rows = [row for row in self.get_qid_details(qid)]
             if rows:
                 tf_len = len(rows[0]['tf'].split(','))
+                terms = [rows[0]['tf'].split(',')[i].split('-')[0] for i in range(tf_len)]    
                 tfs = np.array([[float(row['tf'].split(',')[i].split('-')[1]) for row in rows] for i in range(tf_len)])
                 dfs = np.array([cs.get_term_df(rows[0]['tf'].split(',')[i].split('-')[0]) for i in range(tf_len)])          
                 doclens = np.array([float(row['doc_len']) for row in rows])
                 rels = np.array([int(row['rel_score']) for row in rows])
-                return tfs, dfs, doclens, rels
+                return terms, tfs, dfs, doclens, rels
         except:
             pass
-        return np.array([[]]), np.array([]), np.array([]), np.array([])
+        return [], np.array([[]]), np.array([]), np.array([]), np.array([])
 
     def get_only_rels(self, qid):
         """
