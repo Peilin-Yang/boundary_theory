@@ -147,6 +147,7 @@ class PlotTermRelationship(object):
                 ax.set_title(labels[col_idx])
                 #ax.set_xlabel('qids')
                 #ax.set_xticklabels(qids_plot)
+                ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
                 ax.legend(loc='best', markerscale=0.5, fontsize=8)
 
         fig.suptitle(self.collection_name + ',qLen=%d' % query_length)
