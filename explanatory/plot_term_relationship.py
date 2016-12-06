@@ -109,6 +109,7 @@ class PlotTermRelationship(object):
             print total_cnts
             unique, counts = np.unique(rel_mapped, return_counts=True)
             print unique, counts
+            print counts[1], total_cnts[1], counts[i]*1./total_cnts[i]
             countings[qid] = {value: {
                 'cnt':counts[i], 
                 'rel_ratio': counts[i]*1./rel_data[qid]['rel_cnt'],
