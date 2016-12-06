@@ -106,6 +106,7 @@ class PlotTermRelationship(object):
                 total_cnts[mapped] += 1
                 if rels[tf_idx] > 0:
                     rel_mapped.append(mapped)
+            print total_cnts
             unique, counts = np.unique(rel_mapped, return_counts=True)
             countings[qid] = {value: {
                 'cnt':counts[i], 
