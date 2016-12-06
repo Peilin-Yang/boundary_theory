@@ -182,6 +182,7 @@ class PlotTermRelationship(object):
             'avg TF ratio',
             'avg of all terms',
         ]
+        print all_tfs
         data = [[
             np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])], # avg TF of terms with smaller IDF
             np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])], # avg TF of terms with larger IDF
