@@ -210,6 +210,7 @@ class PlotTermRelationship(object):
                     ax = axs[col_idx]
                 else:
                     ax = axs
+            print xaxis
             zipped = zip(qids, xaxis, yaxis)
             zipped.sort(key=itemgetter(1))
             qids_plot = np.array(zip(*zipped)[0])
