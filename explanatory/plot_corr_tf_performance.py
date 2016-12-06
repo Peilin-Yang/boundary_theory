@@ -84,7 +84,7 @@ class PlotCorrTFPeformance(object):
         all_xaxis = [
             ('tf_nonexisting_percent', self.get_data_with_label(all_data, 'zero_cnt_percentage')),
             ('tf_mean', self.get_data_with_label(all_data, 'mean')),
-            ('tf_std', self.get_data_with_label(all_data, 'std')),
+            #('tf_std', self.get_data_with_label(all_data, 'std')),
             ('df', self.get_data_with_label(all_data, 'df')),
             ('idf', self.get_data_with_label(all_data, 'idf')),
         ]
