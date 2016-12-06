@@ -202,7 +202,7 @@ class PlotTermRelationship(object):
                 np.mean(tfs, axis=0)[np.argmin(dfs)] / col_means[np.argmax(dfs)], # ratio
                 np.mean(tfs), # all counts avg
                 np.count_nonzero(abs_row_diffs == 0)*1. / abs_row_diffs.size,  
-                np.count_nonzero(abs_row_diffs >= 1 and abs_row_diffs <= 3)*1. / abs_row_diffs.size, 
+                np.count_nonzero([1 if v >= 1 and v <= 3 else 0 for v in abs_row_diffs])*1. / abs_row_diffs.size, 
                 np.count_nonzero(abs_row_diffs > 3 and abs_row_diffs <= 10)*1. / abs_row_diffs.size, 
                 np.count_nonzero(abs_row_diffs > 10)*1. / abs_row_diffs.size, 
             ])
