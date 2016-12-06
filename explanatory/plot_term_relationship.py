@@ -102,10 +102,10 @@ class PlotTermRelationship(object):
             rel_mapped = []
             total_cnts = np.zeros(4)
             for tf_idx, ele in enumerate(tf_in_docs):
-                if rels[tf_idx] > 0:
-                    mapped = self.rel_mapping(ele, dfs)
-                    rel_mapped.append(mapped)
+                mapped = self.rel_mapping(ele, dfs)
                 total_cnts[mapped] += 1
+                if rels[tf_idx] > 0:
+                    rel_mapped.append(mapped)
             unique, counts = np.unique(rel_mapped, return_counts=True)
             countings[qid] = {value: {
                 'cnt':counts[i], 
