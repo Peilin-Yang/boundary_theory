@@ -106,15 +106,11 @@ class PlotTermRelationship(object):
                 total_cnts[mapped] += 1
                 if rels[tf_idx] > 0:
                     rel_mapped.append(mapped)
-            print total_cnts
             unique, counts = np.unique(rel_mapped, return_counts=True)
-            print unique, counts
-            print counts[1], total_cnts[1], counts[1]*1./total_cnts[1]
             countings[qid] = {value: {
                 'cnt':counts[i], 
                 'rel_ratio': counts[i]*1./rel_data[qid]['rel_cnt'],
                 'total_ratio': counts[i]*1./total_cnts[value]} for i, value in enumerate(unique)}
-            print countings[qid]
             for i in range(1, 4):
                 if i not in countings[qid]:
                     countings[qid][i] = {'cnt': 0, 'rel_ratio': 0, 'total_ratio': 0}
