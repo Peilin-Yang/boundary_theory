@@ -194,7 +194,7 @@ class PlotTermRelationship(object):
     def plot_only_rel_with_all_qterms(self, data, details_data, rel_data, query_length=2, oformat='png'):
         all_xlabels, all_xaxis = self.get_rel_all_features(data, details_data)
         qids = data.keys()
-        yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in qids] # yaxis is the performance, e.g. AP
+        yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in qids if qid in rel_data] # yaxis is the performance, e.g. AP
         num_cols = min(3, len(all_xlabels))
         num_rows = int(math.ceil(len(all_xlabels)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=True, figsize=(3*num_cols, 3*num_rows))
