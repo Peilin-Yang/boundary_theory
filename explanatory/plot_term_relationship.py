@@ -146,8 +146,8 @@ class PlotTermRelationship(object):
                 yaxis_plot = np.array(zip(*zipped)[2])
                 legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
                 ax.plot(xaxis_plot, yaxis_plot, marker=markers[col_idx], mfc=colors[col_idx], ms=4, ls='None', label=legend)
-                ax.set_title(labels[col_idx])
-                ax.set_xlabel(row_labels[row_idx])
+                ax.set_title(labels[col_idx]+' - '+row_labels[row_idx])
+                #ax.set_xlabel(row_labels[row_idx])
                 #ax.set_xticklabels(qids_plot)
                 if col_idx == 0:
                     ax.set_ylabel('AP (BM25)')
