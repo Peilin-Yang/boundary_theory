@@ -101,11 +101,16 @@ class PlotTermRelationship(object):
             tf_in_docs = all_tfs.transpose()
             rel_mapped = []
             total_cnts = np.zeros(4)
+            rel_contain_all = []
             for tf_idx, ele in enumerate(tf_in_docs):
                 mapped = self.rel_mapping(ele, dfs)
                 total_cnts[mapped] += 1
                 if rels[tf_idx] > 0:
                     rel_mapped.append(mapped)
+                    if mapped == 3: # if the doc contains all query terms
+                        rel_contain_all.append(ele)
+            print rel_contain_all
+            raw_input()
             unique, counts = np.unique(rel_mapped, return_counts=True)
             countings[qid] = {value: {
                 'cnt':counts[i], 
