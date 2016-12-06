@@ -167,20 +167,20 @@ class PlotTermRelationship(object):
             ...
         }
         """
-        for qid, tfs in all_tfs.items():
-            print qid, tfs, details_data[qid][2], np.argmax(details_data[qid][2]), np.argmin(details_data[qid][2])
-            print np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
-            print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])]
-            print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] - np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
-            print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] / np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
-            print np.mean(tfs) 
-            raw_input()
+        # for qid, tfs in all_tfs.items():
+        #     print qid, tfs, details_data[qid][2], np.argmax(details_data[qid][2]), np.argmin(details_data[qid][2])
+        #     print np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
+        #     print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])]
+        #     print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] - np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
+        #     print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] / np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
+        #     print np.mean(tfs) 
+        #     raw_input()
         data = [[
-            np.mean(tfs[np.argmax(details_data[qid][2])]), # avg TF of terms with smaller IDF
-            np.mean(tfs[np.argmin(details_data[qid][2])]), # avg TF of terms with larger IDF
-            np.mean(np.mean(tfs, axis=0)), # avg of two avg TF
-            np.fabs(np.diff(np.mean(tfs, axis=0))), # diff of two avg TF
-            np.mean(), # all counts avg
+            np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])], # avg TF of terms with smaller IDF
+            np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])], # avg TF of terms with larger IDF
+            np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] - np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])], # diff
+            np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] / np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])], # ratio
+            np.mean(tfs) # all counts avg
         ] for qid, tfs in all_tfs.items()]
         return np.array(data).transpose()
 
