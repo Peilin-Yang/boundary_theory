@@ -189,7 +189,7 @@ class PlotTermRelationship(object):
             np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] - np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])], # diff
             np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] / np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])], # ratio
             np.mean(tfs) # all counts avg
-        ] for qid, tfs in all_tfs.items() if tfs]
+        ] for qid, tfs in all_tfs.items() if tfs.size > 0]
         return all_labels, np.array(data).transpose()
 
     def plot_only_rel_with_all_qterms(self, data, details_data, rel_data, query_length=2, oformat='png'):
