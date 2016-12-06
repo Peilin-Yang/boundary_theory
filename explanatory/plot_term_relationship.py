@@ -184,7 +184,7 @@ class PlotTermRelationship(object):
             'avg of all terms',
         ]
         data = []
-        for qid, tfs in in all_tfs.items():
+        for qid, tfs in all_tfs.items():
             if tfs.size == 0:
                 continue
             col_means = np.mean(tfs, axis=0)
