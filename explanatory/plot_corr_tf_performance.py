@@ -80,7 +80,7 @@ class PlotCorrTFPeformance(object):
         query_length = int(query_length)
         all_data = self.read_data(query_length)
         #self.get_optimal_okapi_ranking_list(all_data)
-        yaxis = [all_data[qid]['AP']['okapi'] for qid in all_data] # yaxis is the performance, e.g. AP
+        yaxis = [all_data[qid]['AP']['okapi'][1] for qid in all_data] # yaxis is the performance, e.g. AP
         all_xaxis = [
             ('tf_nonexisting_percent', self.get_data_with_label(all_data, 'zero_cnt_percentage')),
             ('tf_mean', self.get_data_with_label(all_data, 'mean')),
