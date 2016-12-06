@@ -168,7 +168,7 @@ class PlotTermRelationship(object):
         }
         """
         for qid, tfs in all_tfs.items():
-            print qid, tfs
+            print qid, tfs, details_data[qid][2], np.argmax(details_data[qid][2]), np.argmin(details_data[qid][2])
             print np.mean(tfs[np.argmax(details_data[qid][2])])
             print np.mean(tfs[np.argmin(details_data[qid][2])])
             print np.mean(np.mean(tfs, axis=0))
