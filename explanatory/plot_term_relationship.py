@@ -113,7 +113,7 @@ class PlotTermRelationship(object):
             countings[qid] = {value: {
                 'cnt':counts[i], 
                 'rel_ratio': counts[i]*1./rel_data[qid]['rel_cnt'],
-                'total_ratio': counts[i]*1./total_cnts[i]} for i, value in enumerate(unique)}
+                'total_ratio': counts[i]*1./total_cnts[value]} for i, value in enumerate(unique)}
             print countings[qid]
             for i in range(1, 4):
                 if i not in countings[qid]:
