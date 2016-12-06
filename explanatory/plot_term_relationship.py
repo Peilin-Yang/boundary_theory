@@ -109,7 +109,7 @@ class PlotTermRelationship(object):
                     rel_mapped.append(mapped)
                     if mapped == 3: # if the doc contains all query terms
                         rel_contain_all.append(ele)
-            print rel_contain_all
+            print np.array(rel_contain_all)
             raw_input()
             unique, counts = np.unique(rel_mapped, return_counts=True)
             countings[qid] = {value: {
