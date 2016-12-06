@@ -167,21 +167,28 @@ class PlotTermRelationship(object):
             ...
         }
         """
-        for qid, tfs in all_tfs.items():
-            print qid, tfs, details_data[qid][2], np.argmax(details_data[qid][2]), np.argmin(details_data[qid][2])
-            print np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
-            print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])]
-            print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] - np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
-            print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] / np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
-            print np.mean(tfs) 
-            print np.count_nonzero(np.fabs(np.diff(tfs)) == 0), np.count_nonzero(np.fabs(np.diff(tfs)) <= 1), np.count_nonzero(np.fabs(np.diff(tfs)) <= 5), np.count_nonzero(np.fabs(np.diff(tfs)) <= 10), np.count_nonzero(np.fabs(np.diff(tfs)) > 10)
-            raw_input()
+        # for qid, tfs in all_tfs.items():
+        #     print qid, tfs, details_data[qid][2], np.argmax(details_data[qid][2]), np.argmin(details_data[qid][2])
+        #     print np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
+        #     print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])]
+        #     print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] - np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
+        #     print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] / np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
+        #     print np.mean(tfs) 
+        #     print np.count_nonzero(np.fabs(np.diff(tfs)) == 0), np.count_nonzero(np.fabs(np.diff(tfs)) <= 1), np.count_nonzero(np.fabs(np.diff(tfs)) <= 5), np.count_nonzero(np.fabs(np.diff(tfs)) <= 10), np.count_nonzero(np.fabs(np.diff(tfs)) > 10)
+        #     print np.count_nonzero(np.fabs(np.diff(tfs)) == 0), np.count_nonzero(np.fabs(np.diff(tfs)) <= 1), np.count_nonzero(np.fabs(np.diff(tfs)) <= 5), np.count_nonzero(np.fabs(np.diff(tfs)) <= 10), np.count_nonzero(np.fabs(np.diff(tfs)) > 10)
+        #     raw_input()
         all_labels = [
             'avg TF of small IDF term',
             'avg TF of large IDF term',
             'avg TF diff',
             'avg TF ratio',
             'avg of all terms',
+            'inner doc TF diff == 0',
+            'inner doc TF diff <= 1',
+            'inner doc TF diff <= 3',
+            'inner doc TF diff <= 5',
+            'inner doc TF diff <= 10',
+            'inner doc TF diff > 10',
         ]
         data = []
         for qid, tfs in all_tfs.items():
@@ -189,14 +196,20 @@ class PlotTermRelationship(object):
                 continue
             col_means = np.mean(tfs, axis=0)
             row_diffs = np.diff(tfs)
+            abs_row_diffs = np.fabs(row_diffs)
             dfs = details_data[qid][2]
             data.append([
                 col_means[np.argmax(dfs)], # avg TF of terms with smaller IDF
                 col_means[np.argmin(dfs)], # avg TF of terms with larger IDF
                 col_means[np.argmin(dfs)] - col_means[np.argmax(dfs)], # diff
                 np.mean(tfs, axis=0)[np.argmin(dfs)] / col_means[np.argmax(dfs)], # ratio
-                np.mean(tfs),
-                row_diffs # all counts avg
+                np.mean(tfs), # all counts avg
+                np.count_nonzero(abs_row_diffs == 0),  
+                np.count_nonzero(abs_row_diffs <= 1), 
+                np.count_nonzero(abs_row_diffs <= 3), 
+                np.count_nonzero(abs_row_diffs <= 5), 
+                np.count_nonzero(abs_row_diffs <= 10), 
+                np.count_nonzero(abs_row_diffs > 10), 
             ])
         return all_labels, np.array(data).transpose()
 
