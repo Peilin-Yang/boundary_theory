@@ -167,6 +167,9 @@ class PlotTermRelationship(object):
             ...
         }
         """
+        for qid, tfs in all_tfs.items():
+            print qid, tfs
+            raw_input()
         data = [[
             np.mean(tfs[np.argmax(details_data[qid][2])]), # avg TF of terms with smaller IDF
             np.mean(tfs[np.argmin(details_data[qid][2])]), # avg TF of terms with smaller IDF
