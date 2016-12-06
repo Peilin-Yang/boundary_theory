@@ -167,15 +167,15 @@ class PlotTermRelationship(object):
             ...
         }
         """
-        for qid, tfs in all_tfs.items():
-            print qid, tfs, details_data[qid][2], np.argmax(details_data[qid][2]), np.argmin(details_data[qid][2])
-            print np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
-            print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])]
-            print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] - np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
-            print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] / np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
-            print np.mean(tfs) 
-            print np.count_nonzero(np.fabs(np.diff(tfs)) == 0)*1. / np.fabs(np.diff(tfs)).size,
-            raw_input()
+        # for qid, tfs in all_tfs.items():
+        #     print qid, tfs, details_data[qid][2], np.argmax(details_data[qid][2]), np.argmin(details_data[qid][2])
+        #     print np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
+        #     print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])]
+        #     print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] - np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
+        #     print np.mean(tfs, axis=0)[np.argmin(details_data[qid][2])] / np.mean(tfs, axis=0)[np.argmax(details_data[qid][2])]
+        #     print np.mean(tfs) 
+        #     print np.count_nonzero(np.fabs(np.diff(tfs)) == 0)*1. / np.fabs(np.diff(tfs)).size,
+        #     raw_input()
         all_labels = [
             'avg TF of small IDF term',
             'avg TF of large IDF term',
@@ -203,12 +203,12 @@ class PlotTermRelationship(object):
                 col_means[np.argmin(dfs)] - col_means[np.argmax(dfs)], # diff
                 np.mean(tfs, axis=0)[np.argmin(dfs)] / col_means[np.argmax(dfs)], # ratio
                 np.mean(tfs), # all counts avg
-                np.count_nonzero(abs_row_diffs == 0) / abs_row_diffs.size,  
-                np.count_nonzero(abs_row_diffs <= 1) / abs_row_diffs.size, 
-                np.count_nonzero(abs_row_diffs <= 3) / abs_row_diffs.size, 
-                np.count_nonzero(abs_row_diffs <= 5) / abs_row_diffs.size, 
-                np.count_nonzero(abs_row_diffs <= 10) / abs_row_diffs.size, 
-                np.count_nonzero(abs_row_diffs > 10) / abs_row_diffs.size, 
+                np.count_nonzero(abs_row_diffs == 0)*1. / abs_row_diffs.size,  
+                np.count_nonzero(abs_row_diffs <= 1)*1. / abs_row_diffs.size, 
+                np.count_nonzero(abs_row_diffs <= 3)*1. / abs_row_diffs.size, 
+                np.count_nonzero(abs_row_diffs <= 5)*1. / abs_row_diffs.size, 
+                np.count_nonzero(abs_row_diffs <= 10)*1. / abs_row_diffs.size, 
+                np.count_nonzero(abs_row_diffs > 10)*1. / abs_row_diffs.size, 
             ])
         return all_labels, np.array(data).transpose()
 
