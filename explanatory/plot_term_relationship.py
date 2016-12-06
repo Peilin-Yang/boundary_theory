@@ -92,6 +92,7 @@ class PlotTermRelationship(object):
         data is read from doc_details
         """
         countings = {}
+        rel_contain_alls = {}
         for qid in details_data:
             terms = details_data[qid][0]
             all_tfs = details_data[qid][1]
@@ -109,8 +110,7 @@ class PlotTermRelationship(object):
                     rel_mapped.append(mapped)
                     if mapped == 3: # if the doc contains all query terms
                         rel_contain_all.append(ele)
-            print np.array(rel_contain_all)
-            raw_input()
+            rel_contain_alls[qid] = np.array(rel_contain_all)
             unique, counts = np.unique(rel_mapped, return_counts=True)
             countings[qid] = {value: {
                 'cnt':counts[i], 
@@ -122,22 +122,18 @@ class PlotTermRelationship(object):
             if 0 not in countings[qid]:
                 cnt = rel_data[qid]['rel_cnt'] - sum([countings[qid][v]['cnt'] for v in countings[qid]]) if qid in rel_data else 0
                 countings[qid][0] = {'cnt': cnt, 'rel_ratio':cnt*1./rel_data[qid]['rel_cnt'] if qid in rel_data else 0, 'total_ratio': 0}
-        return countings
+        return countings, rel_contain_alls
 
 
-    def plot_all(self, query_length=2, oformat='png'):
-        row_labels = ['cnt', 'rel_ratio', 'total_ratio']
-        query_length = int(query_length)
-        details_data = self.read_docdetails_data(query_length)
-        rel_data = self.read_rel_data(query_length)
-        prepared_data = self.prepare_rel_data(query_length, details_data, rel_data)
-        all_xaxis = np.array([[[prepared_data[qid][i][t] for qid in details_data] for i in range(4)] for t in row_labels])
+    def plot_all_kinds_of_docs(self, query_length, data, details_data, rel_data):
+        all_xaxis = np.array([[[data[qid][i][t] for qid in details_data] for i in range(4)] for t in row_labels])
         yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
         num_rows, num_cols = all_xaxis.shape[:2]
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
         font = {'size' : 10}
         plt.rc('font', **font)
         row_idx = 0
+        row_labels = ['cnt', 'rel_ratio', 'total_ratio']
         labels = ['NONE', 'LIDF', 'HIDF', 'ALL']
         markers = ['*', 's', '^', 'o']
         colors = ['k', 'r', 'g', 'b']
@@ -163,3 +159,67 @@ class PlotTermRelationship(object):
         output_fn = os.path.join(self.output_root, '%s-%d.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
+    def get_rel_all_features(self, all_tfs, details_data):
+        """
+        all_tfs: {
+            qid1: [[1, 3], [4, 6], [8, 5] ...],
+            qid2: ...
+            ...
+        }
+        """
+        data = [[
+            np.mean(tfs[np.argmax(details_data[qid][2])]), # avg TF of terms with smaller IDF
+            np.mean(tfs[np.argmin(details_data[qid][2])]), # avg TF of terms with smaller IDF
+            np.mean(np.mean(tfs, axis=0)), # avg of two avg TF
+            np.fabs(np.diff(np.mean(tfs, axis=0))), # diff of two avg TF
+            np.mean(np.mean(tfs, axis=1)), # avg of avg TF in each doc
+        ] for qid, tfs in all_tfs.items()]
+        return np.array(data).transpose()
+
+    def plot_only_rel_with_all_qterms(self, query_length, data, details_data, rel_data):
+        all_xaxis = self.get_rel_all_features(data, details_data)
+        print all_xaxis
+        exit()
+        yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
+        num_rows, num_cols = all_xaxis.shape[:2]
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
+        font = {'size' : 10}
+        plt.rc('font', **font)
+        row_idx = 0
+        row_labels = ['cnt', 'rel_ratio', 'total_ratio']
+        labels = ['NONE', 'LIDF', 'HIDF', 'ALL']
+        markers = ['*', 's', '^', 'o']
+        colors = ['k', 'r', 'g', 'b']
+        for row_idx, ele in enumerate(all_xaxis):
+            for col_idx, xaxis in enumerate(ele):
+                ax = axs[row_idx][col_idx]
+                zipped = zip(details_data.keys(), xaxis, yaxis)
+                zipped.sort(key=itemgetter(1))
+                qids_plot = np.array(zip(*zipped)[0])
+                xaxis_plot = np.array(zip(*zipped)[1])
+                yaxis_plot = np.array(zip(*zipped)[2])
+                legend = 'pearsonr:%.4f' % (scipy.stats.pearsonr(xaxis_plot, yaxis_plot)[0])
+                ax.plot(xaxis_plot, yaxis_plot, marker=markers[col_idx], mfc=colors[col_idx], ms=4, ls='None', label=legend)
+                ax.set_title(labels[col_idx]+' - '+row_labels[row_idx])
+                #ax.set_xlabel(row_labels[row_idx])
+                #ax.set_xticklabels(qids_plot)
+                if col_idx == 0:
+                    ax.set_ylabel('AP (BM25)')
+                ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
+                ax.legend(loc='best', markerscale=0.5, fontsize=8)
+
+        fig.suptitle(self.collection_name + ',qLen=%d' % query_length)
+        output_fn = os.path.join(self.output_root, '%s-%d.%s' % (self.collection_name, query_length, oformat) )
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+
+
+    def plot_all(self, query_length=2, oformat='png'):
+        query_length = int(query_length)
+        details_data = self.read_docdetails_data(query_length)
+        rel_data = self.read_rel_data(query_length)
+        prepared_data, rel_contain_alls = self.prepare_rel_data(query_length, details_data, rel_data)
+        
+        ##### plot all kinds of docs
+        self.plot_all_kinds_of_docs(query_length, prepared_data, details_data, rel_data)
+        ##### plot ONLY the docs that contain all query terms
+        self.plot_only_rel_with_all_qterms(query_length, rel_contain_alls, details_data, rel_data)
