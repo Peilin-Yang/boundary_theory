@@ -121,11 +121,12 @@ class PlotTermRelationship(object):
 
 
     def plot_all(self, query_length=2, oformat='png'):
+        row_labels = ['cnt', 'rel_ratio', 'total_ratio']
         query_length = int(query_length)
         details_data = self.read_docdetails_data(query_length)
         rel_data = self.read_rel_data(query_length)
         prepared_data = self.prepare_rel_data(query_length, details_data, rel_data)
-        all_xaxis = np.array([[[prepared_data[qid][i][t] for qid in details_data] for i in range(4)] for t in ['cnt', 'rel_ratio', 'total_ratio']])
+        all_xaxis = np.array([[[prepared_data[qid][i][t] for qid in details_data] for i in range(4)] for t in row_labels])
         yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
         num_rows, num_cols = all_xaxis.shape[:2]
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
@@ -148,6 +149,8 @@ class PlotTermRelationship(object):
                 ax.set_title(labels[col_idx])
                 #ax.set_xlabel('qids')
                 #ax.set_xticklabels(qids_plot)
+                if col_idx == 0:
+                    ax.set_ylabel(row_labels[row_idx])
                 ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
                 ax.legend(loc='best', markerscale=0.5, fontsize=8)
 
