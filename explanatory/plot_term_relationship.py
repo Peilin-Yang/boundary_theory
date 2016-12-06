@@ -126,6 +126,7 @@ class PlotTermRelationship(object):
 
 
     def plot_all_kinds_of_docs(self, query_length, data, details_data, rel_data):
+        row_labels = ['cnt', 'rel_ratio', 'total_ratio']
         all_xaxis = np.array([[[data[qid][i][t] for qid in details_data] for i in range(4)] for t in row_labels])
         yaxis = [float(rel_data[qid]['AP']['okapi'][1]) for qid in rel_data] # yaxis is the performance, e.g. AP
         num_rows, num_cols = all_xaxis.shape[:2]
@@ -133,7 +134,6 @@ class PlotTermRelationship(object):
         font = {'size' : 10}
         plt.rc('font', **font)
         row_idx = 0
-        row_labels = ['cnt', 'rel_ratio', 'total_ratio']
         labels = ['NONE', 'LIDF', 'HIDF', 'ALL']
         markers = ['*', 's', '^', 'o']
         colors = ['k', 'r', 'g', 'b']
