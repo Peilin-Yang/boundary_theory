@@ -282,16 +282,16 @@ class PlotTermRelationship(object):
             yaxis = tfs[:,larger_idf_idx]
             count = collections.Counter(zip(xaxis, yaxis))
             xaxis_plot, yaxis_plot = zip(*count.keys())
-            sizes = np.array(count.values())**2
+            sizes = (np.array(count.values())+1)**2
             ax.scatter(xaxis_plot, yaxis_plot, s=sizes, marker='o')
+            ax.plot(ax.get_xlim(), ax.get_ylim(), ls="--", c=".3")
             ax.set_title(qid+':'+queries[qid])
-            ax.set_xlabel('TF(smaller idf term)')
-            if col_idx == 0:
+            #ax.set_xlabel('TF(smaller idf term)')
+            if col_idx == 1:
                 ax.set_ylabel('TF(larger idf term)')
-            ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
-            ax.legend(loc='best', markerscale=0.5, fontsize=8)
+            #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
+            #ax.legend(loc='best', markerscale=0.5, fontsize=8)
 
-        fig.suptitle(self.collection_name + ',qLen=%d' % query_length)
         output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
