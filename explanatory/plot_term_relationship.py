@@ -308,7 +308,7 @@ class PlotTermRelationship(object):
             #print xaxis_plot, yaxis_plot, sizes
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
             cbar = fig.colorbar(scatter, ax=ax)
-            cbar.ax.set_ylabel('Counts')
+            #cbar.ax.set_ylabel('Counts')
             legend = 'AP(BM25):%.4f\n' % (float(rel_data[qid]['AP']['okapi'][1]))
             legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
             ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
