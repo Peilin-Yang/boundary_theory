@@ -256,6 +256,11 @@ class PlotTermRelationship(object):
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
     def plot_only_rel_tf_relationship(self, details_rel_data, query_length=2, oformat='png'):
+        if query_length == 0:
+            queries = Query(self.collection_path).get_queries()
+        else:
+            queries = Query(self.collection_path).get_queries_of_length(query_length)
+        queries = {ele['num']:ele['title'] for ele in queries}
         num_cols = min(4, len(details_rel_data))
         num_rows = int(math.ceil(len(details_rel_data)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
@@ -263,7 +268,7 @@ class PlotTermRelationship(object):
         plt.rc('font', **font)
         row_idx = 0
         col_idx = 0
-        for qid in details_rel_data:
+        for qid in sorted(details_rel_data):
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
             else:
@@ -277,6 +282,7 @@ class PlotTermRelationship(object):
                 col_idx = 0
             terms = details_rel_data[qid][0]
             tfs = details_rel_data[qid][1]
+            print tfs
             dfs = details_rel_data[qid][2]
             smaller_idf_idx = np.argmax(dfs)
             larger_idf_idx = np.argmin(dfs)
@@ -289,7 +295,7 @@ class PlotTermRelationship(object):
             max_value = max(max(xaxis_plot), max(yaxis_plot))
             legend = '\n'.join([ele[0]+':'+str(ele[1]) for ele in zip(terms, dfs)])
             ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
-            ax.set_title(qid)
+            ax.set_title(qid+':'+queries[qid])
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
