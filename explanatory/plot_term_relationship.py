@@ -285,8 +285,7 @@ class PlotTermRelationship(object):
             terms = details_rel_data[qid][0]
             tfs = details_rel_data[qid][1]
             dfs = details_rel_data[qid][2]
-            print dfs
-            if not dfs:
+            if dfs.size == 0:
                 continue
             idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
             smaller_idf_idx = np.argmax(dfs)
