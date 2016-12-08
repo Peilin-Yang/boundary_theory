@@ -289,9 +289,9 @@ class PlotTermRelationship(object):
             yaxis = tfs[larger_idf_idx,:]
             count = collections.Counter(zip(xaxis, yaxis))
             xaxis_plot, yaxis_plot = zip(*count.keys())
-            sizes = (np.array(count.values())+1)**2
-            ax.scatter(xaxis_plot, yaxis_plot, s=sizes, marker='o')
+            #sizes = (np.array(count.values())+1)**2
             max_value = max(max(xaxis_plot), max(yaxis_plot))
+            ax.hist2d(xaxis_plot, yaxis_plot, bins=max_value*max_value)
             legend = '\n'.join([ele[0]+':'+str(ele[1]) for ele in zip(terms, dfs)])
             ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
             ax.set_title(qid+':'+queries[qid])
