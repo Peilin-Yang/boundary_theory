@@ -283,7 +283,7 @@ class PlotTermRelationship(object):
             count = collections.Counter(zip(xaxis, yaxis))
             xaxis_plot, yaxis_plot = zip(*count.keys())
             sizes = np.array(count.values())**2
-            ax.plot(xaxis_plot, yaxis_plot, s=sizes, marker='o')
+            ax.scatter(xaxis_plot, yaxis_plot, s=sizes, marker='o')
             ax.set_title(qid+':'+queries[qid])
             ax.set_xlabel('TF(smaller idf term)')
             if col_idx == 0:
