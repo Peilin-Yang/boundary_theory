@@ -61,7 +61,7 @@ class PlotTermRelationship(object):
         queries = {k:v for k,v in queries.items() if k in rel_docs and len(rel_docs[k]) > 0}
         return rel_tf_stats.get_data(queries.keys())
 
-    def read_docdetails_data(self, query_length=2):
+    def read_docdetails_data(self, query_length=2, only_rel=False):
         if query_length == 0:
             queries = Query(self.collection_path).get_queries()
         else:
@@ -72,7 +72,10 @@ class PlotTermRelationship(object):
         all_data = {}
         doc_details = GenDocDetails(self.collection_path)
         for qid in queries:
-            all_data[qid] = doc_details.get_qid_details_as_numpy_arrays(qid)
+            if only_rel:
+                all_data[qid] = doc_details.get_only_rels(qid)
+            else:
+                all_data[qid] = doc_details.get_qid_details_as_numpy_arrays(qid)
         return all_data
 
     def rel_mapping(self, ele, dfs):
@@ -252,18 +255,15 @@ class PlotTermRelationship(object):
         output_fn = os.path.join(self.output_root, '%s-%d-subrel.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-    def plot_only_rel_tf_relationship(self, all_tfs, details_data, rel_data, query_length=2, oformat='png'):
-        queries = Query(self.collection_path).get_queries_of_length(query_length)
-        queries = {ele['num']:ele['title'] for ele in queries}
-        valid_tfs = {qid:tfs for qid,tfs in all_tfs.items() if tfs.size != 0}
-        num_cols = min(4, len(valid_tfs))
-        num_rows = int(math.ceil(len(valid_tfs)*1.0/num_cols))
+    def plot_only_rel_tf_relationship(self, details_rel_data, query_length=2, oformat='png'):
+        num_cols = min(4, len(details_rel_data))
+        num_rows = int(math.ceil(len(details_rel_data)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
         font = {'size' : 8}
         plt.rc('font', **font)
         row_idx = 0
         col_idx = 0
-        for qid, tfs in valid_tfs.items():
+        for qid in details_rel_data:
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
             else:
@@ -275,8 +275,9 @@ class PlotTermRelationship(object):
             if col_idx >= num_cols:
                 row_idx += 1
                 col_idx = 0
-            terms = details_data[qid][0]
-            dfs = details_data[qid][2]
+            terms = details_rel_data[qid][0]
+            tfs = details_rel_data[qid][1]
+            dfs = details_rel_data[qid][2]
             smaller_idf_idx = np.argmax(dfs)
             larger_idf_idx = np.argmin(dfs)
             xaxis = tfs[:,smaller_idf_idx]
@@ -303,14 +304,15 @@ class PlotTermRelationship(object):
 
     def plot_all(self, query_length=2, oformat='png'):
         query_length = int(query_length)
-        details_data = self.read_docdetails_data(query_length)
-        rel_data = self.read_rel_data(query_length)
-        prepared_data, rel_contain_alls = self.prepare_rel_data(query_length, details_data, rel_data)
+        #details_data = self.read_docdetails_data(query_length)
+        details_rel_data = self.read_docdetails_data(query_length, only_rel=True)
+        #rel_data = self.read_rel_data(query_length)
+        #prepared_data, rel_contain_alls = self.prepare_rel_data(query_length, details_data, rel_data)
         
         ##### plot all kinds of docs
         #self.plot_all_kinds_of_docs(prepared_data, details_data, rel_data, query_length, oformat)
         ##### plot ONLY the docs that contain all query terms
         #self.plot_only_rel_with_all_qterms(rel_contain_alls, details_data, rel_data, query_length, oformat)
         ##### plot the relationship between terms only, no ranking function involved...
-        self.plot_only_rel_tf_relationship(rel_contain_alls, details_data, rel_data, query_length, oformat)
+        self.plot_only_rel_tf_relationship(details_rel_data, query_length, oformat)
 
