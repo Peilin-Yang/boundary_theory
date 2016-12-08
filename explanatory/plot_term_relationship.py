@@ -270,7 +270,7 @@ class PlotTermRelationship(object):
         row_idx = 0
         col_idx = 0
         for qid in sorted(details_rel_data):
-            print qid
+            #print qid
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
             else:
@@ -305,7 +305,7 @@ class PlotTermRelationship(object):
             # # Mask zeros
             # Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value
             #ax.pcolormesh(xedges,yedges,Hmasked)
-            print xaxis_plot, yaxis_plot, sizes
+            #print xaxis_plot, yaxis_plot, sizes
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
             legend = 'AP(BM25):%.4f\n' % (float(rel_data[qid]['AP']['okapi'][1]))
             legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
