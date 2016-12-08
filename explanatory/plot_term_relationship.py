@@ -305,7 +305,7 @@ class PlotTermRelationship(object):
             Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value
             #ax.pcolormesh(xedges,yedges,Hmasked)
             ax.scatter(xaxis_plot, yaxis_plot, s=sizes)
-            legend = 'AP(BM25):'+str(bm25_aps[qid])
+            legend = 'AP(BM25):%.4f' % (bm25_aps[qid][1])
             legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
             ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
             ax.set_title(qid+':'+queries[qid])
