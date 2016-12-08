@@ -289,6 +289,7 @@ class PlotTermRelationship(object):
             ax.set_title(qid+':'+queries[qid])
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
+            ax.grid(ls='dotted')
             #ax.set_xlabel('TF(smaller idf term)')
             if col_idx == 1:
                 ax.set_ylabel('TF(larger idf term)')
