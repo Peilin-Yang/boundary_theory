@@ -304,8 +304,6 @@ class PlotTermRelationship(object):
             # Mask zeros
             Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value
             ax.pcolormesh(xedges,yedges,Hmasked)
-            #cbar = ax.colorbar()
-            #cbar.ax.set_ylabel('Counts')
             #ax.scatter(xaxis_plot, yaxis_plot, s=sizes)
             legend = 'AP(BM25):'+str(bm25_aps[qid])
             legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
@@ -320,6 +318,8 @@ class PlotTermRelationship(object):
             #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
             ax.legend(loc='best', fontsize=8)
 
+        cbar = fig.colorbar()
+        cbar.ax.set_ylabel('Counts')
         output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
