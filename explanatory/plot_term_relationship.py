@@ -284,8 +284,11 @@ class PlotTermRelationship(object):
             xaxis_plot, yaxis_plot = zip(*count.keys())
             sizes = (np.array(count.values())+1)**2
             ax.scatter(xaxis_plot, yaxis_plot, s=sizes, marker='o')
-            ax.plot(ax.get_xlim(), ax.get_ylim(), ls="--", c=".3")
             ax.set_title(qid+':'+queries[qid])
+            max_value = max(ax.get_xlim(), ax.get_ylim())
+            ax.set_xlim(0, max_value)
+            ax.set_ylim(0, max_value)
+            ax.plot(0, max_value, ls="-")
             #ax.set_xlabel('TF(smaller idf term)')
             if col_idx == 1:
                 ax.set_ylabel('TF(larger idf term)')
