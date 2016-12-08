@@ -284,16 +284,28 @@ class PlotTermRelationship(object):
             terms = details_rel_data[qid][0]
             tfs = details_rel_data[qid][1]
             dfs = details_rel_data[qid][2]
+            idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
             smaller_idf_idx = np.argmax(dfs)
             larger_idf_idx = np.argmin(dfs)
             xaxis = tfs[smaller_idf_idx,:]
             yaxis = tfs[larger_idf_idx,:]
             count = collections.Counter(zip(xaxis, yaxis))
             xaxis_plot, yaxis_plot = zip(*count.keys())
-            #sizes = (np.array(count.values())+1)**2
+            sizes = (np.array(count.values())+1)**2
             max_value = max(max(xaxis_plot), max(yaxis_plot))
-            ax.hist2d(xaxis_plot, yaxis_plot, bins=max_value*max_value)
-            legend = '\n'.join([ele[0]+':'+str(ele[1]) for ele in zip(terms, dfs)])
+            # Estimate the 2D histogram
+            nbins = max_value*max_value
+            H, xedges, yedges = np.histogram2d(xaxis,yaxis,bins=nbins)
+            # H needs to be rotated and flipped
+            H = np.rot90(H)
+            H = np.flipud(H)
+            # Mask zeros
+            Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value
+            ax.pcolormesh(xedges,yedges,Hmasked)
+            cbar = plt.colorbar()
+            cbar.ax.set_ylabel('Counts')
+            #ax.scatter(xaxis_plot, yaxis_plot, s=sizes)
+            legend = '\n'.join([ele[0]+':'+str(ele[1]) for ele in zip(terms, idfs)])
             ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
             ax.set_title(qid+':'+queries[qid])
             ax.set_xlim([0, max_value])
