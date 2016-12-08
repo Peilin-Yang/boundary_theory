@@ -319,7 +319,7 @@ class PlotTermRelationship(object):
             #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
             ax.legend(loc='best', fontsize=8)
 
-        cbar = fig.colorbar()
+        cbar = plt.colorbar()
         cbar.ax.set_ylabel('Counts')
         output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
