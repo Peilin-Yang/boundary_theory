@@ -295,13 +295,13 @@ class PlotTermRelationship(object):
             sizes = (np.array(count.values())+1)**2
             max_value = max(max(xaxis_plot), max(yaxis_plot))
             # Estimate the 2D histogram
-            nbins = max_value*max_value
-            H, xedges, yedges = np.histogram2d(xaxis,yaxis,bins=nbins)
-            # H needs to be rotated and flipped
-            H = np.rot90(H)
-            H = np.flipud(H)
-            # Mask zeros
-            Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value
+            # nbins = max_value*max_value
+            # H, xedges, yedges = np.histogram2d(xaxis,yaxis,bins=nbins)
+            # # H needs to be rotated and flipped
+            # H = np.rot90(H)
+            # H = np.flipud(H)
+            # # Mask zeros
+            # Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value
             #ax.pcolormesh(xedges,yedges,Hmasked)
             ax.scatter(xaxis_plot, yaxis_plot, s=sizes)
             legend = 'AP(BM25):%.4f\n' % (float(rel_data[qid]['AP']['okapi'][1]))
