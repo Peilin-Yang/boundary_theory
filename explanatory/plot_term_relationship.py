@@ -262,7 +262,6 @@ class PlotTermRelationship(object):
             queries = Query(self.collection_path).get_queries_of_length(query_length)
         queries = {ele['num']:ele['title'] for ele in queries}
         cs = CollectionStats(self.collection_path)
-        bm25_aps = [float(rel_data[qid]['AP']['okapi'][1]) for qid in queries if qid in rel_data] # yaxis is the performance, e.g. AP
         num_cols = min(4, len(details_rel_data))
         num_rows = int(math.ceil(len(details_rel_data)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
@@ -305,7 +304,7 @@ class PlotTermRelationship(object):
             Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value
             #ax.pcolormesh(xedges,yedges,Hmasked)
             ax.scatter(xaxis_plot, yaxis_plot, s=sizes)
-            legend = 'AP(BM25):%.4f' % (bm25_aps[qid][1])
+            legend = 'AP(BM25):%.4f' % (float(rel_data[qid]['AP']['okapi'][1]))
             legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
             ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
             ax.set_title(qid+':'+queries[qid])
@@ -327,7 +326,7 @@ class PlotTermRelationship(object):
         query_length = int(query_length)
         #details_data = self.read_docdetails_data(query_length)
         details_rel_data = self.read_docdetails_data(query_length, only_rel=True)
-        #rel_data = self.read_rel_data(query_length)
+        rel_data = self.read_rel_data(query_length)
         #prepared_data, rel_contain_alls = self.prepare_rel_data(query_length, details_data, rel_data)
         
         ##### plot all kinds of docs
@@ -335,5 +334,5 @@ class PlotTermRelationship(object):
         ##### plot ONLY the docs that contain all query terms
         #self.plot_only_rel_with_all_qterms(rel_contain_alls, details_data, rel_data, query_length, oformat)
         ##### plot the relationship between terms only, no ranking function involved...
-        self.plot_only_rel_tf_relationship(details_rel_data, query_length, oformat)
+        self.plot_only_rel_tf_relationship(details_rel_data, rel_data, query_length, oformat)
 
