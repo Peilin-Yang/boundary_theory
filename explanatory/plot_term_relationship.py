@@ -251,6 +251,48 @@ class PlotTermRelationship(object):
         output_fn = os.path.join(self.output_root, '%s-%d-subrel.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
+    def plot_only_rel_tf_relationship(self, all_tfs, details_data, rel_data, query_length=2, oformat='png'):
+        queries = Query(self.collection_path).get_queries_of_length(query_length)
+        queries = {ele['num']:ele['title'] for ele in queries}
+        valid_tfs = {qid:tfs for qid,tfs in all_tfs.items() if tfs.size != 0}
+        num_cols = min(4, len(valid_tfs))
+        num_rows = int(math.ceil(len(valid_tfs)*1.0/num_cols))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
+        font = {'size' : 8}
+        plt.rc('font', **font)
+        row_idx = 0
+        col_idx = 0
+        for qid, tfs in valid_tfs.items():
+            if num_rows > 1:
+                ax = axs[row_idx][col_idx]
+            else:
+                if num_cols > 1:
+                    ax = axs[col_idx]
+                else:
+                    ax = axs
+            col_idx += 1
+            if col_idx >= num_cols:
+                row_idx += 1
+                col_idx = 0
+            dfs = details_data[qid][2]
+            smaller_idf_idx = np.argmax(dfs)
+            larger_idf_idx = np.argmin(dfs)
+            xaxis = tfs[:,smaller_idf_idx]
+            yaxis = tfs[:,larger_idf_idx]
+            count = collections.Counter(zip(xaxis, yaxis))
+            xaxis_plot, yaxis_plot = zip(*count.keys())
+            sizes = np.array(count.values())**2
+            ax.plot(xaxis_plot, yaxis_plot, s=sizes, marker='o')
+            ax.set_title(qid+':'+queries[qid])
+            ax.set_xlabel('TF(smaller idf term)')
+            if col_idx == 0:
+                ax.set_ylabel('TF(larger idf term)')
+            ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
+            ax.legend(loc='best', markerscale=0.5, fontsize=8)
+
+        fig.suptitle(self.collection_name + ',qLen=%d' % query_length)
+        output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
     def plot_all(self, query_length=2, oformat='png'):
         query_length = int(query_length)
@@ -261,4 +303,7 @@ class PlotTermRelationship(object):
         ##### plot all kinds of docs
         #self.plot_all_kinds_of_docs(prepared_data, details_data, rel_data, query_length, oformat)
         ##### plot ONLY the docs that contain all query terms
-        self.plot_only_rel_with_all_qterms(rel_contain_alls, details_data, rel_data, query_length, oformat)
+        #self.plot_only_rel_with_all_qterms(rel_contain_alls, details_data, rel_data, query_length, oformat)
+        ##### plot the relationship between terms only, no ranking function involved...
+        self.plot_only_rel_tf_relationship(rel_contain_alls, details_data, rel_data, query_length, oformat)
+
