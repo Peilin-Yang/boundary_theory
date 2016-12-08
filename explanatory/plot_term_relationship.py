@@ -285,6 +285,7 @@ class PlotTermRelationship(object):
             terms = details_rel_data[qid][0]
             tfs = details_rel_data[qid][1]
             dfs = details_rel_data[qid][2]
+            print dfs
             if not dfs:
                 continue
             idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
@@ -319,8 +320,8 @@ class PlotTermRelationship(object):
             #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
             ax.legend(loc='best', fontsize=8)
 
-        #cbar = fig.colorbar()
-        #cbar.ax.set_ylabel('Counts')
+        cbar = fig.colorbar()
+        cbar.ax.set_ylabel('Counts')
         output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
