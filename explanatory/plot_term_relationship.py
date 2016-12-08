@@ -289,7 +289,7 @@ class PlotTermRelationship(object):
             max_value = max(max(xaxis_plot), max(yaxis_plot))
             legend = '\n'.join([ele[0]+':'+str(ele[1]) for ele in zip(terms, dfs)])
             ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
-            ax.set_title(qid+':'+queries[qid])
+            ax.set_title(qid)
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
