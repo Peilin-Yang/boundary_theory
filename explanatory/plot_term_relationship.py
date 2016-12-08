@@ -305,10 +305,10 @@ class PlotTermRelationship(object):
             # # Mask zeros
             # Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value
             #ax.pcolormesh(xedges,yedges,Hmasked)
-            print '-'*30
-            print tfs, xaxis, yaxis
-            print qid, xaxis_plot, yaxis_plot, sizes
-            raw_input()
+            # print '-'*30
+            # print tfs, xaxis, yaxis
+            # print qid, xaxis_plot, yaxis_plot, sizes
+            # raw_input()
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
             cbar = fig.colorbar(scatter, ax=ax)
             #cbar.ax.set_ylabel('Counts')
