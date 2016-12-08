@@ -262,7 +262,7 @@ class PlotTermRelationship(object):
             queries = Query(self.collection_path).get_queries_of_length(query_length)
         queries = {ele['num']:ele['title'] for ele in queries}
         cs = CollectionStats(self.collection_path)
-        bm25_aps = [float(rel_data[qid]['AP']['okapi'][1]) for qid in qids if qid in rel_data] # yaxis is the performance, e.g. AP
+        bm25_aps = [float(rel_data[qid]['AP']['okapi'][1]) for qid in queries if qid in rel_data] # yaxis is the performance, e.g. AP
         num_cols = min(4, len(details_rel_data))
         num_rows = int(math.ceil(len(details_rel_data)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
