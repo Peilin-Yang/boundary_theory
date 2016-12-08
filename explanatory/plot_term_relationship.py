@@ -288,7 +288,7 @@ class PlotTermRelationship(object):
             max_value = max(ax.get_xlim()[1], ax.get_ylim()[1])
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
-            ax.plot(0, max_value, ls="-")
+            ax.plot(0, max_value, ls="dotted")
             #ax.set_xlabel('TF(smaller idf term)')
             if col_idx == 1:
                 ax.set_ylabel('TF(larger idf term)')
