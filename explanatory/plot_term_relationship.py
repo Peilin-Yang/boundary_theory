@@ -255,13 +255,14 @@ class PlotTermRelationship(object):
         output_fn = os.path.join(self.output_root, '%s-%d-subrel.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-    def plot_only_rel_tf_relationship(self, details_rel_data, query_length=2, oformat='png'):
+    def plot_only_rel_tf_relationship(self, details_rel_data, rel_data, query_length=2, oformat='png'):
         if query_length == 0:
             queries = Query(self.collection_path).get_queries()
         else:
             queries = Query(self.collection_path).get_queries_of_length(query_length)
         queries = {ele['num']:ele['title'] for ele in queries}
         cs = CollectionStats(self.collection_path)
+        bm25_aps = [float(rel_data[qid]['AP']['okapi'][1]) for qid in qids if qid in rel_data] # yaxis is the performance, e.g. AP
         num_cols = min(4, len(details_rel_data))
         num_rows = int(math.ceil(len(details_rel_data)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
@@ -306,7 +307,8 @@ class PlotTermRelationship(object):
             #cbar = ax.colorbar()
             #cbar.ax.set_ylabel('Counts')
             #ax.scatter(xaxis_plot, yaxis_plot, s=sizes)
-            legend = '\n'.join([ele[0]+':'+str(ele[1]) for ele in zip(terms, idfs)])
+            legend = 'AP(BM25):'+str(bm25_aps[qid])
+            legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
             ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
             ax.set_title(qid+':'+queries[qid])
             ax.set_xlim([0, max_value])
