@@ -269,6 +269,7 @@ class PlotTermRelationship(object):
         row_idx = 0
         col_idx = 0
         for qid in sorted(details_rel_data):
+            print qid
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
             else:
