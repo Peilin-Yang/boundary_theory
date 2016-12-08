@@ -282,12 +282,11 @@ class PlotTermRelationship(object):
                 col_idx = 0
             terms = details_rel_data[qid][0]
             tfs = details_rel_data[qid][1]
-            print tfs
             dfs = details_rel_data[qid][2]
             smaller_idf_idx = np.argmax(dfs)
             larger_idf_idx = np.argmin(dfs)
-            xaxis = tfs[:,smaller_idf_idx]
-            yaxis = tfs[:,larger_idf_idx]
+            xaxis = tfs[smaller_idf_idx,:]
+            yaxis = tfs[larger_idf_idx,:]
             count = collections.Counter(zip(xaxis, yaxis))
             xaxis_plot, yaxis_plot = zip(*count.keys())
             sizes = (np.array(count.values())+1)**2
