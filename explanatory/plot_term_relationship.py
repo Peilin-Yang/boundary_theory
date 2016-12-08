@@ -275,6 +275,7 @@ class PlotTermRelationship(object):
             if col_idx >= num_cols:
                 row_idx += 1
                 col_idx = 0
+            terms = details_data[qid][0]
             dfs = details_data[qid][2]
             smaller_idf_idx = np.argmax(dfs)
             larger_idf_idx = np.argmin(dfs)
@@ -285,7 +286,8 @@ class PlotTermRelationship(object):
             sizes = (np.array(count.values())+1)**2
             ax.scatter(xaxis_plot, yaxis_plot, s=sizes, marker='o')
             max_value = max(max(xaxis_plot), max(yaxis_plot))
-            ax.plot([0, max_value], [0, max_value], ls="dotted")
+            legend = '%s' % zip(terms, dfs)
+            ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
             ax.set_title(qid+':'+queries[qid])
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
@@ -294,7 +296,7 @@ class PlotTermRelationship(object):
             if col_idx == 1:
                 ax.set_ylabel('TF(larger idf term)')
             #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
-            #ax.legend(loc='best', markerscale=0.5, fontsize=8)
+            ax.legend(loc='best', fontsize=8)
 
         output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
