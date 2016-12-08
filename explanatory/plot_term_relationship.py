@@ -305,7 +305,7 @@ class PlotTermRelationship(object):
             # # Mask zeros
             # Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value
             #ax.pcolormesh(xedges,yedges,Hmasked)
-            print xaxis_plot, yaxis_plot
+            print xaxis_plot, yaxis_plot, sizes
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes)
             legend = 'AP(BM25):%.4f\n' % (float(rel_data[qid]['AP']['okapi'][1]))
             legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
