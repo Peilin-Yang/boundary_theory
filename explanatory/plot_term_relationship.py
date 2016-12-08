@@ -6,6 +6,7 @@ import json
 import ast
 import copy
 import re
+import collections
 from operator import itemgetter
 from subprocess import Popen, PIPE
 
