@@ -303,7 +303,7 @@ class PlotTermRelationship(object):
             # Mask zeros
             Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value
             ax.pcolormesh(xedges,yedges,Hmasked)
-            cbar = plt.colorbar()
+            cbar = ax.colorbar()
             cbar.ax.set_ylabel('Counts')
             #ax.scatter(xaxis_plot, yaxis_plot, s=sizes)
             legend = '\n'.join([ele[0]+':'+str(ele[1]) for ele in zip(terms, idfs)])
