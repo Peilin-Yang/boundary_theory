@@ -294,7 +294,7 @@ class PlotTermRelationship(object):
             yaxis = tfs[larger_idf_idx,:]
             count = collections.Counter(zip(xaxis, yaxis))
             xaxis_plot, yaxis_plot = zip(*count.keys())
-            sizes = (np.array(count.values())+1)**2
+            sizes = np.array(count.values())
             max_value = max(max(xaxis_plot), max(yaxis_plot))
             # Estimate the 2D histogram
             # nbins = max_value*max_value
