@@ -307,6 +307,8 @@ class PlotTermRelationship(object):
             #ax.pcolormesh(xedges,yedges,Hmasked)
             #print xaxis_plot, yaxis_plot, sizes
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
+            cbar = plt.colorbar(scatter)
+            cbar.ax.set_ylabel('Counts')
             legend = 'AP(BM25):%.4f\n' % (float(rel_data[qid]['AP']['okapi'][1]))
             legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
             ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
@@ -320,8 +322,6 @@ class PlotTermRelationship(object):
             #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
             ax.legend(loc='best', fontsize=8)
 
-        cbar = plt.colorbar(scatter)
-        cbar.ax.set_ylabel('Counts')
         output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
