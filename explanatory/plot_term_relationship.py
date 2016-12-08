@@ -285,7 +285,7 @@ class PlotTermRelationship(object):
             sizes = (np.array(count.values())+1)**2
             ax.scatter(xaxis_plot, yaxis_plot, s=sizes, marker='o')
             ax.set_title(qid+':'+queries[qid])
-            max_value = max(ax.get_xlim(), ax.get_ylim())
+            max_value = max(ax.get_xlim()[1], ax.get_ylim()[1])
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
             ax.plot(0, max_value, ls="-")
