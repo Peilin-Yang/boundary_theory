@@ -358,11 +358,9 @@ class PlotTermRelationship(object):
             all_xaxis = all_tfs[smaller_idf_idx,:]
             all_yaxis = all_tfs[larger_idf_idx,:]
             all_counts = collections.Counter(zip(all_xaxis, all_yaxis))
-            print rel_counts
-            print all_counts
-            exit()
-            xaxis_plot, yaxis_plot = zip(*count.keys())
-            sizes = np.array(count.values())
+            prob_counts = {k:rel_counts[k]*1./v if k in rel_counts else 0.0 for k,v in all_counts.items()}
+            xaxis_plot, yaxis_plot = zip(*prob_counts.keys())
+            sizes = np.array(prob_counts.values())
             max_value = max(max(xaxis_plot), max(yaxis_plot))
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
             cbar = fig.colorbar(scatter, ax=ax)
