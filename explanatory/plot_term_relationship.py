@@ -381,7 +381,7 @@ class PlotTermRelationship(object):
             #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
             ax.legend(loc='best', fontsize=8)
 
-        output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
+        output_fn = os.path.join(self.output_root, '%s-%d-tf_rel_prob.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
     def plot_all(self, query_length=2, oformat='png'):
