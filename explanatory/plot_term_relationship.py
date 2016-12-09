@@ -296,19 +296,6 @@ class PlotTermRelationship(object):
             xaxis_plot, yaxis_plot = zip(*count.keys())
             sizes = np.array(count.values())
             max_value = max(max(xaxis_plot), max(yaxis_plot))
-            # Estimate the 2D histogram
-            # nbins = max_value*max_value
-            # H, xedges, yedges = np.histogram2d(xaxis,yaxis,bins=nbins)
-            # # H needs to be rotated and flipped
-            # H = np.rot90(H)
-            # H = np.flipud(H)
-            # # Mask zeros
-            # Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value
-            #ax.pcolormesh(xedges,yedges,Hmasked)
-            # print '-'*30
-            # print tfs, xaxis, yaxis
-            # print qid, xaxis_plot, yaxis_plot, sizes
-            # raw_input()
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
             cbar = fig.colorbar(scatter, ax=ax)
             #cbar.ax.set_ylabel('Counts')
@@ -319,7 +306,76 @@ class PlotTermRelationship(object):
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
-            #ax.set_xlabel('TF(smaller idf term)')
+            if row_idx == num_rows-1:
+                ax.set_xlabel('TF(smaller idf term)')
+            if col_idx == 1:
+                ax.set_ylabel('TF(larger idf term)')
+            #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
+            ax.legend(loc='best', fontsize=8)
+
+        output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+
+    def plot_tf_rel_prob(self, details_data, details_rel_data, rel_data, query_length=2, oformat='png'):
+        if query_length == 0:
+            queries = Query(self.collection_path).get_queries()
+        else:
+            queries = Query(self.collection_path).get_queries_of_length(query_length)
+        queries = {ele['num']:ele['title'] for ele in queries}
+        cs = CollectionStats(self.collection_path)
+        num_cols = min(4, len(details_data))
+        num_rows = int(math.ceil(len(details_data)*1.0/num_cols))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
+        font = {'size' : 8}
+        plt.rc('font', **font)
+        row_idx = 0
+        col_idx = 0
+        for qid in sorted(details_data):
+            #print qid
+            if num_rows > 1:
+                ax = axs[row_idx][col_idx]
+            else:
+                if num_cols > 1:
+                    ax = axs[col_idx]
+                else:
+                    ax = axs
+            col_idx += 1
+            if col_idx >= num_cols:
+                row_idx += 1
+                col_idx = 0
+            terms = details_rel_data[qid][0]
+            rel_tfs = details_rel_data[qid][1]
+            all_tfs = details_data[qid][1]
+            dfs = details_rel_data[qid][2]
+            if dfs.size == 0:
+                continue
+            idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
+            smaller_idf_idx = np.argmax(dfs)
+            larger_idf_idx = np.argmin(dfs)
+            rel_xaxis = rel_tfs[smaller_idf_idx,:]
+            rel_yaxis = rel_tfs[larger_idf_idx,:]
+            rel_counts = collections.Counter(zip(rel_xaxis, rel_yaxis))
+            all_xaxis = all_tfs[smaller_idf_idx,:]
+            all_yaxis = all_tfs[larger_idf_idx,:]
+            all_counts = collections.Counter(zip(all_xaxis, all_yaxis))
+            print rel_counts
+            print all_counts
+            exit()
+            xaxis_plot, yaxis_plot = zip(*count.keys())
+            sizes = np.array(count.values())
+            max_value = max(max(xaxis_plot), max(yaxis_plot))
+            scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
+            cbar = fig.colorbar(scatter, ax=ax)
+            #cbar.ax.set_ylabel('Counts')
+            legend = 'AP(BM25):%.4f\n' % (float(rel_data[qid]['AP']['okapi'][1]))
+            legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
+            ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
+            ax.set_title(qid+':'+queries[qid])
+            ax.set_xlim([0, max_value])
+            ax.set_ylim([0, max_value])
+            ax.grid(ls='dotted')
+            if row_idx == num_rows-1:
+                ax.set_xlabel('TF(smaller idf term)')
             if col_idx == 1:
                 ax.set_ylabel('TF(larger idf term)')
             #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
@@ -330,7 +386,7 @@ class PlotTermRelationship(object):
 
     def plot_all(self, query_length=2, oformat='png'):
         query_length = int(query_length)
-        #details_data = self.read_docdetails_data(query_length)
+        details_data = self.read_docdetails_data(query_length)
         details_rel_data = self.read_docdetails_data(query_length, only_rel=True)
         rel_data = self.read_rel_data(query_length)
         #prepared_data, rel_contain_alls = self.prepare_rel_data(query_length, details_data, rel_data)
@@ -340,5 +396,5 @@ class PlotTermRelationship(object):
         ##### plot ONLY the docs that contain all query terms
         #self.plot_only_rel_with_all_qterms(rel_contain_alls, details_data, rel_data, query_length, oformat)
         ##### plot the relationship between terms only, no ranking function involved...
-        self.plot_only_rel_tf_relationship(details_rel_data, rel_data, query_length, oformat)
-
+        #self.plot_only_rel_tf_relationship(details_rel_data, rel_data, query_length, oformat)
+        self.plot_tf_rel_prob(details_data, details_rel_data, rel_data, query_length, oformat)
