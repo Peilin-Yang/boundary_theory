@@ -339,10 +339,6 @@ class PlotTermRelationship(object):
                     ax = axs[col_idx]
                 else:
                     ax = axs
-            col_idx += 1
-            if col_idx >= num_cols:
-                row_idx += 1
-                col_idx = 0
             terms = details_rel_data[qid][0]
             rel_tfs = details_rel_data[qid][1]
             all_tfs = details_data[qid][1]
@@ -372,9 +368,14 @@ class PlotTermRelationship(object):
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
+
+            col_idx += 1
+            if col_idx >= num_cols:
+                row_idx += 1
+                col_idx = 0
             if row_idx == num_rows-1:
                 ax.set_xlabel('TF(smaller idf term)')
-            if col_idx == 1:
+            if col_idx == 0:
                 ax.set_ylabel('TF(larger idf term)')
             #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
             ax.legend(loc='best', fontsize=8)
