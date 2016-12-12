@@ -189,6 +189,7 @@ class Prints(object):
 
     def okapi_apply(self, tf, idf, doclen, avdl, b):
         k1 = 1.2
+        print tf, idf, doclen, avdl, b
         return (k1+1.0)*tf/(tf+k1*(1-b+b*doclen*1.0/avdl))*idf
 
     def okapi(self, data, b=0.25):
