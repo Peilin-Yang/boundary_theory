@@ -255,7 +255,20 @@ class PlotTermRelationship(object):
         output_fn = os.path.join(self.output_root, '%s-%d-subrel.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-    def plot_only_rel_tf_relationship(self, details_rel_data, rel_data, query_length=2, oformat='png'):
+
+    def okapi(self, data, b=0.25):
+        tfs = data[1]
+        dfs = data[2]
+        doclens = data[3]
+        rels = data[4]
+        cs = CollectionStats(self.collection_path)
+        idfs = np.reshape(np.repeat(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), tfs.shape[1]), tfs.shape)
+        avdl = cs.get_avdl()
+        k1 = 1.2
+        r = (k1+1.0)*tfs/(tfs+k1*(1-b+b*doclens*1.0/avdl))*idfs
+        return np.sum(r, axis=0)
+
+    def plot_only_rel_tf_relationship(self, details_data, details_rel_data, rel_data, query_length=2, oformat='png'):
         if query_length == 0:
             queries = Query(self.collection_path).get_queries()
         else:
@@ -299,6 +312,23 @@ class PlotTermRelationship(object):
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
             cbar = fig.colorbar(scatter, ax=ax)
             #cbar.ax.set_ylabel('Counts')
+            # plot model top ranked docs
+            model_mapping = {
+                'okapi': self.okapi
+            }
+            ranking_models = [('okapi', 'x')]
+            for model in ranking_models:
+                model_name = model[0]
+                marker = model[1]
+                model_ranking_list = model_mapping[model_name](details_data[qid], 
+                    float(rel_data[qid]['AP'][model_name][2].split(':')[1]))
+                order_index = np.argsort(ranking_lists[qid])[::-1] # sort reversely
+                model_topranked_tfs = np.transpose(details_data[qid][1])[order_index][:20]
+                if model_topranked_tfs.shape[1] > query_length:
+                    model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
+                model_topranked_tfs = np.transpose(model_topranked_tfs)
+                ax.plot(model_topranked_tfs, marker=marker)
+
             legend = 'AP(BM25):%.4f\n' % (float(rel_data[qid]['AP']['okapi'][1]))
             legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
             ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
@@ -396,5 +426,5 @@ class PlotTermRelationship(object):
         ##### plot ONLY the docs that contain all query terms
         #self.plot_only_rel_with_all_qterms(rel_contain_alls, details_data, rel_data, query_length, oformat)
         ##### plot the relationship between terms only, no ranking function involved...
-        #self.plot_only_rel_tf_relationship(details_rel_data, rel_data, query_length, oformat)
-        self.plot_tf_rel_prob(details_data, details_rel_data, rel_data, query_length, oformat)
+        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, oformat)
+        #self.plot_tf_rel_prob(details_data, details_rel_data, rel_data, query_length, oformat)
