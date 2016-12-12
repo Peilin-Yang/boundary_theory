@@ -197,7 +197,7 @@ class Prints(object):
         doclens = data[3]
         rels = data[4]
         cs = CollectionStats(self.collection_path)
-        idfs = np.reshape(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), (2, 10000))
+        idfs = np.reshape(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), tfs.shape)
         avdl = cs.get_avdl()
         print tfs, dfs, doclens
         print tfs.shape
