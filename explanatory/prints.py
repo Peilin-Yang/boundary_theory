@@ -201,7 +201,7 @@ class Prints(object):
         avdl = cs.get_avdl()
         print tfs, dfs, doclens
         print tfs.shape
-        print tfs + doclens
+        print b
         #r = np.apply_along_axis(self.okapi_apply, 0, tfs, idfs, doclens, avdl, b)
         k1 = 1.2
         r = (k1+1.0)*tfs/(tfs+k1*(1-b+b*doclens*1.0/avdl))*idfs
