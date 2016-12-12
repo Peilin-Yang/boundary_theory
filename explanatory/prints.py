@@ -214,7 +214,7 @@ class Prints(object):
             ranking_lists[qid] = model_mapping[model](doc_details[qid], 
                 float(rel_data[qid]['AP'][model][2].split(':')[1]))
             order_index = np.argsort(ranking_lists[qid])[::-1] # sort reversely
-            tfs = np.tranpose(doc_details[qid][1])
+            tfs = np.transpose(doc_details[qid][1])
             print tfs[order_index][:20]
 
 
