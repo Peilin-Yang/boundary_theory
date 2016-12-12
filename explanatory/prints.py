@@ -189,7 +189,6 @@ class Prints(object):
 
     def okapi_apply(self, tf, idf, doclen, avdl, b):
         k1 = 1.2
-        print tf, idf, doclen, avdl, b
         return (k1+1.0)*tf/(tf+k1*(1-b+b*doclen*1.0/avdl))*idf
 
     def okapi(self, data, b=0.25):
@@ -200,7 +199,9 @@ class Prints(object):
         cs = CollectionStats(self.collection_path)
         idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
         avdl = cs.get_avdl()
-        print tfs.shape, dfs, doclens
+        print tfs, dfs, doclens
+        print tfs.shape
+        print tfs + doclens
         r = np.apply_along_axis(self.okapi_apply, 0, tfs, idfs, doclens, avdl, b)
         print data
         return np.sum(r, axis=0)
