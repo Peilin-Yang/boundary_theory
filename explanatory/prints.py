@@ -187,10 +187,6 @@ class Prints(object):
                 all_data[qid] = doc_details.get_qid_details_as_numpy_arrays(qid)
         return all_data
 
-    def okapi_apply(self, tf, idf, doclen, avdl, b):
-        k1 = 1.2
-        return (k1+1.0)*tf/(tf+k1*(1-b+b*doclen*1.0/avdl))*idf
-
     def okapi(self, data, b=0.25):
         tfs = data[1]
         dfs = data[2]
@@ -199,14 +195,8 @@ class Prints(object):
         cs = CollectionStats(self.collection_path)
         idfs = np.reshape(np.repeat(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), tfs.shape[1]), tfs.shape)
         avdl = cs.get_avdl()
-        print tfs, dfs, doclens
-        print tfs.shape
-        print b
-        #r = np.apply_along_axis(self.okapi_apply, 0, tfs, idfs, doclens, avdl, b)
         k1 = 1.2
         r = (k1+1.0)*tfs/(tfs+k1*(1-b+b*doclens*1.0/avdl))*idfs
-        print r
-        exit()
         return np.sum(r, axis=0)
 
     def print_ranking_using_doc_details_file(self, query_length=2, model='okapi'):
