@@ -202,8 +202,10 @@ class Prints(object):
         print tfs, dfs, doclens
         print tfs.shape
         print tfs + doclens
-        r = np.apply_along_axis(self.okapi_apply, 0, tfs, idfs, doclens, avdl, b)
-        print data
+        #r = np.apply_along_axis(self.okapi_apply, 0, tfs, idfs, doclens, avdl, b)
+        r = (k1+1.0)*tf/(tf+k1*(1-b+b*doclen*1.0/avdl))*idf
+        print r
+        exit()
         return np.sum(r, axis=0)
 
     def print_ranking_using_doc_details_file(self, query_length=2, model='okapi'):
