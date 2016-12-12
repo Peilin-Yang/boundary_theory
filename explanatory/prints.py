@@ -203,6 +203,7 @@ class Prints(object):
         print tfs.shape
         print tfs + doclens
         #r = np.apply_along_axis(self.okapi_apply, 0, tfs, idfs, doclens, avdl, b)
+        k1 = 1.2
         r = (k1+1.0)*tf/(tf+k1*(1-b+b*doclen*1.0/avdl))*idf
         print r
         exit()
