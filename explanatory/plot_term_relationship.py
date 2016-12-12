@@ -323,7 +323,7 @@ class PlotTermRelationship(object):
                 model_ranking_list = model_mapping[model_name](details_data[qid], 
                     float(rel_data[qid]['AP'][model_name][2].split(':')[1]))
                 print model_ranking_list
-                order_index = np.argsort(model_ranking_list[qid])[::-1] # sort reversely
+                order_index = np.argsort(model_ranking_list)[::-1] # sort reversely
                 model_topranked_tfs = np.transpose(details_data[qid][1])[order_index][:20]
                 if model_topranked_tfs.shape[1] > query_length:
                     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
