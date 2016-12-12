@@ -158,7 +158,16 @@ class Prints(object):
         print 'rel_larger:', np.mean(np.asarray(rel_larger_than_maxTF)),
         print 'ratio:', np.mean(np.asarray(rel_larger_than_maxTF)) / np.mean(np.asarray(rel_smaller_than_maxTF))
 
-
+    def read_rel_data(self, query_length=0):
+        rel_tf_stats = RelTFStats(self.collection_path)
+        if query_length == 0:
+            queries = Query(self.collection_path).get_queries()
+        else:
+            queries = Query(self.collection_path).get_queries_of_length(query_length)
+        queries = {ele['num']:ele['title'] for ele in queries}
+        rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
+        queries = {k:v for k,v in queries.items() if k in rel_docs and len(rel_docs[k]) > 0}
+        return rel_tf_stats.get_data(queries.keys())
 
     def read_docdetails_data(self, query_length=2, only_rel=False):
         if query_length == 0:
