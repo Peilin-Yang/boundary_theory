@@ -328,7 +328,7 @@ class PlotTermRelationship(object):
                 'okapi': self.okapi,
                 'dir': self.dir,
             }
-            ranking_models = [('okapi', 'x'), ('dir', 's')]
+            ranking_models = [('okapi', 'x'), ('dir', '^')]
             for model in ranking_models:
                 model_name = model[0]
                 marker = model[1]
