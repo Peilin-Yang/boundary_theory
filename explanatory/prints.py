@@ -211,6 +211,7 @@ class Prints(object):
         rel_data = self.read_rel_data(query_length)
         ranking_lists = {}
         for qid in doc_details:
+            print qid
             ranking_lists[qid] = model_mapping[model](doc_details[qid], 
                 float(rel_data[qid]['AP'][model][2].split(':')[1]))
             print ranking_lists[qid]
