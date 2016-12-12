@@ -255,6 +255,17 @@ class PlotTermRelationship(object):
         output_fn = os.path.join(self.output_root, '%s-%d-subrel.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
+    def dir(self, data, mu=2500):
+        terms = data[0]
+        tfs = data[1]
+        dfs = data[2]
+        doclens = data[3]
+        rels = data[4]
+        cs = CollectionStats(self.collection_path)
+        total_terms_cnt = cs.get_total_terms()
+        terms_collection_occur = np.reshape(np.repeat([cs.get_term_collection_occur(t)*1./total_terms_cnt for t in terms], tfs.shape[1]), tfs.shape)
+        r = np.log((tfs+mu*terms_collection_occur)/(doclens+mu))
+        return np.sum(r, axis=0)
 
     def okapi(self, data, b=0.25):
         tfs = data[1]
@@ -314,7 +325,8 @@ class PlotTermRelationship(object):
             #cbar.ax.set_ylabel('Counts')
             # plot model top ranked docs
             model_mapping = {
-                'okapi': self.okapi
+                'okapi': self.okapi,
+                'dir': self.dir,
             }
             ranking_models = [('okapi', 'x'), ('dir', 's')]
             for model in ranking_models:
