@@ -16,6 +16,7 @@ from judgment import Judgment
 from evaluation import Evaluation
 from performance import Performances
 from gen_doc_details import GenDocDetails
+from rel_tf_stats import RelTFStats
 
 import numpy as np
 import scipy.stats
