@@ -187,6 +187,20 @@ class Prints(object):
                 all_data[qid] = doc_details.get_qid_details_as_numpy_arrays(qid)
         return all_data
 
+    def dir(self, data, mu=2500):
+        terms = data[0]
+        tfs = data[1]
+        dfs = data[2]
+        doclens = data[3]
+        rels = data[4]
+        cs = CollectionStats(self.collection_path)
+        total_terms_cnt = cs.get_total_terms()
+        terms_collection_occur = np.array([cs.get_term_collection_occur(t) for t in terms])
+        r = np.log((tfs+mu*terms_collection_occur)/(doclens+mu))
+        print r
+        exit()
+        return np.sum(r, axis=0)
+
     def okapi(self, data, b=0.25):
         tfs = data[1]
         dfs = data[2]
@@ -201,7 +215,8 @@ class Prints(object):
 
     def print_ranking_using_doc_details_file(self, query_length=2, model='okapi'):
         model_mapping = {
-            'okapi': self.okapi
+            'okapi': self.okapi,
+            'dir': self.dir,
         }
         query_length = int(query_length)
         doc_details = self.read_docdetails_data(query_length)

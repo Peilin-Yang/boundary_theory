@@ -316,7 +316,7 @@ class PlotTermRelationship(object):
             model_mapping = {
                 'okapi': self.okapi
             }
-            ranking_models = [('okapi', 'x')]
+            ranking_models = [('okapi', 'x'), ('dir', 's')]
             for model in ranking_models:
                 model_name = model[0]
                 marker = model[1]
