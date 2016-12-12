@@ -204,7 +204,7 @@ class Prints(object):
         print tfs + doclens
         #r = np.apply_along_axis(self.okapi_apply, 0, tfs, idfs, doclens, avdl, b)
         k1 = 1.2
-        r = (k1+1.0)*tf/(tf+k1*(1-b+b*doclen*1.0/avdl))*idf
+        r = (k1+1.0)*tfs/(tfs+k1*(1-b+b*doclens*1.0/avdl))*idfs
         print r
         exit()
         return np.sum(r, axis=0)
