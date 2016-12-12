@@ -207,11 +207,17 @@ class Prints(object):
         doc_details = self.read_docdetails_data(query_length)
         rel_data = self.read_rel_data(query_length)
         ranking_lists = {}
-        for qid in doc_details:
+        for qid in rel_data:
+            print '='*30
             print qid
+            print '-'*30
             ranking_lists[qid] = model_mapping[model](doc_details[qid], 
                 float(rel_data[qid]['AP'][model][2].split(':')[1]))
-            print ranking_lists[qid]
+            order_index = np.argsort(ranking_lists[qid])[::-1] # sort reversely
+            tfs = np.tranpose(doc_details[qid][1])
+            print tfs[order_index][:20]
+
+
 
 
         
