@@ -26,14 +26,17 @@ class Prints(object):
     Prints all kinds of information
     """
 
-    def __init__(self, path):
-        super(Prints, self).__init__()
-        self.collection_path = os.path.abspath(path)
+    def __init__(self, corpus_path, corpus_name):
+        super(PlotTermRelationship, self).__init__()
+        self.collection_path = os.path.abspath(corpus_path)
         if not os.path.exists(self.collection_path):
-            frameinfo = getframeinfo(currentframe())
-            print frameinfo.filename, frameinfo.lineno
-            print '[TieBreaker Constructor]:Please provide a valid collection path'
+            print '[Evaluation Constructor]:Please provide valid corpus path'
             exit(1)
+
+        self.collection_name = corpus_name
+        self.all_results_root = '../../all_results'
+        if not os.path.exists(self.all_results_root):
+            os.path.makedirs(self.all_results_root)
 
         self.detailed_doc_stats_folder = os.path.join(self.collection_path, 'detailed_doc_stats')
         self.results_folder = os.path.join(self.collection_path, 'merged_results')
@@ -155,3 +158,52 @@ class Prints(object):
         print 'rel_smaller:', np.mean(np.asarray(rel_smaller_than_maxTF)),
         print 'rel_larger:', np.mean(np.asarray(rel_larger_than_maxTF)),
         print 'ratio:', np.mean(np.asarray(rel_larger_than_maxTF)) / np.mean(np.asarray(rel_smaller_than_maxTF))
+
+
+
+    def read_docdetails_data(self, query_length=2, only_rel=False):
+        if query_length == 0:
+            queries = Query(self.collection_path).get_queries()
+        else:
+            queries = Query(self.collection_path).get_queries_of_length(query_length)
+        queries = {ele['num']:ele['title'] for ele in queries}
+        rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
+        queries = {k:v for k,v in queries.items() if k in rel_docs and len(rel_docs[k]) > 0}
+        all_data = {}
+        doc_details = GenDocDetails(self.collection_path)
+        for qid in queries:
+            if only_rel:
+                all_data[qid] = doc_details.get_only_rels(qid)
+            else:
+                all_data[qid] = doc_details.get_qid_details_as_numpy_arrays(qid)
+        return all_data
+
+    def okapi_apply(self, tf, idf, doclen, avdl, b):
+        k1 = 1.2
+        return (k1+1.0)*tf/(tf+k1*(1-b+b*doclen*1.0/avdl))*idf
+
+    def okapi(self, data, b=0.25):
+        tfs = data[1]
+        dfs = data[2]
+        doclens = data[3]
+        rels = data[4]
+        cs = CollectionStats(self.collection_path)
+        idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
+        avdl = cs.get_avdl()
+        r = np.apply_along_axis(self.okapi_apply, 0, tfs, idfs, doclens, avdl, b)
+        return np.sum(r, axis=0)
+
+    def print_ranking_using_doc_details_file(self, query_length=2, model='okapi'):
+        model_mapping = {
+            'okapi': self.okapi
+        }
+        doc_details = self.read_docdetails_data(query_length)
+        rel_data = self.read_rel_data(query_length)
+        ranking_lists = {}
+        for qid in doc_details:
+            ranking_lists[qid] = model_mapping[model](doc_details[qid], 
+                float(rel_data[qid]['AP'][model][2].split(':')[1]))
+            print ranking_lists[qid]
+
+
+        

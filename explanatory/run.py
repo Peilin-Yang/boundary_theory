@@ -178,6 +178,25 @@ def plot_term_relationship_atom(para_file):
             collection_name = row[1]
             PlotTermRelationship(collection_path, collection_name).plot_all(*row[2:])
 
+def gen_print_ranking_using_doc_details_batch(paras):
+    all_paras = []
+    for q in g.query:
+        collection_name = q['collection_formal_name']
+        collection_path = os.path.join(collection_root, q['collection'])
+        p = copy.deepcopy(paras)
+        p.insert(0, collection_name)
+        p.insert(0, collection_path)
+        all_paras.append((p))
+    gen_batch_framework('print_ranking_using_docdetails', '422', all_paras)
+
+def print_ranking_using_doc_details_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            collection_name = row[1]
+            Prints(collection_path, collection_name).print_ranking_using_doc_details_file(*row[2:])
+
 def gen_lambdarank_batch():
     all_paras = []
     
@@ -296,6 +315,11 @@ if __name__ == '__main__':
                        [output_format(eps|png)]')
     parser.add_argument('-322', '--plot_term_relationship_atom', nargs=1, help='')
 
+    parser.add_argument('-421', '--gen_print_ranking_using_doc_details_batch', nargs='+',
+                       help='args: [query_len(0 for all queries)] \
+                       [model_name(e.g. okapi, dir)]')
+    parser.add_argument('-422', '--print_ranking_using_doc_details_atom', nargs=1, help='')
+
     parser.add_argument('-syc1', '--plot_synthetic', nargs='+',
                        help='plot P( D is a relevant document | c(t,D)=x ), \
                        where x = 0,1,2,...maxTF(t) for the synthetic data set \
@@ -381,6 +405,11 @@ if __name__ == '__main__':
         gen_plot_term_relationship_batch(args.gen_plot_term_relationship_batch)
     if args.plot_term_relationship_atom:
         plot_term_relationship_atom(args.plot_term_relationship_atom[0])
+
+    if args.gen_print_ranking_using_doc_details_batch:
+        gen_print_ranking_using_doc_details_batch(args.gen_print_ranking_using_doc_details_batch)
+    if args.print_ranking_using_doc_details_atom:
+        print_ranking_using_doc_details_atom(args.print_ranking_using_doc_details_atom[0])
 
     if args.plot_synthetic:
         PlotSyntheticMAP().plot(
