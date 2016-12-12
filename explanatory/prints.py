@@ -207,7 +207,7 @@ class Prints(object):
         doc_details = self.read_docdetails_data(query_length)
         rel_data = self.read_rel_data(query_length)
         ranking_lists = {}
-        for qid in rel_data:
+        for qid in sorted(rel_data):
             print '='*30
             print qid
             print '-'*30
