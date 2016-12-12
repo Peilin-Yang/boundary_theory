@@ -200,6 +200,7 @@ class Prints(object):
         idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
         avdl = cs.get_avdl()
         r = np.apply_along_axis(self.okapi_apply, 0, tfs, idfs, doclens, avdl, b)
+        print data
         return np.sum(r, axis=0)
 
     def print_ranking_using_doc_details_file(self, query_length=2, model='okapi'):
