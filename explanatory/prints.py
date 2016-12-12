@@ -207,6 +207,7 @@ class Prints(object):
         model_mapping = {
             'okapi': self.okapi
         }
+        query_length = int(query_length)
         doc_details = self.read_docdetails_data(query_length)
         rel_data = self.read_rel_data(query_length)
         ranking_lists = {}
