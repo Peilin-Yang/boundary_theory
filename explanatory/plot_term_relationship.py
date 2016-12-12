@@ -327,8 +327,7 @@ class PlotTermRelationship(object):
                 if model_topranked_tfs.shape[1] > query_length:
                     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
-                print zip(*model_topranked_tfs)
-                ax.plot(zip(*model_topranked_tfs), marker=marker)
+                ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker=marker)
 
             legend = 'AP(BM25):%.4f\n' % (float(rel_data[qid]['AP']['okapi'][1]))
             legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
