@@ -196,6 +196,7 @@ class Prints(object):
         cs = CollectionStats(self.collection_path)
         total_terms_cnt = cs.get_total_terms()
         terms_collection_occur = np.array([cs.get_term_collection_occur(t) for t in terms])
+        print terms_collection_occur
         r = np.log((tfs+mu*terms_collection_occur)/(doclens+mu))
         print r
         exit()
