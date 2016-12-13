@@ -321,7 +321,8 @@ class PlotTermRelationship(object):
         num_rows = int(math.ceil((len(details_rel_data)+1)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
         font = {'size' : 8}
-        plt.rc('font', **font, 'text', **{ 'text.usetex' : True})
+        plt.rc('font', **font)
+        matplotlib.rcParams['text.usetex'] = True
         row_idx = 0
         col_idx = 0
         for qid in sorted(details_rel_data):
