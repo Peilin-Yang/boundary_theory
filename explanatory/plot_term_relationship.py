@@ -277,7 +277,7 @@ class PlotTermRelationship(object):
         if which_term > 0 and which_term < tfs.shape[0]:
             new_tfs = []
             for i in range(tfs.shape[0]):
-                if i == which_term:
+                if i == which_term-1:
                     new_tfs.append(tfs[i])
                 else:
                     new_tfs.append([1 if n > 0 else 0 for n in tfs[i]])
@@ -299,7 +299,7 @@ class PlotTermRelationship(object):
         if which_term > 0 and which_term < tfs.shape[0]:
             new_tfs = []
             for i in range(tfs.shape[0]):
-                if i == which_term:
+                if i == which_term-1:
                     new_tfs.append(tfs[i])
                 else:
                     new_tfs.append([1 if n > 0 else 0 for n in tfs[i]])
