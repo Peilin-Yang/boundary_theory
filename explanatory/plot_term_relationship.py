@@ -370,7 +370,7 @@ class PlotTermRelationship(object):
                 if model_topranked_tfs.shape[1] > query_length:
                     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
-                for term_idx in range(1, len(terms.size)+1):
+                for term_idx in range(1, len(terms)+1):
                     print term_idx
                     partial_ranking_list = model_mapping[model_name](details_data[qid], 
                         float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
