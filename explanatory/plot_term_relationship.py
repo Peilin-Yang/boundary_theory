@@ -339,21 +339,15 @@ class PlotTermRelationship(object):
                 if model_topranked_tfs.shape[1] > query_length:
                     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
-                ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker)
+                ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, label='%s:%.4f' % (model_name, float(rel_data[qid]['AP'][model_name][1])))
 
-            legend = '\n'.join(['%s:%.4f' % (m[0], float(rel_data[qid]['AP'][m[0]][1])) for m in ranking_models])
-            legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
-            ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
+            ax.plot([0, max_value], [0, max_value], ls="dotted")
             ax.set_title(qid)
-            ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]))
-            ax.set_ylabel('%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx]))
+            ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]), labelpad=0)
+            ax.set_ylabel('%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx]), labelpad=0)
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
-            if row_idx == num_rows-1:
-                ax.set_xlabel('TF(smaller idf term)')
-            if col_idx == 1:
-                ax.set_ylabel('TF(larger idf term)')
             #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
             ax.legend(loc='best', fontsize=8)
 
