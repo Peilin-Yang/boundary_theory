@@ -415,6 +415,7 @@ class PlotTermRelationship(object):
         explanations += r'\textbf{xlabel:} \textit{lower IDF term and its IDF}\n\textbf{ylabel:} \textit{higher IDF term and its IDF}\n'
         explanations += r'\textbf{scatter dots:} \textit{TFs of rel docs}\n\textbf{x-markers:} \textit{TFs of top 20 ranked docs of BM25}\n\textbf{\^-markers:} \textit{TFs of top 20 ranked docs of LM}\n'
         explanations += r'\textbf{legend:} AP(AP of using lower IDF term only)\n(AP of using higher IDF term only)'
+        print explanations
         ax.text(0.5, 0.5, explanations, fontsize=6, horizontalalignment='center', verticalalignment='center', transform=ax.transAxes)
 
         output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
