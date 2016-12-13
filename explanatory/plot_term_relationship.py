@@ -279,9 +279,10 @@ class PlotTermRelationship(object):
         doclens = data[3]
         rels = data[4]
         if which_term > 0 and which_term < tfs.shape[0]:
-            terms = np.array([terms[which_term]])
-            tfs = np.array([tfs[which_term]])
-            dfs = np.array([dfs[which_term]])
+            for i in range(tfs.shape[0]):
+                if i != which_term:
+                    np.fill(tfs[i], 1)
+                    np.fill(dfs[i], 1)
         cs = CollectionStats(self.collection_path)
         total_terms_cnt = cs.get_total_terms()
         terms_collection_occur = np.reshape(np.repeat([cs.get_term_collection_occur(t)*1./total_terms_cnt for t in terms], tfs.shape[1]), tfs.shape)
@@ -300,9 +301,13 @@ class PlotTermRelationship(object):
         doclens = data[3]
         rels = data[4]
         cs = CollectionStats(self.collection_path)
+        print tfs, dfs
         if which_term > 0 and which_term < tfs.shape[0]:
-            tfs = np.array([tfs[which_term]])
-            dfs = np.array([dfs[which_term]])
+            for i in range(tfs.shape[0]):
+                if i != which_term:
+                    np.fill(tfs[i], 1)
+                    np.fill(dfs[i], 1)
+        print tfs, dfs
         idfs = np.reshape(np.repeat(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), tfs.shape[1]), tfs.shape)
         avdl = cs.get_avdl()
         k1 = 1.2
@@ -377,7 +382,7 @@ class PlotTermRelationship(object):
                     partial_ranking_list = model_mapping[model_name](details_data[qid], 
                         float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
                     partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
-                    print qid, model_name, term_idx, self.cal_map(rels[partial_order_index], rel_data[qid]['rel_cnt']) 
+                    print qid, model_name, terms[term_idx], self.cal_map(rels[partial_order_index], rel_data[qid]['rel_cnt']) 
                 ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, alpha=0.3, label='%s:%.4f' % (model_name, float(rel_data[qid]['AP'][model_name][1])))
 
             ax.plot([0, max_value], [0, max_value], ls="dotted")
