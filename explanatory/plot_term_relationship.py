@@ -278,6 +278,7 @@ class PlotTermRelationship(object):
         doclens = data[3]
         rels = data[4]
         if which_term > 0 and which_term < tfs.shape[0]:
+            terms = np.array([terms[which_term]])
             tfs = np.array([tfs[which_term]])
             dfs = np.array([dfs[which_term]])
         cs = CollectionStats(self.collection_path)
