@@ -412,7 +412,7 @@ class PlotTermRelationship(object):
                 ax = axs[col_idx]
             else:
                 ax = axs
-        explanations = r'$\textbf{title:} \textit{query id and query}\n\textbf{xaxis:} \textit{tf of lower IDF term in rel docs}\n\textbf{yaxis:} \textit{tf of higher IDF term in rel docs}\n'
+        explanations = r'\textbf{title:} \textit{query id and query}\\ \textbf{xaxis:} \textit{tf of lower IDF term in rel docs}\n\textbf{yaxis:} \textit{tf of higher IDF term in rel docs}\n'
         explanations += r'\textbf{xlabel:} \textit{lower IDF term and its IDF}\n\textbf{ylabel:} \textit{higher IDF term and its IDF}\n'
         explanations += '\textbf{scatter dots:} \textit{TFs of rel docs}\n\textbf{x-markers:} \textit{TFs of top 20 ranked docs of BM25}\n\textbf{^-markers:} \textit{TFs of top 20 ranked docs of LM}\n'
         explanations += '\textbf{legend:} AP(AP of using lower IDF term only)\n(AP of using higher IDF term only)'
