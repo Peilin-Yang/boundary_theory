@@ -272,12 +272,7 @@ class PlotTermRelationship(object):
             return 0
         return s/total_rel_cnt
 
-    def dir(self, data, mu=2500, which_term=0):
-        terms = data[0]
-        tfs = data[1]
-        dfs = data[2]
-        doclens = data[3]
-        rels = data[4]
+    def dir(self, terms, tfs, dfs, doclens, mu=2500, which_term=0):
         if which_term > 0 and which_term < tfs.shape[0]:
             new_tfs = []
             for i in range(tfs.shape[0]):
@@ -292,17 +287,13 @@ class PlotTermRelationship(object):
         r = np.log((tfs+mu*terms_collection_occur)/(doclens+mu))
         return np.sum(r, axis=0)
 
-    def okapi(self, data, b=0.25, which_term=0):
+    def okapi(self, terms, tfs, dfs, doclens, rels, b=0.25, which_term=0):
         """
         which_term can determine which term is used to compute the 
         score. If it is 0 then all terms will be used, otherwise only 
         the selected term is used. 
         which_term indicates the row index of tfs.
         """
-        tfs = data[1]
-        dfs = data[2]
-        doclens = data[3]
-        rels = data[4]
         cs = CollectionStats(self.collection_path)
         if which_term > 0 and which_term < tfs.shape[0]:
             new_tfs = []
@@ -389,7 +380,7 @@ class PlotTermRelationship(object):
                     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
                 for term_idx in range(1, len(terms)+1):
-                    partial_ranking_list = model_mapping[model_name](details_data[qid], 
+                    partial_ranking_list = model_mapping[model_name](terms, tfs, dfs, doclens, rels, 
                         float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
                     partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
                     print qid, model_name, terms[term_idx-1], self.cal_map(rels[partial_order_index], rel_data[qid]['rel_cnt']) 
