@@ -411,11 +411,11 @@ class PlotTermRelationship(object):
                 ax = axs[col_idx]
             else:
                 ax = axs
-        explanations = 'title: query id and query\nxaxis: tf of lower IDF term in rel docs\nyaxis: tf of higher IDF term in rel docs\n'
-        explanations = 'xlabel: lower IDF term and its IDF\nylabel: higher IDF term and its IDF\n'
-        explanations += 'scatter dots: TFs of rel docs\nx-markers: TFs of top 20 ranked docs of BM25\n^-markers: TFs of top 20 ranked docs of LM\n'
-        explanations += 'legend: AP(AP of using lower IDF term only)(AP of using higher IDF term only)'
-        ax.text(0.5, 0.5, explanations, horizontalalignment='center', verticalalignment='center', transform=ax.transAxes)
+        explanations = r'$\textbf{title:} \textit{query id and query}\n\textbf{xaxis:} \textit{tf of lower IDF term in rel docs}\n\textbf{yaxis:} \textit{tf of higher IDF term in rel docs}\n'
+        explanations += r'\textbf{xlabel:} \textit{lower IDF term and its IDF}\n\textbf{ylabel:} \textit{higher IDF term and its IDF}\n'
+        explanations += '\textbf{scatter dots:} \textit{TFs of rel docs}\n\textbf{x-markers:} \textit{TFs of top 20 ranked docs of BM25}\n\textbf{^-markers:} \textit{TFs of top 20 ranked docs of LM}\n'
+        explanations += '\textbf{legend:} AP(AP of using lower IDF term only)\n(AP of using higher IDF term only)'
+        ax.text(0.5, 0.5, explanations, fontsize=6, horizontalalignment='center', verticalalignment='center', transform=ax.transAxes)
 
         output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
