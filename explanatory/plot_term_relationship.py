@@ -399,7 +399,7 @@ class PlotTermRelationship(object):
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
             #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
-            ax.legend(handler_map=legend_handlers, loc='best', fontsize=6, markerscale=0.6, handletextpad=-0.5)
+            ax.legend(handler_map=legend_handlers, loc='best', fontsize=6, markerscale=0.6, handletextpad=-0.5, frameon=False, framealpha=0.6)
 
         output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
