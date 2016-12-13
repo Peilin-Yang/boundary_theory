@@ -339,7 +339,7 @@ class PlotTermRelationship(object):
                 if model_topranked_tfs.shape[1] > query_length:
                     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
-                ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, label='%s:%.4f' % (model_name, float(rel_data[qid]['AP'][model_name][1])))
+                ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, alpha=0.3, label='%s:%.4f' % (model_name, float(rel_data[qid]['AP'][model_name][1])))
 
             ax.plot([0, max_value], [0, max_value], ls="dotted")
             ax.set_title(qid+':'+queries[qid])
