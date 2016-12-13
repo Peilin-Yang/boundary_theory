@@ -299,8 +299,10 @@ class PlotTermRelationship(object):
         rels = data[4]
         cs = CollectionStats(self.collection_path)
         if which_term > 0 and which_term < tfs.shape[0]:
+            print tfs, dfs
             tfs = tfs[which_term]
             dfs = dfs[which_term]
+            print tfs, dfs
         idfs = np.reshape(np.repeat(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), tfs.shape[1]), tfs.shape)
         avdl = cs.get_avdl()
         k1 = 1.2
