@@ -342,7 +342,7 @@ class PlotTermRelationship(object):
                 ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, label='%s:%.4f' % (model_name, float(rel_data[qid]['AP'][model_name][1])))
 
             ax.plot([0, max_value], [0, max_value], ls="dotted")
-            ax.set_title(qid)
+            ax.set_title(qid+':'+queries[qid])
             ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]), labelpad=-2)
             ax.set_ylabel('%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx]), labelpad=0)
             ax.set_xlim([0, max_value])
