@@ -308,8 +308,7 @@ class PlotTermRelationship(object):
                     new_tfs.append(tfs[i])
                 else:
                     new_tfs.append([1 if n > 0 else 0 for n in tfs[i]])
-            tfs = np.array(tfs)
-            dfs = np.array(dfs)
+            tfs = np.array(new_tfs)
         print tfs, dfs
         idfs = np.reshape(np.repeat(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), tfs.shape[1]), tfs.shape)
         avdl = cs.get_avdl()
