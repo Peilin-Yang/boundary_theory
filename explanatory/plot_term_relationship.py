@@ -387,7 +387,7 @@ class PlotTermRelationship(object):
                     partial_ranking_list = model_mapping[model_name](terms, all_tfs, all_dfs, all_doclens, all_rels, \
                         float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
                     partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
-                    partial_ranking_ap[term_idx] = self.cal_map(all_rels[partial_order_index], rel_data[qid]['rel_cnt']) 
+                    partial_ranking_ap[term_idx-1] = self.cal_map(all_rels[partial_order_index], rel_data[qid]['rel_cnt']) 
                 this_plot, = ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, alpha=0.3, label='%s:%.2f(%.2f)' % (model_name, float(rel_data[qid]['AP'][model_name][1]), partial_ranking_ap[larger_idf_idx]))
                 legend_handlers[this_plot] = HandlerLine2D(numpoints=1)
 
