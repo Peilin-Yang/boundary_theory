@@ -328,7 +328,7 @@ class PlotTermRelationship(object):
                 'okapi': self.okapi,
                 'dir': self.dir,
             }
-            ranking_models = [('okapi', 'x')]
+            ranking_models = [('okapi', 'x'), ('dir', '^')]
             for model in ranking_models:
                 model_name = model[0]
                 marker = model[1]
@@ -341,10 +341,12 @@ class PlotTermRelationship(object):
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
                 ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker)
 
-            legend = 'AP(BM25):%.4f\n' % (float(rel_data[qid]['AP']['okapi'][1]))
+            legend = '\n'.join(['%s:%.4f' % (m[0], float(rel_data[qid]['AP'][m[0]][1])) for m in ranking_models])
             legend += '\n'.join(['%s:%.2f' % (ele[0], ele[1]) for ele in zip(terms, idfs)])
             ax.plot([0, max_value], [0, max_value], ls="dotted", label=legend)
-            ax.set_title(qid+':'+queries[qid])
+            ax.set_title(qid)
+            ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]))
+            ax.set_ylabel('%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx]))
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
