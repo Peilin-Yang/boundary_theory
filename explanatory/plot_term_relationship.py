@@ -357,6 +357,7 @@ class PlotTermRelationship(object):
             if query_length == 2 and dfs.size == 3:
                 terms = terms[1:]
                 dfs = dfs[1:]
+                print terms, dfs
             idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
             smaller_idf_idx = np.argmax(dfs)
             larger_idf_idx = np.argmin(dfs)
