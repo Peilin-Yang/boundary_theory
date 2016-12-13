@@ -256,20 +256,21 @@ class PlotTermRelationship(object):
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
 
-    def cal_map(self, ranking_list_with_judgement):
+    def cal_map(self, rels_ranking_list, total_rel_cnt=0):
+        """
+        rels_ranking_list: a list only contains 0 and numbers larger than 0, 
+        indicating the relevant info of the ranking list.
+        """
         cur_rel = 0
         s = 0.0
-        total = 0
-        for i, ele in enumerate(ranking_list_with_judgement):
-            docid = ele[0]
-            is_rel = ele[1]
+        for i, ele in enumerate(rels_ranking_list):
+            is_rel = int(ele) > 0
             if is_rel:
                 cur_rel += 1
-                total += 1
                 s += cur_rel*1.0/(i+1)
-        if total == 0:
+        if total_rel_cnt == 0:
             return 0
-        return s/total
+        return s/total_rel_cnt
 
     def dir(self, data, mu=2500, which_term=0):
         terms = data[0]
@@ -338,6 +339,7 @@ class PlotTermRelationship(object):
             terms = details_rel_data[qid][0]
             tfs = details_rel_data[qid][1]
             dfs = details_rel_data[qid][2]
+            rels = details_data[qid][4]
             if dfs.size == 0:
                 continue
             if query_length == 2 and dfs.size == 3:
@@ -372,12 +374,10 @@ class PlotTermRelationship(object):
                     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
                 for term_idx in range(1, len(terms)+1):
-                    print term_idx
                     partial_ranking_list = model_mapping[model_name](details_data[qid], 
                         float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
-                    print model_ranking_list
-                    print partial_ranking_list
-                print '-'*40    
+                    partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
+                    print qid, model_name, term_idx, self.cal_map(rels[partial_order_index], rel_data[qid]['rel_cnt']) 
                 ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, alpha=0.3, label='%s:%.4f' % (model_name, float(rel_data[qid]['AP'][model_name][1])))
 
             ax.plot([0, max_value], [0, max_value], ls="dotted")
