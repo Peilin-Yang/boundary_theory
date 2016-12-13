@@ -354,6 +354,7 @@ class PlotTermRelationship(object):
             rels = details_data[qid][4]
             if dfs.size == 0:
                 continue
+            print query_length, dfs.size
             if query_length == 2 and dfs.size == 3:
                 terms = terms[1:]
                 dfs = dfs[1:]
