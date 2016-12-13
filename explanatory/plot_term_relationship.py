@@ -342,6 +342,7 @@ class PlotTermRelationship(object):
             terms = details_rel_data[qid][0]
             tfs = details_rel_data[qid][1]
             dfs = details_rel_data[qid][2]
+            doclens = details_rel_data[qid][3]
             rels = details_data[qid][4]
             if dfs.size == 0:
                 continue
