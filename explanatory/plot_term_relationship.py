@@ -279,9 +279,13 @@ class PlotTermRelationship(object):
         doclens = data[3]
         rels = data[4]
         if which_term > 0 and which_term < tfs.shape[0]:
-            terms = np.array([terms[which_term]])
-            tfs = np.array([tfs[which_term]])
-            dfs = np.array([dfs[which_term]])
+            new_tfs = []
+            for i in range(tfs.shape[0]):
+                if i == which_term:
+                    new_tfs.append(tfs[i])
+                else:
+                    new_tfs.append([1 if n > 0 else 0 for n in tfs[i]])
+            tfs = np.array(new_tfs)
         cs = CollectionStats(self.collection_path)
         total_terms_cnt = cs.get_total_terms()
         terms_collection_occur = np.reshape(np.repeat([cs.get_term_collection_occur(t)*1./total_terms_cnt for t in terms], tfs.shape[1]), tfs.shape)
