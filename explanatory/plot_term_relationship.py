@@ -303,14 +303,11 @@ class PlotTermRelationship(object):
         print tfs, dfs
         if which_term > 0 and which_term < tfs.shape[0]:
             new_tfs = []
-            new_dfs = []
             for i in range(tfs.shape[0]):
                 if i == which_term:
                     new_tfs.append(tfs[i])
-                    new_dfs.append(dfs[i])
                 else:
                     new_tfs.append([1 if n > 0 else 0 for n in tfs[i]])
-                    new_dfs.append([1 if n > 0 else 0 for n in dfs[i]])
             tfs = np.array(tfs)
             dfs = np.array(dfs)
         print tfs, dfs
