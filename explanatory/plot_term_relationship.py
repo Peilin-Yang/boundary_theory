@@ -300,7 +300,6 @@ class PlotTermRelationship(object):
         doclens = data[3]
         rels = data[4]
         cs = CollectionStats(self.collection_path)
-        print tfs, dfs
         if which_term > 0 and which_term < tfs.shape[0]:
             new_tfs = []
             for i in range(tfs.shape[0]):
@@ -308,12 +307,7 @@ class PlotTermRelationship(object):
                     new_tfs.append(tfs[i])
                 else:
                     new_tfs.append([1 if n > 0 else 0 for n in tfs[i]])
-            print new_tfs
             tfs = np.array(new_tfs)
-            print tfs
-            raw_input()
-        print tfs, dfs
-        print '-'*40
         idfs = np.reshape(np.repeat(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), tfs.shape[1]), tfs.shape)
         avdl = cs.get_avdl()
         k1 = 1.2
