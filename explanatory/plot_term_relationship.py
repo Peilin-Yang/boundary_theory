@@ -366,12 +366,17 @@ class PlotTermRelationship(object):
                 model_ranking_list = model_mapping[model_name](details_data[qid], 
                     float(rel_data[qid]['AP'][model_name][2].split(':')[1]))
                 order_index = np.argsort(model_ranking_list)[::-1] # sort reversely
-                print details_data[qid][1]
                 model_topranked_tfs = np.transpose(details_data[qid][1])[order_index][:20]
-                print details_data[qid][1]
                 if model_topranked_tfs.shape[1] > query_length:
                     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
+                for term_idx in range(1, terms.size+1):
+                    print term_idx
+                    partial_ranking_list = model_mapping[model_name](details_data[qid], 
+                        float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
+                    print model_ranking_list
+                    print partial_ranking_list
+                print '-'*40    
                 ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, alpha=0.3, label='%s:%.4f' % (model_name, float(rel_data[qid]['AP'][model_name][1])))
 
             ax.plot([0, max_value], [0, max_value], ls="dotted")
