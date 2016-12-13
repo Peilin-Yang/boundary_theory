@@ -343,7 +343,7 @@ class PlotTermRelationship(object):
 
             ax.plot([0, max_value], [0, max_value], ls="dotted")
             ax.set_title(qid)
-            ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]), labelpad=-5)
+            ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]), labelpad=-2)
             ax.set_ylabel('%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx]), labelpad=0)
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
