@@ -372,7 +372,7 @@ class PlotTermRelationship(object):
             for model in ranking_models:
                 model_name = model[0]
                 marker = model[1]
-                model_ranking_list = model_mapping[model_name](details_data[qid], 
+                model_ranking_list = model_mapping[model_name](terms, tfs, dfs, doclens, rels, \
                     float(rel_data[qid]['AP'][model_name][2].split(':')[1]))
                 order_index = np.argsort(model_ranking_list)[::-1] # sort reversely
                 model_topranked_tfs = np.transpose(details_data[qid][1])[order_index][:20]
