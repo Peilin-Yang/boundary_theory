@@ -26,6 +26,7 @@ import scipy.stats
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from matplotlib.legend_handler import HandlerLine2D
 
 
 class PlotTermRelationship(object):
@@ -370,6 +371,7 @@ class PlotTermRelationship(object):
                 'dir': self.dir,
             }
             ranking_models = [('okapi', 'x'), ('dir', '^')]
+            legend_handlers = {}
             for model in ranking_models:
                 model_name = model[0]
                 marker = model[1]
@@ -385,7 +387,8 @@ class PlotTermRelationship(object):
                         float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
                     partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
                     print qid, model_name, terms[term_idx-1], self.cal_map(all_rels[partial_order_index], rel_data[qid]['rel_cnt']) 
-                ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, alpha=0.3, label='%s:%.4f' % (model_name, float(rel_data[qid]['AP'][model_name][1])))
+                this_plot = ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, alpha=0.3, label='%s:%.4f' % (model_name, float(rel_data[qid]['AP'][model_name][1])))
+                legend_handlers[this_plot] = HandlerLine2D(numpoints=1)
 
             ax.plot([0, max_value], [0, max_value], ls="dotted")
             ax.set_title(qid+':'+queries[qid])
@@ -395,7 +398,7 @@ class PlotTermRelationship(object):
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
             #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
-            ax.legend(loc='best', fontsize=8)
+            ax.legend(handler_map=legend_handlers, loc='best', fontsize=8)
 
         output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
