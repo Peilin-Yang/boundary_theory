@@ -317,8 +317,8 @@ class PlotTermRelationship(object):
             queries = Query(self.collection_path).get_queries_of_length(query_length)
         queries = {ele['num']:ele['title'] for ele in queries}
         cs = CollectionStats(self.collection_path)
-        num_cols = min(4, len(details_rel_data))
-        num_rows = int(math.ceil(len(details_rel_data)*1.0/num_cols))
+        num_cols = min(4, len(details_rel_data)+1) # extra one for explanations
+        num_rows = int(math.ceil((len(details_rel_data)+1)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
         font = {'size' : 8}
         plt.rc('font', **font)
@@ -403,6 +403,19 @@ class PlotTermRelationship(object):
             ax.grid(ls='dotted')
             #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
             ax.legend(handler_map=legend_handlers, loc='best', fontsize=6, markerscale=0.6, handletextpad=-0.5, frameon=False, framealpha=0.6)
+
+        if num_rows > 1:
+                ax = axs[row_idx][col_idx]
+            else:
+                if num_cols > 1:
+                    ax = axs[col_idx]
+                else:
+                    ax = axs
+        explanations = 'title: query id and query\nxaxis: tf of lower IDF term in rel docs\nyaxis: tf of higher IDF term in rel docs\n'
+        explanations = 'xlabel: lower IDF term and its IDF\nylabel: higher IDF term and its IDF\n'
+        explanations += 'scatter dots: TFs of rel docs\nx-markers: TFs of top 20 ranked docs of BM25\n^-markers: TFs of top 20 ranked docs of LM\n'
+        explanations += 'legend: AP(AP of using lower IDF term only)(AP of using higher IDF term only)'
+        ax.text(0.5, 0.5, explanations, horizontalalignment='center', verticalalignment='center', transform=ax.transAxes)
 
         output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
