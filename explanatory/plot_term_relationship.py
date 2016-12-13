@@ -339,11 +339,14 @@ class PlotTermRelationship(object):
             if col_idx >= num_cols:
                 row_idx += 1
                 col_idx = 0
-            terms = details_rel_data[qid][0]
+            terms = details_data[qid][0]
             tfs = details_rel_data[qid][1]
             dfs = details_rel_data[qid][2]
             doclens = details_rel_data[qid][3]
-            rels = details_data[qid][4]
+            all_tfs = details_data[qid][1]
+            all_dfs = details_data[qid][2]
+            all_doclens = details_data[qid][3]
+            all_rels = details_data[qid][4]
             if dfs.size == 0:
                 continue
             print query_length, dfs.size
@@ -372,7 +375,7 @@ class PlotTermRelationship(object):
             for model in ranking_models:
                 model_name = model[0]
                 marker = model[1]
-                model_ranking_list = model_mapping[model_name](terms, tfs, dfs, doclens, rels, \
+                model_ranking_list = model_mapping[model_name](terms, all_tfs, all_dfs, all_doclens, all_rels, \
                     float(rel_data[qid]['AP'][model_name][2].split(':')[1]))
                 order_index = np.argsort(model_ranking_list)[::-1] # sort reversely
                 model_topranked_tfs = np.transpose(details_data[qid][1])[order_index][:20]
@@ -380,7 +383,7 @@ class PlotTermRelationship(object):
                     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
                 for term_idx in range(1, len(terms)+1):
-                    partial_ranking_list = model_mapping[model_name](terms, tfs, dfs, doclens, rels, \
+                    partial_ranking_list = model_mapping[model_name](terms, all_tfs, all_dfs, all_doclens, all_rels, \
                         float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
                     partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
                     print qid, model_name, terms[term_idx-1], self.cal_map(rels[partial_order_index], rel_data[qid]['rel_cnt']) 
