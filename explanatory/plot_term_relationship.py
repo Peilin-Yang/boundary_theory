@@ -272,7 +272,7 @@ class PlotTermRelationship(object):
             return 0
         return s/total_rel_cnt
 
-    def dir(self, terms, tfs, dfs, doclens, mu=2500, which_term=0):
+    def dir(self, terms, tfs, dfs, doclens, rels, mu=2500, which_term=0):
         if which_term > 0 and which_term < tfs.shape[0]:
             new_tfs = []
             for i in range(tfs.shape[0]):
