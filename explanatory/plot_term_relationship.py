@@ -255,24 +255,52 @@ class PlotTermRelationship(object):
         output_fn = os.path.join(self.output_root, '%s-%d-subrel.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
-    def dir(self, data, mu=2500):
+
+    def cal_map(self, ranking_list_with_judgement):
+        cur_rel = 0
+        s = 0.0
+        total = 0
+        for i, ele in enumerate(ranking_list_with_judgement):
+            docid = ele[0]
+            is_rel = ele[1]
+            if is_rel:
+                cur_rel += 1
+                total += 1
+                s += cur_rel*1.0/(i+1)
+        if total == 0:
+            return 0
+        return s/total
+
+    def dir(self, data, mu=2500, which_term=0):
         terms = data[0]
         tfs = data[1]
         dfs = data[2]
         doclens = data[3]
         rels = data[4]
+        if which_term > 0 and which_term < tfs.shape[0]:
+            tfs = tfs[which_term]
+            dfs = dfs[which_term]
         cs = CollectionStats(self.collection_path)
         total_terms_cnt = cs.get_total_terms()
         terms_collection_occur = np.reshape(np.repeat([cs.get_term_collection_occur(t)*1./total_terms_cnt for t in terms], tfs.shape[1]), tfs.shape)
         r = np.log((tfs+mu*terms_collection_occur)/(doclens+mu))
         return np.sum(r, axis=0)
 
-    def okapi(self, data, b=0.25):
+    def okapi(self, data, b=0.25, which_term=0):
+        """
+        which_term can determine which term is used to compute the 
+        score. If it is 0 then all terms will be used, otherwise only 
+        the selected term is used. 
+        which_term indicates the row index of tfs.
+        """
         tfs = data[1]
         dfs = data[2]
         doclens = data[3]
         rels = data[4]
         cs = CollectionStats(self.collection_path)
+        if which_term > 0 and which_term < tfs.shape[0]:
+            tfs = tfs[which_term]
+            dfs = dfs[which_term]
         idfs = np.reshape(np.repeat(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), tfs.shape[1]), tfs.shape)
         avdl = cs.get_avdl()
         k1 = 1.2
@@ -338,7 +366,9 @@ class PlotTermRelationship(object):
                 model_ranking_list = model_mapping[model_name](details_data[qid], 
                     float(rel_data[qid]['AP'][model_name][2].split(':')[1]))
                 order_index = np.argsort(model_ranking_list)[::-1] # sort reversely
+                print details_data[qid][1]
                 model_topranked_tfs = np.transpose(details_data[qid][1])[order_index][:20]
+                print details_data[qid][1]
                 if model_topranked_tfs.shape[1] > query_length:
                     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
