@@ -420,7 +420,11 @@ class PlotTermRelationship(object):
         explanations = 'title: query id and query\n xaxis: tf of lower IDF term in rel docs\nyaxis: tf of higher IDF term in rel docs\n'
         explanations += 'xlabel: lower IDF term and its IDF\nylabel: higher IDF term and its IDF\n'
         explanations += 'scatter dots: TFs of rel docs\nx-markers: TFs of top 20 ranked docs of BM25\n^-markers: TFs of top 20 ranked docs of LM\n'
-        explanations += 'legend: AP(AP of using higher IDF term only)\n(AP of using lower IDF term only)'
+        explanations += 'legend: AP(AP of using higher IDF term only)\n(AP of using lower IDF term only)\n'
+        explanations += 'overall AP:\n'
+        for model in all_performances:
+            explanations += '%s:%.3f,%.3f,%.3f\n' % (model, np.mean(all_performances[model]['all'].values()), 
+                np.mean(all_performances[model]['higher-IDF'].values()), np.mean(all_performances[model]['lower-IDF'].values()))
         ax.text(0.5, 0.5, explanations, fontsize=6, horizontalalignment='center', verticalalignment='center', transform=ax.transAxes)
 
         output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
