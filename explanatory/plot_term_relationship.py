@@ -317,6 +317,13 @@ class PlotTermRelationship(object):
             queries = Query(self.collection_path).get_queries_of_length(query_length)
         queries = {ele['num']:ele['title'] for ele in queries}
         cs = CollectionStats(self.collection_path)
+
+        model_mapping = {
+            'okapi': self.okapi,
+            'dir': self.dir,
+        }
+        ranking_models = [('okapi', 'x'), ('dir', '^')]
+        all_performances = {k:{'all': {}, 'higher-IDF': {}, 'lower-IDF': {}} for k in model_mapping}
         num_cols = min(4, len(details_rel_data)+1) # extra one for explanations
         num_rows = int(math.ceil((len(details_rel_data)+1)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
@@ -366,11 +373,6 @@ class PlotTermRelationship(object):
             cbar = fig.colorbar(scatter, ax=ax)
             #cbar.ax.set_ylabel('Counts')
             # plot model top ranked docs
-            model_mapping = {
-                'okapi': self.okapi,
-                'dir': self.dir,
-            }
-            ranking_models = [('okapi', 'x'), ('dir', '^')]
             legend_handlers = {}
             for model in ranking_models:
                 model_name = model[0]
@@ -387,7 +389,10 @@ class PlotTermRelationship(object):
                     partial_ranking_list = model_mapping[model_name](terms, all_tfs, all_dfs, all_doclens, all_rels, \
                         float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
                     partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
-                    partial_ranking_ap[term_idx-1] = self.cal_map(all_rels[partial_order_index], rel_data[qid]['rel_cnt']) 
+                    partial_ranking_ap[term_idx-1] = self.cal_map(all_rels[partial_order_index], rel_data[qid]['rel_cnt'])
+                all_performances[model_name]['all'][qid] = float(rel_data[qid]['AP'][model_name][1])
+                all_performances[model_name]['higher-IDF'][qid] = partial_ranking_ap[larger_idf_idx]
+                all_performances[model_name]['lower-IDF'][qid] = partial_ranking_ap[smaller_idf_idx]
                 this_plot, = ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, \
                     alpha=0.3, label='%s:%.3f(%.3f)(%.3f)' % (model_name, \
                         float(rel_data[qid]['AP'][model_name][1]), partial_ranking_ap[larger_idf_idx], \
@@ -411,6 +416,7 @@ class PlotTermRelationship(object):
                 ax = axs[col_idx]
             else:
                 ax = axs
+        print all_performances
         explanations = 'title: query id and query\n xaxis: tf of lower IDF term in rel docs\nyaxis: tf of higher IDF term in rel docs\n'
         explanations += 'xlabel: lower IDF term and its IDF\nylabel: higher IDF term and its IDF\n'
         explanations += 'scatter dots: TFs of rel docs\nx-markers: TFs of top 20 ranked docs of BM25\n^-markers: TFs of top 20 ranked docs of LM\n'
