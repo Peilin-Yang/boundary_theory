@@ -257,7 +257,7 @@ class PlotTermRelationship(object):
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
 
-    def cal_map(self, rels_ranking_list, total_rel_cnt=0):
+    def cal_map(self, rels_ranking_list, cutoff=1000, total_rel_cnt=0):
         """
         rels_ranking_list: a list only contains 0 and numbers larger than 0, 
         indicating the relevant info of the ranking list.
@@ -269,6 +269,8 @@ class PlotTermRelationship(object):
             if is_rel:
                 cur_rel += 1
                 s += cur_rel*1.0/(i+1)
+            if i >= cutoff:
+                break
         if total_rel_cnt == 0:
             return 0
         return s/total_rel_cnt
@@ -389,7 +391,7 @@ class PlotTermRelationship(object):
                     partial_ranking_list = model_mapping[model_name](terms, all_tfs, all_dfs, all_doclens, all_rels, \
                         float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
                     partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
-                    partial_ranking_ap[term_idx-1] = self.cal_map(all_rels[partial_order_index], rel_data[qid]['rel_cnt'])
+                    partial_ranking_ap[term_idx-1] = self.cal_map(all_rels[partial_order_index], 1000, rel_data[qid]['rel_cnt'])
                 all_performances[model_name]['all'][qid] = float(rel_data[qid]['AP'][model_name][1])
                 all_performances[model_name]['higher-IDF'][qid] = partial_ranking_ap[larger_idf_idx]
                 all_performances[model_name]['lower-IDF'][qid] = partial_ranking_ap[smaller_idf_idx]
