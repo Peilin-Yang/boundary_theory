@@ -282,7 +282,7 @@ class PlotTermRelationship(object):
                 if i == which_term-1:
                     new_tfs.append(tfs[i])
                 else:
-                    new_tfs.append([5 if n > 0 else 0 for n in tfs[i]])
+                    new_tfs.append([1 if n > 0 else 0 for n in tfs[i]])
             tfs = np.array(new_tfs)
         cs = CollectionStats(self.collection_path)
         total_terms_cnt = cs.get_total_terms()
@@ -304,7 +304,7 @@ class PlotTermRelationship(object):
                 if i == which_term-1:
                     new_tfs.append(tfs[i])
                 else:
-                    new_tfs.append([5 if n > 0 else 0 for n in tfs[i]])
+                    new_tfs.append([1 if n > 0 else 0 for n in tfs[i]])
             tfs = np.array(new_tfs)
         idfs = np.reshape(np.repeat(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), tfs.shape[1]), tfs.shape)
         avdl = cs.get_avdl()
