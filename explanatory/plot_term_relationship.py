@@ -416,7 +416,6 @@ class PlotTermRelationship(object):
                 ax = axs[col_idx]
             else:
                 ax = axs
-        print all_performances
         explanations = 'title: query id and query\n xaxis: tf of lower IDF term in rel docs\nyaxis: tf of higher IDF term in rel docs\n'
         explanations += 'xlabel: lower IDF term and its IDF\nylabel: higher IDF term and its IDF\n'
         explanations += 'scatter dots: TFs of rel docs\nx-markers: TFs of top 20 ranked docs of BM25\n^-markers: TFs of top 20 ranked docs of LM\n'
