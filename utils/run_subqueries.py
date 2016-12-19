@@ -219,7 +219,7 @@ class RunSubqueries(object):
                 with open(os.path.join(self.corpus_path, 'evals', 'title-%s' % model_para)) as qf:
                     ap = json.load(qf)[str(qid)]["map"]
                 subquery_data[qid][query][model_para] = ap
-            with open(os.path.join(self.all_results_root, qid)) as f:
+            with open(os.path.join(self.all_results_root, str(qid))) as f:
                 csvr = csv.reader(f)
                 for row in csvr:
                     subquery_id = row[0]
