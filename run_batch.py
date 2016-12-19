@@ -245,6 +245,12 @@ def run_subqueries_atom(para_file):
             eval_ofn = row[5]
             RunSubqueries(collection_path).run_subqueries(qid, subquery_id, query, indri_model_para, eval_ofn)
 
+def collect_subqueries_results():
+    for q in g.query:
+        collection_name = q['collection']
+        collection_path = os.path.join(_root, collection_name)
+        RunSubqueries(collection_path).collection_all_results()
+
 ###################################################
 def run_all_baseline_results_atom(para_file):
     with open(para_file) as f:
@@ -394,6 +400,9 @@ if __name__ == '__main__':
     parser.add_argument('-42', '--run_subqueries_atom', 
         nargs=1,
         help='generate run subqueries paras')
+    parser.add_argument('-43', '--collect_subqueries_results', 
+        action='store_true',
+        help='collect all the results')
 
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
@@ -430,6 +439,8 @@ if __name__ == '__main__':
         gen_run_subqueries_batch(args.gen_run_subqueries_batch[0])
     if args.run_subqueries_atom:
         run_subqueries_atom(args.run_subqueries_atom[0])
+    if args.collect_subqueries_results:
+        collect_subqueries_results()
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)

@@ -44,6 +44,9 @@ class RunSubqueries(object):
         self.subqueries_performance_root = os.path.join(self.output_root, 'subqueries_performances')
         if not os.path.exists(self.subqueries_performance_root):
             os.makedirs(self.subqueries_performance_root)
+        self.all_results_root = os.path.join(self.output_root, 'all_results')
+        if not os.path.exists(self.all_results_root):
+            os.makedirs(self.all_results_root)
 
     def get_queries(self):
         """
@@ -158,4 +161,31 @@ class RunSubqueries(object):
         if retrurn_code != 0:
             raise NameError("Run Query Error: %s %s %s %s" % (qid, subquery_id, query, indri_model_para) )
         self.eval(runfile_path, eval_ofn)
+
+    def sort_subquery_id(self, subquery_id):
+        return int(subquery_id.split('-')[0])+int(subquery_id.split('-')[1])
+
+    def collection_all_results(self):
+        all_results = {}
+        for fn in os.listdir(self.subqueries_performance_root):
+            fn_split = fn.split('_')
+            qid = fn_split[0]
+            subquery_id = fn_split[1]
+            model_para = fn_split[2]
+            with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
+                subquery_mapping = json.load(f)
+            with open(os.path.join(self.subqueries_performance_root, fn)) as f:
+                first_line = f.readline()
+                ap = first_line.split()[-1]
+            if qid not in all_results:
+                all_results[qid] = []
+            all_results[qid].append( (subquery_id, subquery_mapping[subquery_id], ap) )
+
+        for qid in all_results:
+            all_results[qid].sort(key=self.sort_subquery_id)
+            with open(os.path.join(self.all_results_root, qid), 'wb') as f:
+                wr = csv.writer(f)
+                wr.writerows(all_results[qid])
+
+
 
