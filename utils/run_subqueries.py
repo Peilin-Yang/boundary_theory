@@ -223,8 +223,8 @@ class RunSubqueries(object):
                     model_para = row[2]
                     ap = row[3]
                     all_data[-3].append(subquery)
-                    for i in len(model_paras):
+                    for i in range(len(model_paras)):
                         if all_data[-2+i][0] == model_paras[i]:
                             all_data[-2+i].append(ap)
-                        
+
         print all_data
