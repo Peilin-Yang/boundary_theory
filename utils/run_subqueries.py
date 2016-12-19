@@ -188,12 +188,20 @@ class RunSubqueries(object):
                     ap = first_line.split()[-1]
             except:
                 continue
-            qid_results.append( (subquery_id, subquery_mapping[subquery_id], ap) )
+            qid_results.append( (subquery_id, subquery_mapping[subquery_id], model_para, ap) )
 
         qid_results.sort(key=self.sort_subquery_id)
         with open(os.path.join(self.all_results_root, req_qid), 'wb') as f:
             wr = csv.writer(f)
             wr.writerows(qid_results)
 
+
+    def output_results(self, query_length=0):
+        optimal_model_performances = Performances(self.corpus_path).load_optimal_performance(methods)
+        if query_length == 0: #all queries
+            queries = self.get_queries()
+        else:
+            queries = self.get_queries_of_length(query_length)
+        queries = {ele['num']:ele['title'] for ele in queries}
 
 
