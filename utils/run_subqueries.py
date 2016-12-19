@@ -110,13 +110,13 @@ class RunSubqueries(object):
 
     def eval(self, runfile_path, eval_ofn):
         judgment_file = os.path.join(self.corpus_path, 'judgement_file')
-        try:
-            with open(eval_ofn, 'w') as f:
-                p = Popen(['trec_eval -m map %s %s' % (judgment_file, runfile_path)], shell=True, stdout=f, stderr=PIPE)
-                returncode = p.wait()
-                p.communicate()
-        finally:
-            os.remove(runfile_path)
+        #try:
+        with open(eval_ofn, 'w') as f:
+            p = Popen(['trec_eval -m map %s %s' % (judgment_file, runfile_path)], shell=True, stdout=f, stderr=PIPE)
+            returncode = p.wait()
+            p.communicate()
+        #finally:
+            #os.remove(runfile_path)
 
     def get_subqueries(self, query_str):
         """
