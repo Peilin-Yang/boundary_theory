@@ -219,11 +219,10 @@ class RunSubqueries(object):
             subquery_data[qid] = {query: {}}
             for model_para in model_paras:
                 with open(os.path.join(self.corpus_path, 'evals', 'title-%s' % model_para)) as qf:
-                    #try:
-                    ap = json.load(qf)[str(qid)]["map"]
-                    # except:
-                    #     ap = 0
-                print qid, query, model_para, os.path.join(self.corpus_path, 'evals', 'title-%s' % model_para), ap
+                    try:
+                        ap = json.load(qf)[str(qid)]["map"]
+                    except:
+                        ap = 0
                 subquery_data[qid][query][model_para] = ap
             with open(os.path.join(self.all_results_root, str(qid))) as f:
                 csvr = csv.reader(f)
@@ -236,7 +235,6 @@ class RunSubqueries(object):
                         subquery_data[qid][subquery] = {}
                     subquery_data[qid][subquery][model_para] = ap
 
-        print json.dumps(subquery_data, indent=2)
         all_data = []
         for qid in sorted(subquery_data):
             subqueries = sorted(subquery_data[qid], key=len)
@@ -244,8 +242,6 @@ class RunSubqueries(object):
             all_data[-1].insert(0, qid)
             for model_para in model_paras:
                 all_data.append([subquery_data[qid][q][model_para] if model_para in subquery_data[qid][q] else '' for q in subqueries[1:]])
-                print all_data
-                raw_input()
                 all_data[-1].insert(0, model_para)
 
         with open(os.path.join(self.final_output_root, self.collection_name+'-'+str(query_length)+'.csv'), 'wb') as f:
