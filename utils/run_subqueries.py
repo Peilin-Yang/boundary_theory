@@ -213,7 +213,6 @@ class RunSubqueries(object):
             model_paras.append(model_para)
         subquery_data = {}
         for qid, query in queries.items():
-            print type(qid), qid
             subquery_data[qid] = {}
             for model_para in model_paras:
                 subquery_data[qid][query] = {}
@@ -231,12 +230,13 @@ class RunSubqueries(object):
                         subquery_data[qid][subquery] = {}
                     subquery_data[qid][subquery][model_para] = ap
 
-        print json.dumps(subquery_data, indent=2)
+        #print json.dumps(subquery_data, indent=2)
         all_data = []
         for qid in sorted(subquery_data):
             subqueries = sorted(subquery_data[qid])
             all_data.append(subqueries)
             all_data[-1].insert(0, qid)
+            print qid, subquery_data[qid]
             for model_para in model_paras:
                 all_data.append([subquery_data[qid][q][model_para] if model_para in subquery_data[qid][q] else '' for q in subqueries])
                 all_data[-1].insert(0, model_para)
