@@ -204,7 +204,7 @@ class RunSubqueries(object):
             queries = self.get_queries()
         else:
             queries = self.get_queries_of_length(query_length)
-        queries = {ele['num']:ele['title'] for ele in queries}
+        queries = {int(ele['num']):ele['title'] for ele in queries}
         methods = ['okapi', 'dir']
         optimal_model_performances = Performances(self.corpus_path).load_optimal_performance(methods)
         model_paras = []
