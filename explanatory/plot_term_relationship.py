@@ -392,8 +392,8 @@ class PlotTermRelationship(object):
                         float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
                     partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
                     partial_ranking_ap[term_idx-1] = self.cal_map(all_rels[partial_order_index], 1000, rel_data[qid]['rel_cnt'])
-                    print qid, terms[term_idx-1], model_name, rel_data[qid]['AP'][model_name][2].split(':')[1], partial_ranking_list[partial_order_index]
-                    raw_input()
+                    #print qid, terms[term_idx-1], model_name, rel_data[qid]['AP'][model_name][2].split(':')[1], partial_ranking_list[partial_order_index]
+                    #raw_input()
                 all_performances[model_name]['all'][qid] = float(rel_data[qid]['AP'][model_name][1])
                 all_performances[model_name]['higher-IDF'][qid] = partial_ranking_ap[larger_idf_idx]
                 all_performances[model_name]['lower-IDF'][qid] = partial_ranking_ap[smaller_idf_idx]
