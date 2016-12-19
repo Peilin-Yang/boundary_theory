@@ -224,14 +224,14 @@ def output_rel_tf_stats_atom(para_file):
             RelTFStats(collection_path).print_rel_tf_stats()
 
 
-def gen_run_subqueries_batch():
+def gen_run_subqueries_batch(query_length=0):
     all_paras = []
     for q in g.query:
         collection_name = q['collection']
         collection_path = os.path.join(_root, collection_name)
         all_paras.append(RunSubqueries(collection_path).batch_run_subqueries_paras())
-    #print all_paras
-    gen_batch_framework('output_rel_tf_stats', '32', all_paras)
+    print all_paras
+    #gen_batch_framework('run_subqueries', '42', all_paras)
 
 def run_subqueries_atom(para_file):
     with open(para_file) as f:
