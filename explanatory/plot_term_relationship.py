@@ -306,7 +306,7 @@ class PlotTermRelationship(object):
                 else:
                     new_tfs.append([0 if n > 0 else 0 for n in tfs[i]])
             tfs = np.array(new_tfs)
-        idfs = np.reshape(np.repeat(np.log((cs.get_doc_counts() + 1)/(dfs+1e-4)), tfs.shape[1]), tfs.shape)
+        idfs = np.reshape(np.repeat(np.log((cs.get_doc_counts()-dfs+0.5)/(dfs+0.5)), tfs.shape[1]), tfs.shape)
         avdl = cs.get_avdl()
         k1 = 1.2
         r = (k1+1.0)*tfs/(tfs+k1*(1-b+b*doclens*1.0/avdl))*idfs
@@ -392,6 +392,8 @@ class PlotTermRelationship(object):
                         float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
                     partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
                     partial_ranking_ap[term_idx-1] = self.cal_map(all_rels[partial_order_index], 1000, rel_data[qid]['rel_cnt'])
+                    print qid, terms[term_idx-1], model_name, rel_data[qid]['AP'][model_name][2].split(':')[1], partial_ranking_list[partial_order_index]
+                    raw_input()
                 all_performances[model_name]['all'][qid] = float(rel_data[qid]['AP'][model_name][1])
                 all_performances[model_name]['higher-IDF'][qid] = partial_ranking_ap[larger_idf_idx]
                 all_performances[model_name]['lower-IDF'][qid] = partial_ranking_ap[smaller_idf_idx]
