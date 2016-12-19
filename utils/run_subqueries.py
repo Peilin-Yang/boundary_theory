@@ -139,7 +139,9 @@ class RunSubqueries(object):
                 with open(os.path.join(self.subqueries_mapping_root, qid), 'wb') as f:
                     json.dump(all_subqueries, f, indent=2)
             for subquery_str, subquery_id in all_subqueries.items():
-                performance_fn = os.path.join(self.subqueries_performance_root, qid+'-'+subquery_id)
-                if not os.path.exists(performance_fn):
-                    all_paras.append((self.corpus_path, qid, subquery_str, subquery_id))
+                for p in optimal_model_performances:
+                    indri_model_para = 'method:%s,' % p[0] + p[2]
+                    performance_fn = os.path.join(self.subqueries_performance_root, qid+'_'+subquery_id+'_'+indri_model_para)
+                    if not os.path.exists(performance_fn):
+                        all_paras.append((self.corpus_path, qid, subquery_str, subquery_id, indri_model_para, performance_fn))
         return all_paras
