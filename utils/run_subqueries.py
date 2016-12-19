@@ -119,13 +119,15 @@ class RunSubqueries(object):
         for i in range(1, len(terms)):
             j = 0
             for ele in itertools.combinations(terms, i):
-                all_subqueries[' '.join(ele)] = '%d-%d' % (i, j)
+                all_subqueries['%d-%d' % (i, j)] = ' '.join(ele)
                 j += 1
         return all_subqueries
 
     def batch_run_subqueries_paras(self, query_length=0):
         all_paras = []
         methods = ['okapi', 'dir']
+        optimal_model_performances = Performances(self.corpus_path).load_optimal_performance(methods)
+        print optimal_model_performances
         if query_length == 0: #all queries
             queries = self.get_queries()
         else:
@@ -139,3 +141,5 @@ class RunSubqueries(object):
             for subquery_str, subquery_id in all_subqueries.items():
                 performance_fn = os.path.join(self.subqueries_performance_root, qid+'-'+subquery_id)
                 if not os.path.exists(performance_fn):
+                    all_paras.append((self.corpus_path, qid, subquery_str, subquery_id))
+        return all_paras
