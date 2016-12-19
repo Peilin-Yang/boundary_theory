@@ -4,7 +4,7 @@ import json
 import re
 import string
 import ast
-import xml.etree.ElementTree as ET
+import uuid
 import itertools
 from subprocess import Popen, PIPE
 from inspect import currentframe, getframeinfo
@@ -99,16 +99,21 @@ class RunSubqueries(object):
 
         return filtered_queries
 
-    def run_indri_runquery(self, query_str, qid='0', rule='', index_path='index', count=1000):
-        p = Popen(['IndriRunQuery_EX -index=%s -trecFormat=True -count=%d -query.number=%s -query.text="%s" -rule=%s' 
-            % (os.path.join(corpus_path, 'index'), count, qid, query_str, rule)], bash=True, stdout=PIPE, stderr=PIPE)
-        returncode = p.wait()
-        stdout, stderr = p.communicate()
-        if returncode == 0:
-            return stdout
-        else:
-            print stdout, stderr
-            exit()
+    def run_indri_runquery(self, query_str, qid='0', rule=''):
+        fpath = str(uuid.uuid4())
+        with open(fpath, 'w') as f:
+            p = Popen(['IndriRunQuery_EX -index=%s -trecFormat=True -count=1000 -query.number=%s -query.text="%s" -rule=%s' 
+                % (os.path.join(corpus_path, 'index'), qid, query_str, rule)], bash=True, stdout=f, stderr=PIPE)
+            returncode = p.wait()
+            p.communicate()
+        return returncode, fpath
+
+    def eval(self, runfile_path, eval_ofn):
+        judgment_file = os.path.join(corpus_path, 'judgement_file')
+        with open(eval_ofn, 'w') as f:
+            p = Popen(['trec_eval -m map %s %s' % (judgment_file, runfile_path)], bash=True, stdout=f, stderr=PIPE)
+            returncode = p.wait()
+            p.communicate()
 
     def get_subqueries(self, query_str):
         """
@@ -144,3 +149,10 @@ class RunSubqueries(object):
                     if not os.path.exists(performance_fn):
                         all_paras.append((self.corpus_path, qid, subquery_str, subquery_id, indri_model_para, performance_fn))
         return all_paras
+
+    def run_subqueries(self, qid, subquery_id, query, indri_model_para, eval_ofn):
+        retrurn_code, runfile_path = self.run_indri_runquery(query, qid+'_'+subquery_id, indri_model_para)
+        if retrurn_code != 0:
+            raise NameError("Run Query Error: %s %s %s %s" % (qid, subquery_id, query, indri_model_para) )
+        self.eval(runfile_path, eval_ofn)
+
