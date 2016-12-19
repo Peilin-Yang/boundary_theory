@@ -5,12 +5,13 @@ import re
 import string
 import ast
 import xml.etree.ElementTree as ET
-import tempfile
+import itertools
 from subprocess import Popen, PIPE
 from inspect import currentframe, getframeinfo
 import argparse
+from performance import Performances
 
-class Query(object):
+class RunSubqueries(object):
     """
     Get the judgments of a corpus.
     When constructing, pass the path of the corpus. For example, "../wt2g/"
@@ -35,40 +36,6 @@ class Query(object):
 
         self.parsed_query_file_path = os.path.join(self.corpus_path, 'parsed_topics.json')
 
-
-    def write_query_file(self, t=[]):
-        fpath = 'jsdf9HNOJKh90dfjflsdf'
-        with open(fpath, 'w') as f:
-            for ele in t:
-                f.write('<DOC>\n')
-                f.write('<TEXT>\n')
-                f.write(ele)
-                f.write('\n')
-                f.write('</TEXT>\n')
-                f.write('</DOC>\n')
-        return fpath
-
-
-    def parse_query(self, t=[]):
-        """
-        use IndriTextTransformer to parse the query
-        """
-        fpath = self.write_query_file(t)
-        try:
-            process = Popen(['IndriTextTransformer', '-class=trectext', '-file='+fpath], stdout=PIPE)
-            stdout, stderr = process.communicate()
-            r = []
-            for line in stdout.split('\n'):
-                line = line.strip()
-                if line:
-                    r.append(line)
-            os.remove(fpath)
-        except:
-            os.remove(fpath)
-            raise NameError("parse query error!")
-        return r
-
-
     def get_queries(self):
         """
         Get the query of a corpus
@@ -76,40 +43,6 @@ class Query(object):
         @Return: a list of dict [{'num':'401', 'title':'the query terms',
          'desc':description, 'narr': narrative description}, ...]
         """
-
-        if not os.path.exists(self.parsed_query_file_path):
-            with open(self.query_file_path) as f:
-                s = f.read()
-                all_topics = re.findall(r'<top>.*?<\/top>', s, re.DOTALL)
-                #print all_topics
-                #print len(all_topics)
-
-                _all = []
-                for t in all_topics:
-                    t = re.sub(r'<\/.*?>', r'', t, flags=re.DOTALL)
-                    a = re.split(r'(<.*?>)', t.replace('<top>',''), re.DOTALL)
-                    #print a
-                    aa = [ele.strip() for ele in a if ele.strip()]
-                    d = {}
-                    for i in range(0, len(aa), 2):
-                        """
-                        if i%2 != 0:
-                            if aa[i-1] == '<num>':
-                                aa[i] = aa[i].split()[1]
-                            d[aa[i-1][1:-1]] = aa[i].strip().replace('\n', ' ')
-                        """
-                        tag = aa[i][1:-1]
-                        value = aa[i+1].replace('\n', ' ').strip().split(':')[-1].strip()
-                        if tag != 'num' and value:
-                            value = self.parse_query([value])[0]
-                        if tag == 'num':
-                            value = str(int(value)) # remove the trailing '0' at the beginning
-                        d[tag] = value
-                    _all.append(d)
-
-            with open(self.parsed_query_file_path, 'wb') as f:
-                json.dump(_all, f, indent=2)
-
         with open(self.parsed_query_file_path) as f:
             return json.load(f)
 
@@ -127,20 +60,6 @@ class Query(object):
 
         return all_queries_dict
         
-
-    def print_query_len_dist(self, part='title'):
-        queries = self.get_queries()
-        lens = {}
-        for q in queries:
-            l = len(q[part].split())
-            if l not in lens:
-                lens[l] = 0
-            lens[l] += 1
-
-        for k in sorted(lens):
-            print k, lens[k], round(lens[k]*100.0/len(queries), 2)
-
-
     def get_queries_lengths(self, part='title'):
         """
         For a set of queries, return the lengths of the queries
@@ -171,73 +90,32 @@ class Query(object):
 
         return filtered_queries
 
-
-    def indent(self, elem, level=0):
-        i = "\n" + level*"  "
-        if len(elem):
-            if not elem.text or not elem.text.strip():
-                elem.text = i + "  "
-            if not elem.tail or not elem.tail.strip():
-                elem.tail = i
-            for elem in elem:
-                self.indent(elem, level+1)
-            if not elem.tail or not elem.tail.strip():
-                elem.tail = i
+    def run_indri_runquery(self, query_str, qid='0', rule='', index_path='index', count=1000):
+        p = Popen(['IndriRunQuery_EX -index=%s -trecFormat=True -count=%d -query.number=%s -query.text="%s" -rule=%s' 
+            % (os.path.join(corpus_path, 'index'), count, qid, query_str, rule)], bash=True, stdout=PIPE, stderr=PIPE)
+        returncode = p.wait()
+        stdout, stderr = p.communicate()
+        if returncode == 0:
+            return stdout
         else:
-            if level and (not elem.tail or not elem.tail.strip()):
-                elem.tail = i
+            print stdout, stderr
+            exit()
 
+    def get_subqueries(self, query_str):
+        all_subqueries = {}
+        terms = query_str.split()
+        for i in range(1, len(terms)):
+            j = 0
+            for ele in itertools.combinations(terms, i):
+                all_subqueries[' '.join(ele)] = '%d%d' % (i, j)
+                j += 1
+        return all_subqueries
 
-    def gen_query_file_for_indri(self, output_path='standard_queries', 
-            index_path='index', is_trec_format=True, count=9999999):
-        """
-        generate the query file for Indri use.
-
-        @Input:
-            output_path - the path to output query file, default "standard_queries"
-            index_path - the index path, default "index".
-            is_trec_format - whether to output the results in TREC format, default True
-            count - how many documents will be returned for each topic, default 9999999
-        """
-        all_topics = self.get_queries()
-
-        qf = ET.Element('parameters')
-        index = ET.SubElement(qf, 'index')
-        index.text = os.path.join(self.corpus_path, index_path)
-        ele_trec_format = ET.SubElement(qf, 'trecFormat')
-        ele_trec_format.text = 'true' if is_trec_format else 'false'
-        ele_count = ET.SubElement(qf, 'count')
-        ele_count.text = str(count)
-        for ele in all_topics:
-            t = ET.SubElement(qf, 'query')
-            qid = ET.SubElement(t, 'number')
-            qid.text = ele['num']
-            q = ET.SubElement(t, 'text')
-            q.text = ele['title']
-
-        self.indent(qf)
-
-        tree = ET.ElementTree(qf)
-        tree.write(os.path.join(self.corpus_path, output_path))
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("-1", "--gen_standard_queries",
-        nargs=1,
-        help="Generate the standard queries for Indri. Please give the collection path!")
-
-    parser.add_argument("-2", "--print_query_len_dist",
-        nargs=1,
-        help="Print the distribution of query lengths. Please give the collection path!")
-
-
-    args = parser.parse_args()
-
-    if args.gen_standard_queries:
-        Query(args.gen_standard_queries[0]).gen_query_file_for_indri()
-
-    if args.print_query_len_dist:
-        Query(args.print_query_len_dist[0]).print_query_len_dist()
+    def batch_run_subqueries_paras(self, query_length=0):
+        if query_length == 0: #all queries
+            queries = self.get_queries()
+        else:
+            queries = self.get_queries_of_length(query_length)
+            
+        print queries
 

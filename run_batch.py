@@ -17,7 +17,7 @@ import g
 from tie_breaker import TieBreaker
 from utils.evaluation import Evaluation
 from utils.rel_tf_stats import RelTFStats
-
+from run_subqueries import RunSubqueries
 
 _root = '../../reproduce/collections/'
 output_root = '../all_results/'
@@ -224,6 +224,22 @@ def output_rel_tf_stats_atom(para_file):
             RelTFStats(collection_path).print_rel_tf_stats()
 
 
+def gen_run_subqueries_batch():
+    all_paras = []
+    for q in g.query:
+        collection_name = q['collection']
+        collection_path = os.path.join(_root, collection_name)
+        all_paras.append(RunSubqueries(collection_path).batch_run_subqueries_paras())
+    #print all_paras
+    gen_batch_framework('output_rel_tf_stats', '32', all_paras)
+
+def run_subqueries_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            RunSubqueries(collection_path).run_subqueries()
+
 ###################################################
 def run_all_baseline_results_atom(para_file):
     with open(para_file) as f:
@@ -367,6 +383,13 @@ if __name__ == '__main__':
         nargs=1,
         help='Output the term frequency of query terms for relevant documents.')
 
+    parser.add_argument('-41', '--gen_run_subqueries_batch', 
+        nargs=1,
+        help='generate run subqueries paras. para indicating the query length')
+    parser.add_argument('-42', '--run_subqueries_atom', 
+        nargs=1,
+        help='generate run subqueries paras')
+
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
         help="Run all parameters for Pivoted, Okapi and Dirichlet.")
@@ -397,6 +420,11 @@ if __name__ == '__main__':
         output_rel_tf_stats_batch()
     if args.output_rel_tf_stats_atom:
         output_rel_tf_stats_atom(args.output_rel_tf_stats_atom[0])
+
+    if args.gen_run_subqueries_batch:
+        gen_run_subqueries_batch(args.gen_run_subqueries_batch[0])
+    if args.run_subqueries_atom:
+        run_subqueries_atom(args.run_subqueries_atom[0])
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)
