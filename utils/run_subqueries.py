@@ -35,6 +35,15 @@ class RunSubqueries(object):
             exit(1)
 
         self.parsed_query_file_path = os.path.join(self.corpus_path, 'parsed_topics.json')
+        self.output_root = os.path.join(self.corpus_path, 'subqueries')
+        if not os.path.exists(self.output_root):
+            os.makedirs(self.output_root)
+        self.subqueries_mapping_root = os.path.join(self.output_root, 'subqueries_mapping')
+        if not os.path.exists(self.subqueries_mapping_root):
+            os.makedirs(self.subqueries_mapping_root)
+        self.subqueries_performance_root = os.path.join(self.output_root, 'subqueries_performances')
+        if not os.path.exists(self.subqueries_performance_root):
+            os.makedirs(self.subqueries_performance_root)
 
     def get_queries(self):
         """
@@ -102,22 +111,31 @@ class RunSubqueries(object):
             exit()
 
     def get_subqueries(self, query_str):
+        """
+        return {'subquery string': 'subquery id', ...}
+        """
         all_subqueries = {}
         terms = query_str.split()
         for i in range(1, len(terms)):
             j = 0
             for ele in itertools.combinations(terms, i):
-                all_subqueries[' '.join(ele)] = '%d%d' % (i, j)
+                all_subqueries[' '.join(ele)] = '%d-%d' % (i, j)
                 j += 1
         return all_subqueries
 
     def batch_run_subqueries_paras(self, query_length=0):
+        all_paras = []
+        methods = ['okapi', 'dir']
         if query_length == 0: #all queries
             queries = self.get_queries()
         else:
             queries = self.get_queries_of_length(query_length)
         queries = {ele['num']:ele['title'] for ele in queries}
         for qid, query in queries.items():
-            print qid, self.get_subqueries(query)
-            raw_input()
-
+            all_subqueries = self.get_subqueries(query)
+            if not os.path.exists(os.path.join(self.subqueries_mapping_root, qid)):
+                with open(os.path.join(self.subqueries_mapping_root, qid), 'wb') as f:
+                    json.dump(all_subqueries, f, indent=2)
+            for subquery_str, subquery_id in all_subqueries.items():
+                performance_fn = os.path.join(self.subqueries_performance_root, qid+'-'+subquery_id)
+                if not os.path.exists(performance_fn):
