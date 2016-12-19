@@ -238,7 +238,7 @@ class RunSubqueries(object):
             all_data[-1].insert(0, qid)
             print qid, subquery_data[qid], subqueries
             for model_para in model_paras:
-                all_data.append([subquery_data[qid][q][model_para] if model_para in subquery_data[qid][q] else '' for q in subqueries])
+                all_data.append([subquery_data[qid][q][model_para] if model_para in subquery_data[qid][q] else '' for q in subqueries[1:]])
                 all_data[-1].insert(0, model_para)
 
         with open(os.path.join(self.results_final, query_length), 'wb') as f:
