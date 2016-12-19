@@ -109,7 +109,7 @@ class RunSubqueries(object):
         return returncode, fpath
 
     def eval(self, runfile_path, eval_ofn):
-        judgment_file = os.path.join(corpus_path, 'judgement_file')
+        judgment_file = os.path.join(self.corpus_path, 'judgement_file')
         try:
             with open(eval_ofn, 'w') as f:
                 p = Popen(['trec_eval -m map %s %s' % (judgment_file, runfile_path)], shell=True, stdout=f, stderr=PIPE)
