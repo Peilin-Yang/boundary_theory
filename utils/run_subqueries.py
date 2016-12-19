@@ -127,7 +127,6 @@ class RunSubqueries(object):
         all_paras = []
         methods = ['okapi', 'dir']
         optimal_model_performances = Performances(self.corpus_path).load_optimal_performance(methods)
-        print optimal_model_performances
         if query_length == 0: #all queries
             queries = self.get_queries()
         else:
@@ -138,7 +137,7 @@ class RunSubqueries(object):
             if not os.path.exists(os.path.join(self.subqueries_mapping_root, qid)):
                 with open(os.path.join(self.subqueries_mapping_root, qid), 'wb') as f:
                     json.dump(all_subqueries, f, indent=2)
-            for subquery_str, subquery_id in all_subqueries.items():
+            for subquery_id, subquery_str  in all_subqueries.items():
                 for p in optimal_model_performances:
                     indri_model_para = 'method:%s,' % p[0] + p[2]
                     performance_fn = os.path.join(self.subqueries_performance_root, qid+'_'+subquery_id+'_'+indri_model_para)
