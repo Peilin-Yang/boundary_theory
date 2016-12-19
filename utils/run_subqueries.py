@@ -182,11 +182,12 @@ class RunSubqueries(object):
             model_para = fn_split[2]
             with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
                 subquery_mapping = json.load(f)
-            #try:
-            with open(os.path.join(self.subqueries_performance_root, fn)) as f:
-                first_line = f.readline()
-                ap = first_line.split()[-1]
-            #tinue
+            try:
+                with open(os.path.join(self.subqueries_performance_root, fn)) as f:
+                    first_line = f.readline()
+                    ap = first_line.split()[-1]
+            except:
+                continue
             qid_results.append( (subquery_id, subquery_mapping[subquery_id], model_para, ap) )
 
         qid_results.sort(key=self.sort_subquery_id)
