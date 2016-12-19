@@ -17,7 +17,7 @@ class RunSubqueries(object):
     Get the judgments of a corpus.
     When constructing, pass the path of the corpus. For example, "../wt2g/"
     """
-    def __init__(self, path):
+    def __init__(self, path, corpus_name):
         self.corpus_path = os.path.abspath(path)
         if not os.path.exists(self.corpus_path):
             frameinfo = getframeinfo(currentframe())
@@ -26,6 +26,7 @@ class RunSubqueries(object):
             print '[Query Constructor]:Please provide a valid corpus path'
             exit(1)
 
+        self.collection_name = corpus_name
         self.query_file_path = os.path.join(self.corpus_path, 'raw_topics')
         if not os.path.exists(self.query_file_path):
             frameinfo = getframeinfo(currentframe())
@@ -48,9 +49,11 @@ class RunSubqueries(object):
         self.all_results_root = os.path.join(self.output_root, 'all_results')
         if not os.path.exists(self.all_results_root):
             os.makedirs(self.all_results_root)
-        self.results_final = os.path.join(self.output_root, 'results_final')
-        if not os.path.exists(self.results_final):
-            os.makedirs(self.results_final)
+
+        self.final_results_root = '../../all_results'
+        self.final_output_root = os.path.join(self.final_results_root, 'subqueries')
+        if not os.path.exists(self.final_output_root):
+            os.makedirs(self.final_output_root)
 
     def get_queries(self):
         """
@@ -243,6 +246,6 @@ class RunSubqueries(object):
                 all_data.append([subquery_data[qid][q][model_para] if model_para in subquery_data[qid][q] else '' for q in subqueries[1:]])
                 all_data[-1].insert(0, model_para)
 
-        with open(os.path.join(self.results_final, str(query_length)+'.csv'), 'wb') as f:
+        with open(os.path.join(self.final_output_root, self.collection_name+'-'+str(query_length)+'.csv'), 'wb') as f:
             cw = csv.writer(f)
             cw.writerows(all_data)

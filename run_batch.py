@@ -227,9 +227,9 @@ def output_rel_tf_stats_atom(para_file):
 def gen_run_subqueries_batch(query_length=0):
     all_paras = []
     for q in g.query:
-        collection_name = q['collection']
-        collection_path = os.path.join(_root, collection_name)
-        all_paras.extend(RunSubqueries(collection_path).batch_run_subqueries_paras(int(query_length)))
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.extend(RunSubqueries(collection_path, collection_name).batch_run_subqueries_paras(int(query_length)))
     #print all_paras
     gen_batch_framework('run_subqueries', '42', all_paras)
 
@@ -248,9 +248,9 @@ def run_subqueries_atom(para_file):
 def gen_collect_subqueries_results_batch():
     all_paras = []
     for q in g.query:
-        collection_name = q['collection']
-        collection_path = os.path.join(_root, collection_name)
-        all_paras.extend(RunSubqueries(collection_path).batch_run_subqueries_paras())
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.extend(RunSubqueries(collection_path, collection_name).batch_run_subqueries_paras())
     gen_batch_framework('collect_subqueries_results', '44', all_paras)
 
 def collect_subqueries_results_atom(para_file):
@@ -263,9 +263,9 @@ def collect_subqueries_results_atom(para_file):
 
 def output_subqueries_results(query_length):
     for q in g.query:
-        collection_name = q['collection']
-        collection_path = os.path.join(_root, collection_name)
-        RunSubqueries(collection_path).output_results(int(query_length))
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        RunSubqueries(collection_path, collection_name).output_results(int(query_length))
 
 
 ###################################################
