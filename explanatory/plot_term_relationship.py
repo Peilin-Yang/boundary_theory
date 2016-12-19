@@ -288,6 +288,7 @@ class PlotTermRelationship(object):
         total_terms_cnt = cs.get_total_terms()
         terms_collection_occur = np.reshape(np.repeat([cs.get_term_collection_occur(t)*1./total_terms_cnt for t in terms], tfs.shape[1]), tfs.shape)
         r = np.log((tfs+mu*terms_collection_occur)/(doclens+mu))
+        print tfs, r
         return np.sum(r, axis=0)
 
     def okapi(self, terms, tfs, dfs, doclens, rels, b=0.25, which_term=0):
