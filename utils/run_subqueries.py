@@ -174,9 +174,12 @@ class RunSubqueries(object):
             model_para = fn_split[2]
             with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
                 subquery_mapping = json.load(f)
-            with open(os.path.join(self.subqueries_performance_root, fn)) as f:
-                first_line = f.readline()
-                ap = first_line.split()[-1]
+            try:
+                with open(os.path.join(self.subqueries_performance_root, fn)) as f:
+                    first_line = f.readline()
+                    ap = first_line.split()[-1]
+            except:
+                continue
             if qid not in all_results:
                 all_results[qid] = []
             all_results[qid].append( (subquery_id, subquery_mapping[subquery_id], ap) )
