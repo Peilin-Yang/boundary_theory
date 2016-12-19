@@ -245,11 +245,22 @@ def run_subqueries_atom(para_file):
             eval_ofn = row[5]
             RunSubqueries(collection_path).run_subqueries(qid, subquery_id, query, indri_model_para, eval_ofn)
 
-def collect_subqueries_results():
+def gen_collect_subqueries_results_batch():
+    all_paras = []
     for q in g.query:
         collection_name = q['collection']
         collection_path = os.path.join(_root, collection_name)
-        RunSubqueries(collection_path).collection_all_results()
+        all_paras.extend(RunSubqueries(collection_path).batch_run_subqueries_paras())
+    gen_batch_framework('collect_subqueries_results', '44', all_paras)
+
+def collect_subqueries_results_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            qid = row[1]
+            RunSubqueries(collection_path).collection_all_results(qid)
+            
 
 ###################################################
 def run_all_baseline_results_atom(para_file):
@@ -400,9 +411,12 @@ if __name__ == '__main__':
     parser.add_argument('-42', '--run_subqueries_atom', 
         nargs=1,
         help='generate run subqueries paras')
-    parser.add_argument('-43', '--collect_subqueries_results', 
+    parser.add_argument('-43', '--gen_collect_subqueries_results_batch', 
         action='store_true',
         help='collect all the results')
+    parser.add_argument('-44', '--collect_subqueries_results_atom', 
+        nargs=1,
+        help='generate run subqueries paras')
 
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
@@ -439,8 +453,10 @@ if __name__ == '__main__':
         gen_run_subqueries_batch(args.gen_run_subqueries_batch[0])
     if args.run_subqueries_atom:
         run_subqueries_atom(args.run_subqueries_atom[0])
-    if args.collect_subqueries_results:
-        collect_subqueries_results()
+    if args.gen_collect_subqueries_results_batch:
+        gen_collect_subqueries_results_batch()
+    if args.collect_subqueries_results_atom:
+        collect_subqueries_results_atom(args.collect_subqueries_results_atom[0])
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys,os
+import csv
 import json
 import re
 import string
@@ -166,11 +167,17 @@ class RunSubqueries(object):
         subquery_id = result[0]
         return int(subquery_id.split('-')[0])+int(subquery_id.split('-')[1])
 
-    def collection_all_results(self):
-        all_results = {}
+    def batch_run_subqueries_paras(self):
+        queries = self.get_queries()
+        return [(self.corpus_path, q['num']) for q in queries]
+
+    def collection_all_results(self, req_qid):
+        qid_results = []
         for fn in os.listdir(self.subqueries_performance_root):
             fn_split = fn.split('_')
             qid = fn_split[0]
+            if qid != req_qid:
+                continue
             subquery_id = fn_split[1]
             model_para = fn_split[2]
             with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
@@ -181,15 +188,12 @@ class RunSubqueries(object):
                     ap = first_line.split()[-1]
             except:
                 continue
-            if qid not in all_results:
-                all_results[qid] = []
-            all_results[qid].append( (subquery_id, subquery_mapping[subquery_id], ap) )
+            qid_results.append( (subquery_id, subquery_mapping[subquery_id], ap) )
 
-        for qid in all_results:
-            all_results[qid].sort(key=self.sort_subquery_id)
-            with open(os.path.join(self.all_results_root, qid), 'wb') as f:
-                wr = csv.writer(f)
-                wr.writerows(all_results[qid])
+        qid_results.sort(key=self.sort_subquery_id)
+        with open(os.path.join(self.all_results_root, req_qid), 'wb') as f:
+            wr = csv.writer(f)
+            wr.writerows(qid_results)
 
 
 
