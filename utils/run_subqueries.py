@@ -162,7 +162,8 @@ class RunSubqueries(object):
             raise NameError("Run Query Error: %s %s %s %s" % (qid, subquery_id, query, indri_model_para) )
         self.eval(runfile_path, eval_ofn)
 
-    def sort_subquery_id(self, subquery_id):
+    def sort_subquery_id(self, result):
+        subquery_id = result[0]
         return int(subquery_id.split('-')[0])+int(subquery_id.split('-')[1])
 
     def collection_all_results(self):
