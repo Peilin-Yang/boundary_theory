@@ -213,6 +213,7 @@ class RunSubqueries(object):
             model_paras.append(model_para)
         subquery_data = {}
         for qid, query in queries.items():
+            print type(qid), qid
             subquery_data[qid] = {}
             for model_para in model_paras:
                 subquery_data[qid][query] = {}
