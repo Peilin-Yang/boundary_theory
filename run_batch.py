@@ -260,7 +260,13 @@ def collect_subqueries_results_atom(para_file):
             collection_path = row[0]
             qid = row[1]
             RunSubqueries(collection_path).collection_all_results(qid)
-            
+
+def output_subqueries_results(query_length):
+    for q in g.query:
+        collection_name = q['collection']
+        collection_path = os.path.join(_root, collection_name)
+        RunSubqueries(collection_path).output_results(int(query_length))
+
 
 ###################################################
 def run_all_baseline_results_atom(para_file):
@@ -417,6 +423,9 @@ if __name__ == '__main__':
     parser.add_argument('-44', '--collect_subqueries_results_atom', 
         nargs=1,
         help='generate run subqueries paras')
+    parser.add_argument('-45', '--output_subqueries_results', 
+        nargs=1,
+        help='arg: query_length')
 
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
@@ -457,6 +466,8 @@ if __name__ == '__main__':
         gen_collect_subqueries_results_batch()
     if args.collect_subqueries_results_atom:
         collect_subqueries_results_atom(args.collect_subqueries_results_atom[0])
+    if args.output_subqueries_results:
+        output_subqueries_results(args.output_subqueries_results[0])
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)

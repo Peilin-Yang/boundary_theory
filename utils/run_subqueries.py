@@ -197,11 +197,34 @@ class RunSubqueries(object):
 
 
     def output_results(self, query_length=0):
-        optimal_model_performances = Performances(self.corpus_path).load_optimal_performance(methods)
         if query_length == 0: #all queries
             queries = self.get_queries()
         else:
             queries = self.get_queries_of_length(query_length)
         queries = {ele['num']:ele['title'] for ele in queries}
-
-
+        methods = ['okapi', 'dir']
+        optimal_model_performances = Performances(self.corpus_path).load_optimal_performance(methods)
+        model_paras = []
+        for p in optimal_model_performances:
+            model_para = 'method:%s,' % p[0] + p[2]
+            model_paras.append(model_para)
+        all_data = []
+        for qid, query in queries.items():
+            all_data.append([qid, query])
+            for model_para in model_paras:
+                with open(os.path.join(self.corpus_path, 'evals', 'title-%s' % model_para)) as qf:
+                    ap = json.load(f)[qid]["map"]
+                all_data.append([model_para, ap])
+            with open(os.path.join(self.all_results_root, qid)) as f:
+                csvr = csv.reader(f)
+                for row in csvr:
+                    subquery_id = row[0]
+                    subquery = row[1]
+                    model_para = row[2]
+                    ap = row[3]
+                    all_data[-3].append(subquery)
+                    for i in len(model_paras):
+                        if all_data[-2+i][0] == model_paras[i]:
+                            all_data[-2+i].append(ap)
+                        
+        print all_data
