@@ -25,8 +25,6 @@ from scipy.stats import entropy
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
-from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../utils/'))
 from query import Query
