@@ -116,6 +116,8 @@ class RunSubqueries(object):
             queries = self.get_queries()
         else:
             queries = self.get_queries_of_length(query_length)
-            
-        print queries
+        queries = {ele['num']:ele['title'] for ele in queries}
+        for qid, query in queries.items():
+            print qid, self.get_subqueries(query)
+            raw_input()
 
