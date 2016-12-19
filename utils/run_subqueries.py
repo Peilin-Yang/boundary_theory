@@ -48,6 +48,9 @@ class RunSubqueries(object):
         self.all_results_root = os.path.join(self.output_root, 'all_results')
         if not os.path.exists(self.all_results_root):
             os.makedirs(self.all_results_root)
+        self.results_final = os.path.join(self.output_root, 'results_final')
+        if not os.path.exists(self.results_final):
+            os.makedirs(self.results_final)
 
     def get_queries(self):
         """
@@ -208,23 +211,34 @@ class RunSubqueries(object):
         for p in optimal_model_performances:
             model_para = 'method:%s,' % p[0] + p[2]
             model_paras.append(model_para)
-        all_data = []
+        subquery_data = {}
         for qid, query in queries.items():
-            all_data.append([qid, query])
+            subquery_data[qid] = {}
             for model_para in model_paras:
+                subquery_data[qid][query] = {}
                 with open(os.path.join(self.corpus_path, 'evals', 'title-%s' % model_para)) as qf:
                     ap = json.load(qf)[qid]["map"]
-                all_data.append([model_para, ap])
+                subquery_data[qid][query][model_para] = ap
             with open(os.path.join(self.all_results_root, qid)) as f:
                 csvr = csv.reader(f)
                 for row in csvr:
                     subquery_id = row[0]
                     subquery = row[1]
                     model_para = row[2]
-                    ap = row[3]
-                    all_data[-3].append(subquery)
-                    for i in range(len(model_paras)):
-                        if all_data[-2+i][0] == model_paras[i]:
-                            all_data[-2+i].append(ap)
+                    ap = float(row[3])
+                    if subquery not in subquery_data[qid]:
+                        subquery_data[qid][subquery] = {}
+                    subquery_data[qid][subquery][model_para] = ap
 
-        print all_data
+        all_data = []
+        for qid in sorted(subquery_data):
+            subqueries = sorted(subquery_data[qid])
+            all_data.append(subqueries)
+            all_data[-1].insert(0, qid)
+            for model_para in model_paras:
+                all_data.append([subquery_data[qid][subquery][model_para] for q in subqueries])
+                all_data[-1].insert(0, model_para)
+
+        with open(os.path.join(self.results_final, query_length), 'wb') as f:
+            cw = csv.writer(f)
+            cw.writerows(all_data)
