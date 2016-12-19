@@ -229,7 +229,7 @@ def gen_run_subqueries_batch(query_length=0):
     for q in g.query:
         collection_name = q['collection']
         collection_path = os.path.join(_root, collection_name)
-        all_paras.append(RunSubqueries(collection_path).batch_run_subqueries_paras())
+        all_paras.append(RunSubqueries(collection_path).batch_run_subqueries_paras(int(query_length)))
     print all_paras
     #gen_batch_framework('run_subqueries', '42', all_paras)
 
