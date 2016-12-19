@@ -217,7 +217,10 @@ class RunSubqueries(object):
             for model_para in model_paras:
                 subquery_data[qid][query] = {}
                 with open(os.path.join(self.corpus_path, 'evals', 'title-%s' % model_para)) as qf:
-                    ap = json.load(qf)[str(qid)]["map"]
+                    try:
+                        ap = json.load(qf)[str(qid)]["map"]
+                    except:
+                        ap = 0
                 subquery_data[qid][query][model_para] = ap
             with open(os.path.join(self.all_results_root, str(qid))) as f:
                 csvr = csv.reader(f)
@@ -233,7 +236,7 @@ class RunSubqueries(object):
         #print json.dumps(subquery_data, indent=2)
         all_data = []
         for qid in sorted(subquery_data):
-            subqueries = sorted(subquery_data[qid])
+            subqueries = sorted(subquery_data[qid], key=len)
             all_data.append(subqueries)
             all_data[-1].insert(0, qid)
             print qid, subquery_data[qid], subqueries
