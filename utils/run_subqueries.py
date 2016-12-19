@@ -103,7 +103,7 @@ class RunSubqueries(object):
         fpath = str(uuid.uuid4())
         with open(fpath, 'w') as f:
             p = Popen(['IndriRunQuery_EX -index=%s -trecFormat=True -count=1000 -query.number=%s -query.text="%s" -rule=%s' 
-                % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)], bash=True, stdout=f, stderr=PIPE)
+                % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)], shell=True, stdout=f, stderr=PIPE)
             returncode = p.wait()
             p.communicate()
         return returncode, fpath
@@ -112,7 +112,7 @@ class RunSubqueries(object):
         judgment_file = os.path.join(corpus_path, 'judgement_file')
         try:
             with open(eval_ofn, 'w') as f:
-                p = Popen(['trec_eval -m map %s %s' % (judgment_file, runfile_path)], bash=True, stdout=f, stderr=PIPE)
+                p = Popen(['trec_eval -m map %s %s' % (judgment_file, runfile_path)], shell=True, stdout=f, stderr=PIPE)
                 returncode = p.wait()
                 p.communicate()
         finally:
