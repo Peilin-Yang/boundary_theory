@@ -110,14 +110,13 @@ class RunSubqueries(object):
 
     def eval(self, runfile_path, eval_ofn):
         judgment_file = os.path.join(self.corpus_path, 'judgement_file')
-        #try:
-        with open(eval_ofn, 'w') as f:
-            print 'trec_eval -m map %s %s' % (judgment_file, runfile_path)
-            p = Popen(['trec_eval -m map %s %s' % (judgment_file, runfile_path)], shell=True, stdout=PIPE, stderr=PIPE)
-            returncode = p.wait()
-            p.communicate()
-        #finally:
-            #os.remove(runfile_path)
+        try:
+            with open(eval_ofn, 'w') as f:
+                p = Popen(['trec_eval -m map %s %s' % (judgment_file, runfile_path)], shell=True, stdout=f, stderr=PIPE)
+                returncode = p.wait()
+                p.communicate()
+        finally:
+            os.remove(runfile_path)
 
     def get_subqueries(self, query_str):
         """
@@ -155,7 +154,7 @@ class RunSubqueries(object):
         return all_paras
 
     def run_subqueries(self, qid, subquery_id, query, indri_model_para, eval_ofn):
-        retrurn_code, runfile_path = self.run_indri_runquery(query, qid+'_'+subquery_id, indri_model_para)
+        retrurn_code, runfile_path = self.run_indri_runquery(query, qid, indri_model_para)
         if retrurn_code != 0:
             raise NameError("Run Query Error: %s %s %s %s" % (qid, subquery_id, query, indri_model_para) )
         self.eval(runfile_path, eval_ofn)
