@@ -216,9 +216,8 @@ class RunSubqueries(object):
             model_paras.append(model_para)
         subquery_data = {}
         for qid, query in queries.items():
-            subquery_data[qid] = {}
+            subquery_data[qid] = {query: {}}
             for model_para in model_paras:
-                subquery_data[qid][query] = {}
                 with open(os.path.join(self.corpus_path, 'evals', 'title-%s' % model_para)) as qf:
                     #try:
                     ap = json.load(qf)[str(qid)]["map"]
