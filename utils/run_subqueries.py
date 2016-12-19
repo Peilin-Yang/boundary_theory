@@ -224,7 +224,7 @@ class RunSubqueries(object):
                     ap = json.load(qf)[str(qid)]["map"]
                     # except:
                     #     ap = 0
-                print qie, query, model_para, os.path.join(self.corpus_path, 'evals', 'title-%s' % model_para), ap
+                print qid, query, model_para, os.path.join(self.corpus_path, 'evals', 'title-%s' % model_para), ap
                 subquery_data[qid][query][model_para] = ap
             with open(os.path.join(self.all_results_root, str(qid))) as f:
                 csvr = csv.reader(f)
