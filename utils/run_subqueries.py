@@ -230,13 +230,14 @@ class RunSubqueries(object):
                         subquery_data[qid][subquery] = {}
                     subquery_data[qid][subquery][model_para] = ap
 
+        print subquery_data
         all_data = []
         for qid in sorted(subquery_data):
             subqueries = sorted(subquery_data[qid])
             all_data.append(subqueries)
             all_data[-1].insert(0, qid)
             for model_para in model_paras:
-                all_data.append([subquery_data[qid][subquery][model_para] for q in subqueries])
+                all_data.append([subquery_data[qid][subquery][model_para] if model_para in subquery_data[qid][subquery] else '' for q in subqueries])
                 all_data[-1].insert(0, model_para)
 
         with open(os.path.join(self.results_final, query_length), 'wb') as f:
