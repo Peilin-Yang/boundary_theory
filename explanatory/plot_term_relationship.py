@@ -310,7 +310,6 @@ class PlotTermRelationship(object):
         avdl = cs.get_avdl()
         k1 = 1.2
         r = (k1+1.0)*tfs/(tfs+k1*(1-b+b*doclens*1.0/avdl))*idfs
-        print tfs, r
         return np.sum(r, axis=0)
 
     def plot_only_rel_tf_relationship(self, details_data, details_rel_data, rel_data, query_length=2, oformat='png'):
@@ -392,8 +391,6 @@ class PlotTermRelationship(object):
                     partial_ranking_list = model_mapping[model_name](terms, all_tfs, all_dfs, all_doclens, all_rels, \
                         float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
                     partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
-                    print qid, terms[term_idx-1], model_name, rel_data[qid]['AP'][model_name][2].split(':')[1], partial_ranking_list[partial_order_index]
-                    raw_input()
                     partial_ranking_ap[term_idx-1] = self.cal_map(all_rels[partial_order_index], 1000, rel_data[qid]['rel_cnt'])
                 all_performances[model_name]['all'][qid] = float(rel_data[qid]['AP'][model_name][1])
                 all_performances[model_name]['higher-IDF'][qid] = partial_ranking_ap[larger_idf_idx]
