@@ -40,15 +40,18 @@ class RunSubqueries(object):
         self.output_root = os.path.join(self.corpus_path, 'subqueries')
         if not os.path.exists(self.output_root):
             os.makedirs(self.output_root)
-        self.subqueries_mapping_root = os.path.join(self.output_root, 'subqueries_mapping')
+        self.subqueries_mapping_root = os.path.join(self.output_root, 'mappings')
         if not os.path.exists(self.subqueries_mapping_root):
             os.makedirs(self.subqueries_mapping_root)
-        self.subqueries_performance_root = os.path.join(self.output_root, 'subqueries_performances')
+        self.subqueries_runfiles_root = os.path.join(self.output_root, 'runfiles')
+        if not os.path.exists(self.subqueries_runfiles_root):
+            os.makedirs(self.subqueries_runfiles_root)
+        self.subqueries_performance_root = os.path.join(self.output_root, 'performances')
         if not os.path.exists(self.subqueries_performance_root):
             os.makedirs(self.subqueries_performance_root)
-        self.all_results_root = os.path.join(self.output_root, 'all_results')
-        if not os.path.exists(self.all_results_root):
-            os.makedirs(self.all_results_root)
+        self.collected_results_root = os.path.join(self.output_root, 'collected_results')
+        if not os.path.exists(self.collected_results_root):
+            os.makedirs(self.collected_results_root)
 
         self.final_results_root = '../all_results'
         self.final_output_root = os.path.join(self.final_results_root, 'subqueries')
@@ -112,7 +115,7 @@ class RunSubqueries(object):
     def run_indri_runquery(self, query_str, qid='0', rule=''):
         fpath = str(uuid.uuid4())
         with open(fpath, 'w') as f:
-            p = Popen(['IndriRunQuery_EX -index=%s -trecFormat=True -count=1000 -query.number=%s -query.text="%s" -rule=%s' 
+            p = Popen(['IndriRunQuery_EX -index=%s -trecFormat=True -count=1000 -docDetails=100 -query.number=%s -query.text="%s" -rule=%s' 
                 % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)], shell=True, stdout=f, stderr=PIPE)
             returncode = p.wait()
             p.communicate()
@@ -197,7 +200,7 @@ class RunSubqueries(object):
             qid_results.append( (subquery_id, subquery_mapping[subquery_id], model_para, ap) )
 
         qid_results.sort(key=self.sort_subquery_id)
-        with open(os.path.join(self.all_results_root, req_qid), 'wb') as f:
+        with open(os.path.join(self.collected_results_root, req_qid), 'wb') as f:
             wr = csv.writer(f)
             wr.writerows(qid_results)
 
@@ -224,7 +227,7 @@ class RunSubqueries(object):
                     except:
                         ap = 0
                 subquery_data[qid][query][model_para] = ap
-            with open(os.path.join(self.all_results_root, str(qid))) as f:
+            with open(os.path.join(self.collected_results_root, str(qid))) as f:
                 csvr = csv.reader(f)
                 for row in csvr:
                     subquery_id = row[0]
