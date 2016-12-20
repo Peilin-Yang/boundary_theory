@@ -250,7 +250,7 @@ def gen_collect_subqueries_results_batch():
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.extend(RunSubqueries(collection_path, collection_name).batch_run_subqueries_paras())
+        all_paras.extend(RunSubqueries(collection_path, collection_name).batch_collect_results_paras())
     gen_batch_framework('collect_subqueries_results', '44', all_paras)
 
 def collect_subqueries_results_atom(para_file):

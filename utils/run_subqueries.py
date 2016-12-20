@@ -173,7 +173,7 @@ class RunSubqueries(object):
         subquery_id = result[0]
         return int(subquery_id.split('-')[0])+int(subquery_id.split('-')[1])
 
-    def batch_run_subqueries_paras(self):
+    def batch_collect_results_paras(self):
         queries = self.get_queries()
         return [(self.corpus_path, q['num']) for q in queries]
 
