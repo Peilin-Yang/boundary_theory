@@ -119,7 +119,7 @@ class RunSubqueries(object):
             p = Popen(command, shell=True, stdout=f, stderr=PIPE)
             returncode = p.wait()
             p.communicate()
-            if retrurn_code != 0:
+            if returncode != 0:
                 raise NameError("Run Query Error: %s" % (command) )
 
     def eval(self, runfile_ofn, eval_ofn):
