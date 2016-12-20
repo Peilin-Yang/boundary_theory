@@ -119,7 +119,8 @@ class RunSubqueries(object):
             p = Popen(command, shell=True, stdout=f, stderr=PIPE)
             returncode = p.wait()
             p.communicate()
-        return returncode
+        if retrurn_code != 0:
+            raise NameError("Run Query Error: %s %s %s %s" % (qid, subquery_id, query, indri_model_para) )
 
     def eval(self, runfile_ofn, eval_ofn):
         judgment_file = os.path.join(self.corpus_path, 'judgement_file')
@@ -165,9 +166,7 @@ class RunSubqueries(object):
         return all_paras
 
     def run_subqueries(self, qid, subquery_id, query, indri_model_para, runfile_ofn, eval_ofn):
-        retrurn_code = self.run_indri_runquery(query, runfile_ofn, qid, indri_model_para)
-        if retrurn_code != 0:
-            raise NameError("Run Query Error: %s %s %s %s" % (qid, subquery_id, query, indri_model_para) )
+        self.run_indri_runquery(query, runfile_ofn, qid, indri_model_para)
         self.eval(runfile_ofn, eval_ofn)
 
     def sort_subquery_id(self, result):
