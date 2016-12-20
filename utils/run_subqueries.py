@@ -120,7 +120,7 @@ class RunSubqueries(object):
             returncode = p.wait()
             p.communicate()
         if retrurn_code != 0:
-            raise NameError("Run Query Error: %s %s %s %s" % (qid, subquery_id, query, indri_model_para) )
+            raise NameError("Run Query Error: %s" % (command) )
 
     def eval(self, runfile_ofn, eval_ofn):
         judgment_file = os.path.join(self.corpus_path, 'judgement_file')
