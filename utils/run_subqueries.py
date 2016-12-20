@@ -112,19 +112,18 @@ class RunSubqueries(object):
 
         return filtered_queries
 
-    def run_indri_runquery(self, query_str, qid='0', rule=''):
-        fpath = str(uuid.uuid4())
-        with open(fpath, 'w') as f:
+    def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
+        with open(runfile_ofn, 'w') as f:
             p = Popen(['IndriRunQuery_EX -index=%s -trecFormat=True -count=1000 -docDetails=100 -query.number=%s -query.text="%s" -rule=%s' 
                 % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)], shell=True, stdout=f, stderr=PIPE)
             returncode = p.wait()
             p.communicate()
-        return returncode, fpath
+        return returncode
 
-    def eval(self, runfile_path, eval_ofn):
+    def eval(self, runfile_ofn, eval_ofn):
         judgment_file = os.path.join(self.corpus_path, 'judgement_file')
         with open(eval_ofn, 'w') as f:
-            p = Popen(['trec_eval -m map %s %s' % (judgment_file, runfile_path)], shell=True, stdout=f, stderr=PIPE)
+            p = Popen(['trec_eval -m map %s %s' % (judgment_file, runfile_ofn)], shell=True, stdout=f, stderr=PIPE)
             returncode = p.wait()
             p.communicate()
 
@@ -158,16 +157,17 @@ class RunSubqueries(object):
             for subquery_id, subquery_str  in all_subqueries.items():
                 for p in optimal_model_performances:
                     indri_model_para = 'method:%s,' % p[0] + p[2]
+                    runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
                     performance_fn = os.path.join(self.subqueries_performance_root, qid+'_'+subquery_id+'_'+indri_model_para)
                     if not os.path.exists(performance_fn):
-                        all_paras.append((self.corpus_path, qid, subquery_str, subquery_id, indri_model_para, performance_fn))
+                        all_paras.append((self.corpus_path, self.collection_name, qid, subquery_str, subquery_id, indri_model_para, runfile_fn, performance_fn))
         return all_paras
 
-    def run_subqueries(self, qid, subquery_id, query, indri_model_para, eval_ofn):
-        retrurn_code, runfile_path = self.run_indri_runquery(query, qid, indri_model_para)
+    def run_subqueries(self, qid, subquery_id, query, indri_model_para, runfile_ofn, eval_ofn):
+        retrurn_code = self.run_indri_runquery(query, runfile_ofn, qid, indri_model_para)
         if retrurn_code != 0:
             raise NameError("Run Query Error: %s %s %s %s" % (qid, subquery_id, query, indri_model_para) )
-        self.eval(runfile_path, eval_ofn)
+        self.eval(runfile_ofn, eval_ofn)
 
     def sort_subquery_id(self, result):
         subquery_id = result[0]

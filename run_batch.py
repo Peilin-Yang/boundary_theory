@@ -238,12 +238,14 @@ def run_subqueries_atom(para_file):
         reader = csv.reader(f)
         for row in reader:
             collection_path = row[0]
-            qid = row[1]
-            query = row[2]
-            subquery_id = row[3]
-            indri_model_para = row[4]
-            eval_ofn = row[5]
-            RunSubqueries(collection_path).run_subqueries(qid, subquery_id, query, indri_model_para, eval_ofn)
+            collection_name = row[1]
+            qid = row[2]
+            query = row[3]
+            subquery_id = row[4]
+            indri_model_para = row[5]
+            runfile_ofn = row[6]
+            eval_ofn = row[7]
+            RunSubqueries(collection_path, collection_name).run_subqueries(qid, subquery_id, query, indri_model_para, runfile_ofn, eval_ofn)
 
 def gen_collect_subqueries_results_batch():
     all_paras = []
