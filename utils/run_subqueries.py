@@ -204,6 +204,10 @@ class RunSubqueries(object):
             wr.writerows(qid_results)
 
 
+    def sort_subquery_key(self, k):
+        subquery_id_split = k.split('_')[0].split('-')
+        return int(subquery_id_split[0])+float(subquery_id_split[1])/10.0
+
     def output_results(self, query_length=0):
         if query_length == 0: #all queries
             queries = self.get_queries()
