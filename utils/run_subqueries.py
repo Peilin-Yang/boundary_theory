@@ -10,6 +10,7 @@ import itertools
 from subprocess import Popen, PIPE
 from inspect import currentframe, getframeinfo
 import argparse
+import numpy as np
 from performance import Performances
 
 class RunSubqueries(object):
@@ -250,7 +251,6 @@ class RunSubqueries(object):
 
         # markdown output
         max_row_len = max([len(ele) for ele in all_data])
-        print max_row_len
         with open(os.path.join(self.final_output_root, self.collection_name+'-'+str(query_length)+'.md'), 'wb') as f:
             f.write('%s|\n' % ('| ' * max_row_len))
             f.write('%s|\n' % ('|---' * max_row_len))
