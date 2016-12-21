@@ -269,6 +269,7 @@ class RunSubqueries(object):
                     # read and output the details in runfile
                     if _max != len(data):
                         lines_cnt = 10
+                        print cur_queries
                         runfile_max = os.path.join(self.subqueries_runfiles_root, '%s_%s_%s' % (cur_qid, cur_queries[_max].split('_')[0], data[0]))
                         with open(runfile_max) as rf:
                             first_few_lines_max = [line.split()[1]+' '+line.split()[-1] for line in rf.readlines()[:lines_cnt]]
