@@ -278,5 +278,5 @@ class RunSubqueries(object):
                 else: # qid query line
                     cur_qid = data[0]
                     cur_queries = data
-                    f.write('| %s |\n' % (' | '.join(data)))
+                    f.write('| %s |\n' % (' | '.join([d.split('_')[-1] for d in data])))
         
