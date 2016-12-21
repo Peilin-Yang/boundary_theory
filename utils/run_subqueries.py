@@ -253,6 +253,16 @@ class RunSubqueries(object):
         print max_row_len
         with open(os.path.join(self.final_output_root, self.collection_name+'-'+str(query_length)+'.md'), 'wb') as f:
             f.write('%s|\n' % ('| ' * max_row_len))
+            f.write('%s|\n' % ('|---' * max_row_len))
             for i, data in enumerate(all_data):
-                f.write('| %s |\n' % (' | '.join(data)))
+                if i % 3 != 0: # numerical values (MAP) line
+                    _max = np.argmax([float(ele) for ele in data[1:]])+1
+                    for j in range(len(data)):
+                        if j == _max:
+                            f.write('| ** %s ** ' % data[j])
+                        else:
+                            f.write('| %s ' % data[j])
+                    f.write(' |\n')
+                else: # qid query line
+                    f.write('| %s |\n' % (' | '.join(data)))
         
