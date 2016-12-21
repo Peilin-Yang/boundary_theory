@@ -259,7 +259,7 @@ class RunSubqueries(object):
                     _max = np.argmax([float(ele) for ele in data[1:]])+1
                     for j in range(len(data)):
                         if j == _max:
-                            f.write('| ** %s ** ' % data[j])
+                            f.write('| **%s** ' % data[j])
                         else:
                             f.write('| %s ' % data[j])
                     f.write(' |\n')
