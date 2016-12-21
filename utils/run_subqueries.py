@@ -173,7 +173,7 @@ class RunSubqueries(object):
 
     def sort_subquery_id(self, result):
         subquery_id = result[0]
-        return int(subquery_id.split('-')[0])+int(subquery_id.split('-')[1])
+        return int(subquery_id.split('-')[0])+float(subquery_id.split('-')[1])/10.0
 
     def batch_collect_results_paras(self):
         queries = self.get_queries()
