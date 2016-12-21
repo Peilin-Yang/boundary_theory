@@ -252,6 +252,7 @@ class RunSubqueries(object):
             cur_queries = []
             for i, data in enumerate(all_data):
                 if i % 3 != 0: # numerical values (MAP) line
+                    print data
                     _max = np.argmax([float(ele) for ele in data[1:]])+1
                     for j in range(len(data)):
                         if j == _max:
