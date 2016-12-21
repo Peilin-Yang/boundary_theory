@@ -277,7 +277,7 @@ class RunSubqueries(object):
                                 f.write('| %s ' % (ele))
                         # also read term stats
                         for t in cur_queries[-1].split('_')[1].split():
-                            f.write('| %s:%s' % (t, json.dumps(cs.get_term_stats(t), indent=2))
+                            f.write('| %s:%s' % (t, json.dumps(cs.get_term_stats(t), indent=2)))
                         f.write(' |\n')
                 else: # qid query line
                     cur_qid = data[0]
