@@ -230,7 +230,7 @@ class RunSubqueries(object):
                     subquery_id = row[0]
                     subquery = row[1]
                     model_para = row[2]
-                    ap = float(row[3])
+                    ap = row[3]
                     if subquery not in subquery_data[qid]:
                         subquery_data[qid][subquery] = {}
                     subquery_data[qid][subquery][model_para] = ap
@@ -247,3 +247,11 @@ class RunSubqueries(object):
         with open(os.path.join(self.final_output_root, self.collection_name+'-'+str(query_length)+'.csv'), 'wb') as f:
             cw = csv.writer(f)
             cw.writerows(all_data)
+
+        # markdown output
+        max_row_len = max([len(ele) for ele in all_data])
+        with open(os.path.join(self.final_output_root, self.collection_name+'-'+str(query_length)+'.md'), 'wb') as f:
+            f.write('%s|\n' % '| ' * max_row_len)
+            for i, data in enumerate(all_data):
+                f.write('| %s |\n' % (' | '.join(data)))
+        
