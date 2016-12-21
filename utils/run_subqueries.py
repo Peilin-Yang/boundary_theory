@@ -272,13 +272,19 @@ class RunSubqueries(object):
                         runfile_allterms = os.path.join(self.subqueries_runfiles_root, '%s_%s_%s' % (cur_qid, cur_queries[-1].split('_')[0], data[0]))
                         with open(runfile_allterms) as rf:
                             first_few_lines_allterms = [line.split()[1]+' '+line.split()[-1] for line in rf.readlines()[:lines_cnt]]
+                        # also read term stats
+                        all_terms_stats = []
+                        for t in cur_queries[-1].split('_')[1].split():
+                            all_terms_stats.append([k+':'+str(v) for k,v in cs.get_term_stats(t).items()])
+                            all_terms_stats[-1].insert(0, t)
+                        term_line_idx = 0
                         for zipped in zip(first_few_lines_max, first_few_lines_allterms):
                             for ele in zipped:
                                 f.write('| %s ' % (ele))
-                        # also read term stats
-                        for t in cur_queries[-1].split('_')[1].split():
-                            f.write('| %s:%s' % (t, json.dumps(cs.get_term_stats(t))))
-                        f.write(' |\n')
+                            for ele in all_terms_stats:
+                                f.write('| %s' % (ele[term_line_idx]))
+                            term_line_idx += 1
+                            f.write(' |\n')
                 else: # qid query line
                     cur_qid = data[0]
                     cur_queries = data
