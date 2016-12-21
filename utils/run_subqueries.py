@@ -175,7 +175,7 @@ class RunSubqueries(object):
 
     def batch_collect_results_paras(self):
         queries = self.get_queries()
-        return [(self.corpus_path, q['num']) for q in queries]
+        return [(self.corpus_path, self.collection_name, q['num']) for q in queries]
 
     def collection_all_results(self, req_qid):
         qid_results = []

@@ -260,8 +260,9 @@ def collect_subqueries_results_atom(para_file):
         reader = csv.reader(f)
         for row in reader:
             collection_path = row[0]
-            qid = row[1]
-            RunSubqueries(collection_path).collection_all_results(qid)
+            collection_name = row[1]
+            qid = row[2]
+            RunSubqueries(collection_path, collection_name).collection_all_results(qid)
 
 def output_subqueries_results(query_length):
     for q in g.query:
