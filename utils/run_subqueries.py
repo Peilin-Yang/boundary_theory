@@ -230,7 +230,7 @@ class RunSubqueries(object):
                         subquery_data[qid][_key] = {}
                     subquery_data[qid][_key][model_para] = ap
 
-        print json.dumps(subquery_data)
+        print json.dumps(subquery_data, indent=2)
         raw_input()
         all_data = []
         for qid in sorted(subquery_data):
