@@ -239,7 +239,7 @@ class RunSubqueries(object):
         for qid in sorted(subquery_data):
             subqueries = sorted(subquery_data[qid], key=len)
             all_data.append(subqueries)
-            all_data[-1].insert(0, qid)
+            all_data[-1].insert(0, str(qid))
             for model_para in model_paras:
                 all_data.append([str(subquery_data[qid][q][model_para]) if model_para in subquery_data[qid][q] else '' for q in subqueries[1:]])
                 all_data[-1].insert(0, model_para)
