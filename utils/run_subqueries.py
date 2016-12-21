@@ -237,7 +237,7 @@ class RunSubqueries(object):
 
         all_data = []
         for qid in sorted(subquery_data):
-            subqueries = sorted(subquery_data[qid], key=len)
+            subqueries = sorted(subquery_data[qid], key=self.sort_subquery_key)
             all_data.append(subqueries)
             all_data[-1].insert(0, str(qid))
             for model_para in model_paras:
