@@ -270,6 +270,10 @@ class RunSubqueries(object):
                         runfile_allterms = os.path.join(self.subqueries_runfiles_root, '%s_%s_%s' % (cur_qid, cur_queries[-1].split('_')[0], data[0]))
                         with open(runfile_allterms) as rf:
                             first_few_lines_allterms = [line.split()[1]+' '+line.split()[-1] for line in rf.readlines()[:lines_cnt]]
+                        for zipped in zip(first_few_lines_max, first_few_lines_allterms):
+                            for ele in zipped:
+                                f.write('| %s ' % (ele))
+                            f.write(' |\n')
                 else: # qid query line
                     cur_qid = data[0]
                     cur_queries = data
