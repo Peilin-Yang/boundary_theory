@@ -286,7 +286,7 @@ class RunSubqueries(object):
                             for ele in zipped:
                                 f.write('| %s ' % (ele))
                             for ele in all_terms_stats:
-                                f.write('| %s' % (ele[term_line_idx]))
+                                f.write('| %s ' % (ele[term_line_idx]))
                             term_line_idx += 1
                             f.write(' |\n')
                 else: # qid query line
