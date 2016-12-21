@@ -12,6 +12,7 @@ from inspect import currentframe, getframeinfo
 import argparse
 import numpy as np
 from performance import Performances
+from collection_stats import CollectionStats
 
 class RunSubqueries(object):
     """
@@ -244,6 +245,7 @@ class RunSubqueries(object):
             cw.writerows(all_data)
 
         # markdown output
+        cs = CollectionStats(self.corpus_path)
         max_row_len = max([len(ele) for ele in all_data])
         with open(os.path.join(self.final_output_root, self.collection_name+'-'+str(query_length)+'.md'), 'wb') as f:
             f.write('%s|\n' % ('| ' * max_row_len))
@@ -273,7 +275,10 @@ class RunSubqueries(object):
                         for zipped in zip(first_few_lines_max, first_few_lines_allterms):
                             for ele in zipped:
                                 f.write('| %s ' % (ele))
-                            f.write(' |\n')
+                        # also read term stats
+                        for t in cur_queries[-1].split('_')[1].split():
+                            f.write('| %s:%s' % (t, json.dumps(cs.get_term_stats(t), indent=2))
+                        f.write(' |\n')
                 else: # qid query line
                     cur_qid = data[0]
                     cur_queries = data
