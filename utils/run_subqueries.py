@@ -217,7 +217,7 @@ class RunSubqueries(object):
             model_paras.append(model_para)
         subquery_data = {}
         for qid, query in queries.items():
-            subquery_data[qid] = {query: {}}
+            subquery_data[qid] = {}
             with open(os.path.join(self.collected_results_root, str(qid))) as f:
                 csvr = csv.reader(f)
                 for row in csvr:
@@ -230,8 +230,6 @@ class RunSubqueries(object):
                         subquery_data[qid][_key] = {}
                     subquery_data[qid][_key][model_para] = ap
 
-        print json.dumps(subquery_data, indent=2)
-        raw_input()
         all_data = []
         for qid in sorted(subquery_data):
             subqueries = sorted(subquery_data[qid], key=len)
@@ -254,7 +252,6 @@ class RunSubqueries(object):
             cur_queries = []
             for i, data in enumerate(all_data):
                 if i % 3 != 0: # numerical values (MAP) line
-                    print data
                     _max = np.argmax([float(ele) for ele in data[1:]])+1
                     for j in range(len(data)):
                         if j == _max:
