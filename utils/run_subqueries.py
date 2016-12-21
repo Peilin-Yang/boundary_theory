@@ -232,9 +232,10 @@ class RunSubqueries(object):
                     subquery = row[1]
                     model_para = row[2]
                     ap = row[3]
-                    if subquery not in subquery_data[qid]:
-                        subquery_data[qid][subquery] = {}
-                    subquery_data[qid][subquery][model_para] = ap
+                    _key = subquery_id+'_'+subquery
+                    if _key not in subquery_data[qid]:
+                        subquery_data[qid][_key] = {}
+                    subquery_data[qid][_key][model_para] = ap
 
         all_data = []
         for qid in sorted(subquery_data):
@@ -254,6 +255,7 @@ class RunSubqueries(object):
         with open(os.path.join(self.final_output_root, self.collection_name+'-'+str(query_length)+'.md'), 'wb') as f:
             f.write('%s|\n' % ('| ' * max_row_len))
             f.write('%s|\n' % ('|---' * max_row_len))
+            cur_qid = 0
             for i, data in enumerate(all_data):
                 if i % 3 != 0: # numerical values (MAP) line
                     _max = np.argmax([float(ele) for ele in data[1:]])+1
@@ -263,6 +265,16 @@ class RunSubqueries(object):
                         else:
                             f.write('| %s ' % data[j])
                     f.write(' |\n')
+                    # read and output the details in runfile
+                    if _max != len(data):
+                        lines_cnt = 10
+                        runfile_max = os.path.join(self.subqueries_runfiles_root, '%s_%s_%s' % (cur_qid, data[_max].split('_')[0], data[0]))
+                        with open(runfile_max) as rf:
+                            first_few_lines_max = [line.split()[1]+' '+line.split()[-1] for line in f.readlines()[:lines_cnt]]
+                        runfile_allterms = os.path.join(self.subqueries_runfiles_root, '%s_%s_%s' % (cur_qid, data[-1].split('_')[0], data[0]))
+                        with open(runfile_allterms) as rf:
+                            first_few_lines_allterms = [line.split()[1]+' '+line.split()[-1] for line in f.readlines()[:lines_cnt]]
                 else: # qid query line
+                    cur_qid = data[0]
                     f.write('| %s |\n' % (' | '.join(data)))
         
