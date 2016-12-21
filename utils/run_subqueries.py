@@ -279,7 +279,7 @@ class RunSubqueries(object):
                         # also read term stats
                         all_terms_stats = []
                         for t in cur_queries[-1].split('_')[1].split():
-                            all_terms_stats.append([k+':'+str(v) for k,v in cs.get_term_stats(t).items()])
+                            all_terms_stats.append([k+':'+str(v) for k,v in cs.get_term_stats(t).items() if k!='raw'])
                             all_terms_stats[-1].insert(0, t)
                         term_line_idx = 0
                         for zipped in zip(first_few_lines_max, first_few_lines_allterms):
