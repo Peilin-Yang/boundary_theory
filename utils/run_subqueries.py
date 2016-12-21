@@ -256,6 +256,7 @@ class RunSubqueries(object):
             f.write('%s|\n' % ('| ' * max_row_len))
             f.write('%s|\n' % ('|---' * max_row_len))
             cur_qid = 0
+            cur_queries = []
             for i, data in enumerate(all_data):
                 if i % 3 != 0: # numerical values (MAP) line
                     _max = np.argmax([float(ele) for ele in data[1:]])+1
@@ -268,13 +269,14 @@ class RunSubqueries(object):
                     # read and output the details in runfile
                     if _max != len(data):
                         lines_cnt = 10
-                        runfile_max = os.path.join(self.subqueries_runfiles_root, '%s_%s_%s' % (cur_qid, data[_max].split('_')[0], data[0]))
+                        runfile_max = os.path.join(self.subqueries_runfiles_root, '%s_%s_%s' % (cur_qid, cur_queries[_max].split('_')[0], data[0]))
                         with open(runfile_max) as rf:
                             first_few_lines_max = [line.split()[1]+' '+line.split()[-1] for line in f.readlines()[:lines_cnt]]
-                        runfile_allterms = os.path.join(self.subqueries_runfiles_root, '%s_%s_%s' % (cur_qid, data[-1].split('_')[0], data[0]))
+                        runfile_allterms = os.path.join(self.subqueries_runfiles_root, '%s_%s_%s' % (cur_qid, cur_queries[-1].split('_')[0], data[0]))
                         with open(runfile_allterms) as rf:
                             first_few_lines_allterms = [line.split()[1]+' '+line.split()[-1] for line in f.readlines()[:lines_cnt]]
                 else: # qid query line
                     cur_qid = data[0]
+                    cur_queries = data
                     f.write('| %s |\n' % (' | '.join(data)))
         
