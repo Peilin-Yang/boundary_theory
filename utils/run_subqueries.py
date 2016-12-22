@@ -7,10 +7,14 @@ import string
 import ast
 import uuid
 import itertools
+import codecs
 from subprocess import Popen, PIPE
 from inspect import currentframe, getframeinfo
 import argparse
+
 import numpy as np
+import markdown
+
 from performance import Performances
 from collection_stats import CollectionStats
 
@@ -294,3 +298,5 @@ class RunSubqueries(object):
                     cur_queries = data
                     f.write('| %s |\n' % (' | '.join([d.split('_')[-1] for d in data])))
         
+        with codecs.open(os.path.join(self.final_output_root, self.collection_name+'-'+str(query_length)+'.md'), 'r', encoding='utf-8') as f:
+            print markdown.markdown(f.read())
