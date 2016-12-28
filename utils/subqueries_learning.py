@@ -48,6 +48,17 @@ class SubqueriesLearning(RunSubqueries):
         if feature_type == 1:
             self.gen_mutual_information(qid, feature_outfn)
 
+    def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
+        with open(runfile_ofn, 'w') as f:
+            command = ['IndriRunQuery_EX -index=%s -trecFormat=True -count=999999999 -query.number=%s -query.text="%s" -rule=%s' 
+                % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)]
+            print command
+            p = Popen(command, shell=True, stdout=f, stderr=PIPE)
+            returncode = p.wait()
+            p.communicate()
+            if returncode != 0:
+                raise NameError("Run Query Error: %s" % (command) )
+
     def gen_mutual_information(self, qid, feature_outfn):
         features_tmp_root = os.path.join(self.features_tmp_root, 'MI')
         if not os.path.exists(features_tmp_root):
@@ -63,7 +74,7 @@ class SubqueriesLearning(RunSubqueries):
                 for w in withins:
                     tmp_runfile_fn = os.path.join(features_tmp_root, qid+'_'+subquery_id+'_'+str(w))
                     if not os.path.exists(tmp_runfile_fn):
-                        self.run_indri_runquery('#%d(%s)' % (w, subquery_str), tmp_runfile_fn, rule='tf1')
+                        self.run_indri_runquery('#%d(%s)' % (w, subquery_str), tmp_runfile_fn, rule='method:tf1')
 
 
     def sort_subquery_id(self, subquery_id):
