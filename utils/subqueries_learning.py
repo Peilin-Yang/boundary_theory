@@ -34,7 +34,7 @@ class SubqueriesLearning(RunSubqueries):
         if not os.path.exists(self.subqueries_features_root):
             os.makedirs(self.subqueries_features_root)
 
-    def batch_gen_subqueries_features_paras(self, query_length=0, feature_type=0):
+    def batch_gen_subqueries_features_paras(self, feature_type=0):
         all_paras = []
         for qid in os.listdir(self.subqueries_mapping_root):
             if feature_type != 0:

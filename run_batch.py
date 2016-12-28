@@ -272,12 +272,12 @@ def output_subqueries_results(query_length):
         RunSubqueries(collection_path, collection_name).output_results(int(query_length))
 
 
-def gen_subqueries_features_batch(query_length, feature_type):
+def gen_subqueries_features_batch(feature_type):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.extend(SubqueriesLearning(collection_path, collection_name).batch_run_subqueries_paras(int(query_length), int(feature_type)))
+        all_paras.extend(SubqueriesLearning(collection_path, collection_name).batch_gen_subqueries_features_paras(int(feature_type)))
     #print all_paras
     gen_batch_framework('subqueries_features', '52', all_paras)
 
@@ -454,7 +454,7 @@ if __name__ == '__main__':
 
 
     parser.add_argument('-51', '--gen_subqueries_features_batch', 
-        nargs=2, # query len and feature type
+        nargs=1, # feature type
         help='generate subqueries features paras.')
     parser.add_argument('-52', '--gen_subqueries_features_atom', 
         nargs=1,
@@ -503,7 +503,7 @@ if __name__ == '__main__':
         output_subqueries_results(args.output_subqueries_results[0])
 
     if args.gen_subqueries_features_batch:
-        gen_subqueries_features_batch(args.gen_subqueries_features_batch[0], args.gen_subqueries_features_batch[1])
+        gen_subqueries_features_batch(args.gen_subqueries_features_batch[0])
     if args.gen_subqueries_features_atom:
         gen_subqueries_features_atom(args.gen_subqueries_features_atom[0])
 
