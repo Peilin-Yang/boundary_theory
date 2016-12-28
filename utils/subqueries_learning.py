@@ -52,7 +52,6 @@ class SubqueriesLearning(RunSubqueries):
         with open(runfile_ofn, 'w') as f:
             command = ['IndriRunQuery_EX -index=%s -trecFormat=True -count=999999999 -query.number=%s -query.text="%s" -rule=%s' 
                 % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)]
-            print command
             p = Popen(command, shell=True, stdout=f, stderr=PIPE)
             returncode = p.wait()
             p.communicate()
@@ -74,7 +73,7 @@ class SubqueriesLearning(RunSubqueries):
                 for w in withins:
                     tmp_runfile_fn = os.path.join(features_tmp_root, qid+'_'+subquery_id+'_'+str(w))
                     if not os.path.exists(tmp_runfile_fn):
-                        self.run_indri_runquery('#%d(%s)' % (w, subquery_str), tmp_runfile_fn, rule='method:tf1')
+                        self.run_indri_runquery('#uw%d(%s)' % (w, subquery_str), tmp_runfile_fn, rule='method:tf1')
 
 
     def sort_subquery_id(self, subquery_id):
