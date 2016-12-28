@@ -63,17 +63,33 @@ class SubqueriesLearning(RunSubqueries):
         if not os.path.exists(features_tmp_root):
             os.makedirs(features_tmp_root)
 
+        cs = CollectionStats(self.corpus_path)
         mi_mapping = {}
         withins = [1, 5, 10, 20, 50, 100]
         with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
-                subquery_mapping = json.load(f)
+            subquery_mapping = json.load(f)
         for subquery_id, subquery_str in subquery_mapping.items():
             terms = subquery_str.split()
             if len(terms) == 2: # MI works only for two terms
+                terms_stats = {}
+                for t in terms:
+                    if t not in terms_stats:
+                        terms_stats[t] = cs.get_term_stats(t)
                 for w in withins:
                     tmp_runfile_fn = os.path.join(features_tmp_root, qid+'_'+subquery_id+'_'+str(w))
                     if not os.path.exists(tmp_runfile_fn):
                         self.run_indri_runquery('#uw%d(%s)' % (w, subquery_str), tmp_runfile_fn, rule='method:tf1')
+                    ww = 0.0
+                    with open(tmp_runfile_fn) as f:
+                        for line in f:
+                            row = line.split()
+                            score = float(row[4])
+                            ww += score
+                    mi = ww * 1.0 * cs.get_total_terms() / terms_stats[terms[0]]['total_occur'] / terms_stats[terms[1]]['total_occur']
+                    if subquery_str not in mi_mapping:
+                        mi_mapping[subquery_str] = {}
+                    mi_mapping[subquery_str][w] = mi
+        print json.dumps(mi_mapping, indent=2)
 
 
     def sort_subquery_id(self, subquery_id):
