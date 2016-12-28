@@ -18,6 +18,7 @@ from tie_breaker import TieBreaker
 from utils.evaluation import Evaluation
 from utils.rel_tf_stats import RelTFStats
 from run_subqueries import RunSubqueries
+from subqueries_learning import SubqueriesLearning
 
 _root = '../../reproduce/collections/'
 output_root = '../all_results/'
@@ -271,6 +272,27 @@ def output_subqueries_results(query_length):
         RunSubqueries(collection_path, collection_name).output_results(int(query_length))
 
 
+def gen_subqueries_features_batch(query_length=0, feature_type):
+    all_paras = []
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.extend(SubqueriesLearning(collection_path, collection_name).batch_run_subqueries_paras(int(query_length), int(feature_type)))
+    #print all_paras
+    gen_batch_framework('subqueries_features', '52', all_paras)
+
+def gen_subqueries_features_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            collection_name = row[1]
+            qid = row[2]
+            feature_type = row[3]
+            feature_outfn = row[4]
+            SubqueriesLearning(collection_path, collection_name).gen_subqueries_features(qid, feature_type, feature_outfn)
+
+
 ###################################################
 def run_all_baseline_results_atom(para_file):
     with open(para_file) as f:
@@ -430,6 +452,14 @@ if __name__ == '__main__':
         nargs=1,
         help='arg: query_length')
 
+
+    parser.add_argument('-51', '--gen_subqueries_features_batch', 
+        nargs=2, # query len and feature type
+        help='generate subqueries features paras.')
+    parser.add_argument('-52', '--gen_subqueries_features_atom', 
+        nargs=1,
+        help='generate subqueries features')
+
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
         help="Run all parameters for Pivoted, Okapi and Dirichlet.")
@@ -471,6 +501,11 @@ if __name__ == '__main__':
         collect_subqueries_results_atom(args.collect_subqueries_results_atom[0])
     if args.output_subqueries_results:
         output_subqueries_results(args.output_subqueries_results[0])
+
+    if args.gen_subqueries_features_batch:
+        gen_subqueries_features_batch(args.gen_subqueries_features_batch[0], args.gen_subqueries_features_batch[1])
+    if args.gen_subqueries_features_atom:
+        gen_subqueries_features_atom(args.gen_subqueries_features_atom[0])
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)

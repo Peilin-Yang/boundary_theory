@@ -20,8 +20,7 @@ from collection_stats import CollectionStats
 
 class RunSubqueries(object):
     """
-    Get the judgments of a corpus.
-    When constructing, pass the path of the corpus. For example, "../wt2g/"
+    run the sub-queries since they potentially outperform the original query.
     """
     def __init__(self, path, corpus_name):
         self.corpus_path = os.path.abspath(path)
