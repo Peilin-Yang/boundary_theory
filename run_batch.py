@@ -272,7 +272,7 @@ def output_subqueries_results(query_length):
         RunSubqueries(collection_path, collection_name).output_results(int(query_length))
 
 
-def gen_subqueries_features_batch(query_length=0, feature_type):
+def gen_subqueries_features_batch(query_length, feature_type):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
