@@ -105,7 +105,7 @@ class SubqueriesLearning(RunSubqueries):
                     for w in mi_mapping[key]:
                         if w not in tmp:
                             tmp[w] = []
-                        tmp[w].append(mi_mapping[key]) 
+                        tmp[w].append(mi_mapping[key][w]) 
             for w in tmp:
                 all_mis[subquery_id][w] = self.get_all_sorts_features(tmp[w])
             print all_mis[subquery_id]
