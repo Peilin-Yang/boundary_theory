@@ -64,6 +64,10 @@ class SubqueriesLearning(RunSubqueries):
         if not os.path.exists(features_tmp_root):
             os.makedirs(features_tmp_root)
 
+        features_root = os.path.join(self.subqueries_features_root, 'MI')
+        if not os.path.exists(features_root):
+            os.makedirs(features_root)
+
         cs = CollectionStats(self.corpus_path)
         mi_mapping = {}
         withins = [1, 5, 10, 20, 50, 100]
@@ -109,11 +113,11 @@ class SubqueriesLearning(RunSubqueries):
                         tmp[w].append(mi_mapping[key][w]) 
             for w in tmp:
                 all_mis[subquery_id][w] = self.get_all_sorts_features(tmp[w])
-            print all_mis[subquery_id]
-            raw_input()
+        outfn = os.path.join(features_root, qid)
+        with open(outfn, 'wb') as f:
+            json.dump(all_mis, f, indent=2)
 
     def get_all_sorts_features(self, feature_vec):
-        print feature_vec
         return [np.min(feature_vec), np.max(feature_vec), 
                 np.max(feature_vec)-np.min(feature_vec),
                 np.max(feature_vec)/np.min(feature_vec) if np.min(feature_vec) != 0 else 0,
