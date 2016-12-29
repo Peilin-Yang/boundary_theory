@@ -13,6 +13,7 @@ from inspect import currentframe, getframeinfo
 import argparse
 
 import numpy as np
+import scipy
 import markdown
 
 from performance import Performances
@@ -80,14 +81,11 @@ class SubqueriesLearning(RunSubqueries):
                     if not os.path.exists(tmp_runfile_fn):
                         self.run_indri_runquery('#uw%d(%s)' % (w+1, subquery_str), tmp_runfile_fn, rule='method:tf1')
                     ww = 0.0
-                    print tmp_runfile_fn
                     with open(tmp_runfile_fn) as f:
                         for line in f:
                             row = line.split()
                             score = float(row[4])
                             ww += score
-                    print ww, terms_stats[terms[0]], terms_stats[terms[1]]
-                    #raw_input()
                     mi = ww / terms_stats[terms[0]]['total_occur'] if terms_stats[terms[0]]['total_occur'] != 0 else 0.0
                     mi /= terms_stats[terms[1]]['total_occur'] if terms_stats[terms[1]]['total_occur'] != 0 else 0.0
                     mi *= cs.get_total_terms()
@@ -95,8 +93,32 @@ class SubqueriesLearning(RunSubqueries):
                     if subquery_str not in mi_mapping:
                         mi_mapping[subquery_str] = {}
                     mi_mapping[subquery_str][w] = mi
-        print json.dumps(mi_mapping, indent=2)
+        #print json.dumps(mi_mapping, indent=2)
+        all_mis = {}
+        for subquery_id, subquery_str in subquery_mapping.items():
+            terms = subquery_str.split()
+            all_mis[subquery_id] = {}
+            tmp = {}
+            for i in range(len(terms)-1): # including the query itself
+                for j in range(i+1, len(terms)):
+                    key = terms[i]+' '+terms[j] if terms[i]+' '+terms[j] in mi_mapping else terms[j]+' '+terms[i]
+                    for w in mi_mapping[key]:
+                        if w not in tmp:
+                            tmp[w] = []
+                        tmp[w].append(mi_mapping[key]) 
+            for w in tmp:
+                all_mis[subquery_id][w] = self.get_all_sorts_features(tmp[w])
+            print all_mis[subquery_id]
+            raw_input()
 
+    def get_all_sorts_features(self, feature_vec):
+        return [np.min(feature_vec), np.max(feature_vec), 
+                np.max(feature_vec)-np.min(feature_vec),
+                np.max(feature_vec)/np.min(feature_vec),
+                np.mean(feature_vec), np.std(feature_vec), 
+                np.sum(feature_vec), 
+                scipy.stats.mstats.gmean(feature_vec),
+                scipy.stats.mstats.hmean(feature_vec)]
 
     def sort_subquery_id(self, subquery_id):
         return int(subquery_id.split('-')[0])+float(subquery_id.split('-')[1])/10.0
