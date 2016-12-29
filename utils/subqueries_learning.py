@@ -43,7 +43,7 @@ class SubqueriesLearning(RunSubqueries):
             5: 'MAXTF',
             6: 'MINTF',
             7: 'AVGTF',
-            8, 'VARTF'
+            8: 'VARTF'
         }
 
     def batch_gen_subqueries_features_paras(self, feature_type=0):
