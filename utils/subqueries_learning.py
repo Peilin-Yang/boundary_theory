@@ -35,20 +35,37 @@ class SubqueriesLearning(RunSubqueries):
         if not os.path.exists(self.subqueries_features_root):
             os.makedirs(self.subqueries_features_root)
 
+        self.feature_mapping = {
+            1: 'MI',
+            2: 'CTF',
+            3: 'DF',
+            4: 'LOGIDF',
+            5: 'MAXTF',
+            6: 'MINTF',
+            7: 'AVGTF',
+            8, 'VARTF'
+        }
+
     def batch_gen_subqueries_features_paras(self, feature_type=0):
         all_paras = []
         for qid in os.listdir(self.subqueries_mapping_root):
             if feature_type != 0:
-                feature_outfn = os.path.join(self.subqueries_features_root, qid+'_'+str(feature_type))
+                output_root = os.path.join(self.subqueries_features_root, self.feature_mapping[feature_type])
+                if not os.path.exists(output_root):
+                    os.makedirs(output_root)
+                feature_outfn = os.path.join(output_root, qid)
                 if not os.path.exists(feature_outfn):
-                    all_paras.append((self.corpus_path, self.collection_name, qid, feature_type, feature_outfn))
+                    all_paras.append((self.corpus_path, self.collection_name, qid, feature_type))
         return all_paras
 
-    def gen_subqueries_features(self, qid, feature_type, feature_outfn):
+    def gen_subqueries_features(self, qid, feature_type):
         feature_type = int(feature_type)
         if feature_type == 1:
-            self.gen_mutual_information(qid, feature_outfn)
+            self.gen_mutual_information(qid)
+        elif feature_type == 2:
+            self.gen_collection_tf(qid)
 
+    ############## for mutual information ##############
     def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
         with open(runfile_ofn, 'w') as f:
             command = ['IndriRunQuery_EX -index=%s -trecFormat=True -count=999999999 -query.number=%s -query.text="%s" -rule=%s' 
@@ -59,7 +76,7 @@ class SubqueriesLearning(RunSubqueries):
             if returncode != 0:
                 raise NameError("Run Query Error: %s" % (command) )
 
-    def gen_mutual_information(self, qid, feature_outfn):
+    def gen_mutual_information(self, qid):
         features_tmp_root = os.path.join(self.features_tmp_root, 'MI')
         if not os.path.exists(features_tmp_root):
             os.makedirs(features_tmp_root)
@@ -118,6 +135,31 @@ class SubqueriesLearning(RunSubqueries):
         outfn = os.path.join(features_root, qid)
         with open(outfn, 'wb') as f:
             json.dump(all_mis, f, indent=2)
+
+    ############## for term realted ##############
+    def gen_term_related_features(self, qid, feature_formal_name, required_feature):
+        features_root = os.path.join(self.subqueries_features_root, feature_formal_name)
+        cs = CollectionStats(self.corpus_path)
+        with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
+            subquery_mapping = json.load(f)
+        features = {}
+        for subquery_id, subquery_str in subquery_mapping.items():
+            terms = subquery_str.split()
+            stats = []
+            for term in terms:
+                stats.append(cs.get_term_stats(term)[required_feature])
+            features[subquery_id] = self.get_all_sorts_features(stats)
+
+        outfn = os.path.join(features_root, qid)
+        with open(outfn, 'wb') as f:
+            json.dump(features, f, indent=2)
+
+
+    ############## for collection tf ##############          
+    def gen_collection_tf(self, qid):
+        self.gen_term_related_features(qid, 'CTF', 'total_occur')
+    def gen_df(self, qid):
+        self.gen_term_related_features(qid, 'DF', 'df')
 
     def get_all_sorts_features(self, feature_vec):
         return [np.min(feature_vec), np.max(feature_vec), 

@@ -289,8 +289,7 @@ def gen_subqueries_features_atom(para_file):
             collection_name = row[1]
             qid = row[2]
             feature_type = row[3]
-            feature_outfn = row[4]
-            SubqueriesLearning(collection_path, collection_name).gen_subqueries_features(qid, feature_type, feature_outfn)
+            SubqueriesLearning(collection_path, collection_name).gen_subqueries_features(qid, feature_type)
 
 
 ###################################################
