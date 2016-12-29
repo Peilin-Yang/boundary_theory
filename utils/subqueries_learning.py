@@ -58,6 +58,13 @@ class SubqueriesLearning(RunSubqueries):
             if returncode != 0:
                 raise NameError("Run Query Error: %s" % (command) )
 
+    def div0(self, a, b):
+    """ ignore / 0, div0( [-1, 0, 1], 0 ) -> [0, 0, 0] """
+    with np.errstate(divide='ignore', invalid='ignore'):
+        c = np.true_divide( a, b )
+        c[ ~ np.isfinite( c )] = 0  # -inf inf NaN
+    return c
+
     def gen_mutual_information(self, qid, feature_outfn):
         features_tmp_root = os.path.join(self.features_tmp_root, 'MI')
         if not os.path.exists(features_tmp_root):
@@ -78,14 +85,15 @@ class SubqueriesLearning(RunSubqueries):
                 for w in withins:
                     tmp_runfile_fn = os.path.join(features_tmp_root, qid+'_'+subquery_id+'_'+str(w))
                     if not os.path.exists(tmp_runfile_fn):
-                        self.run_indri_runquery('#uw%d(%s)' % (w, subquery_str), tmp_runfile_fn, rule='method:tf1')
+                        self.run_indri_runquery('#uw%d(%s)' % (w+1, subquery_str), tmp_runfile_fn, rule='method:tf1')
                     ww = 0.0
                     with open(tmp_runfile_fn) as f:
                         for line in f:
                             row = line.split()
                             score = float(row[4])
                             ww += score
-                    mi = np.log( ww * 1.0 * cs.get_total_terms() / terms_stats[terms[0]]['total_occur'] / terms_stats[terms[1]]['total_occur'] )
+                    mi = self.div0(self.div0(ww * 1.0 * cs.get_total_terms(), terms_stats[terms[0]]['total_occur']), terms_stats[terms[1]]['total_occur'])
+                    mi = 0 if mi == 0 else np.log(mi)
                     if subquery_str not in mi_mapping:
                         mi_mapping[subquery_str] = {}
                     mi_mapping[subquery_str][w] = mi
