@@ -13,7 +13,7 @@ from inspect import currentframe, getframeinfo
 import argparse
 
 import numpy as np
-import scipy
+import scipy.stats
 import markdown
 
 from performance import Performances
