@@ -118,8 +118,7 @@ class SubqueriesLearning(RunSubqueries):
                 np.max(feature_vec)/np.min(feature_vec),
                 np.mean(feature_vec), np.std(feature_vec), 
                 np.sum(feature_vec), 
-                scipy.stats.mstats.gmean(feature_vec),
-                scipy.stats.mstats.hmean(feature_vec)]
+                scipy.stats.mstats.gmean(feature_vec)]
 
     def sort_subquery_id(self, subquery_id):
         return int(subquery_id.split('-')[0])+float(subquery_id.split('-')[1])/10.0
