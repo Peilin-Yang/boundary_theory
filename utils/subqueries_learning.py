@@ -89,12 +89,14 @@ class SubqueriesLearning(RunSubqueries):
                     if not os.path.exists(tmp_runfile_fn):
                         self.run_indri_runquery('#uw%d(%s)' % (w+1, subquery_str), tmp_runfile_fn, rule='method:tf1')
                     ww = 0.0
+                    print tmp_runfile_fn
                     with open(tmp_runfile_fn) as f:
                         for line in f:
                             row = line.split()
                             score = float(row[4])
                             ww += score
                     print terms_stats[terms[0]], terms_stats[terms[1]]
+                    raw_input()
                     mi = self.div0(self.div0(ww * 1.0 * cs.get_total_terms(), terms_stats[terms[0]]['total_occur']), terms_stats[terms[1]]['total_occur'])
                     mi = 0 if mi == 0 else np.log(mi)
                     if subquery_str not in mi_mapping:
