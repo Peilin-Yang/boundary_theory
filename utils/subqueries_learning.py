@@ -101,6 +101,9 @@ class SubqueriesLearning(RunSubqueries):
         all_mis = {}
         for subquery_id, subquery_str in subquery_mapping.items():
             terms = subquery_str.split()
+            if len(terms) < 2:
+                all_mis[subquery_id] = {w:self.get_all_sorts_features([0]) for w in withins}
+                continue
             all_mis[subquery_id] = {}
             tmp = {}
             for i in range(len(terms)-1): # including the query itself
