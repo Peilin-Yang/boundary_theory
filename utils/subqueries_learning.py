@@ -91,7 +91,7 @@ class SubqueriesLearning(RunSubqueries):
                             score = float(row[4])
                             ww += score
                     mi = ww / terms_stats[terms[0]]['total_occur'] if terms_stats[terms[0]]['total_occur'] != 0 else 0.0
-                    mi /= terms_stats[terms[1]]['total_occur'] if terms_stats[terms[1]]['total_occur'] != 0 else 0.0
+                    mi = mi / terms_stats[terms[1]]['total_occur'] if terms_stats[terms[1]]['total_occur'] != 0 else 0.0
                     mi *= cs.get_total_terms()
                     mi = 0 if mi == 0 else np.log(mi)
                     if subquery_str not in mi_mapping:
