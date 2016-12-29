@@ -100,7 +100,6 @@ class SubqueriesLearning(RunSubqueries):
         #print json.dumps(mi_mapping, indent=2)
         all_mis = {}
         for subquery_id, subquery_str in subquery_mapping.items():
-            print subquery_str
             terms = subquery_str.split()
             all_mis[subquery_id] = {}
             tmp = {}
