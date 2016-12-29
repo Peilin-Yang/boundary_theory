@@ -112,6 +112,7 @@ class SubqueriesLearning(RunSubqueries):
             raw_input()
 
     def get_all_sorts_features(self, feature_vec):
+        print feature_vec
         return [np.min(feature_vec), np.max(feature_vec), 
                 np.max(feature_vec)-np.min(feature_vec),
                 np.max(feature_vec)/np.min(feature_vec),
