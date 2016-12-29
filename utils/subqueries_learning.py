@@ -64,6 +64,18 @@ class SubqueriesLearning(RunSubqueries):
             self.gen_mutual_information(qid)
         elif feature_type == 2:
             self.gen_collection_tf(qid)
+        elif feature_type == 3:
+            self.gen_df(qid)
+        elif feature_type == 4:
+            self.gen_logidf(qid)
+        elif feature_type == 5:
+            self.gen_maxtf(qid)   
+        elif feature_type == 6:
+            self.gen_mintf(qid)
+        elif feature_type == 7:
+            self.gen_avgtf(qid)
+        elif feature_type == 8:
+            self.gen_vartf(qid)
 
     ############## for mutual information ##############
     def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
@@ -147,7 +159,6 @@ class SubqueriesLearning(RunSubqueries):
             terms = subquery_str.split()
             stats = []
             for term in terms:
-                print term
                 stats.append(cs.get_term_stats(term)[required_feature])
             features[subquery_id] = self.get_all_sorts_features(stats)
 
@@ -161,6 +172,16 @@ class SubqueriesLearning(RunSubqueries):
         self.gen_term_related_features(qid, 'CTF', 'total_occur')
     def gen_df(self, qid):
         self.gen_term_related_features(qid, 'DF', 'df')
+    def gen_logidf(self, qid):
+        self.gen_term_related_features(qid, 'LOGIDF', 'log(idf1)')
+    def gen_maxtf(self, qid):
+        self.gen_term_related_features(qid, 'MAXTF', 'maxTF')
+    def gen_mintf(self, qid):
+        self.gen_term_related_features(qid, 'MINTF', 'minTF')
+    def gen_avgtf(self, qid):
+        self.gen_term_related_features(qid, 'AVGTF', 'avgTF')
+    def gen_vartf(self, qid):
+        self.gen_term_related_features(qid, 'VARTF', 'varTF')
 
     def get_all_sorts_features(self, feature_vec):
         return [np.min(feature_vec), np.max(feature_vec), 
