@@ -60,9 +60,9 @@ class SubqueriesLearning(RunSubqueries):
 
     def div0(self, a, b):
         """ ignore / 0, div0( [-1, 0, 1], 0 ) -> [0, 0, 0] """
+        print a, b
         with np.errstate(divide='ignore', invalid='ignore'):
             c = np.true_divide( a, b )
-            print a, b, c
             if c != np.isfinite( c ):
                 c = 0  # -inf inf NaN
         return c
@@ -94,7 +94,6 @@ class SubqueriesLearning(RunSubqueries):
                             row = line.split()
                             score = float(row[4])
                             ww += score
-                    print ww, terms_stats
                     mi = self.div0(self.div0(ww * 1.0 * cs.get_total_terms(), terms_stats[terms[0]]['total_occur']), terms_stats[terms[1]]['total_occur'])
                     mi = 0 if mi == 0 else np.log(mi)
                     if subquery_str not in mi_mapping:
