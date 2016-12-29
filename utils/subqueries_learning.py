@@ -147,6 +147,7 @@ class SubqueriesLearning(RunSubqueries):
             terms = subquery_str.split()
             stats = []
             for term in terms:
+                print term
                 stats.append(cs.get_term_stats(term)[required_feature])
             features[subquery_id] = self.get_all_sorts_features(stats)
 
