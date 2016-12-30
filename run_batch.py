@@ -343,6 +343,17 @@ def evaluate_svm_model_atom(para_file):
             collection_name = row[1]
             SubqueriesLearning(collection_path, collection_name).evaluate_svm_model()
 
+def print_svm_model_feature_importance():
+    for q in g.query:
+        collection_path = os.path.join(_root, q['collection'])
+        collection_name = collection_name = q['collection_formal_name']
+        print '='*30
+        print collection_name
+        print '-'*30
+        with open(os.path.join(self.collection_path, 'subqueries', 'svm_rank', 'featurerank')) as f:
+            print f.readlines()[:10]
+
+
 ###################################################
 def run_all_baseline_results_atom(para_file):
     with open(para_file) as f:
@@ -527,6 +538,9 @@ if __name__ == '__main__':
     parser.add_argument('-66', '--evaluate_svm_model_atom', 
         nargs=1,
         help='svm rank atom')
+    parser.add_argument('-67', '--print_svm_model_feature_importance', 
+        action='store_true',
+        help='')
 
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
@@ -586,6 +600,8 @@ if __name__ == '__main__':
         gen_evaluate_svm_model_batch()
     if args.evaluate_svm_model_atom:
         evaluate_svm_model_atom(args.evaluate_svm_model_atom[0])
+    if args.print_svm_model_feature_importance:
+        print_svm_model_feature_importance()
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)
