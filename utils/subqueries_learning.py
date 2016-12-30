@@ -234,12 +234,7 @@ class SubqueriesLearning(RunSubqueries):
         return int(subquery_id.split('-')[0])+float(subquery_id.split('-')[1])/10.0
 
 
-    def output_collection_features(self):
-        """
-        output the collection level features to output
-        so that it can be fed to SVMRank
-        for each qid the training instances are the subqueries.
-        """
+    def get_all_features(self):
         all_features = {}
         for qid in os.listdir(self.subqueries_mapping_root):
             all_features[qid] = {}
@@ -259,4 +254,44 @@ class SubqueriesLearning(RunSubqueries):
                         all_features[qid][subquery_id].append(qid_features[subquery_id])
                     else:
                         all_features[qid][subquery_id].extend(qid_features[subquery_id])
-        print all_features
+        return all_features
+
+    def get_all_performances(self, model='okapi'):
+        results = {}
+        for fn in os.listdir(self.subqueries_performance_root):
+            fn_split = fn.split('_')
+            qid = fn_split[0]
+            subquery_id = fn_split[1]
+            model_para = fn_split[2]
+            with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
+                subquery_mapping = json.load(f)
+            try:
+                with open(os.path.join(self.subqueries_performance_root, fn)) as f:
+                    first_line = f.readline()
+                    ap = first_line.split()[-1]
+            except:
+                continue
+            if qid not in results:
+                results[qid] = {}
+            if model in model_para:
+                results[qid][subquery_id] = ap
+
+        return results
+
+    def output_collection_features(self):
+        """
+        output the collection level features to output
+        so that it can be fed to SVMRank
+        for each qid the training instances are the subqueries.
+        """
+        with open(self.subqueries_features_root, 'final', 'wb') as f: 
+            all_features = self.get_all_features()
+            all_performances = self.get_all_performances()
+            for qid in all_features:
+                for subquery_id in all_features[qid]:
+                    ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
+                    if qid in all_performances and subquery_id in all_performances[qid]:
+                        f.write('%f qid:%s %s\n' % (all_performances[qid][subquery_id], qid, 
+                            ' '.join(['%d:%s' % (i, str(all_features[qid][subquery_id][i])) for i in range(1, len(all_features[qid][subquery_id])+1)])))
+            
+
