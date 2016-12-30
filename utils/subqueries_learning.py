@@ -284,7 +284,7 @@ class SubqueriesLearning(RunSubqueries):
         so that it can be fed to SVMRank
         for each qid the training instances are the subqueries.
         """
-        with open(self.subqueries_features_root, 'final', 'wb') as f: 
+        with open(os.path.join(self.subqueries_features_root, 'final'), 'wb') as f: 
             all_features = self.get_all_features()
             all_performances = self.get_all_performances()
             for qid in all_features:
@@ -293,5 +293,5 @@ class SubqueriesLearning(RunSubqueries):
                     if qid in all_performances and subquery_id in all_performances[qid]:
                         f.write('%f qid:%s %s\n' % (all_performances[qid][subquery_id], qid, 
                             ' '.join(['%d:%s' % (i, str(all_features[qid][subquery_id][i])) for i in range(1, len(all_features[qid][subquery_id])+1)])))
-            
+
 
