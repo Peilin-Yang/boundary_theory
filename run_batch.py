@@ -331,7 +331,7 @@ def gen_evaluate_svm_model_batch():
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.extend((collection_path, collection_name))
+        all_paras.append((collection_path, collection_name))
     #print all_paras
     gen_batch_framework('evaluate_svm_rank_model', '66', all_paras)
 
