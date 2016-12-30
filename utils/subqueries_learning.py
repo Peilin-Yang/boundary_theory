@@ -14,7 +14,7 @@ import argparse
 
 import numpy as np
 import scipy.stats
-import sklearn.preprocessing.normalize
+from sklearn.preprocessing import normalize
 
 from performance import Performances
 from collection_stats import CollectionStats
