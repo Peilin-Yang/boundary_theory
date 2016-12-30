@@ -291,7 +291,7 @@ def gen_subqueries_features_atom(para_file):
             feature_type = row[3]
             SubqueriesLearning(collection_path, collection_name).gen_subqueries_features(qid, feature_type)
 
-def output_subqueries_features_batch(feature_type):
+def output_subqueries_features_batch():
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
