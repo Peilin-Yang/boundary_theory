@@ -371,7 +371,8 @@ class SubqueriesLearning(RunSubqueries):
             model = f.readlines()[-1]
         feature_weights = [(int(ele.split(':')[0]), ele.split(':')[1]) for ele in model.split()[1:-1]]
         feature_weights.sort(key=itemgetter(1, 0), reverse=True)
-        for ele in feature_weights:
-            print feature_mapping[ele[0]], ele[1]
+        with open(os.path.join(self.output_root, 'svm_rank', 'featurerank'), 'wb') as f:
+            for ele in feature_weights:
+                f.write('%s: %f\n' % (feature_mapping[ele[0]], ele[1]))
 
 
