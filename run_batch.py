@@ -350,7 +350,7 @@ def print_svm_model_feature_importance():
         print '='*30
         print collection_name
         print '-'*30
-        with open(os.path.join(self.collection_path, 'subqueries', 'svm_rank', 'featurerank')) as f:
+        with open(os.path.join(collection_path, 'subqueries', 'svm_rank', 'featurerank')) as f:
             print f.readlines()[:10]
 
 
