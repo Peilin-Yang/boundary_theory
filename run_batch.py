@@ -335,7 +335,7 @@ def gen_evaluate_svm_model_batch():
     #print all_paras
     gen_batch_framework('evaluate_svm_rank_model', '66', all_paras)
 
-def evaluate_svm_model(para_file):
+def evaluate_svm_model_atom(para_file):
     with open(para_file) as f:
         reader = csv.reader(f)
         for row in reader:
