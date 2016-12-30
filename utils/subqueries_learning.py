@@ -233,3 +233,29 @@ class SubqueriesLearning(RunSubqueries):
     def sort_subquery_id(self, subquery_id):
         return int(subquery_id.split('-')[0])+float(subquery_id.split('-')[1])/10.0
 
+
+    def output_collection_features(self):
+        """
+        output the collection level features to output
+        so that it can be fed to SVMRank
+        for each qid the training instances are the subqueries.
+        """
+        all_features = {}
+        for qid in os.listdir(self.subqueries_mapping_root):
+            all_features[qid] = {}
+            for feature_idx, feature_name in self.feature_mapping.items():
+                features_root = os.path.join(self.subqueries_features_root, feature_name)
+                with open(os.path.join(self.features_root, qid)) as f:
+                    qid_features = json.load(f)
+                for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
+                    all_features[qid][subquery_id] = []
+                    if feature_idx == 1: # mutual information
+                        withins = [1, 5, 10, 20, 50, 100]
+                        for w in withins:
+                            str_w = str(w)
+                            all_features[qid][subquery_id].extend(qid_features[subquery_id])
+                    elif feature_idx == 10: # query length
+                        all_features[qid][subquery_id].append(qid_features[subquery_id])
+                    else:
+                        all_features[qid][subquery_id].extend(qid_features[subquery_id])
+        print all_features
