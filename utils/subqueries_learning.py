@@ -237,7 +237,7 @@ class SubqueriesLearning(RunSubqueries):
         return int(subquery_id.split('-')[0])+float(subquery_id.split('-')[1])/10.0
 
 
-    def feature_mapping(self):
+    def get_feature_mapping(self):
         mapping = {}
         idx = 1
         features = ['min', 'max', 'max-min', 'max/min', 'mean', 'std', 'sum', 'gmean']
@@ -307,7 +307,7 @@ class SubqueriesLearning(RunSubqueries):
         so that it can be fed to SVMRank
         for each qid the training instances are the subqueries.
         """
-        feature_mapping = self.feature_mapping()
+        feature_mapping = self.get_feature_mapping()
         with open(os.path.join(self.subqueries_features_root, 'mapping'), 'wb') as f: 
             json.dump(feature_mapping, f, indent=2)
         with open(os.path.join(self.subqueries_features_root, 'final'), 'wb') as f: 
