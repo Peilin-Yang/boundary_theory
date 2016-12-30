@@ -290,7 +290,7 @@ class SubqueriesLearning(RunSubqueries):
             for qid in sorted(all_features):
                 for subquery_id in sorted(all_features[qid]):
                     all_features_matrix.append(all_features[qid][subquery_id])
-            normalize(all_features_matrix, norm='max', axis=0) # normalize each feature
+            normalized = normalize(all_features_matrix, norm='max', axis=0) # normalize each feature
             all_performances = self.get_all_performances()
             idx = 0
             for qid in sorted(all_features):
@@ -298,7 +298,7 @@ class SubqueriesLearning(RunSubqueries):
                     ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
                     if qid in all_performances and subquery_id in all_performances[qid]:
                         f.write('%s qid:%s %s # %s\n' % (str(all_performances[qid][subquery_id]), qid, 
-                            ' '.join(['%d:%f' % (i, all_features_matrix[idx][i-1]) for i in range(1, len(all_features_matrix[idx])+1)]), 
+                            ' '.join(['%d:%f' % (i, normalized[idx][i-1]) for i in range(1, len(normalized[idx])+1)]), 
                             subquery_id))
                     idx += 1
 
