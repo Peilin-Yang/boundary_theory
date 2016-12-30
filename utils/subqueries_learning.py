@@ -369,7 +369,7 @@ class SubqueriesLearning(RunSubqueries):
         feature_mapping = self.get_feature_mapping()
         with open(os.path.join(self.svm_model_root, all_models[0][0])) as f:
             model = f.readlines()[-1]
-        feature_weights = [(int(ele.split(':')[0]), ele.split(':')[1]) for ele in model.split()[1:-1]]
+        feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
         feature_weights.sort(key=itemgetter(1, 0), reverse=True)
         with open(os.path.join(self.output_root, 'svm_rank', 'featurerank'), 'wb') as f:
             for ele in feature_weights:
