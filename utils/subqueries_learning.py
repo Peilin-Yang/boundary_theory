@@ -245,7 +245,7 @@ class SubqueriesLearning(RunSubqueries):
             all_features[qid] = {}
             for feature_idx, feature_name in self.feature_mapping.items():
                 features_root = os.path.join(self.subqueries_features_root, feature_name)
-                with open(os.path.join(self.features_root, qid)) as f:
+                with open(os.path.join(features_root, qid)) as f:
                     qid_features = json.load(f)
                 for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
                     all_features[qid][subquery_id] = []
