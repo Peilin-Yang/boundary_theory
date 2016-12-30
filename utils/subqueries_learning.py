@@ -254,7 +254,7 @@ class SubqueriesLearning(RunSubqueries):
                         withins = [1, 5, 10, 20, 50, 100]
                         for w in withins:
                             str_w = str(w)
-                            all_features[qid][subquery_id].extend(qid_features[subquery_id])
+                            all_features[qid][subquery_id].extend(qid_features[subquery_id][str_w])
                     elif feature_idx >= 9: # query length
                         all_features[qid][subquery_id].append(qid_features[subquery_id])
                     else:
