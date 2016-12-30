@@ -298,7 +298,7 @@ def output_subqueries_features_batch():
         collection_path = os.path.join(_root, q['collection'])
         all_paras.append((collection_path, collection_name))
     #print all_paras
-    gen_batch_framework('subqueries_features', '62', all_paras)
+    gen_batch_framework('output_subqueries_features', '62', all_paras)
 
 def output_subqueries_features_atom(para_file):
     with open(para_file) as f:
