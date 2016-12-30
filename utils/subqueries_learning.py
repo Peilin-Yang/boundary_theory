@@ -14,7 +14,7 @@ import argparse
 
 import numpy as np
 import scipy.stats
-import markdown
+import sklearn.preprocessing.normalize
 
 from performance import Performances
 from collection_stats import CollectionStats
@@ -286,13 +286,17 @@ class SubqueriesLearning(RunSubqueries):
         """
         with open(os.path.join(self.subqueries_features_root, 'final'), 'wb') as f: 
             all_features = self.get_all_features()
+            all_features_matrix = [[all_features[qid][subquery_id] for subquery_id in all_features[qid]] for qid in sorted(all_features)]
+            normalize(all_features_matrix, axis=0) # normalize each feature
             all_performances = self.get_all_performances()
+            idx = 0
             for qid in sorted(all_features):
                 for subquery_id in all_features[qid]:
                     ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
                     if qid in all_performances and subquery_id in all_performances[qid]:
                         f.write('%s qid:%s %s # %s\n' % (str(all_performances[qid][subquery_id]), qid, 
-                            ' '.join(['%d:%s' % (i, str(all_features[qid][subquery_id][i-1])) for i in range(1, len(all_features[qid][subquery_id])+1)]), 
+                            ' '.join(['%d:%s' % (i, str(all_features_matrix[idx][i-1])) for i in range(1, len(all_features_matrix[idx])+1)]), 
                             subquery_id))
+                    idx += 1
 
 
