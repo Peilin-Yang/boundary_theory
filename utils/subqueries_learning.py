@@ -44,7 +44,8 @@ class SubqueriesLearning(RunSubqueries):
             6: 'MINTF',
             7: 'AVGTF',
             8: 'VARTF',
-            9: 'SCS'
+            9: 'SCS',
+            10: 'QLEN'
         }
 
     def batch_gen_subqueries_features_paras(self, feature_type=0):
@@ -79,6 +80,8 @@ class SubqueriesLearning(RunSubqueries):
             self.gen_vartf(qid)
         elif feature_type == 9:
             self.gen_simple_clarity(qid)
+        elif feature_type == 10:
+            self.gen_query_len(qid)
 
     ############## for mutual information ##############
     def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
@@ -202,6 +205,18 @@ class SubqueriesLearning(RunSubqueries):
                     continue
                 s += math.log((cs.get_total_terms()*1./q_len/ctf), 2) / q_len
             features[subquery_id] = s
+
+        outfn = os.path.join(features_root, qid)
+        with open(outfn, 'wb') as f:
+            json.dump(features, f, indent=2)
+
+    def gen_query_len(self, qid):
+        features_root = os.path.join(self.subqueries_features_root, 'QLEN')
+        with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
+            subquery_mapping = json.load(f)
+        features = {}
+        for subquery_id, subquery_str in subquery_mapping.items():
+            features[subquery_id] = len(subquery_str.split())
 
         outfn = os.path.join(features_root, qid)
         with open(outfn, 'wb') as f:
