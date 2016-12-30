@@ -337,7 +337,7 @@ class SubqueriesLearning(RunSubqueries):
         paras = []
         for c in range(-3, 5):
             if not os.path.exists(os.path.join(model_root, str(10**c))):
-                paras.append(self.corpus_path, self.collection_name, c)
+                paras.append((self.corpus_path, self.collection_name, c))
         return paras
 
     def svm_rank_wrapper(self, c):
