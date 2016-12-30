@@ -197,7 +197,10 @@ class SubqueriesLearning(RunSubqueries):
             q_len = len(terms)
             s = 0.0
             for term in terms:
-                s += math.log((cs.get_total_terms()*1./q_len/cs.get_term_stats(term)['total_occur']), 2) / q_len
+                ctf = cs.get_term_stats(term)['total_occur']
+                if ctf == 0:
+                    continue
+                s += math.log((cs.get_total_terms()*1./q_len/ctf), 2) / q_len
             features[subquery_id] = s
 
         outfn = os.path.join(features_root, qid)
