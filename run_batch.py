@@ -499,7 +499,7 @@ if __name__ == '__main__':
         nargs=1,
         help='generate subqueries features')
     parser.add_argument('-63', '--gen_svm_rank_batch', 
-        nargs=0,
+        action='store_true',
         help='generate the batch runs for svm rank')
     parser.add_argument('-64', '--svm_rank_atom', 
         nargs=1,
