@@ -323,7 +323,7 @@ def svm_rank_atom(para_file):
         for row in reader:
             collection_path = row[0]
             collection_name = row[1]
-            c = row[2]
+            c = int(row[2])
             SubqueriesLearning(collection_path, collection_name).svm_rank_wrapper(c)
 
 ###################################################
