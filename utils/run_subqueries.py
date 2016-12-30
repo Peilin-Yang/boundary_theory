@@ -119,7 +119,7 @@ class RunSubqueries(object):
 
     def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
         with open(runfile_ofn, 'w') as f:
-            command = ['IndriRunQuery_EX -index=%s -trecFormat=True -count=1000 -docDetails=100 -query.number=%s -query.text="%s" -rule=%s' 
+            command = ['IndriRunQuery_EX -index=%s -trecFormat=True -count=1000 -query.number=%s -query.text="%s" -rule=%s' 
                 % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)]
             p = Popen(command, shell=True, stdout=f, stderr=PIPE)
             returncode = p.wait()
