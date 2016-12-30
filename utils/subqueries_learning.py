@@ -343,7 +343,6 @@ class SubqueriesLearning(RunSubqueries):
     def svm_rank_wrapper(self, c):
         command = ['svm_rank_learn', '-c', str(10**c), 
             os.path.join(self.subqueries_features_root, 'final'), os.path.join(self.svm_model_root, str(10**c))]
-        print ' '.join(command)
         subprocess.call(command)
 
 
