@@ -43,7 +43,8 @@ class SubqueriesLearning(RunSubqueries):
             5: 'MAXTF',
             6: 'MINTF',
             7: 'AVGTF',
-            8: 'VARTF'
+            8: 'VARTF',
+            9: 'SCS'
         }
 
     def batch_gen_subqueries_features_paras(self, feature_type=0):
@@ -76,6 +77,8 @@ class SubqueriesLearning(RunSubqueries):
             self.gen_avgtf(qid)
         elif feature_type == 8:
             self.gen_vartf(qid)
+        elif feature_type == 9:
+            self.gen_simple_clarity(qid)
 
     ############## for mutual information ##############
     def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
@@ -182,6 +185,24 @@ class SubqueriesLearning(RunSubqueries):
         self.gen_term_related_features(qid, 'AVGTF', 'avgTF')
     def gen_vartf(self, qid):
         self.gen_term_related_features(qid, 'VARTF', 'varTF')
+
+    def gen_simple_clarity(self, qid):
+        features_root = os.path.join(self.subqueries_features_root, 'SCS')
+        cs = CollectionStats(self.corpus_path)
+        with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
+            subquery_mapping = json.load(f)
+        features = {}
+        for subquery_id, subquery_str in subquery_mapping.items():
+            terms = subquery_str.split()
+            q_len = len(terms)
+            s = 0.0
+            for term in terms:
+                s += math.log((cs.get_total_terms()*1./q_len/cs.get_term_stats(term)['total_occur']), 2) / q_len
+            features[subquery_id] = s
+
+        outfn = os.path.join(features_root, qid)
+        with open(outfn, 'wb') as f:
+            json.dump(features, f, indent=2)
 
     def get_all_sorts_features(self, feature_vec):
         return [np.min(feature_vec), np.max(feature_vec), 
