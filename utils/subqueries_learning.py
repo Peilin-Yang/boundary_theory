@@ -248,7 +248,8 @@ class SubqueriesLearning(RunSubqueries):
                 with open(os.path.join(features_root, qid)) as f:
                     qid_features = json.load(f)
                 for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
-                    all_features[qid][subquery_id] = []
+                    if subquery_id not in all_features[qid]:
+                        all_features[qid][subquery_id] = []
                     if feature_idx == 1: # mutual information
                         withins = [1, 5, 10, 20, 50, 100]
                         for w in withins:
