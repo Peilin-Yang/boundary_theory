@@ -308,6 +308,24 @@ def output_subqueries_features_atom(para_file):
             collection_name = row[1]
             SubqueriesLearning(collection_path, collection_name).output_collection_features()
 
+def gen_svm_rank_batch():
+    all_paras = []
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.extend(SubqueriesLearning(collection_path, collection_name).batch_gen_svm_rank_paras())
+    #print all_paras
+    gen_batch_framework('svm_rank_train', '64', all_paras)
+
+def svm_rank_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            collection_name = row[1]
+            c = row[2]
+            SubqueriesLearning(collection_path, collection_name).svm_rank_wrapper(c)
+
 ###################################################
 def run_all_baseline_results_atom(para_file):
     with open(para_file) as f:
@@ -480,6 +498,12 @@ if __name__ == '__main__':
     parser.add_argument('-62', '--output_subqueries_features_atom', 
         nargs=1,
         help='generate subqueries features')
+    parser.add_argument('-63', '--gen_svm_rank_batch', 
+        nargs=0,
+        help='generate the batch runs for svm rank')
+    parser.add_argument('-64', '--svm_rank_atom', 
+        nargs=1,
+        help='svm rank atom')
 
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
@@ -531,6 +555,10 @@ if __name__ == '__main__':
         output_subqueries_features_batch()
     if args.output_subqueries_features_atom:
         output_subqueries_features_atom(args.output_subqueries_features_atom[0])
+    if args.gen_svm_rank_batch:
+        gen_svm_rank_batch()
+    if args.svm_rank_atom:
+        svm_rank_atom(args.svm_rank_atom[0])
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)

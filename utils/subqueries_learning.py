@@ -48,6 +48,10 @@ class SubqueriesLearning(RunSubqueries):
             10: 'QLEN'
         }
 
+        self.svm_root = os.path.join(self.output_root, 'svm_rank')
+        if not os.path.exists(self.svm_root):
+            os.makedirs(self.svm_root)
+
     def batch_gen_subqueries_features_paras(self, feature_type=0):
         all_paras = []
         for qid in os.listdir(self.subqueries_mapping_root):
@@ -327,5 +331,17 @@ class SubqueriesLearning(RunSubqueries):
                             ' '.join(['%d:%f' % (i, normalized[idx][i-1]) for i in range(1, len(normalized[idx])+1)]), 
                             subquery_id))
                     idx += 1
+
+    def batch_gen_svm_rank_paras(self):
+        model_root = os.path.join(self.svm_root, 'models')
+        paras = []
+        for c in range(-3, 5):
+            if not os.path.exists(os.path.join(model_root, str(10**c))):
+                paras.append(self.corpus_path, self.collection_name, c)
+        return paras
+
+    def svm_rank_wrapper(self, c):
+        model_root = os.path.join(self.svm_root, 'models')
+        subprocess.call(['svm_rank_learn', '-c', c, os.path.join(model_root, str(10**c))])
 
 
