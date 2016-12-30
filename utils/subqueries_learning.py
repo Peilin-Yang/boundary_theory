@@ -361,7 +361,7 @@ class SubqueriesLearning(RunSubqueries):
             if returncode != 0:
                 raise NameError("Run Query Error: %s" % (command) )
             print out
-            err_rate = float(out.split('\n')[-1].split(':')[1])
+            err_rate = float(out.split('\n')[-2].split(':')[1])
             all_models.append(fn, err_rate)
 
         all_models.sort(key=itemgetter(1))
