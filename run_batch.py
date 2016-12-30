@@ -326,6 +326,23 @@ def svm_rank_atom(para_file):
             c = int(row[2])
             SubqueriesLearning(collection_path, collection_name).svm_rank_wrapper(c)
 
+def gen_evaluate_svm_model_batch():
+    all_paras = []
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.extend((collection_path, collection_name))
+    #print all_paras
+    gen_batch_framework('evaluate_svm_rank_model', '66', all_paras)
+
+def evaluate_svm_model(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            collection_name = row[1]
+            SubqueriesLearning(collection_path, collection_name).evaluate_svm_model()
+
 ###################################################
 def run_all_baseline_results_atom(para_file):
     with open(para_file) as f:
@@ -504,6 +521,12 @@ if __name__ == '__main__':
     parser.add_argument('-64', '--svm_rank_atom', 
         nargs=1,
         help='svm rank atom')
+    parser.add_argument('-65', '--gen_evaluate_svm_model_batch', 
+        action='store_true',
+        help='generate the batch runs for svm rank')
+    parser.add_argument('-66', '--evaluate_svm_model_atom', 
+        nargs=1,
+        help='svm rank atom')
 
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
@@ -559,6 +582,10 @@ if __name__ == '__main__':
         gen_svm_rank_batch()
     if args.svm_rank_atom:
         svm_rank_atom(args.svm_rank_atom[0])
+    if args.gen_evaluate_svm_model_batch:
+        gen_evaluate_svm_model_batch()
+    if args.evaluate_svm_model_atom:
+        evaluate_svm_model_atom(args.evaluate_svm_model_atom[0])
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)

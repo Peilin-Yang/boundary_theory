@@ -52,6 +52,9 @@ class SubqueriesLearning(RunSubqueries):
         self.svm_model_root = os.path.join(self.output_root, 'svm_rank', 'models')
         if not os.path.exists(self.svm_model_root):
             os.makedirs(self.svm_model_root)
+        self.svm_predict_root = os.path.join(self.output_root, 'svm_rank', 'predict')
+        if not os.path.exists(self.svm_predict_root):
+            os.makedirs(self.svm_predict_root)
 
     def batch_gen_subqueries_features_paras(self, feature_type=0):
         all_paras = []
@@ -344,5 +347,23 @@ class SubqueriesLearning(RunSubqueries):
         command = ['svm_rank_learn', '-c', str(10**c), 
             os.path.join(self.subqueries_features_root, 'final'), os.path.join(self.svm_model_root, str(10**c))]
         subprocess.call(command)
+
+    def evaluate_svm_model(self):
+        all_models = []
+        for fn in os.listdir(self.svm_model_root):
+            command = ['svm_rank_classify %s %s %s' 
+                % (os.path.join(self.subqueries_features_root, 'final'), 
+                    os.path.join(self.svm_model_root, fn), 
+                    os.path.join(self.svm_predict_root, fn))]
+            p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+            returncode = p.wait()
+            out, error = p.communicate()
+            if returncode != 0:
+                raise NameError("Run Query Error: %s" % (command) )
+            err_rate = float(out.split('\n')[-1].split(':')[1])
+            all_models.append(fn, err_rate)
+
+        all_models.sort(key=itemgetter(1))
+        print all_models
 
 
