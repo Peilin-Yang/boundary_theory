@@ -287,11 +287,12 @@ class SubqueriesLearning(RunSubqueries):
         with open(os.path.join(self.subqueries_features_root, 'final'), 'wb') as f: 
             all_features = self.get_all_features()
             all_performances = self.get_all_performances()
-            for qid in all_features:
+            for qid in sorted(all_features):
                 for subquery_id in all_features[qid]:
                     ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
                     if qid in all_performances and subquery_id in all_performances[qid]:
-                        f.write('%s qid:%s %s\n' % (str(all_performances[qid][subquery_id]), qid, 
-                            ' '.join(['%d:%s' % (i, str(all_features[qid][subquery_id][i-1])) for i in range(1, len(all_features[qid][subquery_id])+1)])))
+                        f.write('%s qid:%s %s # %s\n' % (str(all_performances[qid][subquery_id]), qid, 
+                            ' '.join(['%d:%s' % (i, str(all_features[qid][subquery_id][i-1])) for i in range(1, len(all_features[qid][subquery_id])+1)]), 
+                            subquery_id))
 
 
