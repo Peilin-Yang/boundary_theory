@@ -137,8 +137,10 @@ class Query(object):
                 lens[l] = 0
             lens[l] += 1
 
+        print '| | |'
+        print '|---|---|---|'
         for k in sorted(lens):
-            print k, lens[k], round(lens[k]*100.0/len(queries), 2)
+            print '| %d | %d | %.1f% |' % (k, lens[k], lens[k]*100.0/len(queries))
 
 
     def get_queries_lengths(self, part='title'):
