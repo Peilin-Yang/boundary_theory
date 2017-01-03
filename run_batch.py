@@ -345,15 +345,25 @@ def evaluate_svm_model_atom(para_file):
             collection_name = row[1]
             SubqueriesLearning(collection_path, collection_name).evaluate_svm_model()
 
-def print_svm_model_feature_importance():
+def print_svm_model_feature_importance(top=10):
     for q in g.query:
         collection_path = os.path.join(_root, q['collection'])
         collection_name = collection_name = q['collection_formal_name']
-        print '='*30
-        print collection_name
-        print '-'*30
-        with open(os.path.join(collection_path, 'subqueries', 'svm_rank', 'featurerank')) as f:
-            print ''.join(f.readlines()[:10])
+        res_folder = os.path.join(collection_path, 'subqueries', 'svm_rank', 'featurerank')
+        for fn in os.listdir(res_folder):
+            print '###'+collection_name
+            print '| top features |'
+            print '|-----|'
+            with open(os.path.join(res_folder, fn)) as f:
+                idx = 0
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        print line.split(':')[0]
+                    idx += 1
+                    if idx >= top:
+                        break
+        print '\n\n'
 
 
 ###################################################
@@ -541,8 +551,8 @@ if __name__ == '__main__':
         nargs=1,
         help='svm rank atom')
     parser.add_argument('-67', '--print_svm_model_feature_importance', 
-        action='store_true',
-        help='')
+        nargs=1,
+        help='print the top features of svm model. arg: N (top N will be printed)')
 
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
