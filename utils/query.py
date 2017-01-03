@@ -137,7 +137,8 @@ class Query(object):
                 lens[l] = 0
             lens[l] += 1
 
-        print '| | |'
+        print '###'+os.path.basename(self.corpus_path)
+        print '| qlen | cnt | percent |'
         print '|---|---|---|'
         for k in sorted(lens):
             print '| %d | %d | %.1f%% |' % (k, lens[k], lens[k]*100.0/len(queries))
