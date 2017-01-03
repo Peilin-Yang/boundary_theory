@@ -365,10 +365,12 @@ class SubqueriesLearning(RunSubqueries):
         subprocess.call(command)
 
     def evaluate_svm_model(self):
-        all_models = []
+        all_models = {}
         for fn in os.listdir(self.svm_model_root):
+            query_length = fn.split('_')[0]
+            c = fn.split('_')[1]
             command = ['svm_rank_classify %s %s %s' 
-                % (os.path.join(self.subqueries_features_root, 'final'), 
+                % (os.path.join(self.subqueries_features_root, 'final', query_length), 
                     os.path.join(self.svm_model_root, fn), 
                     os.path.join(self.svm_predict_root, fn))]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
@@ -376,18 +378,27 @@ class SubqueriesLearning(RunSubqueries):
             out, error = p.communicate()
             if returncode != 0:
                 raise NameError("Run Query Error: %s" % (command) )
+            query_length = int(query_length)
             err_rate = float(out.split('\n')[-2].split(':')[1])
-            all_models.append((fn, err_rate))
+            if query_length not in all_models:
+                all_models[query_length] = []
+            all_models[query_length].append((fn, err_rate))
 
-        all_models.sort(key=itemgetter(1))
+        for query_length in all_models:
+            all_models[query_length].sort(key=itemgetter(1))
 
         feature_mapping = self.get_feature_mapping()
-        with open(os.path.join(self.svm_model_root, all_models[0][0])) as f:
-            model = f.readlines()[-1]
-        feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
-        feature_weights.sort(key=itemgetter(1, 0), reverse=True)
-        with open(os.path.join(self.output_root, 'svm_rank', 'featurerank'), 'wb') as f:
-            for ele in feature_weights:
-                f.write('%s: %f\n' % (feature_mapping[ele[0]], ele[1]))
+        for query_length in sorted(all_models):
+            model_fn = all_models[query_length][0][0]
+            with open(os.path.join(self.svm_model_root, model_fn)) as f:
+                model = f.readlines()[-1]
+            feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
+            feature_weights.sort(key=itemgetter(1, 0), reverse=True)
+            output_root = os.path.join(self.output_root, 'svm_rank', 'featurerank')
+            if not os.path.exists(output_root):
+                os.makedirs(output_root)
+            with open(os.path.join(output_root, str(query_length)), 'wb') as f:
+                for ele in feature_weights:
+                    f.write('%s: %f\n' % (feature_mapping[ele[0]], ele[1]))
 
 
