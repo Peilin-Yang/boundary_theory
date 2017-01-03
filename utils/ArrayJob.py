@@ -6,9 +6,6 @@ qs_file_content = Template("""
 #$$ -t 1-$nodes_range
 #$$ -l m_mem_free=$memory,h_rt=4:00:00
 
-vpkg_require python-pip
-source ~/ENV/bin/activate
-
 SEEDFILE=$seedfile
 SEED=$$(awk "NR==$$SGE_TASK_ID" $$SEEDFILE)
 
@@ -19,9 +16,6 @@ qs_file_content_no_para = Template("""
 #!/bin/sh  
 #$$ -t 1-$nodes_range
 #$$ -l m_mem_free=$memory
-
-vpkg_require python-pip
-source ~/ENV/bin/activate
 
 $s
 """)
