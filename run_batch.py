@@ -291,12 +291,12 @@ def gen_subqueries_features_atom(para_file):
             feature_type = row[3]
             SubqueriesLearning(collection_path, collection_name).gen_subqueries_features(qid, feature_type)
 
-def output_subqueries_features_batch():
+def output_subqueries_features_batch(query_length):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.append((collection_path, collection_name))
+        all_paras.append((collection_path, collection_name, query_length))
     #print all_paras
     gen_batch_framework('output_subqueries_features', '62', all_paras)
 
@@ -306,7 +306,8 @@ def output_subqueries_features_atom(para_file):
         for row in reader:
             collection_path = row[0]
             collection_name = row[1]
-            SubqueriesLearning(collection_path, collection_name).output_collection_features()
+            query_length = int(row[2])
+            SubqueriesLearning(collection_path, collection_name).output_collection_features(query_length)
 
 def gen_svm_rank_batch():
     all_paras = []
@@ -521,8 +522,8 @@ if __name__ == '__main__':
         nargs=1,
         help='generate subqueries features')
     parser.add_argument('-61', '--output_subqueries_features_batch', 
-        action='store_true',
-        help='generate subqueries features paras.')
+        nargs=1,
+        help='generate subqueries features paras. arg: query length (0 for all queries)')
     parser.add_argument('-62', '--output_subqueries_features_atom', 
         nargs=1,
         help='generate subqueries features')
@@ -589,7 +590,7 @@ if __name__ == '__main__':
     if args.gen_subqueries_features_atom:
         gen_subqueries_features_atom(args.gen_subqueries_features_atom[0])
     if args.output_subqueries_features_batch:
-        output_subqueries_features_batch()
+        output_subqueries_features_batch(args.output_subqueries_features_batch[0])
     if args.output_subqueries_features_atom:
         output_subqueries_features_atom(args.output_subqueries_features_atom[0])
     if args.gen_svm_rank_batch:
