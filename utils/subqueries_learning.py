@@ -352,14 +352,16 @@ class SubqueriesLearning(RunSubqueries):
 
     def batch_gen_svm_rank_paras(self):
         paras = []
-        for c in range(-3, 5):
-            if not os.path.exists(os.path.join(self.svm_model_root, str(10**c))):
-                paras.append((self.corpus_path, self.collection_name, c))
+        for fn in os.listdir(os.path.join(self.subqueries_features_root, 'final')):
+            for c in range(-3, 5):
+                if not os.path.exists(os.path.join(self.svm_model_root, fn+'_'+str(10**c))):
+                    paras.append((self.corpus_path, self.collection_name, fn, c))
         return paras
 
-    def svm_rank_wrapper(self, c):
+    def svm_rank_wrapper(self, query_length, c):
         command = ['svm_rank_learn', '-c', str(10**c), 
-            os.path.join(self.subqueries_features_root, 'final'), os.path.join(self.svm_model_root, str(10**c))]
+            os.path.join(self.subqueries_features_root, 'final', query_length), 
+            os.path.join(self.svm_model_root, query_length+'_'+str(10**c))]
         subprocess.call(command)
 
     def evaluate_svm_model(self):
