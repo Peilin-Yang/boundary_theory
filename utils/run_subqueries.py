@@ -227,6 +227,8 @@ class RunSubqueries(object):
                     if model_para not in optimals:
                         optimals[model_para] = {}
                     subquery_len = int(subquery_id.split('-')[0])
+                    if qid not in optimals[model_para]:
+                        optimals[model_para][qid] = []
                     optimals[model_para][qid].append((subquery_len, ap))
         for model_para in optimals:
             for qid in optimals[model_para]:
