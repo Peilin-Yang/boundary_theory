@@ -399,7 +399,7 @@ class SubqueriesLearning(RunSubqueries):
                 query_length = int(fn.split('_')[0])
                 if query_length not in all_models:
                     all_models[query_length] = []
-                all_models[query_length].append(fn, error_rates[fn])
+                all_models[query_length].append((fn, error_rates[fn]))
 
         feature_mapping = self.get_feature_mapping()
         svm_predict_optimal_subquery_len_dist = {}
