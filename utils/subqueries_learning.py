@@ -417,7 +417,7 @@ class SubqueriesLearning(RunSubqueries):
             optimal_svm_predict = 0.0
             performance_using_all_terms = 0.0
             fn = all_models[query_length][0][0]
-            feature_fn = os.path.join(self.subqueries_features_root, 'final', query_length)
+            feature_fn = os.path.join(self.subqueries_features_root, 'final', str(query_length))
             predict_fn = os.path.join(self.svm_predict_root, fn)
             with open(predict_fn) as f:
                 predict_res = [float(line.strip()) for line in f.readlines]
