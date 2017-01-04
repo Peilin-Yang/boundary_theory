@@ -217,7 +217,6 @@ class RunSubqueries(object):
         queries = {ele['num']:ele['title'] for ele in queries}
         model_paras = set()
         for qid in os.listdir(self.collected_results_root):
-            print os.path.join(self.collected_results_root, qid)
             with open(os.path.join(self.collected_results_root, qid)) as f:
                 csvr = csv.reader(f)
                 for row in csvr:
@@ -237,6 +236,7 @@ class RunSubqueries(object):
                 optimals[model_para][qid].sort(key=itemgetter(1), reverse=True)
 
         res = {}
+        print queries
         for qid, query in queries:
             query_len = len(query.split())
             for model_para in model_paras:
