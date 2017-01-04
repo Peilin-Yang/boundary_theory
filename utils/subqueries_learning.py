@@ -464,7 +464,7 @@ class SubqueriesLearning(RunSubqueries):
                 f.write('|--------|--------|--------|\n')
                 f.write('| %.4f | %.4f | %.4f |\n' % (performance_using_all_terms, optimal_ground_truth, optimal_svm_predict))
 
-                f.write('#### svm predict subquery length distribution\n')
+                f.write('\n#### svm predict subquery length distribution\n')
                 f.write('| | | | | |\n')
                 f.write('|--------|--------|--------|--------|--------|\n')
                 for query_len in svm_predict_optimal_subquery_len_dist:
