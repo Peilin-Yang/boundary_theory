@@ -364,12 +364,12 @@ def print_svm_model_feature_importance(top=10):
                     idx += 1
                     if idx >= top:
                         break
-    print '##Top Features'
+    print '### Top Features'
     print '| Query Len | 2 | 3 | 4 |'
     print '|--------|--------|--------|--------|'
     for collection_name in all_top_features:
         for idx in range(top):
-            print '| %s | %s | %s | %s |' % (collection_name if idx == 0 else '', 
+            print '| **%s** | %s | %s | %s |' % (collection_name if idx == 0 else '', 
                 all_top_features[collection_name][2][idx],
                 all_top_features[collection_name][3][idx],
                 all_top_features[collection_name][4][idx])
