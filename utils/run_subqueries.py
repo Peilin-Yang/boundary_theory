@@ -243,7 +243,7 @@ class RunSubqueries(object):
                     res[model_para] = {}
                 if query_len not in res[model_para]:
                     res[model_para][query_len] = {}
-                print optimals[model_para][qid]
+                print qid, optimals[model_para]
                 optimal_subquery_len = optimals[model_para][qid][0][0]
                 if optimal_subquery_len not in res[model_para][query_len]:
                     res[model_para][query_len][optimal_subquery_len] = 0
