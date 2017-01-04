@@ -250,7 +250,16 @@ class RunSubqueries(object):
                     res[model_para][query_len][optimal_subquery_len] = 0
                 res[model_para][query_len][optimal_subquery_len] += 1
 
-        print json.dumps(res, indent=2)
+        with open(os.path.join(self.final_output_root, self.collection_name+'-optimal_subquery_dist.md'), 'wb') as f:
+            for model_para in res:
+                f.write('### %s\n' % (model_para))
+                f.write('| | | | | |\n')
+                f.write('|--------|--------|--------|--------|--------|\n')
+                for query_len in res[model_para]:
+                    f.write('| %d |' % (query_len))
+                    for optimal_subquery_len in res[model_para][query_len]:
+                        f.write(' %d:%d |' % (optimal_subquery_len, res[model_para][query_len][optimal_subquery_len]))
+                    f.write('\n')
 
 
     def output_results(self, query_length=0):
