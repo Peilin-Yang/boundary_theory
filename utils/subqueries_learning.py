@@ -420,7 +420,7 @@ class SubqueriesLearning(RunSubqueries):
             feature_fn = os.path.join(self.subqueries_features_root, 'final', str(query_length))
             predict_fn = os.path.join(self.svm_predict_root, fn)
             with open(predict_fn) as f:
-                predict_res = [float(line.strip()) for line in f.readlines]
+                predict_res = [float(line.strip()) for line in f.readlines()]
             with open(feature_fn) as f:
                 idx = 0
                 for line in f:
