@@ -224,7 +224,7 @@ class RunSubqueries(object):
                     subquery = row[1]
                     model_para = row[2]
                     model_paras.add(model_para)
-                    ap = row[3]
+                    ap = float(row[3])
                     if model_para not in optimals:
                         optimals[model_para] = {}
                     subquery_len = int(subquery_id.split('-')[0])
@@ -236,14 +236,13 @@ class RunSubqueries(object):
                 optimals[model_para][qid].sort(key=itemgetter(1), reverse=True)
 
         res = {}
-        for qid, query in queries:
+        for qid, query in queries.items():
             query_len = len(query.split())
             for model_para in model_paras:
                 if model_para not in res:
                     res[model_para] = {}
                 if query_len not in res[model_para]:
                     res[model_para][query_len] = {}
-                print qid, optimals[model_para]
                 optimal_subquery_len = optimals[model_para][qid][0][0]
                 if optimal_subquery_len not in res[model_para][query_len]:
                     res[model_para][query_len][optimal_subquery_len] = 0
