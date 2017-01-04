@@ -271,6 +271,12 @@ def output_subqueries_results(query_length):
         collection_path = os.path.join(_root, q['collection'])
         RunSubqueries(collection_path, collection_name).output_results(int(query_length))
 
+def output_optimal_dist():
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        RunSubqueries(collection_path, collection_name).output_optimal_dist()
+
 
 def gen_subqueries_features_batch(feature_type):
     all_paras = []
@@ -533,6 +539,9 @@ if __name__ == '__main__':
     parser.add_argument('-45', '--output_subqueries_results', 
         nargs=1,
         help='arg: query_length')
+    parser.add_argument('-46', '--output_optimal_dist', 
+        action='store_true',
+        help='output the optimal performances distribution')
 
 
     parser.add_argument('-51', '--gen_subqueries_features_batch', 
@@ -604,6 +613,8 @@ if __name__ == '__main__':
         collect_subqueries_results_atom(args.collect_subqueries_results_atom[0])
     if args.output_subqueries_results:
         output_subqueries_results(args.output_subqueries_results[0])
+    if args.output_optimal_dist:
+        output_optimal_dist()
 
     if args.gen_subqueries_features_batch:
         gen_subqueries_features_batch(args.gen_subqueries_features_batch[0])

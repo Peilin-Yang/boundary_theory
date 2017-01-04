@@ -210,6 +210,44 @@ class RunSubqueries(object):
         subquery_id_split = k.split('_')[0].split('-')
         return int(subquery_id_split[0])+float(subquery_id_split[1])/10.0
 
+    def output_optimal_dist(self):
+        optimals = {}
+        queries = self.get_queries()
+        queries = {ele['num']:ele['title'] for ele in queries}
+        model_paras = set()
+        for qid in os.listdir(self.collected_results_root):
+            with open(os.path.join(self.collected_results_root, qid)) as f:
+                csvr = csv.reader(f)
+                for row in csvr:
+                    subquery_id = row[0]
+                    subquery = row[1]
+                    model_para = row[2]
+                    model_paras.add(model_para)
+                    ap = row[3]
+                    if model_para not in optimals:
+                        optimals[model_para] = {}
+                    subquery_len = int(subquery_id.split('-')[0])
+                    optimals[model_para][qid].append((subquery_len, ap))
+        for model_para in optimals:
+            for qid in optimals[model_para]:
+                optimals[model_para][qid].sort(key=itemgetter(1), reverse=True)
+
+        res = {}
+        for qid, query in queries:
+            query_len = len(query.split())
+            for model_para in model_paras:
+                if model_para not in res:
+                    res[model_para] = {}
+                if query_len not in res[model_para]:
+                    res[model_para][query_len] = {}
+                optimal_subquery_len = optimals[model_para][qid][0][0]
+                if optimal_subquery_len not in res[model_para][query_len]:
+                    res[model_para][query_len][optimal_subquery_len] = 0
+                res[model_para][query_len][optimal_subquery_len] += 1
+
+        print json.dumps(res, indent=2)
+
+
     def output_results(self, query_length=0):
         if query_length == 0: #all queries
             queries = self.get_queries()
