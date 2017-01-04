@@ -346,24 +346,33 @@ def evaluate_svm_model_atom(para_file):
             SubqueriesLearning(collection_path, collection_name).evaluate_svm_model()
 
 def print_svm_model_feature_importance(top=10):
+    all_top_features = {}
     for q in g.query:
         collection_path = os.path.join(_root, q['collection'])
         collection_name = collection_name = q['collection_formal_name']
+        all_top_features[collection_name] = {}
         res_folder = os.path.join(collection_path, 'subqueries', 'svm_rank', 'featurerank')
         for fn in os.listdir(res_folder):
-            print '###'+collection_name
-            print '| top features |'
-            print '|-----|'
+            query_length = int(fn)
+            all_top_features[collection_name][query_length] = []
             with open(os.path.join(res_folder, fn)) as f:
                 idx = 0
                 for line in f:
                     line = line.strip()
                     if line:
-                        print line.split(':')[0]
+                        all_top_features[collection_name][query_length].append(line.split(':')[0])
                     idx += 1
                     if idx >= top:
                         break
-        print '\n\n'
+    print '##Top Features'
+    print '| Query Len | 2 | 3 | 4 |'
+    print '|--------|--------|--------|--------|'
+    for collection_name in all_top_features:
+        for idx in range(top):
+            print '| %s | %s | %s | %s |' % (collection_name if idx == 0 else '', 
+                all_top_features[collection_name][2][idx],
+                all_top_features[collection_name][3][idx],
+                all_top_features[collection_name][4][idx])
 
 
 ###################################################
