@@ -366,9 +366,11 @@ class SubqueriesLearning(RunSubqueries):
 
     def evaluate_svm_model(self):
         all_models = {}
+        error_rate_fn = os.path.join(self.output_root, 'svm_rank', 'err_rate')
+        error_rates = {}
         for fn in os.listdir(self.svm_model_root):
             predict_output_fn = os.path.join(self.svm_predict_root, fn)
-            if os.path.exists(predict_output_fn):
+            if os.path.exists(predict_output_fn) and os.path.exists(error_rate_fn):
                 continue
             query_length = fn.split('_')[0]
             c = fn.split('_')[1]
@@ -381,16 +383,23 @@ class SubqueriesLearning(RunSubqueries):
             out, error = p.communicate()
             if returncode != 0:
                 raise NameError("Run Query Error: %s" % (command) )
-
-        for fn in os.listdir(self.svm_model_root):
-            query_length = fn.split('_')[0]
-            c = fn.split('_')[1]
             query_length = int(query_length)
             err_rate = float(out.split('\n')[-2].split(':')[1])
+            error_rates[fn] = err_rate
             if query_length not in all_models:
                 all_models[query_length] = []
             all_models[query_length].append((fn, err_rate))
-
+        if error_rates:
+            with open(error_rate_fn, 'wb') as f:
+                json.dump(error_rates, f, indent=2)
+        if not all_models:
+            with open(error_rate_fn) as f:
+                error_rates = json.load(f)
+            for fn in error_rates:
+                query_length = int(fn.split('_')[0])
+                if query_length not in all_models:
+                    all_models[query_length] = []
+                all_models[query_length].append(fn, error_rates[fn])
 
         feature_mapping = self.get_feature_mapping()
         svm_predict_optimal_subquery_len_dist = {}
