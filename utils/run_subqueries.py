@@ -252,7 +252,7 @@ class RunSubqueries(object):
 
         with open(os.path.join(self.final_output_root, self.collection_name+'-optimal_subquery_dist.md'), 'wb') as f:
             for model_para in res:
-                f.write('### %s\n' % (model_para))
+                f.write('\n### %s\n' % (model_para))
                 f.write('| | | | | |\n')
                 f.write('|--------|--------|--------|--------|--------|\n')
                 for query_len in res[model_para]:
