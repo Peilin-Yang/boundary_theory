@@ -161,7 +161,7 @@ class RunSubqueries(object):
             if not os.path.exists(os.path.join(self.subqueries_mapping_root, qid)):
                 with open(os.path.join(self.subqueries_mapping_root, qid), 'wb') as f:
                     json.dump(all_subqueries, f, indent=2)
-            for subquery_id, subquery_str  in all_subqueries.items():
+            for subquery_id, subquery_str in all_subqueries.items():
                 for p in optimal_model_performances:
                     indri_model_para = 'method:%s,' % p[0] + p[2]
                     runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
@@ -239,6 +239,8 @@ class RunSubqueries(object):
         for qid, query in queries.items():
             query_len = len(query.split())
             for model_para in model_paras:
+                if qid not in optimals[model_para]:
+                    continue
                 if model_para not in res:
                     res[model_para] = {}
                 if query_len not in res[model_para]:
