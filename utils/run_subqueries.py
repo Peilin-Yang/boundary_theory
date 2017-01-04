@@ -236,7 +236,7 @@ class RunSubqueries(object):
                 optimals[model_para][qid].sort(key=itemgetter(1), reverse=True)
 
         res = {}
-        print queries
+        print queries, model_paras
         for qid, query in queries:
             query_len = len(query.split())
             for model_para in model_paras:
