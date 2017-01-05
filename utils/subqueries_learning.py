@@ -491,7 +491,7 @@ class SubqueriesLearning(RunSubqueries):
                     f.write('%s: %f\n' % (feature_mapping[ele[0]], ele[1]))
 
     @staticmethod
-    def write_combined_feature_fn(results_root, l, ofn, query_lengt=2):
+    def write_combined_feature_fn(results_root, l, ofn, query_length=2):
         trainging_fn = os.path.join(results_root, 'train_%d' % query_length)
         if os.path.exists(ofn):
             os.remove(ofn)
