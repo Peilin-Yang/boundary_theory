@@ -512,9 +512,9 @@ class SubqueriesLearning(RunSubqueries):
         if not os.path.exists(results_root):
             os.makedirs(results_root)
         trainging_fn = os.path.join(results_root, 'train_%s_%d' % (test_collection, query_length))
-        write_combined_feature_fn(train, trainging_fn, query_length)
+        SubqueriesLearning.write_combined_feature_fn(train, trainging_fn, query_length)
         testing_fn = os.path.join(results_root, 'test_%s_%d' % (test_collection, query_length))
-        write_combined_feature_fn(test, testing_fn, query_length)
+        SubqueriesLearning.write_combined_feature_fn(test, testing_fn, query_length)
         for c in range(-3, 5):
             model_output_fn = os.path.join(results_root, 'model_%s_%d_%d' 
                 % (test_collection, query_length, 10**c) )
