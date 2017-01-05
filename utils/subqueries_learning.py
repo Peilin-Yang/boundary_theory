@@ -531,7 +531,7 @@ class SubqueriesLearning(RunSubqueries):
                 print m.groups()
 
     @staticmethod
-    def cross_testing(results_root, train, test, query_length=2):
+    def cross_testing(train, test, query_length=2):
         """
         train and test are list of (collection_path, collection_name)
         """
