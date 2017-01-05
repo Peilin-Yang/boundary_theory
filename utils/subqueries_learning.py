@@ -522,9 +522,9 @@ class SubqueriesLearning(RunSubqueries):
                     qid_idx += 1
 
     @staticmethod
-    def evaluate_svm_cross_testing(results_root, all_data, query_length=2):
+    def evaluate_svm_cross_testing(all_data, query_length=2):
         print len(all_data), all_data
-
+        results_root = os.path.join('../all_results', 'subqueries', 'cross_training')
         for fn in os.listdir(results_root):
             m = re.search(r'^predict_(.*?)_(.*?)_(.*)$', fn)
             if m:
@@ -567,4 +567,3 @@ class SubqueriesLearning(RunSubqueries):
                 if returncode != 0:
                     raise NameError("Run Query Error: %s %s" % (command, error))
 
-        SubqueriesLearning.evaluate_svm_cross_testing(results_root, train.extend(test), False)    
