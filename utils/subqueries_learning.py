@@ -545,7 +545,8 @@ class SubqueriesLearning(RunSubqueries):
                 returncode = p.wait()
                 out, error = p.communicate()
                 if returncode != 0:
-                    raise NameError("Run Query Error: %s %s" % (command, error))
+                    print "Run Query Error: %s %s" % (command, error)
+                    continue
 
             predict_fn = os.path.join(results_root, 'predict_%s_%d_%d' 
                 % (test_collection, query_length, 10**c))
