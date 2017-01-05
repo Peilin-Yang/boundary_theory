@@ -505,12 +505,14 @@ class SubqueriesLearning(RunSubqueries):
                         f.write(ff.read())
                     else:
                         cur_qid = -1
+                        ordered_qid = 1
                         for line in ff:
                             row = line.split()
                             qid = int(row[1].split(':')[1])
                             if qid != cur_qid:
                                 cur_qid = qid
-                                row[1] = 'qid:%d' % cur_qid
+                                ordered_qid += 1
+                                row[1] = 'qid:%d' % ordered_qid
                             f.write(' '.join(row)+'\n')
     @staticmethod
     def cross_testing(train, test, query_length=2):
