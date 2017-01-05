@@ -491,7 +491,7 @@ class SubqueriesLearning(RunSubqueries):
                     f.write('%s: %f\n' % (feature_mapping[ele[0]], ele[1]))
 
     @staticmethod
-    def write_combined_feature_fn(results_root, l, ofn, query_length=2):
+    def write_combined_feature_fn(results_root, l, ofn, query_length=2, reorder_qid=False):
         trainging_fn = os.path.join(results_root, 'train_%d' % query_length)
         if os.path.exists(ofn):
             os.remove(ofn)
@@ -501,7 +501,17 @@ class SubqueriesLearning(RunSubqueries):
                 collection_name = ele[1]
                 feature_fn = os.path.join(collection_path, 'subqueries', 'features', 'final', str(query_length))
                 with open(feature_fn) as ff:
-                    f.write(ff.read())
+                    if not reorder_qid:
+                        f.write(ff.read())
+                    else:
+                        cur_qid = -1
+                        for line in ff:
+                            row = line.split()
+                            qid = int(row[1].split(':')[1])
+                            if qid != cur_qid:
+                                cur_qid = qid
+                                row[1] = 'qid:%d' % cur_qid
+                            f.write(' '.join(row))
     @staticmethod
     def cross_testing(train, test, query_length=2):
         """
@@ -512,26 +522,29 @@ class SubqueriesLearning(RunSubqueries):
         if not os.path.exists(results_root):
             os.makedirs(results_root)
         trainging_fn = os.path.join(results_root, 'train_%s_%d' % (test_collection, query_length))
-        SubqueriesLearning.write_combined_feature_fn(results_root, train, trainging_fn, query_length)
+        SubqueriesLearning.write_combined_feature_fn(results_root, train, trainging_fn, query_length, True)
         testing_fn = os.path.join(results_root, 'test_%s_%d' % (test_collection, query_length))
-        SubqueriesLearning.write_combined_feature_fn(results_root, test, testing_fn, query_length)
+        SubqueriesLearning.write_combined_feature_fn(results_root, test, testing_fn, query_length, False)
         for c in range(-3, 5):
             model_output_fn = os.path.join(results_root, 'model_%s_%d_%d' 
                 % (test_collection, query_length, 10**c) )
-            command = ['svm_rank_learn -c %d %s %s' % (10**c, trainging_fn, model_output_fn)]
-            p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-            returncode = p.wait()
-            out, error = p.communicate()
-            if returncode != 0:
-                raise NameError("Run Query Error: %s %s" % (command, error))
+
+            if not os.path.exists(model_output_fn):
+                command = ['svm_rank_learn -c %d %s %s' % (10**c, trainging_fn, model_output_fn)]
+                p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+                returncode = p.wait()
+                out, error = p.communicate()
+                if returncode != 0:
+                    raise NameError("Run Query Error: %s %s" % (command, error))
 
             predict_fn = os.path.join(results_root, 'predict_%s_%d_%d' 
                 % (test_collection, query_length, 10**c))
-            command = ['svm_rank_classify %s %s %s' 
-                % (testing_fn, model_output_fn, predict_fn)]
-            p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-            returncode = p.wait()
-            out, error = p.communicate()
-            if returncode != 0:
-                raise NameError("Run Query Error: %s %s" % (command, error))
+            if not os.path.exists(predict_fn):
+                command = ['svm_rank_classify %s %s %s' 
+                    % (testing_fn, model_output_fn, predict_fn)]
+                p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+                returncode = p.wait()
+                out, error = p.communicate()
+                if returncode != 0:
+                    raise NameError("Run Query Error: %s %s" % (command, error))
             
