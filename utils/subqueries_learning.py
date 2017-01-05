@@ -491,7 +491,7 @@ class SubqueriesLearning(RunSubqueries):
                     f.write('%s: %f\n' % (feature_mapping[ele[0]], ele[1]))
 
     @staticmethod
-    def write_combined_feature_fn(l, ofn, query_lengt=2):
+    def write_combined_feature_fn(results_root, l, ofn, query_lengt=2):
         trainging_fn = os.path.join(results_root, 'train_%d' % query_length)
         if os.path.exists(ofn):
             os.remove(ofn)
@@ -512,9 +512,9 @@ class SubqueriesLearning(RunSubqueries):
         if not os.path.exists(results_root):
             os.makedirs(results_root)
         trainging_fn = os.path.join(results_root, 'train_%s_%d' % (test_collection, query_length))
-        SubqueriesLearning.write_combined_feature_fn(train, trainging_fn, query_length)
+        SubqueriesLearning.write_combined_feature_fn(results_root, train, trainging_fn, query_length)
         testing_fn = os.path.join(results_root, 'test_%s_%d' % (test_collection, query_length))
-        SubqueriesLearning.write_combined_feature_fn(test, testing_fn, query_length)
+        SubqueriesLearning.write_combined_feature_fn(results_root, test, testing_fn, query_length)
         for c in range(-3, 5):
             model_output_fn = os.path.join(results_root, 'model_%s_%d_%d' 
                 % (test_collection, query_length, 10**c) )
