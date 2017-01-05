@@ -523,12 +523,17 @@ class SubqueriesLearning(RunSubqueries):
 
     @staticmethod
     def evaluate_svm_cross_testing(all_data, query_length=2):
-        print len(all_data), all_data
         results_root = os.path.join('../all_results', 'subqueries', 'cross_training')
+        all_predict_data = {}
         for fn in os.listdir(results_root):
             m = re.search(r'^predict_(.*?)_(.*?)_(.*)$', fn)
             if m:
-                print m.groups()
+                collection_name = m.groups(0)
+                query_length = int(m.groups(1))
+                c = int(m.groups(2))
+                if query_length not in all_predict_data:
+                    all_predict_data[query_length] = []
+                
 
     @staticmethod
     def cross_testing(train, test, query_length=2):
