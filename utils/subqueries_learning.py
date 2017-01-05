@@ -496,6 +496,8 @@ class SubqueriesLearning(RunSubqueries):
         if os.path.exists(ofn):
             os.remove(ofn)
         with open(ofn, 'ab') as f:
+            qid_idx = 1
+            qid_lines = {}
             for ele in l:
                 collection_path = ele[0]
                 collection_name = ele[1]
@@ -504,16 +506,22 @@ class SubqueriesLearning(RunSubqueries):
                     if not reorder_qid:
                         f.write(ff.read())
                     else:
-                        cur_qid = -1
-                        ordered_qid = 1
                         for line in ff:
+                            line = line.strip()
                             row = line.split()
                             qid = int(row[1].split(':')[1])
-                            if qid != cur_qid:
-                                cur_qid = qid
-                                ordered_qid += 1
-                                row[1] = 'qid:%d' % ordered_qid
-                            f.write(' '.join(row)+'\n')
+                            if qid not in qid_lines:
+                                qid_lines[qid] = []
+                            qid_lines[qid].append(line)
+            if reorder_qid:
+                for qid in qid_lines:
+                    for line in qid_lines[qid]:
+                        row = line.split()
+                        row[1] = 'qid:%d' % qid_idx
+                        f.write('%s\n' % ' '.join(row))
+                    qid_idx += 1
+
+
     @staticmethod
     def cross_testing(train, test, query_length=2):
         """
