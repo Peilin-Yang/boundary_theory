@@ -355,7 +355,7 @@ def print_svm_model_feature_importance(top=10):
     all_top_features = {}
     for q in g.query:
         collection_path = os.path.join(_root, q['collection'])
-        collection_name = collection_name = q['collection_formal_name']
+        collection_name = q['collection_formal_name']
         all_top_features[collection_name] = {}
         res_folder = os.path.join(collection_path, 'subqueries', 'svm_rank', 'featurerank')
         for fn in os.listdir(res_folder):
@@ -380,6 +380,19 @@ def print_svm_model_feature_importance(top=10):
                 all_top_features[collection_name][3][idx],
                 all_top_features[collection_name][4][idx])
 
+def cross_testing_svm_model(query_length=2):
+    query_length = int(query_length)
+    collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
+    for i in range(len(collections)):
+        this_training = []
+        this_testing = []
+        for j in range(len(collections)):
+            if j == i:
+                this_testing.append(collections[j])
+            else:
+                this_training.append(collections[j])
+
+        SubqueriesLearning.cross_testing(this_training, this_testing, query_length)
 
 ###################################################
 def run_all_baseline_results_atom(para_file):
@@ -571,6 +584,9 @@ if __name__ == '__main__':
     parser.add_argument('-67', '--print_svm_model_feature_importance', 
         nargs=1,
         help='print the top features of svm model. arg: N (top N will be printed)')
+    parser.add_argument('-68', '--svm_cross_testing', 
+        nargs=1,
+        help='cross testing the svm rank. arg: query_length')
 
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
