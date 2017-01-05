@@ -499,7 +499,7 @@ class SubqueriesLearning(RunSubqueries):
             for ele in l:
                 collection_path = ele[0]
                 collection_name = ele[1]
-                feature_fn = os.path.join(collection_path, 'subqueries', 'svm_rank', 'features', 'final', str(query_length))
+                feature_fn = os.path.join(collection_path, 'subqueries', 'features', 'final', str(query_length))
                 with open(feature_fn) as ff:
                     f.write(ff.read())
     @staticmethod
