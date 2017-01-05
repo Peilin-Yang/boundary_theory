@@ -456,13 +456,17 @@ class SubqueriesLearning(RunSubqueries):
                     svm_predict_optimal_subquery_len_dist[query_length][subquery_len] = 0
                 svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1
 
+            query_cnt = len(predict_optimal_performance)
             with open(os.path.join(self.final_output_root, self.collection_name+'-svm_subquery_dist.md'), 'wb') as f:
                 f.write('### %s\n' % (self.collection_name))
 
                 f.write('#### all optimals\n')
                 f.write('| using all terms | optimal (ground truth) | svm optimal |\n')
                 f.write('|--------|--------|--------|\n')
-                f.write('| %.4f | %.4f | %.4f |\n' % (performance_using_all_terms, optimal_ground_truth, optimal_svm_predict))
+                f.write('| %.4f | %.4f | %.4f |\n' 
+                    % (performance_using_all_terms/query_cnt, 
+                        optimal_ground_truth/query_cnt, 
+                        optimal_svm_predict/query_cnt))
 
                 f.write('\n#### svm predict subquery length distribution\n')
                 f.write('| | | | | |\n')
