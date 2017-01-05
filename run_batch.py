@@ -393,8 +393,8 @@ def cross_testing_svm_model(query_length=2):
                 this_training.append(collections[j])
 
         SubqueriesLearning.cross_testing(this_training, this_testing, query_length)
-        
-    SubqueriesLearning.evaluate_svm_cross_testing(results_root, collections, query_length)    
+
+    SubqueriesLearning.evaluate_svm_cross_testing(collections, query_length)    
 
 ###################################################
 def run_all_baseline_results_atom(para_file):
