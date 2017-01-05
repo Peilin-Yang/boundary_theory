@@ -518,8 +518,8 @@ class SubqueriesLearning(RunSubqueries):
         for c in range(-3, 5):
             model_output_fn = os.path.join(results_root, 'model_%s_%d_%d' 
                 % (test_collection, query_length, 10**c) )
-            command = ['svm_rank_learn', '-c', str(10**c), trainging_fn, model_output_fn]
-            p = Popen(command, stdout=PIPE, stderr=PIPE)
+            command = ['svm_rank_learn -c %d %s %s' % (10**c, trainging_fn, model_output_fn)]
+            p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             returncode = p.wait()
             out, error = p.communicate()
             if returncode != 0:
