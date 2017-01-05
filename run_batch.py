@@ -650,6 +650,8 @@ if __name__ == '__main__':
         evaluate_svm_model_atom(args.evaluate_svm_model_atom[0])
     if args.print_svm_model_feature_importance:
         print_svm_model_feature_importance(int(args.print_svm_model_feature_importance[0]))
+    if args.svm_cross_testing:
+        cross_testing_svm_model(int(args.svm_cross_testing[0]))
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)
