@@ -394,7 +394,9 @@ def cross_testing_svm_model(query_length=2):
 
         SubqueriesLearning.cross_testing(this_training, this_testing, query_length)
 
-    SubqueriesLearning.evaluate_svm_cross_testing(collections, query_length)    
+def evaluate_svm_cross_testing():
+    collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
+    SubqueriesLearning.evaluate_svm_cross_testing(collections)
 
 ###################################################
 def run_all_baseline_results_atom(para_file):
@@ -589,6 +591,9 @@ if __name__ == '__main__':
     parser.add_argument('-68', '--svm_cross_testing', 
         nargs=1,
         help='cross testing the svm rank. arg: query_length')
+    parser.add_argument('-69', '--evaluate_svm_cross_testing', 
+        naction='store_true',
+        help='evaluate cross testing the svm rank')
 
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
@@ -654,6 +659,8 @@ if __name__ == '__main__':
         print_svm_model_feature_importance(int(args.print_svm_model_feature_importance[0]))
     if args.svm_cross_testing:
         cross_testing_svm_model(int(args.svm_cross_testing[0]))
+    if args.evaluate_svm_cross_testing:
+        evaluate_svm_cross_testing()
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)
