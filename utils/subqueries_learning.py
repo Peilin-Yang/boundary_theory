@@ -511,7 +511,7 @@ class SubqueriesLearning(RunSubqueries):
                             if qid != cur_qid:
                                 cur_qid = qid
                                 row[1] = 'qid:%d' % cur_qid
-                            f.write(' '.join(row))
+                            f.write(' '.join(row)+'\n')
     @staticmethod
     def cross_testing(train, test, query_length=2):
         """
