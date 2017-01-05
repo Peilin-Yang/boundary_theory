@@ -592,7 +592,7 @@ if __name__ == '__main__':
         nargs=1,
         help='cross testing the svm rank. arg: query_length')
     parser.add_argument('-69', '--evaluate_svm_cross_testing', 
-        naction='store_true',
+        action='store_true',
         help='evaluate cross testing the svm rank')
 
     parser.add_argument("-2", "--run_all_baseline_results",
