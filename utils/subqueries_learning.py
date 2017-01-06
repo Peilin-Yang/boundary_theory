@@ -543,7 +543,7 @@ class SubqueriesLearning(RunSubqueries):
             all_performances[query_length] = []
             for c in all_predict_data[query_length]:
                 if len(all_predict_data[query_length][c]) != len(all_data):
-                    print 'query length: %d and c: %d does not have enough data ... %d/%d' \
+                    print 'query length: %d and c: %s does not have enough data ... %d/%d' \
                         % (query_length, c, len(all_predict_data[query_length][c]), len(all_data))
                     continue      
                 #svm_predict_optimal_subquery_len_dist[query_length] = {}
