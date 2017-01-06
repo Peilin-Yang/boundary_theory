@@ -556,7 +556,7 @@ class SubqueriesLearning(RunSubqueries):
                 performance_using_all_terms = 0.0
                 for collection_name in all_predict_data[query_length][c]: 
                     feature_fn = os.path.join(results_root, 'test_%s_%d' % (collection_name, query_length))
-                    predict_fn = os.path.join(results_root, 'predict_%s_%d_%d' % (collection_name, query_length, ))
+                    predict_fn = os.path.join(results_root, 'predict_%s_%d_%s' % (collection_name, query_length, c))
                     with open(predict_fn) as f:
                         predict_res = [float(line.strip()) for line in f.readlines()]
                     with open(feature_fn) as f:
