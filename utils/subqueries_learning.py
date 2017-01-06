@@ -571,7 +571,7 @@ class SubqueriesLearning(RunSubqueries):
                                 # read the performances of okapi and dirichlet
                                 existing_performance[qid] = {}
                                 qid_performances = []
-                                with open(os.path.join(data_mapping, 'subqueries', 'collected_results', qid)) as f:
+                                with open(os.path.join(data_mapping[collection_name], 'subqueries', 'collected_results', qid)) as f:
                                     csvr = csv.reader(f)
                                     for row in csvr:
                                         subquery_id = row[0]
