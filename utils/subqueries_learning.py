@@ -485,7 +485,7 @@ class SubqueriesLearning(RunSubqueries):
             for query_len in svm_predict_optimal_subquery_len_dist:
                 ssdf.write('| %d |' % (query_len))
                 for subquery_len in svm_predict_optimal_subquery_len_dist[query_len]:
-                    f.write(' %d:%d |' % (subquery_len, svm_predict_optimal_subquery_len_dist[query_len][subquery_len]))
+                    ssdf.write(' %d:%d |' % (subquery_len, svm_predict_optimal_subquery_len_dist[query_len][subquery_len]))
                 ssdf.write('\n')
 
     @staticmethod
