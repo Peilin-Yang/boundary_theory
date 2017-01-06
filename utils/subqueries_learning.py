@@ -589,12 +589,12 @@ class SubqueriesLearning(RunSubqueries):
                     for qid in predict_optimal_performance:
                         predict_optimal_performance[qid].sort(key=itemgetter(1), reverse=True)
                         collection_predict += predict_optimal_performance[qid][0][2]
-                        optimal_svm_predict += optimal_svm_predict
+                        optimal_svm_predict += collection_predict
                         subquery_len = int(predict_optimal_performance[qid][0][0].split('-')[0])
                         # if subquery_len not in svm_predict_optimal_subquery_len_dist[query_length]:
                         #     svm_predict_optimal_subquery_len_dist[query_length][subquery_len] = 0
                         # svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1 
-                    collection_predict_performance[collection_name] = collection_predict       
+                    collection_predict_performance[collection_name] = collection_predict / len(predict_optimal_performance)        
                 all_performances[query_length].append((c, optimal_svm_predict, collection_predict_performance))
             all_performances[query_length].sort(key=itemgetter(1), reverse=True)
         for query_length in all_performances:
