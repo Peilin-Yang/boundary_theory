@@ -403,92 +403,90 @@ class SubqueriesLearning(RunSubqueries):
 
         feature_mapping = self.get_feature_mapping()
         svm_predict_optimal_subquery_len_dist = {}
-        for query_length in sorted(all_models):
-            # first sort based on err_rate
-            all_models[query_length].sort(key=itemgetter(1))
+        with open(os.path.join(self.final_output_root, self.collection_name+'-svm_subquery_dist.md'), 'wb') as ssdf:
+            ssdf.write('### %s\n' % (self.collection_name))
 
-            # model prediction performance related
-            svm_predict_optimal_subquery_len_dist[query_length] = {}
-            predict_optimal_performance = {}
-            existing_performance = {}
-            correct_cnt = 0.0
-            incorrect_cnt = 0.0
-            optimal_ground_truth = 0.0
-            optimal_svm_predict = 0.0
-            performance_using_all_terms = 0.0
-            fn = all_models[query_length][0][0]
-            feature_fn = os.path.join(self.subqueries_features_root, 'final', str(query_length))
-            predict_fn = os.path.join(self.svm_predict_root, fn)
-            with open(predict_fn) as f:
-                predict_res = [float(line.strip()) for line in f.readlines()]
-            with open(feature_fn) as f:
-                idx = 0
-                for line in f:
-                    line = line.strip()
-                    row = line.split()
-                    qid = row[1].split(':')[1]
-                    subquery_id = row[-1]
-                    if qid not in predict_optimal_performance:
-                        predict_optimal_performance[qid] = []
-                        # read the performances of okapi and dirichlet
-                        existing_performance[qid] = {}
-                        qid_performances = []
-                        with open(os.path.join(self.collected_results_root, qid)) as f:
-                            csvr = csv.reader(f)
-                            for row in csvr:
-                                subquery_id = row[0]
-                                subquery = row[1]
-                                model_para = row[2]
-                                ap = float(row[3])
-                                if 'okapi' in model_para:
-                                    qid_performances.append((subquery_id, ap))
-                                    existing_performance[qid][subquery_id] = ap
-                        performance_using_all_terms += qid_performances[-1][1]
-                        qid_performances.sort(key=itemgetter(1), reverse=True)
-                        optimal_ground_truth += qid_performances[0][1]
-                    predict_optimal_performance[qid].append((subquery_id, predict_res[idx], existing_performance[qid][subquery_id]))
-                    idx += 1
-            for qid in predict_optimal_performance:
-                predict_optimal_performance[qid].sort(key=itemgetter(1), reverse=True)
-                optimal_svm_predict += predict_optimal_performance[qid][0][2]
-                subquery_len = int(predict_optimal_performance[qid][0][0].split('-')[0])
-                if subquery_len not in svm_predict_optimal_subquery_len_dist[query_length]:
-                    svm_predict_optimal_subquery_len_dist[query_length][subquery_len] = 0
-                svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1
+            for query_length in sorted(all_models):
+                # first sort based on err_rate
+                all_models[query_length].sort(key=itemgetter(1))
 
-            query_cnt = len(predict_optimal_performance)
-            with open(os.path.join(self.final_output_root, self.collection_name+'-svm_subquery_dist.md'), 'wb') as f:
-                f.write('### %s\n' % (self.collection_name))
+                # model prediction performance related
+                svm_predict_optimal_subquery_len_dist[query_length] = {}
+                predict_optimal_performance = {}
+                existing_performance = {}
+                optimal_ground_truth = 0.0
+                optimal_svm_predict = 0.0
+                performance_using_all_terms = 0.0
+                fn = all_models[query_length][0][0]
+                feature_fn = os.path.join(self.subqueries_features_root, 'final', str(query_length))
+                predict_fn = os.path.join(self.svm_predict_root, fn)
+                with open(predict_fn) as f:
+                    predict_res = [float(line.strip()) for line in f.readlines()]
+                with open(feature_fn) as f:
+                    idx = 0
+                    for line in f:
+                        line = line.strip()
+                        row = line.split()
+                        qid = row[1].split(':')[1]
+                        subquery_id = row[-1]
+                        if qid not in predict_optimal_performance:
+                            predict_optimal_performance[qid] = []
+                            # read the performances of okapi and dirichlet
+                            existing_performance[qid] = {}
+                            qid_performances = []
+                            with open(os.path.join(self.collected_results_root, qid)) as f:
+                                csvr = csv.reader(f)
+                                for row in csvr:
+                                    subquery_id = row[0]
+                                    subquery = row[1]
+                                    model_para = row[2]
+                                    ap = float(row[3])
+                                    if 'okapi' in model_para:
+                                        qid_performances.append((subquery_id, ap))
+                                        existing_performance[qid][subquery_id] = ap
+                            performance_using_all_terms += qid_performances[-1][1]
+                            qid_performances.sort(key=itemgetter(1), reverse=True)
+                            optimal_ground_truth += qid_performances[0][1]
+                        predict_optimal_performance[qid].append((subquery_id, predict_res[idx], existing_performance[qid][subquery_id]))
+                        idx += 1
+                for qid in predict_optimal_performance:
+                    predict_optimal_performance[qid].sort(key=itemgetter(1), reverse=True)
+                    optimal_svm_predict += predict_optimal_performance[qid][0][2]
+                    subquery_len = int(predict_optimal_performance[qid][0][0].split('-')[0])
+                    if subquery_len not in svm_predict_optimal_subquery_len_dist[query_length]:
+                        svm_predict_optimal_subquery_len_dist[query_length][subquery_len] = 0
+                    svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1
 
-                f.write('#### all optimals\n')
-                f.write('| using all terms | optimal (ground truth) | svm optimal |\n')
-                f.write('|--------|--------|--------|\n')
-                f.write('| %.4f | %.4f | %.4f |\n' 
+                query_cnt = len(predict_optimal_performance)
+                ssdf.write('#### Query Length of %d\n' % query_length)
+                ssdf.write('| using all terms | optimal (ground truth) | svm optimal |\n')
+                ssdf.write('|--------|--------|--------|\n')
+                ssdf.write('| %.4f | %.4f | %.4f |\n' 
                     % (performance_using_all_terms/query_cnt, 
                         optimal_ground_truth/query_cnt, 
                         optimal_svm_predict/query_cnt))
 
-                f.write('\n#### svm predict subquery length distribution\n')
-                f.write('| | | | | |\n')
-                f.write('|--------|--------|--------|--------|--------|\n')
-                for query_len in svm_predict_optimal_subquery_len_dist:
-                    f.write('| %d |' % (query_len))
-                    for subquery_len in svm_predict_optimal_subquery_len_dist[query_len]:
-                        f.write(' %d:%d |' % (subquery_len, svm_predict_optimal_subquery_len_dist[query_len][subquery_len]))
-                    f.write('\n')
-        
-            # feature ranking related
-            model_fn = all_models[query_length][0][0]
-            with open(os.path.join(self.svm_model_root, model_fn)) as f:
-                model = f.readlines()[-1]
-            feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
-            feature_weights.sort(key=itemgetter(1, 0), reverse=True)
-            output_root = os.path.join(self.output_root, 'svm_rank', 'featurerank')
-            if not os.path.exists(output_root):
-                os.makedirs(output_root)
-            with open(os.path.join(output_root, str(query_length)), 'wb') as f:
-                for ele in feature_weights:
-                    f.write('%s: %f\n' % (feature_mapping[ele[0]], ele[1]))
+                # feature ranking related
+                model_fn = all_models[query_length][0][0]
+                with open(os.path.join(self.svm_model_root, model_fn)) as f:
+                    model = f.readlines()[-1]
+                feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
+                feature_weights.sort(key=itemgetter(1, 0), reverse=True)
+                output_root = os.path.join(self.output_root, 'svm_rank', 'featurerank')
+                if not os.path.exists(output_root):
+                    os.makedirs(output_root)
+                with open(os.path.join(output_root, str(query_length)), 'wb') as f:
+                    for ele in feature_weights:
+                        f.write('%s: %f\n' % (feature_mapping[ele[0]], ele[1]))
+                        
+            ssdf.write('\n#### svm predict subquery length distribution\n')
+            ssdf.write('| | | | | |\n')
+            ssdf.write('|--------|--------|--------|--------|--------|\n')
+            for query_len in svm_predict_optimal_subquery_len_dist:
+                ssdf.write('| %d |' % (query_len))
+                for subquery_len in svm_predict_optimal_subquery_len_dist[query_len]:
+                    f.write(' %d:%d |' % (subquery_len, svm_predict_optimal_subquery_len_dist[query_len][subquery_len]))
+                ssdf.write('\n')
 
     @staticmethod
     def write_combined_feature_fn(results_root, l, ofn, query_length=2, reorder_qid=False):
