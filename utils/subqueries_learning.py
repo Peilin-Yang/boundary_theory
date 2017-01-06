@@ -523,6 +523,7 @@ class SubqueriesLearning(RunSubqueries):
 
     @staticmethod
     def evaluate_svm_cross_testing(all_data, query_length=2):
+        data_mapping = {d[1]:d[0] for d in all_data}
         results_root = os.path.join('../all_results', 'subqueries', 'cross_training')
         all_predict_data = {}
         for fn in os.listdir(results_root):
@@ -532,8 +533,71 @@ class SubqueriesLearning(RunSubqueries):
                 query_length = int(m.groups(1))
                 c = int(m.groups(2))
                 if query_length not in all_predict_data:
-                    all_predict_data[query_length] = []
-                
+                    all_predict_data[query_length] = {}
+                if c not in all_predict_data[query_length]:
+                    all_predict_data[query_length][c] = []
+                all_predict_data[query_length][c].append(collection_name)
+
+        all_performances = {}
+        for query_length in all_predict_data:
+            all_performances[query_length] = []
+            for c in all_predict_data[query_length]:
+                if len(all_predict_data[query_length][c]) != len(all_data):
+                    print 'query length: %d and c: %d does not have enough data ... %d/%d' 
+                        % (query_length, c, len(all_predict_data[query_length][c]), len(all_data))
+                    continue      
+                svm_predict_optimal_subquery_len_dist[query_length] = {}
+                predict_optimal_performance = {}
+                existing_performance = {}
+                correct_cnt = 0.0
+                incorrect_cnt = 0.0
+                optimal_ground_truth = 0.0
+                optimal_svm_predict = 0.0
+                performance_using_all_terms = 0.0
+                for collection_name in all_predict_data[query_length][c]: 
+                    feature_fn = os.path.join(results_root, 'test_%s_%d' % (collection_name, query_length))
+                    predict_fn = os.path.join(results_root, 'predict_%s_%d' % (collection_name, query_length))
+                    with open(predict_fn) as f:
+                        predict_res = [float(line.strip()) for line in f.readlines()]
+                    with open(feature_fn) as f:
+                        idx = 0
+                        for line in f:
+                            line = line.strip()
+                            row = line.split()
+                            qid = row[1].split(':')[1]
+                            subquery_id = row[-1]
+                            if qid not in predict_optimal_performance:
+                                predict_optimal_performance[qid] = []
+                                # read the performances of okapi and dirichlet
+                                existing_performance[qid] = {}
+                                qid_performances = []
+                                with open(os.path.join(data_mapping, 'subqueries', 'collected_results', qid)) as f:
+                                    csvr = csv.reader(f)
+                                    for row in csvr:
+                                        subquery_id = row[0]
+                                        subquery = row[1]
+                                        model_para = row[2]
+                                        ap = float(row[3])
+                                        if 'okapi' in model_para:
+                                            qid_performances.append((subquery_id, ap))
+                                            existing_performance[qid][subquery_id] = ap
+                                performance_using_all_terms += qid_performances[-1][1]
+                                qid_performances.sort(key=itemgetter(1), reverse=True)
+                                optimal_ground_truth += qid_performances[0][1]
+                            predict_optimal_performance[qid].append((subquery_id, predict_res[idx], existing_performance[qid][subquery_id]))
+                            idx += 1
+                    for qid in predict_optimal_performance:
+                        predict_optimal_performance[qid].sort(key=itemgetter(1), reverse=True)
+                        optimal_svm_predict += predict_optimal_performance[qid][0][2]
+                        subquery_len = int(predict_optimal_performance[qid][0][0].split('-')[0])
+                        if subquery_len not in svm_predict_optimal_subquery_len_dist[query_length]:
+                            svm_predict_optimal_subquery_len_dist[query_length][subquery_len] = 0
+                        svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1        
+                all_performances[query_length].append((c, optimal_svm_predict))
+            all_performances[query_length].sort(key=itemgetter(1), reverse=True)
+        print json.dumps(all_performances, indent=2)
+
+
 
     @staticmethod
     def cross_testing(train, test, query_length=2):
