@@ -548,6 +548,7 @@ class SubqueriesLearning(RunSubqueries):
                     continue      
                 #svm_predict_optimal_subquery_len_dist[query_length] = {}
                 existing_performance = {}
+                collection_predict_performance = {}
                 optimal_ground_truth = 0.0
                 optimal_svm_predict = 0.0
                 performance_using_all_terms = 0.0
@@ -564,7 +565,6 @@ class SubqueriesLearning(RunSubqueries):
                             row = line.split()
                             qid = row[1].split(':')[1]
                             subquery_id = row[-1]
-                            print collection_name, qid, subquery_id
                             if qid not in predict_optimal_performance:
                                 predict_optimal_performance[qid] = []
                                 # read the performances of okapi and dirichlet
@@ -585,16 +585,20 @@ class SubqueriesLearning(RunSubqueries):
                                 optimal_ground_truth += qid_performances[0][1]
                             predict_optimal_performance[qid].append((subquery_id, predict_res[idx], existing_performance[qid][subquery_id]))
                             idx += 1
+                    collection_predict = 0.0
                     for qid in predict_optimal_performance:
                         predict_optimal_performance[qid].sort(key=itemgetter(1), reverse=True)
-                        optimal_svm_predict += predict_optimal_performance[qid][0][2]
+                        collection_predict += predict_optimal_performance[qid][0][2]
+                        optimal_svm_predict += optimal_svm_predict
                         subquery_len = int(predict_optimal_performance[qid][0][0].split('-')[0])
                         # if subquery_len not in svm_predict_optimal_subquery_len_dist[query_length]:
                         #     svm_predict_optimal_subquery_len_dist[query_length][subquery_len] = 0
-                        # svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1        
-                all_performances[query_length].append((c, optimal_svm_predict))
+                        # svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1 
+                    collection_predict_performance[collection_name] = collection_predict       
+                all_performances[query_length].append((c, optimal_svm_predict, collection_predict_performance))
             all_performances[query_length].sort(key=itemgetter(1), reverse=True)
-        print json.dumps(all_performances, indent=2)
+        for query_length in all_performances:
+            print json.dumps(all_performances[query_length][0], indent=2)
 
 
 
