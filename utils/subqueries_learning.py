@@ -596,7 +596,7 @@ class SubqueriesLearning(RunSubqueries):
                 all_performances[query_length].append((c, optimal_svm_predict, collection_predict_performance))
             all_performances[query_length].sort(key=itemgetter(1), reverse=True)
         for query_length in all_performances:
-            print json.dumps(all_performances[query_length][0], indent=2)
+            print query_length, json.dumps(all_performances[query_length][0], indent=2)
 
 
 
