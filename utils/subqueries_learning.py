@@ -566,6 +566,7 @@ class SubqueriesLearning(RunSubqueries):
                             row = line.split()
                             qid = row[1].split(':')[1]
                             subquery_id = row[-1]
+                            print collection_name, qid, subquery_id
                             if qid not in predict_optimal_performance:
                                 predict_optimal_performance[qid] = []
                                 # read the performances of okapi and dirichlet
