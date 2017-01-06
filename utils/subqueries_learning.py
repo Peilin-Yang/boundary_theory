@@ -556,7 +556,7 @@ class SubqueriesLearning(RunSubqueries):
                 performance_using_all_terms = 0.0
                 for collection_name in all_predict_data[query_length][c]: 
                     feature_fn = os.path.join(results_root, 'test_%s_%d' % (collection_name, query_length))
-                    predict_fn = os.path.join(results_root, 'predict_%s_%d' % (collection_name, query_length))
+                    predict_fn = os.path.join(results_root, 'predict_%s_%d_%d' % (collection_name, query_length, ))
                     with open(predict_fn) as f:
                         predict_res = [float(line.strip()) for line in f.readlines()]
                     with open(feature_fn) as f:
@@ -613,11 +613,11 @@ class SubqueriesLearning(RunSubqueries):
         testing_fn = os.path.join(results_root, 'test_%s_%d' % (test_collection, query_length))
         SubqueriesLearning.write_combined_feature_fn(results_root, test, testing_fn, query_length, False)
         for c in range(-3, 5):
-            model_output_fn = os.path.join(results_root, 'model_%s_%d_%d' 
-                % (test_collection, query_length, 10**c) )
+            model_output_fn = os.path.join(results_root, 'model_%s_%d_%s' 
+                % (test_collection, query_length, str(10**c)) )
 
             if not os.path.exists(model_output_fn):
-                command = ['svm_rank_learn -c %d %s %s' % (10**c, trainging_fn, model_output_fn)]
+                command = ['svm_rank_learn -c %s %s %s' % (str(10**c), trainging_fn, model_output_fn)]
                 p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
                 returncode = p.wait()
                 out, error = p.communicate()
@@ -625,8 +625,8 @@ class SubqueriesLearning(RunSubqueries):
                     print "Run Query Error: %s %s" % (command, error)
                     continue
 
-            predict_fn = os.path.join(results_root, 'predict_%s_%d_%d' 
-                % (test_collection, query_length, 10**c))
+            predict_fn = os.path.join(results_root, 'predict_%s_%d_%s' 
+                % (test_collection, query_length, str(10**c)))
             if not os.path.exists(predict_fn):
                 command = ['svm_rank_classify %s %s %s' 
                     % (testing_fn, model_output_fn, predict_fn)]
