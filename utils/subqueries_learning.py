@@ -531,7 +531,7 @@ class SubqueriesLearning(RunSubqueries):
             if m:
                 collection_name = m.group(1)
                 query_length = int(m.group(2))
-                c = int(m.group(3))
+                c = m.group(3)
                 if query_length not in all_predict_data:
                     all_predict_data[query_length] = {}
                 if c not in all_predict_data[query_length]:
