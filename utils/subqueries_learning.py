@@ -458,7 +458,7 @@ class SubqueriesLearning(RunSubqueries):
                     svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1
 
                 query_cnt = len(predict_optimal_performance)
-                ssdf.write('#### Query Length of %d\n' % query_length)
+                ssdf.write('\n#### Query Length of %d\n' % query_length)
                 ssdf.write('| using all terms | optimal (ground truth) | svm optimal |\n')
                 ssdf.write('|--------|--------|--------|\n')
                 ssdf.write('| %.4f | %.4f | %.4f |\n' 
@@ -478,7 +478,7 @@ class SubqueriesLearning(RunSubqueries):
                 with open(os.path.join(output_root, str(query_length)), 'wb') as f:
                     for ele in feature_weights:
                         f.write('%s: %f\n' % (feature_mapping[ele[0]], ele[1]))
-                        
+
             ssdf.write('\n#### svm predict subquery length distribution\n')
             ssdf.write('| | | | | |\n')
             ssdf.write('|--------|--------|--------|--------|--------|\n')
