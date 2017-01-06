@@ -405,7 +405,8 @@ class SubqueriesLearning(RunSubqueries):
         svm_predict_optimal_subquery_len_dist = {}
         with open(os.path.join(self.final_output_root, self.collection_name+'-svm_subquery_dist.md'), 'wb') as ssdf:
             ssdf.write('### %s\n' % (self.collection_name))
-
+            ssdf.write('| query len | using all terms | optimal (ground truth) | svm optimal |\n')
+            ssdf.write('|--------|--------|--------|--------|\n')
             for query_length in sorted(all_models):
                 # first sort based on err_rate
                 all_models[query_length].sort(key=itemgetter(1))
@@ -458,11 +459,9 @@ class SubqueriesLearning(RunSubqueries):
                     svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1
 
                 query_cnt = len(predict_optimal_performance)
-                ssdf.write('\n#### Query Length of %d\n' % query_length)
-                ssdf.write('| using all terms | optimal (ground truth) | svm optimal |\n')
-                ssdf.write('|--------|--------|--------|\n')
-                ssdf.write('| %.4f | %.4f | %.4f |\n' 
-                    % (performance_using_all_terms/query_cnt, 
+                ssdf.write('| %d | %.4f | %.4f | %.4f |\n' 
+                    % ( query_length, 
+                        performance_using_all_terms/query_cnt, 
                         optimal_ground_truth/query_cnt, 
                         optimal_svm_predict/query_cnt))
 
@@ -543,7 +542,7 @@ class SubqueriesLearning(RunSubqueries):
                 if len(all_predict_data[query_length][c]) != len(all_data):
                     print 'query length: %d and c: %s does not have enough data ... %d/%d' \
                         % (query_length, c, len(all_predict_data[query_length][c]), len(all_data))
-                    continue      
+                    continue
                 #svm_predict_optimal_subquery_len_dist[query_length] = {}
                 existing_performance = {}
                 collection_predict_performance = {}
