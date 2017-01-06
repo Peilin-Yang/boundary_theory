@@ -546,7 +546,7 @@ class SubqueriesLearning(RunSubqueries):
                     print 'query length: %d and c: %d does not have enough data ... %d/%d' \
                         % (query_length, c, len(all_predict_data[query_length][c]), len(all_data))
                     continue      
-                svm_predict_optimal_subquery_len_dist[query_length] = {}
+                #svm_predict_optimal_subquery_len_dist[query_length] = {}
                 predict_optimal_performance = {}
                 existing_performance = {}
                 correct_cnt = 0.0
@@ -590,9 +590,9 @@ class SubqueriesLearning(RunSubqueries):
                         predict_optimal_performance[qid].sort(key=itemgetter(1), reverse=True)
                         optimal_svm_predict += predict_optimal_performance[qid][0][2]
                         subquery_len = int(predict_optimal_performance[qid][0][0].split('-')[0])
-                        if subquery_len not in svm_predict_optimal_subquery_len_dist[query_length]:
-                            svm_predict_optimal_subquery_len_dist[query_length][subquery_len] = 0
-                        svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1        
+                        # if subquery_len not in svm_predict_optimal_subquery_len_dist[query_length]:
+                        #     svm_predict_optimal_subquery_len_dist[query_length][subquery_len] = 0
+                        # svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1        
                 all_performances[query_length].append((c, optimal_svm_predict))
             all_performances[query_length].sort(key=itemgetter(1), reverse=True)
         print json.dumps(all_performances, indent=2)
