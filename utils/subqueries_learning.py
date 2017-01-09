@@ -248,8 +248,8 @@ class SubqueriesLearning(RunSubqueries):
             terms = subquery_str.split()
             stats = []
             for term in terms:
-                logavgtf = math.log(cs.get_term_stats(term)['avgTF'])
-                logidf = cs.get_term_stats(term)['log(idf1)']
+                logavgtf = math.log(float(cs.get_term_stats(term)['avgTF']))
+                logidf = float(cs.get_term_stats(term)['log(idf1)'])
                 stats.append(logavgtf*logidf)
             features[subquery_id] = self.get_all_sorts_features(stats)
 
@@ -267,8 +267,8 @@ class SubqueriesLearning(RunSubqueries):
             terms = subquery_str.split()
             stats = []
             for term in terms:
-                avgtf = cs.get_term_stats(term)['avgTF']
-                ctf = 1000.*cs.get_term_stats(term)['total_occur']/cs.get_total_terms()
+                avgtf = float(cs.get_term_stats(term)['avgTF'])
+                ctf = 1000.*float(cs.get_term_stats(term)['total_occur'])/cs.get_total_terms()
                 stats.append(avgtf+ctf)
             features[subquery_id] = self.get_all_sorts_features(stats)
 
