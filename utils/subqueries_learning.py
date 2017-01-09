@@ -267,6 +267,7 @@ class SubqueriesLearning(RunSubqueries):
             terms = subquery_str.split()
             stats = []
             for term in terms:
+                print cs.get_term_stats(term)['avgTF']
                 avgtf = float(cs.get_term_stats(term)['avgTF'])
                 ctf = 1000.*float(cs.get_term_stats(term)['total_occur'])/cs.get_total_terms()
                 stats.append(avgtf+ctf)
