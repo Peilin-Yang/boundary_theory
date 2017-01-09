@@ -248,6 +248,7 @@ class SubqueriesLearning(RunSubqueries):
             terms = subquery_str.split()
             stats = []
             for term in terms:
+                print term, cs.get_term_stats(term)['avgTF']
                 logavgtf = math.log(float(cs.get_term_stats(term)['avgTF']))
                 logidf = float(cs.get_term_stats(term)['log(idf1)'])
                 stats.append(logavgtf*logidf)
