@@ -248,10 +248,8 @@ class SubqueriesLearning(RunSubqueries):
             terms = subquery_str.split()
             stats = []
             for term in terms:
-                try:
-                    logavgtf = math.log(float(cs.get_term_stats(term)['avgTF']))
-                except:
-                    continue
+                avgtf = float(cs.get_term_stats(term)['avgTF'])
+                logavgtf = math.log(avgtf) if avgtf-0.0>1e-6 else 0
                 logidf = float(cs.get_term_stats(term)['log(idf1)'])
                 stats.append(logavgtf*logidf)
             features[subquery_id] = self.get_all_sorts_features(stats)
