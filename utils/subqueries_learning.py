@@ -48,7 +48,9 @@ class SubqueriesLearning(RunSubqueries):
             7: 'AVGTF',
             8: 'VARTF',
             9: 'SCS',
-            10: 'QLEN'
+            10: 'QLEN',
+            11: 'LOGAVGTFIDF',
+            12: 'AVGTFCTF'
         }
 
         self.svm_model_root = os.path.join(self.output_root, 'svm_rank', 'models')
@@ -92,6 +94,10 @@ class SubqueriesLearning(RunSubqueries):
             self.gen_simple_clarity(qid)
         elif feature_type == 10:
             self.gen_query_len(qid)
+        elif feature_type == 11:
+            self.gen_logavgtf_idf(qid)
+        elif feature_type == 12:
+            self.gen_avgtf_cdf(qid)
 
     ############## for mutual information ##############
     def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
@@ -227,6 +233,44 @@ class SubqueriesLearning(RunSubqueries):
         features = {}
         for subquery_id, subquery_str in subquery_mapping.items():
             features[subquery_id] = len(subquery_str.split())
+
+        outfn = os.path.join(features_root, qid)
+        with open(outfn, 'wb') as f:
+            json.dump(features, f, indent=2)
+
+    def gen_logavgtf_idf(self, qid):
+        features_root = os.path.join(self.subqueries_features_root, self.feature_mapping[11])
+        cs = CollectionStats(self.corpus_path)
+        with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
+            subquery_mapping = json.load(f)
+        features = {}
+        for subquery_id, subquery_str in subquery_mapping.items():
+            terms = subquery_str.split()
+            stats = []
+            for term in terms:
+                logavgtf = math.log(cs.get_term_stats(term)['avgTF'])
+                logidf = cs.get_term_stats(term)['log(idf1)']
+                stats.append(logavgtf*logidf)
+            features[subquery_id] = self.get_all_sorts_features(stats)
+
+        outfn = os.path.join(features_root, qid)
+        with open(outfn, 'wb') as f:
+            json.dump(features, f, indent=2)
+
+    def gen_avgtf_cdf(self, qid):
+        features_root = os.path.join(self.subqueries_features_root, self.feature_mapping[12])
+        cs = CollectionStats(self.corpus_path)
+        with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
+            subquery_mapping = json.load(f)
+        features = {}
+        for subquery_id, subquery_str in subquery_mapping.items():
+            terms = subquery_str.split()
+            stats = []
+            for term in terms:
+                avgtf = cs.get_term_stats(term)['avgTF']
+                ctf = 1000.*cs.get_term_stats(term)['total_occur']/cs.get_total_terms()
+                stats.append(avgtf+ctf)
+            features[subquery_id] = self.get_all_sorts_features(stats)
 
         outfn = os.path.join(features_root, qid)
         with open(outfn, 'wb') as f:
