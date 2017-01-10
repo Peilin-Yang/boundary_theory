@@ -312,13 +312,20 @@ class PlotTermRelationship(object):
         r = (k1+1.0)*tfs/(tfs+k1*(1-b+b*doclens*1.0/avdl))*idfs
         return np.sum(r, axis=0)
 
-    def plot_only_rel_tf_relationship(self, details_data, details_rel_data, rel_data, query_length=2, oformat='png'):
+    def plot_only_rel_tf_relationship(self, details_data, details_rel_data, 
+            rel_data, query_length=2, oformat='png'):
+        rel_tf_stats = RelTFStats(self.collection_path)
         if query_length == 0:
             queries = Query(self.collection_path).get_queries()
         else:
             queries = Query(self.collection_path).get_queries_of_length(query_length)
         queries = {ele['num']:ele['title'] for ele in queries}
+        rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
+        queries = {k:v for k,v in queries.items() if k in rel_docs and len(rel_docs[k]) > 0}
+
+        rel_data = rel_tf_stats.get_data(queries.keys())
         cs = CollectionStats(self.collection_path)
+        doc_details = GenDocDetails(self.collection_path)
 
         model_mapping = {
             'okapi': self.okapi,
@@ -333,7 +340,7 @@ class PlotTermRelationship(object):
         plt.rc('text', usetex=False)
         row_idx = 0
         col_idx = 0
-        for qid in sorted(details_rel_data):
+        for qid in sorted(queries):
             #print qid
             if num_rows > 1:
                 ax = axs[row_idx][col_idx]
@@ -346,9 +353,11 @@ class PlotTermRelationship(object):
             if col_idx >= num_cols:
                 row_idx += 1
                 col_idx = 0
-            terms = details_data[qid][0]
+            terms = queries[qid].split()
+            dfs = [cs.get_term_df(t) for t in terms]
+            qid_details = {row['docid']: row for row in doc_details.get_qid_details(qid)]}
             tfs = details_rel_data[qid][1]
-            dfs = details_rel_data[qid][2]
+            #dfs = details_rel_data[qid][2]
             doclens = details_rel_data[qid][3]
             all_tfs = details_data[qid][1]
             all_dfs = details_data[qid][2]
