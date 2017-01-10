@@ -332,6 +332,7 @@ class PlotTermRelationship(object):
             'okapi': self.okapi,
             'dir': self.dir,
         }
+        model_optimal
         ranking_models = [('okapi', 'x'), ('dir', '^')]
         all_performances = {k:{'all': {}, 'higher-IDF': {}, 'lower-IDF': {}} for k in model_mapping}
         num_cols = min(4, len(details_rel_data)+1) # extra one for explanations
@@ -380,13 +381,6 @@ class PlotTermRelationship(object):
             count = collections.Counter(zip(xaxis, yaxis))
             xaxis_plot, yaxis_plot = zip(*count.keys())
             sizes = np.array(count.values())
-            if qid == '362':
-                print tfs
-                print xaxis, yaxis
-                print count
-                print xaxis_plot, yaxis_plot
-                print sizes
-                raw_input()
             max_value = max(max(xaxis_plot), max(yaxis_plot))
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
             cbar = fig.colorbar(scatter, ax=ax)
@@ -398,6 +392,8 @@ class PlotTermRelationship(object):
                 marker = model[1]
                 model_optimal = Performances(self.collection_path).load_optimal_performance([model_name])[0]
                 indri_model_para = 'method:%s,' % model_optimal[0] + model_optimal[2]
+                if qid == '362':
+                    print qid, indri_model_para
                 runfile_fn = os.path.join(self.collection_path, 'split_results', 'title_'+qid+'-'+indri_model_para)
                 with open(runfile_fn) as runf:
                     model_ranking_list = runf.readlines()
