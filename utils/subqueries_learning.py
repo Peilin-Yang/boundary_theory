@@ -17,6 +17,8 @@ import argparse
 import numpy as np
 import scipy.stats
 from sklearn.preprocessing import normalize
+from sklearn.svm import LinearSVC
+from sklearn.feature_selection import SelectFromModel
 
 from query import Query
 from performance import Performances
@@ -364,6 +366,35 @@ class SubqueriesLearning(RunSubqueries):
                 results[qid][subquery_id] = ap
 
         return results
+
+    def output_features_kendallstau(self, query_len=0):
+        """
+        output the kendallstau between features and the ranking of subqueries.
+        The output can be used to reduce the dimension of the feature space
+        """
+        output_root = os.path.join(self.subqueries_features_root, 'kendallstau')
+        if not os.path.exists(output_root):
+            os.makedirs(output_root)
+        all_performances = self.get_all_performances()
+        all_features = self.get_all_features(query_len)
+        all_features_matrix = []
+        kendallstau = {}
+        for qid in sorted(all_features):
+            this_features = np.array([all_features[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
+            this_perfm = np.array([all_performances[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
+            print this_features
+            print this_perfm
+            raw_input()
+        # idx = 0
+        # with open(os.path.join(output_root, str(query_len)), 'wb') as f: 
+        #     for qid in sorted(all_features, key=self.sort_qid):
+        #         for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
+        #             ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
+        #             if qid in all_performances and subquery_id in all_performances[qid]:
+        #                 f.write('%s qid:%s %s # %s\n' % (str(all_performances[qid][subquery_id]), qid, 
+        #                     ' '.join(['%d:%f' % (i, normalized[idx][i-1]) for i in range(1, len(normalized[idx])+1)]), 
+        #                     subquery_id))
+        #             idx += 1
 
     def output_collection_features(self, query_len=0):
         """
