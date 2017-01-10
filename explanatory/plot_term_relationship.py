@@ -356,7 +356,6 @@ class PlotTermRelationship(object):
                 col_idx = 0
             terms = queries[qid].split()
             dfs = np.array([cs.get_term_df(t) for t in terms])
-            print terms, dfs
             qid_details = {row['docid']:row for row in doc_details.get_qid_details(qid)}
             tfs = details_rel_data[qid][1]
             #dfs = details_rel_data[qid][2]
@@ -407,14 +406,15 @@ class PlotTermRelationship(object):
                         subquery_len = int(subquery_id.split('-')[0])
                         if subquery_len == 1 and model_name in row[2]:
                             subquery_perfms[row[1]] = float(row[3])
-                print subquery_perfms, terms
-                all_performances[model_name]['all'][qid] = float(model_optimal[1])
+                qid_optimal = Performances(self.collection_path).gen_optimal_performances_queries([model_name], [qid])
+                print qid_optimal
+                all_performances[model_name]['all'][qid] = float(qid_optimal[0][1])
                 all_performances[model_name]['higher-IDF'][qid] = subquery_perfms[terms[larger_idf_idx]]
                 all_performances[model_name]['lower-IDF'][qid] = subquery_perfms[terms[smaller_idf_idx]]
                 this_plot, = ax.plot(model_topranked_tfs[smaller_idf_idx][:], \
                     model_topranked_tfs[larger_idf_idx][:], marker, \
                     alpha=0.3, label='%s:%.3f(%.3f)(%.3f)' % (model_name, \
-                        float(model_optimal[1]), subquery_perfms[terms[larger_idf_idx]], \
+                        float(qid_optimal[0][1]), subquery_perfms[terms[larger_idf_idx]], \
                         subquery_perfms[terms[smaller_idf_idx]]))
                 legend_handlers[this_plot] = HandlerLine2D(numpoints=1)
 
