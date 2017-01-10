@@ -379,6 +379,11 @@ class PlotTermRelationship(object):
             yaxis = tfs[larger_idf_idx,:]
             count = collections.Counter(zip(xaxis, yaxis))
             xaxis_plot, yaxis_plot = zip(*count.keys())
+            if qid == '362':
+                print tfs
+                print xaxis, yaxis
+                print xaxis_plot, yaxis_plot
+                raw_input()
             sizes = np.array(count.values())
             max_value = max(max(xaxis_plot), max(yaxis_plot))
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
@@ -407,7 +412,6 @@ class PlotTermRelationship(object):
                         if subquery_len == 1 and model_name in row[2]:
                             subquery_perfms[row[1]] = float(row[3])
                 qid_optimal = Performances(self.collection_path).gen_optimal_performances_queries([model_name], [qid])
-                print qid_optimal
                 all_performances[model_name]['all'][qid] = float(qid_optimal[0][1])
                 all_performances[model_name]['higher-IDF'][qid] = subquery_perfms[terms[larger_idf_idx]]
                 all_performances[model_name]['lower-IDF'][qid] = subquery_perfms[terms[smaller_idf_idx]]
