@@ -386,32 +386,36 @@ class PlotTermRelationship(object):
             #cbar.ax.set_ylabel('Counts')
             # plot model top ranked docs
             legend_handlers = {}
-            # for model in ranking_models:
-            #     model_name = model[0]
-            #     marker = model[1]
-            #     model_ranking_list = model_mapping[model_name](terms, all_tfs, all_dfs, all_doclens, all_rels, \
-            #         float(rel_data[qid]['AP'][model_name][2].split(':')[1]))
-            #     order_index = np.argsort(model_ranking_list)[::-1] # sort reversely
-            #     model_topranked_tfs = np.transpose(details_data[qid][1])[order_index][:20]
-            #     if model_topranked_tfs.shape[1] > query_length:
-            #         model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
-            #     model_topranked_tfs = np.transpose(model_topranked_tfs)
-            #     partial_ranking_ap = {}
-            #     for term_idx in range(1, len(terms)+1):
-            #         partial_ranking_list = model_mapping[model_name](terms, all_tfs, all_dfs, all_doclens, all_rels, \
-            #             float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
-            #         partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
-            #         partial_ranking_ap[term_idx-1] = self.cal_map(all_rels[partial_order_index], 1000, rel_data[qid]['rel_cnt'])
-            #         #print qid, terms[term_idx-1], model_name, rel_data[qid]['AP'][model_name][2].split(':')[1], partial_ranking_list[partial_order_index]
-            #         #raw_input()
-            #     all_performances[model_name]['all'][qid] = float(rel_data[qid]['AP'][model_name][1])
-            #     all_performances[model_name]['higher-IDF'][qid] = partial_ranking_ap[larger_idf_idx]
-            #     all_performances[model_name]['lower-IDF'][qid] = partial_ranking_ap[smaller_idf_idx]
-            #     this_plot, = ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, \
-            #         alpha=0.3, label='%s:%.3f(%.3f)(%.3f)' % (model_name, \
-            #             float(rel_data[qid]['AP'][model_name][1]), partial_ranking_ap[larger_idf_idx], \
-            #             partial_ranking_ap[smaller_idf_idx]))
-            #     legend_handlers[this_plot] = HandlerLine2D(numpoints=1)
+            for model in ranking_models:
+                model_name = model[0]
+                marker = model[1]
+                model_optimal = Performances(self.corpus_path).load_optimal_performance([model])[0]
+                indri_model_para = 'method:%s,' % model_optimal[0] + model_optimal[2]
+                print indri_model_para
+                runfile_fn = os.path.join(self.corpus_path, 'split_results', 'title_'+qid+'-'+indri_model_para)
+                with open(runfile_fn) as runf:
+                    model_ranking_list = runf.readlines()
+                exit()
+                model_topranked_tfs = np.transpose(details_data[qid][1])[order_index][:20]
+                if model_topranked_tfs.shape[1] > query_length:
+                    model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
+                model_topranked_tfs = np.transpose(model_topranked_tfs)
+                partial_ranking_ap = {}
+                for term_idx in range(1, len(terms)+1):
+                    partial_ranking_list = model_mapping[model_name](terms, all_tfs, all_dfs, all_doclens, all_rels, \
+                        float(rel_data[qid]['AP'][model_name][2].split(':')[1]), which_term=term_idx)
+                    partial_order_index = np.argsort(partial_ranking_list)[::-1] # sort reversely
+                    partial_ranking_ap[term_idx-1] = self.cal_map(all_rels[partial_order_index], 1000, rel_data[qid]['rel_cnt'])
+                    #print qid, terms[term_idx-1], model_name, rel_data[qid]['AP'][model_name][2].split(':')[1], partial_ranking_list[partial_order_index]
+                    #raw_input()
+                all_performances[model_name]['all'][qid] = float(rel_data[qid]['AP'][model_name][1])
+                all_performances[model_name]['higher-IDF'][qid] = partial_ranking_ap[larger_idf_idx]
+                all_performances[model_name]['lower-IDF'][qid] = partial_ranking_ap[smaller_idf_idx]
+                this_plot, = ax.plot(model_topranked_tfs[0], model_topranked_tfs[1], marker, \
+                    alpha=0.3, label='%s:%.3f(%.3f)(%.3f)' % (model_name, \
+                        float(rel_data[qid]['AP'][model_name][1]), partial_ranking_ap[larger_idf_idx], \
+                        partial_ranking_ap[smaller_idf_idx]))
+                legend_handlers[this_plot] = HandlerLine2D(numpoints=1)
 
             ax.plot([0, max_value], [0, max_value], ls="dotted")
             ax.set_title(qid+':'+queries[qid])
