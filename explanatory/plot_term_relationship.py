@@ -395,14 +395,14 @@ class PlotTermRelationship(object):
                 with open(runfile_fn) as runf:
                     model_ranking_list = runf.readlines()
                 model_topranked_tfs = np.array([[float(t.split('-')[1]) for t in qid_details[line.split()[2]]['tf'].split(',')] for line in model_ranking_list[:20]])
+                # if model_topranked_tfs.shape[1] > query_length:
+                #     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
+                model_topranked_tfs = np.transpose(model_topranked_tfs)
                 if qid == '362':
                     print qid, indri_model_para, runfile_fn
                     print model_ranking_list[:20]
                     print model_topranked_tfs
                     print model_topranked_tfs[smaller_idf_idx][:]
-                # if model_topranked_tfs.shape[1] > query_length:
-                #     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
-                #model_topranked_tfs = np.transpose(model_topranked_tfs)
                 subquery_perfms = {}
                 with open(os.path.join(self.collection_path, 'subqueries/collected_results', qid)) as subf:
                     csvr = csv.reader(subf)
