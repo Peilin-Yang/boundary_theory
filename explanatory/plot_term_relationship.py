@@ -379,13 +379,14 @@ class PlotTermRelationship(object):
             yaxis = tfs[larger_idf_idx,:]
             count = collections.Counter(zip(xaxis, yaxis))
             xaxis_plot, yaxis_plot = zip(*count.keys())
+            sizes = np.array(count.values())
             if qid == '362':
                 print tfs
                 print xaxis, yaxis
                 print count
                 print xaxis_plot, yaxis_plot
+                print sizes
                 raw_input()
-            sizes = np.array(count.values())
             max_value = max(max(xaxis_plot), max(yaxis_plot))
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
             cbar = fig.colorbar(scatter, ax=ax)
