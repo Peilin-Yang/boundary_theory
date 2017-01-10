@@ -399,8 +399,9 @@ class PlotTermRelationship(object):
                     print qid, indri_model_para, runfile_fn
                     print model_ranking_list[:20]
                     print model_topranked_tfs
-                if model_topranked_tfs.shape[1] > query_length:
-                    model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
+                    print model_topranked_tfs[smaller_idf_idx][:]
+                # if model_topranked_tfs.shape[1] > query_length:
+                #     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
                 #model_topranked_tfs = np.transpose(model_topranked_tfs)
                 subquery_perfms = {}
                 with open(os.path.join(self.collection_path, 'subqueries/collected_results', qid)) as subf:
