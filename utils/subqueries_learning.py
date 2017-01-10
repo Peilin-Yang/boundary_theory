@@ -387,7 +387,7 @@ class SubqueriesLearning(RunSubqueries):
                 if col not in kendallstau:
                     kendallstau[col] = []
                 kendallstau[col].append(tau if not np.isnan(tau) else 0)
-        klist = [(col, np.mean(kendallstau[col]) for col in kendallstau]
+        klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
         klist.sort(key=itemgetter(1), reverse=True)
         feature_mapping = self.get_feature_mapping()
         for ele in klist[:10]:
