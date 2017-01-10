@@ -392,6 +392,7 @@ class PlotTermRelationship(object):
                 model_optimal = Performances(self.collection_path).load_optimal_performance([model_name])[0]
                 indri_model_para = 'method:%s,' % model_optimal[0] + model_optimal[2]
                 runfile_fn = os.path.join(self.collection_path, 'split_results', 'title_'+qid+'-'+indri_model_para)
+                print runfile_fn
                 with open(runfile_fn) as runf:
                     model_ranking_list = runf.readlines()
                 model_topranked_tfs = np.array([[float(t.split('-')[1]) for t in qid_details[line.split()[2]]['tf'].split(',')] for line in model_ranking_list[:20]])
