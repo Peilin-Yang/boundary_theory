@@ -386,9 +386,9 @@ class SubqueriesLearning(RunSubqueries):
                 tau, p_value = scipy.stats.kendalltau(this_features[:, col], this_perfm)
                 if col not in kendallstau:
                     kendallstau[col] = []
-                kendallstau[col].append(tau)
+                kendallstau[col].append(tau if not np.isnan(tau) else 0)
         for col in kendallstau:
-            print col, len(kendallstau), kendallstau[col], np.mean(kendallstau[col])
+            print col, len(kendallstau[col]), kendallstau[col], np.mean(kendallstau[col])
             raw_input()
         # idx = 0
         # with open(os.path.join(output_root, str(query_len)), 'wb') as f: 
