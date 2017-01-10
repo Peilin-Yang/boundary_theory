@@ -387,18 +387,11 @@ class SubqueriesLearning(RunSubqueries):
                 if col not in kendallstau:
                     kendallstau[col] = []
                 kendallstau[col].append(tau if not np.isnan(tau) else 0)
-        for col in kendallstau:
-            print col, np.mean(kendallstau[col])
-        # idx = 0
-        # with open(os.path.join(output_root, str(query_len)), 'wb') as f: 
-        #     for qid in sorted(all_features, key=self.sort_qid):
-        #         for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
-        #             ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
-        #             if qid in all_performances and subquery_id in all_performances[qid]:
-        #                 f.write('%s qid:%s %s # %s\n' % (str(all_performances[qid][subquery_id]), qid, 
-        #                     ' '.join(['%d:%f' % (i, normalized[idx][i-1]) for i in range(1, len(normalized[idx])+1)]), 
-        #                     subquery_id))
-        #             idx += 1
+        klist = list(kendallstau)
+        klist.sort(key=itemgetter(1), reverse=True)
+        feature_mapping = self.get_feature_mapping()
+        for ele in klist[:10]:
+            print feature_mapping[ele[0]], ele[1]
 
     def output_collection_features(self, query_len=0):
         """
