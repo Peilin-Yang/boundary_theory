@@ -381,10 +381,13 @@ class SubqueriesLearning(RunSubqueries):
         kendallstau = {}
         for qid in sorted(all_features):
             this_features = np.array([all_features[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
-            this_perfm = np.array([all_performances[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
-            print this_features
-            print this_perfm
-            raw_input()
+            this_perfm = [float(all_performances[qid][subquery_id]) for subquery_id in sorted(all_features[qid])]
+            for col in range(this_features.shape[1]):
+                tau, p_value = scipy.stats.kendalltau(this_features[:, col], this_perfm[col])
+                if col not in kendallstau:
+                    kendallstau[col] = []
+                kendallstau[col].append(tau)
+        print kendallstau
         # idx = 0
         # with open(os.path.join(output_root, str(query_len)), 'wb') as f: 
         #     for qid in sorted(all_features, key=self.sort_qid):
