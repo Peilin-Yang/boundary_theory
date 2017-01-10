@@ -387,7 +387,8 @@ class SubqueriesLearning(RunSubqueries):
                 if col not in kendallstau:
                     kendallstau[col] = []
                 kendallstau[col].append(tau)
-        print kendallstau
+        for col in kendallstau:
+            print col, np.mean(kendallstau[col])
         # idx = 0
         # with open(os.path.join(output_root, str(query_len)), 'wb') as f: 
         #     for qid in sorted(all_features, key=self.sort_qid):
