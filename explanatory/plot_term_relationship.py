@@ -391,12 +391,12 @@ class PlotTermRelationship(object):
                 marker = model[1]
                 model_optimal = Performances(self.collection_path).load_optimal_performance([model_name])[0]
                 indri_model_para = 'method:%s,' % model_optimal[0] + model_optimal[2]
-                print indri_model_para
                 runfile_fn = os.path.join(self.collection_path, 'split_results', 'title_'+qid+'-'+indri_model_para)
                 with open(runfile_fn) as runf:
                     model_ranking_list = runf.readlines()
+                model_topranked_tfs = np.array([[float(t.split('-')[1]) for t in qid_details[line.split()[2]]['tf'].split(',')] for line in model_ranking_list[:20]])
+                print model_topranked_tfs
                 exit()
-                model_topranked_tfs = np.transpose(details_data[qid][1])[order_index][:20]
                 if model_topranked_tfs.shape[1] > query_length:
                     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
