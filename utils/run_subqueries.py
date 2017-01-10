@@ -348,6 +348,3 @@ class RunSubqueries(object):
                     cur_qid = data[0]
                     cur_queries = data
                     f.write('| %s |\n' % (' | '.join([d.split('_')[-1] for d in data])))
-        
-        with codecs.open(os.path.join(self.final_output_root, self.collection_name+'-'+str(query_length)+'.md'), 'r', encoding='utf-8') as f:
-            print markdown.markdown(f.read())
