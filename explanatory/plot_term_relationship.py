@@ -382,6 +382,7 @@ class PlotTermRelationship(object):
             if qid == '362':
                 print tfs
                 print xaxis, yaxis
+                print count
                 print xaxis_plot, yaxis_plot
                 raw_input()
             sizes = np.array(count.values())
