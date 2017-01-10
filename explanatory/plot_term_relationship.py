@@ -407,6 +407,7 @@ class PlotTermRelationship(object):
                         subquery_len = int(subquery_id.split('-')[0])
                         if subquery_len == 1 and model_name in row[2]:
                             subquery_perfms[row[1]] = float(row[3])
+                print subquery_perfms, terms
                 all_performances[model_name]['all'][qid] = float(model_optimal[1])
                 all_performances[model_name]['higher-IDF'][qid] = subquery_perfms[terms[larger_idf_idx]]
                 all_performances[model_name]['lower-IDF'][qid] = subquery_perfms[terms[smaller_idf_idx]]
