@@ -389,10 +389,10 @@ class PlotTermRelationship(object):
             for model in ranking_models:
                 model_name = model[0]
                 marker = model[1]
-                model_optimal = Performances(self.corpus_path).load_optimal_performance([model])[0]
+                model_optimal = Performances(self.collection_path).load_optimal_performance([model])[0]
                 indri_model_para = 'method:%s,' % model_optimal[0] + model_optimal[2]
                 print indri_model_para
-                runfile_fn = os.path.join(self.corpus_path, 'split_results', 'title_'+qid+'-'+indri_model_para)
+                runfile_fn = os.path.join(self.collection_path, 'split_results', 'title_'+qid+'-'+indri_model_para)
                 with open(runfile_fn) as runf:
                     model_ranking_list = runf.readlines()
                 exit()
