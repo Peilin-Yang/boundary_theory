@@ -388,8 +388,7 @@ class SubqueriesLearning(RunSubqueries):
                     kendallstau[col] = []
                 kendallstau[col].append(tau if not np.isnan(tau) else 0)
         for col in kendallstau:
-            print col, len(kendallstau[col]), kendallstau[col], np.mean(kendallstau[col])
-            raw_input()
+            print col, np.mean(kendallstau[col])
         # idx = 0
         # with open(os.path.join(output_root, str(query_len)), 'wb') as f: 
         #     for qid in sorted(all_features, key=self.sort_qid):
