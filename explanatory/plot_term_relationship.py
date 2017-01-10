@@ -332,7 +332,6 @@ class PlotTermRelationship(object):
             'okapi': self.okapi,
             'dir': self.dir,
         }
-        model_optimal
         ranking_models = [('okapi', 'x'), ('dir', '^')]
         all_performances = {k:{'all': {}, 'higher-IDF': {}, 'lower-IDF': {}} for k in model_mapping}
         num_cols = min(4, len(details_rel_data)+1) # extra one for explanations
