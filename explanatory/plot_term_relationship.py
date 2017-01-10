@@ -354,7 +354,8 @@ class PlotTermRelationship(object):
                 row_idx += 1
                 col_idx = 0
             terms = queries[qid].split()
-            dfs = [cs.get_term_df(t) for t in terms]
+            dfs = np.array([cs.get_term_df(t) for t in terms])
+            print terms, dfs
             qid_details = {row['docid']:row for row in doc_details.get_qid_details(qid)}
             tfs = details_rel_data[qid][1]
             #dfs = details_rel_data[qid][2]
