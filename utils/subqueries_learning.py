@@ -398,7 +398,7 @@ class SubqueriesLearning(RunSubqueries):
 
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         idx = 0
-        with open(os.path.join(output_fn, 'wb') as f: 
+        with open(output_fn, 'wb') as f: 
             for qid in sorted(all_features, key=self.sort_qid):
                 for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
                     ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
