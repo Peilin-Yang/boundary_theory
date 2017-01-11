@@ -480,7 +480,7 @@ class SubqueriesLearning(RunSubqueries):
                     paras.append((self.corpus_path, self.collection_name, folder, fn, c))
         return paras
 
-    def svm_rank_wrapper(self, query_length, folder, c):
+    def svm_rank_wrapper(self, folder, query_length, c):
         svm_model_root = os.path.join(self.output_root, 'svm_rank', folder, 'models')
         command = ['svm_rank_learn', '-c', str(10**c), 
             os.path.join(self.subqueries_features_root, folder, query_length), 
