@@ -316,6 +316,15 @@ def output_features_kendallstau_atom(para_file):
             query_length = int(row[2])
             SubqueriesLearning(collection_path, collection_name).output_features_kendallstau(query_length)
 
+def output_features_kendallstau_all(query_length):
+    query_length = int(query_length)
+    all_paras = []
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.append((collection_path, collection_name))
+    SubqueriesLearning.output_features_kendallstau_all_collection(all_paras, query_length)
+
 def output_subqueries_features_batch(query_length):
     all_paras = []
     for q in g.query:
@@ -592,6 +601,9 @@ if __name__ == '__main__':
     parser.add_argument('-602', '--output_features_kendallstau_atom', 
         nargs=1,
         help='generate features kendallstau with performance')
+    parser.add_argument('-603', '--output_features_kendallstau_all', 
+        nargs=1,
+        help='generate features kendallstau for all collections. arg: query length')
     parser.add_argument('-61', '--output_subqueries_features_batch', 
         nargs=1,
         help='generate subqueries features paras. arg: query length (0 for all queries)')
@@ -672,6 +684,8 @@ if __name__ == '__main__':
         output_features_kendallstau_batch(args.output_features_kendallstau_batch[0])
     if args.output_features_kendallstau_atom:
         output_features_kendallstau_atom(args.output_features_kendallstau_atom[0])
+    if args.output_features_kendallstau_all:
+        output_features_kendallstau_all(args.output_features_kendallstau_all[0])
     if args.output_subqueries_features_batch:
         output_subqueries_features_batch(args.output_subqueries_features_batch[0])
     if args.output_subqueries_features_atom:

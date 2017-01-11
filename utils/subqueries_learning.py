@@ -400,6 +400,34 @@ class SubqueriesLearning(RunSubqueries):
         with open(output_fn) as f:
             print ''.join(f.readlines()[:10])
 
+    @staticmethod
+    def output_features_kendallstau_all_collection(collection_paths_n_names, query_length=0):
+        all_features = {}
+        feature_mapping = {}
+        for ele in collection_paths_n_names:
+            collection_path = ele[0]
+            collection_name = ele[1]
+            q = Query(collection_path)
+            if query_length == 0:
+                queries = q.get_queries()
+            else:
+                queries = q.get_queries_of_length(query_length)
+            queries = {ele['num']:ele['title'] for ele in queries}
+            with open(os.path.join(collection_path, 'subqueries', 'features', 'kendallstau', str(query_length))) as f:
+                r = csv.reader(f)
+                for row in r:
+                    feature_id = row[0]
+                    feature_name = row[1]
+                    feature_mapping[feature_id] = feature_name
+                    feature_score = float(row[2]) * len(queries)
+                    if feature_id not in all_features:
+                        all_features[feature_id] = 0.0
+                    all_features[feature_id] += feature_score
+        sorted_f = sorted(all_features.items(), key=operator.itemgetter(1), reverse=True)
+        for ele in sorted_f[:10]:
+            print ele[0], feature_mapping[ele[0]], ele[1]
+
+
     def output_collection_features(self, query_len=0):
         """
         output the collection level features to output
