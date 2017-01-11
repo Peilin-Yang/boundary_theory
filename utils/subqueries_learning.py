@@ -387,11 +387,11 @@ class SubqueriesLearning(RunSubqueries):
                 if this_features.shape[0] == 0:
                     continue
                 this_perfm = [float(all_performances[qid][subquery_id]) if qid in all_performances and subquery_id in all_performances[qid] else 0.0 for subquery_id in sorted(all_features[qid])]
-                for col in range(1, this_features.shape[1]+1):
+                for col in range(this_features.shape[1]):
                     tau, p_value = scipy.stats.kendalltau(this_features[:, col], this_perfm)
-                    if col not in kendallstau:
-                        kendallstau[col] = []
-                    kendallstau[col].append(tau if not np.isnan(tau) else 0)
+                    if col+1 not in kendallstau:
+                        kendallstau[col+1] = []
+                    kendallstau[col+1].append(tau if not np.isnan(tau) else 0)
             klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
             klist.sort(key=itemgetter(1), reverse=True)
             with open(output_fn, 'wb') as f:
