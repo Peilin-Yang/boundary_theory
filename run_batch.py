@@ -612,8 +612,8 @@ if __name__ == '__main__':
         help='generate subqueries features')
     parser.add_argument('-63', '--gen_svm_rank_batch', 
         nargs=1,
-        help=('generate the batch runs for svm rank. ')
-            ('arg: [feature_type(1-all features, 2-top features gen by kendallstau correlation')
+        help=(('generate the batch runs for svm rank. ')
+            ('arg: [feature_type(1-all features, 2-top features gen by kendallstau correlation'))
     )
     parser.add_argument('-64', '--svm_rank_atom', 
         nargs=1,
