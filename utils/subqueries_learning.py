@@ -381,7 +381,7 @@ class SubqueriesLearning(RunSubqueries):
         kendallstau = {}
         for qid in sorted(all_features):
             this_features = np.array([all_features[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
-            if not this_features:
+            if this_features.shape[0] == 0:
                 continue
             this_perfm = [float(all_performances[qid][subquery_id]) if qid in all_performances and subquery_id in all_performances[qid] else 0.0 for subquery_id in sorted(all_features[qid])]
             for col in range(this_features.shape[1]):
