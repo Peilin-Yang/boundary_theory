@@ -552,6 +552,7 @@ class SubqueriesLearning(RunSubqueries):
                 predict_fn = os.path.join(svm_predict_root, fn)
                 with open(predict_fn) as f:
                     predict_res = [float(line.strip()) for line in f.readlines()]
+                print feature_fn
                 with open(feature_fn) as f:
                     idx = 0
                     for line in f:
