@@ -358,8 +358,9 @@ def svm_rank_atom(para_file):
         for row in reader:
             collection_path = row[0]
             collection_name = row[1]
-            query_length = row[2]
-            c = int(row[3])
+            folder = row[2]
+            query_length = row[3]
+            c = int(row[4])
             SubqueriesLearning(collection_path, collection_name).svm_rank_wrapper(query_length, c)
 
 def gen_evaluate_svm_model_batch():
