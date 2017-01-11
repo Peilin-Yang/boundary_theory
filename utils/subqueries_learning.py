@@ -498,7 +498,6 @@ class SubqueriesLearning(RunSubqueries):
         error_rate_fn = os.path.join(self.output_root, 'svm_rank', folder, 'err_rate')
         error_rates = {}
         for fn in os.listdir(svm_model_root):
-            print svm_model_root, fn
             predict_output_fn = os.path.join(svm_predict_root, fn)
             if os.path.exists(predict_output_fn) and os.path.exists(error_rate_fn):
                 continue
