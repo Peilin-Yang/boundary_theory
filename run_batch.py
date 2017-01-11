@@ -343,12 +343,12 @@ def output_subqueries_features_atom(para_file):
             query_length = int(row[2])
             SubqueriesLearning(collection_path, collection_name).output_collection_features(query_length)
 
-def gen_svm_rank_batch():
+def gen_svm_rank_batch(feature_type=1):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.extend(SubqueriesLearning(collection_path, collection_name).batch_gen_svm_rank_paras())
+        all_paras.extend(SubqueriesLearning(collection_path, collection_name).batch_gen_svm_rank_paras(feature_type))
     #print all_paras
     gen_batch_framework('svm_rank_train', '64', all_paras)
 
@@ -611,8 +611,10 @@ if __name__ == '__main__':
         nargs=1,
         help='generate subqueries features')
     parser.add_argument('-63', '--gen_svm_rank_batch', 
-        action='store_true',
-        help='generate the batch runs for svm rank')
+        nargs=1,
+        help=('generate the batch runs for svm rank. ')
+            ('arg: [feature_type(1-all features, 2-top features gen by kendallstau correlation')
+    )
     parser.add_argument('-64', '--svm_rank_atom', 
         nargs=1,
         help='svm rank atom')
@@ -691,7 +693,7 @@ if __name__ == '__main__':
     if args.output_subqueries_features_atom:
         output_subqueries_features_atom(args.output_subqueries_features_atom[0])
     if args.gen_svm_rank_batch:
-        gen_svm_rank_batch()
+        gen_svm_rank_batch(int(args.gen_svm_rank_batch[0]))
     if args.svm_rank_atom:
         svm_rank_atom(args.svm_rank_atom[0])
     if args.gen_evaluate_svm_model_batch:

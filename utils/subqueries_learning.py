@@ -55,12 +55,6 @@ class SubqueriesLearning(RunSubqueries):
             12: 'AVGTFCTF'
         }
 
-        self.svm_model_root = os.path.join(self.output_root, 'svm_rank', 'models')
-        if not os.path.exists(self.svm_model_root):
-            os.makedirs(self.svm_model_root)
-        self.svm_predict_root = os.path.join(self.output_root, 'svm_rank', 'predict')
-        if not os.path.exists(self.svm_predict_root):
-            os.makedirs(self.svm_predict_root)
 
     def batch_gen_subqueries_features_paras(self, feature_type=0):
         all_paras = []
@@ -468,34 +462,51 @@ class SubqueriesLearning(RunSubqueries):
                             subquery_id))
                     idx += 1
 
-    def batch_gen_svm_rank_paras(self):
+    def batch_gen_svm_rank_paras(self, feature_type=1):
+        if feature_type == 2:
+            folder = 'kendallstau'
+        else:
+            folder = 'final'
         paras = []
-        for fn in os.listdir(os.path.join(self.subqueries_features_root, 'final')):
-            for c in range(-3, 5):
-                if not os.path.exists(os.path.join(self.svm_model_root, fn+'_'+str(10**c))):
-                    paras.append((self.corpus_path, self.collection_name, fn, c))
+        svm_model_root = os.path.join(self.output_root, 'svm_rank', folder, 'models')
+        if not os.path.exists(svm_model_root):
+            os.makedirs(svm_model_root)
+        svm_predict_root = os.path.join(output_root, 'svm_rank', folder, 'predict')
+        if not os.path.exists(svm_predict_root):
+            os.makedirs(svm_predict_root)
+        for fn in os.listdir(os.path.join(self.subqueries_features_root, folder)):
+            for c in range(-5, 5):
+                if not os.path.exists(os.path.join(svm_model_root, fn+'_'+str(10**c))):
+                    paras.append((self.corpus_path, self.collection_name, folder, fn, c))
         return paras
 
-    def svm_rank_wrapper(self, query_length, c):
+    def svm_rank_wrapper(self, query_length, folder, c):
+        svm_model_root = os.path.join(self.output_root, 'svm_rank', folder, 'models')
         command = ['svm_rank_learn', '-c', str(10**c), 
-            os.path.join(self.subqueries_features_root, 'final', query_length), 
-            os.path.join(self.svm_model_root, query_length+'_'+str(10**c))]
+            os.path.join(self.subqueries_features_root, folder, query_length), 
+            os.path.join(svm_model_root, query_length+'_'+str(10**c))]
         subprocess.call(command)
 
-    def evaluate_svm_model(self):
+    def evaluate_svm_model(self, feature_type=1):
+        if feature_type == 2:
+            folder = 'kendallstau'
+        else:
+            folder = 'final'
+        svm_model_root = os.path.join(self.output_root, 'svm_rank', folder, 'models')
+        svm_predict_root = os.path.join(output_root, 'svm_rank', folder, 'predict')
         all_models = {}
-        error_rate_fn = os.path.join(self.output_root, 'svm_rank', 'err_rate')
+        error_rate_fn = os.path.join(self.output_root, 'svm_rank', folder, 'err_rate')
         error_rates = {}
-        for fn in os.listdir(self.svm_model_root):
-            predict_output_fn = os.path.join(self.svm_predict_root, fn)
+        for fn in os.listdir(svm_model_root):
+            predict_output_fn = os.path.join(svm_predict_root, fn)
             if os.path.exists(predict_output_fn) and os.path.exists(error_rate_fn):
                 continue
             query_length = fn.split('_')[0]
             c = fn.split('_')[1]
             command = ['svm_rank_classify %s %s %s' 
-                % (os.path.join(self.subqueries_features_root, 'final', query_length), 
-                    os.path.join(self.svm_model_root, fn), 
-                    os.path.join(self.svm_predict_root, fn))]
+                % (os.path.join(self.subqueries_features_root, folder, query_length), 
+                    os.path.join(svm_model_root, fn), 
+                    os.path.join(svm_predict_root, fn))]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             returncode = p.wait()
             out, error = p.communicate()
@@ -537,8 +548,8 @@ class SubqueriesLearning(RunSubqueries):
                 optimal_svm_predict = 0.0
                 performance_using_all_terms = 0.0
                 fn = all_models[query_length][0][0]
-                feature_fn = os.path.join(self.subqueries_features_root, 'final', str(query_length))
-                predict_fn = os.path.join(self.svm_predict_root, fn)
+                feature_fn = os.path.join(self.subqueries_features_root, folder, str(query_length))
+                predict_fn = os.path.join(svm_predict_root, fn)
                 with open(predict_fn) as f:
                     predict_res = [float(line.strip()) for line in f.readlines()]
                 with open(feature_fn) as f:
@@ -585,7 +596,7 @@ class SubqueriesLearning(RunSubqueries):
 
                 # feature ranking related
                 model_fn = all_models[query_length][0][0]
-                with open(os.path.join(self.svm_model_root, model_fn)) as f:
+                with open(os.path.join(svm_model_root, model_fn)) as f:
                     model = f.readlines()[-1]
                 feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
                 feature_weights.sort(key=itemgetter(1, 0), reverse=True)
