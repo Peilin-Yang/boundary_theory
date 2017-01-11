@@ -363,12 +363,12 @@ def svm_rank_atom(para_file):
             c = int(row[4])
             SubqueriesLearning(collection_path, collection_name).svm_rank_wrapper(folder, query_length, c)
 
-def gen_evaluate_svm_model_batch():
+def gen_evaluate_svm_model_batch(feature_type=1):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.append((collection_path, collection_name))
+        all_paras.append((collection_path, collection_name, feature_type))
     #print all_paras
     gen_batch_framework('evaluate_svm_rank_model', '66', all_paras)
 
@@ -378,7 +378,8 @@ def evaluate_svm_model_atom(para_file):
         for row in reader:
             collection_path = row[0]
             collection_name = row[1]
-            SubqueriesLearning(collection_path, collection_name).evaluate_svm_model()
+            feature_type = int(row[2])
+            SubqueriesLearning(collection_path, collection_name).evaluate_svm_model(feature_type)
 
 def print_svm_model_feature_importance(top=10):
     all_top_features = {}
@@ -620,8 +621,8 @@ if __name__ == '__main__':
         nargs=1,
         help='svm rank atom')
     parser.add_argument('-65', '--gen_evaluate_svm_model_batch', 
-        action='store_true',
-        help='generate the batch runs for svm rank')
+        nargs=1,
+        help='generate the batch runs for svm rank. arg: [feature_type(1-all features, 2-top features gen by kendallstau correlation')
     parser.add_argument('-66', '--evaluate_svm_model_atom', 
         nargs=1,
         help='svm rank atom')
@@ -698,7 +699,7 @@ if __name__ == '__main__':
     if args.svm_rank_atom:
         svm_rank_atom(args.svm_rank_atom[0])
     if args.gen_evaluate_svm_model_batch:
-        gen_evaluate_svm_model_batch()
+        gen_evaluate_svm_model_batch(int(args.gen_evaluate_svm_model_batch[0]))
     if args.evaluate_svm_model_atom:
         evaluate_svm_model_atom(args.evaluate_svm_model_atom[0])
     if args.print_svm_model_feature_importance:
