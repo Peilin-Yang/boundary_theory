@@ -532,7 +532,7 @@ class SubqueriesLearning(RunSubqueries):
 
         feature_mapping = self.get_feature_mapping()
         svm_predict_optimal_subquery_len_dist = {}
-        with open(os.path.join(self.final_output_root, self.collection_name+'-svm_subquery_dist.md'), 'wb') as ssdf:
+        with open(os.path.join(self.final_output_root, self.collection_name+'-svm_subquery_dist-%s.md' % folder), 'wb') as ssdf:
             ssdf.write('### %s\n' % (self.collection_name))
             ssdf.write('| query len | using all terms | optimal (ground truth) | svm optimal |\n')
             ssdf.write('|--------|--------|--------|--------|\n')
@@ -600,7 +600,7 @@ class SubqueriesLearning(RunSubqueries):
                     model = f.readlines()[-1]
                 feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
                 feature_weights.sort(key=itemgetter(1, 0), reverse=True)
-                output_root = os.path.join(self.output_root, 'svm_rank', 'featurerank')
+                output_root = os.path.join(self.output_root, 'svm_rank', folder, 'featurerank')
                 if not os.path.exists(output_root):
                     os.makedirs(output_root)
                 with open(os.path.join(output_root, str(query_length)), 'wb') as f:
