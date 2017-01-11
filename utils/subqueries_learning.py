@@ -423,7 +423,7 @@ class SubqueriesLearning(RunSubqueries):
                     if feature_id not in all_features:
                         all_features[feature_id] = 0.0
                     all_features[feature_id] += feature_score
-        sorted_f = sorted(all_features.items(), key=operator.itemgetter(1), reverse=True)
+        sorted_f = sorted(all_features.items(), key=itemgetter(1), reverse=True)
         for ele in sorted_f[:10]:
             print ele[0], feature_mapping[ele[0]], ele[1]
 
