@@ -471,7 +471,7 @@ class SubqueriesLearning(RunSubqueries):
         svm_model_root = os.path.join(self.output_root, 'svm_rank', folder, 'models')
         if not os.path.exists(svm_model_root):
             os.makedirs(svm_model_root)
-        svm_predict_root = os.path.join(output_root, 'svm_rank', folder, 'predict')
+        svm_predict_root = os.path.join(self.output_root, 'svm_rank', folder, 'predict')
         if not os.path.exists(svm_predict_root):
             os.makedirs(svm_predict_root)
         for fn in os.listdir(os.path.join(self.subqueries_features_root, folder)):
