@@ -375,25 +375,30 @@ class SubqueriesLearning(RunSubqueries):
         output_root = os.path.join(self.subqueries_features_root, 'kendallstau')
         if not os.path.exists(output_root):
             os.makedirs(output_root)
-        all_performances = self.get_all_performances()
-        all_features = self.get_all_features(query_len)
-        all_features_matrix = []
-        kendallstau = {}
-        for qid in sorted(all_features):
-            this_features = np.array([all_features[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
-            if this_features.shape[0] == 0:
-                continue
-            this_perfm = [float(all_performances[qid][subquery_id]) if qid in all_performances and subquery_id in all_performances[qid] else 0.0 for subquery_id in sorted(all_features[qid])]
-            for col in range(this_features.shape[1]):
-                tau, p_value = scipy.stats.kendalltau(this_features[:, col], this_perfm)
-                if col not in kendallstau:
-                    kendallstau[col] = []
-                kendallstau[col].append(tau if not np.isnan(tau) else 0)
-        klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
-        klist.sort(key=itemgetter(1), reverse=True)
+        output_fn = os.path.join(output_root, str(query_len))
         feature_mapping = self.get_feature_mapping()
-        for ele in klist[:10]:
-            print feature_mapping[ele[0]], ele[1]
+        if not os.path.exists(output_fn):
+            all_performances = self.get_all_performances()
+            all_features = self.get_all_features(query_len)
+            all_features_matrix = []
+            kendallstau = {}
+            for qid in sorted(all_features):
+                this_features = np.array([all_features[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
+                if this_features.shape[0] == 0:
+                    continue
+                this_perfm = [float(all_performances[qid][subquery_id]) if qid in all_performances and subquery_id in all_performances[qid] else 0.0 for subquery_id in sorted(all_features[qid])]
+                for col in range(this_features.shape[1]):
+                    tau, p_value = scipy.stats.kendalltau(this_features[:, col], this_perfm)
+                    if col not in kendallstau:
+                        kendallstau[col] = []
+                    kendallstau[col].append(tau if not np.isnan(tau) else 0)
+            klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
+            klist.sort(key=itemgetter(1), reverse=True)
+            with open(output_fn, 'wb') as f:
+                for ele in klist:
+                    f.write('%d,%s,%s\n' % (ele[0], feature_mapping[ele[0]], ele[1]))
+        with open(output_fn) as f:
+            print f.readlines()[:10]
 
     def output_collection_features(self, query_len=0):
         """
