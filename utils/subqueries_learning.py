@@ -398,7 +398,7 @@ class SubqueriesLearning(RunSubqueries):
                 for ele in klist:
                     f.write('%d,%s,%s\n' % (ele[0], feature_mapping[ele[0]], ele[1]))
         with open(output_fn) as f:
-            print f.readlines()[:10]
+            print ''.join(f.readlines()[:10])
 
     def output_collection_features(self, query_len=0):
         """
