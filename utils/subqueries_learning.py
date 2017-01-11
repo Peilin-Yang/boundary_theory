@@ -382,6 +382,8 @@ class SubqueriesLearning(RunSubqueries):
         all_features_matrix = []
         kendallstau = {}
         for qid in sorted(all_features):
+            for subquery_id in sorted(all_features[qid]):
+                all_features_matrix.append(all_features[qid][subquery_id])
             this_features = np.array([all_features[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
             if this_features.shape[0] == 0:
                 continue
