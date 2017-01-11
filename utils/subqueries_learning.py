@@ -493,7 +493,7 @@ class SubqueriesLearning(RunSubqueries):
         else:
             folder = 'final'
         svm_model_root = os.path.join(self.output_root, 'svm_rank', folder, 'models')
-        svm_predict_root = os.path.join(output_root, 'svm_rank', folder, 'predict')
+        svm_predict_root = os.path.join(self.output_root, 'svm_rank', folder, 'predict')
         all_models = {}
         error_rate_fn = os.path.join(self.output_root, 'svm_rank', folder, 'err_rate')
         error_rates = {}
