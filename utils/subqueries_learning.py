@@ -577,7 +577,6 @@ class SubqueriesLearning(RunSubqueries):
                 collection_name = m.group(1)
                 query_length = int(m.group(2))
                 method = m.group(3)+'_'+m.group(4)
-                print collection_name, query_length, method
                 if query_length not in all_predict_data:
                     all_predict_data[query_length] = {}
                 if method not in all_predict_data[query_length]:
