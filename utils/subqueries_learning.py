@@ -587,9 +587,9 @@ class SubqueriesLearning(RunSubqueries):
                 all_predict_data[query_length][method].append((collection_name, performance))
         avg_predict_data = {}
         for query_length in all_predict_data:
-            avg_predict_data[query_length] = {}
+            avg_predict_data[query_length] = []
             for method in all_predict_data[query_length]:
-                avg_predict_data[query_length][method] = np.mean([ele[1] for ele in all_predict_data[query_length][method]])
+                avg_predict_data[query_length].append((method, np.mean([ele[1] for ele in all_predict_data[query_length][method]])))
 
         print avg_predict_data
 
