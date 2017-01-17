@@ -441,6 +441,7 @@ class SubqueriesLearning(RunSubqueries):
         output_root = os.path.join(self.subqueries_features_root, 'classification')
         if not os.path.exists(output_root):
             os.makedirs(output_root)
+        print 'here'
         output_fn = os.path.join(output_root, str(query_len))
         feature_mapping = self.get_feature_mapping()
         all_performances = self.get_all_performances()
