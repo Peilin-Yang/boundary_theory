@@ -561,6 +561,7 @@ class SubqueriesLearning(RunSubqueries):
                     elif method == 'svm':
                         clf = SVC(C=para)
                     clf.fit(train_features, train_classes)
+                    print testing_classes
                     predicted = clf.predict(testing_classes)
                     print query_length, method, para
                     print classification_report(testing_classes, predicted)
