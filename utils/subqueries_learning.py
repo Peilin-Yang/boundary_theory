@@ -568,7 +568,6 @@ class SubqueriesLearning(RunSubqueries):
 
     @staticmethod
     def evaluate_cross_classification(all_data, query_length=2):
-        print '1'
         data_mapping = {d[1]:d[0] for d in all_data}
         results_root = os.path.join('../all_results', 'subqueries', 'cross_classification')
         all_predict_data = {}
@@ -587,7 +586,7 @@ class SubqueriesLearning(RunSubqueries):
                     all_predict_data[query_length][para] = []
                 with open(os.path.join(results_root, fn)) as f:
                     performance = float(f.read())
-                all_predict_data[query_length][c].append((collection_name, performance))
+                all_predict_data[query_length][para].append((collection_name, performance))
         print all_predict_data
 
     def output_collection_features(self, query_len=0):
