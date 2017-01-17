@@ -441,19 +441,16 @@ class SubqueriesLearning(RunSubqueries):
         output_root = os.path.join(self.subqueries_features_root, 'classification')
         if not os.path.exists(output_root):
             os.makedirs(output_root)
-        print 'here'
         output_fn = os.path.join(output_root, str(query_len))
         feature_mapping = self.get_feature_mapping()
-        print 'got feature mapping'
         all_performances = self.get_all_performances()
-        print 'got all performances'
         all_features = self.get_all_features(query_len)
-        print 'got all features'
         all_features_matrix = []
         kendallstau = {}
         for qid in sorted(all_features):
             all_performances[qid].sort(key=self.sort_subquery_id)
-            print all_performances[qid].keys()
+            sorted_subqueryid = sorted(all_performances[qid].items(), key=itemgetter(1))
+            print sort_subquery_id
             exit()
             for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
                 all_features_matrix.append(all_features[qid][subquery_id])
