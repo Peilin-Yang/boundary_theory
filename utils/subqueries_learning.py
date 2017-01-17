@@ -473,7 +473,7 @@ class SubqueriesLearning(RunSubqueries):
             'nn': [10**i for i in range(-5, 0, 1)]
         }
         print methods
-        paras = []
+        run_paras = []
         classification_results_root = os.path.join(self.output_root, 'classification', 'results')
         if not os.path.exists(classification_results_root):
             os.makedirs(classification_results_root)
@@ -483,8 +483,8 @@ class SubqueriesLearning(RunSubqueries):
                 for para in paras:
                     output_fn = os.path.join(classification_results_root, query_len+'_'+method+'_'+str(para))
                     if not os.path.exists(output_fn):
-                        paras.append((self.corpus_path, self.collection_name, query_len, method, para))
-        return paras
+                        run_paras.append((self.corpus_path, self.collection_name, query_len, method, para))
+        return run_paras
 
     def read_classification_features(self, query_len):
         feature_root = os.path.join(self.subqueries_features_root, 'classification')
