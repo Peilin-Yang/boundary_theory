@@ -445,31 +445,16 @@ class SubqueriesLearning(RunSubqueries):
         feature_mapping = self.get_feature_mapping()
         all_performances = self.get_all_performances()
         all_features = self.get_all_features(query_len)
-        all_features_matrix = []
-        kendallstau = {}
-        for qid in sorted(all_features):
+        classification_features = {}
+        for qid in sorted(all_featues): 
+            classification_features[qid] = all_features[qid][str(query_len)+'0']
             sorted_subqueryid = sorted(all_performances[qid].items(), key=itemgetter(1), reverse=True)
             if int(sorted_subqueryid[0][0].split('-')[0]) != query_len:
-                print qid, 0
+                _class = 0
             else:
-                print qid, 1
-            continue
-            for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
-                all_features_matrix.append(all_features[qid][subquery_id])
-            this_features = np.array([all_features[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
-            if this_features.shape[0] == 0:
-                continue
-            this_perfm = [float(all_performances[qid][subquery_id]) if qid in all_performances and subquery_id in all_performances[qid] else 0.0 for subquery_id in sorted(all_features[qid])]
-            for col in range(this_features.shape[1]):
-                tau, p_value = scipy.stats.kendalltau(this_features[:, col], this_perfm)
-                if col+1 not in kendallstau:
-                    kendallstau[col+1] = []
-                kendallstau[col+1].append(tau if not np.isnan(tau) else 0)
+                _class = 1
+        print classification_features
         exit()
-        klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
-        klist.sort(key=itemgetter(1), reverse=True)
-        top_features = [ele[0] for ele in klist[:10]]
-        print top_features
 
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         idx = 0
