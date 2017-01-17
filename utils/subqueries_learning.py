@@ -446,7 +446,7 @@ class SubqueriesLearning(RunSubqueries):
         all_performances = self.get_all_performances()
         all_features = self.get_all_features(query_len)
         classification_features = {}
-        for qid in sorted(all_featues): 
+        for qid in sorted(all_features): 
             classification_features[qid] = all_features[qid][str(query_len)+'0']
             sorted_subqueryid = sorted(all_performances[qid].items(), key=itemgetter(1), reverse=True)
             if int(sorted_subqueryid[0][0].split('-')[0]) != query_len:
