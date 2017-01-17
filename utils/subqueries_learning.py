@@ -480,7 +480,7 @@ class SubqueriesLearning(RunSubqueries):
         feature_root = os.path.join(self.subqueries_features_root, 'classification')
         for query_len in os.listdir(feature_root):
             for method, paras in methods.items():
-                for paras in paras:
+                for para in paras:
                     output_fn = os.path.join(classification_results_root, query_len+'_'+method+'_'+str(para))
                     if not os.path.exists(output_fn):
                         paras.append((self.corpus_path, self.collection_name, query_len, method, para))
