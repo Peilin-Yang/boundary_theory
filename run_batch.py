@@ -343,27 +343,19 @@ def output_features_classification_atom(para_file):
             query_length = int(row[2])
             SubqueriesLearning(collection_path, collection_name).output_features_classification(query_length)
 
-def run_subquery_classification_batch():
-    all_paras = []
-    for q in g.query:
-        collection_name = collection_name = q['collection_formal_name']
-        collection_path = os.path.join(_root, q['collection'])
-        all_paras.extend(SubqueriesLearning(collection_path, collection_name).batch_run_classification_paras())
-    #print all_paras
-    gen_batch_framework('run_subquery_classification', '612', all_paras)
+def cross_run_subquery_classification_batch(query_length):
+    query_length = int(query_length)
+    collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
+    for i in range(len(collections)):
+        this_training = []
+        this_testing = []
+        for j in range(len(collections)):
+            if j == i:
+                this_testing.append(collections[j])
+            else:
+                this_training.append(collections[j])
 
-def run_subquery_classification_atom(para_file):
-    with open(para_file) as f:
-        reader = csv.reader(f)
-        for row in reader:
-            collection_path = row[0]
-            collection_name = row[1]
-            query_len = row[2]
-            method = row[3]
-            para = float(row[4])
-            SubqueriesLearning(collection_path, collection_name).run_classification(query_len, method, para)
-
-
+        SubqueriesLearning.cross_run_classification(this_training, this_testing, query_length)
 
 def output_subqueries_features_batch(query_length):
     all_paras = []

@@ -20,6 +20,8 @@ from sklearn.preprocessing import normalize
 from sklearn.svm import LinearSVC
 from sklearn.feature_selection import SelectFromModel
 from sklearn.neural_network import MLPClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report
 
 from query import Query
 from performance import Performances
@@ -486,11 +488,9 @@ class SubqueriesLearning(RunSubqueries):
                         run_paras.append((self.corpus_path, self.collection_name, query_len, method, para))
         return run_paras
 
-    def read_classification_features(self, query_len):
-        feature_root = os.path.join(self.subqueries_features_root, 'classification')
-        features = []
+    def read_classification_features(fn):
         classes = []
-        with open(os.path.join(feature_root, query_len)) as f:
+        with open(fn) as f:
             for line in f:
                 line = line.strip()
                 if line:
@@ -499,15 +499,70 @@ class SubqueriesLearning(RunSubqueries):
                     classes.append(int(row[0]))
         return features, classes
 
-    def run_classification(self, query_len, method, para):
-        classification_results_root = os.path.join(self.output_root, 'classification', 'results')
-        features, classes = self.read_classification_features(query_len)
-        if method == 'nn':
-            clf = MLPClassifier(solver='lbfgs', alpha=para, random_state=1)
-            clf.fit(features, classes)
-            predicted = clf.predict(features)
-            print zip(classes, predicted)
-            print clf.coefs_
+
+    @staticmethod
+    def write_combined_feature_classification_fn(results_root, l, ofn, query_length=2, reorder_qid=False):
+        trainging_fn = os.path.join(results_root, 'train_%d' % query_length)
+        if os.path.exists(ofn):
+            os.remove(ofn)
+        with open(ofn, 'ab') as f:
+            qid_idx = 1
+            qid_lines = {}
+            for ele in l:
+                collection_path = ele[0]
+                collection_name = ele[1]
+                feature_fn = os.path.join(collection_path, 'subqueries', 'features', 'classification', str(query_length))
+                with open(feature_fn) as ff:
+                    if not reorder_qid:
+                        f.write(ff.read())
+                    else:
+                        for line in ff:
+                            line = line.strip()
+                            row = line.split()
+                            qid = int(row[1].split(':')[1])
+                            if qid not in qid_lines:
+                                qid_lines[qid] = []
+                            qid_lines[qid].append(line)
+            if reorder_qid:
+                for qid in qid_lines:
+                    for line in qid_lines[qid]:
+                        row = line.split()
+                        row[1] = 'qid:%d' % qid_idx
+                        f.write('%s\n' % ' '.join(row))
+                    qid_idx += 1
+
+    @staticmethod
+    def cross_run_classification(train, test, query_length=2):
+        results_root = os.path.join('../all_results', 'subqueries', 'cross_classification')
+        if not os.path.exists(results_root):
+            os.makedirs(results_root)
+        test_collection = test[0][1]
+        trainging_fn = os.path.join(results_root, 'train_%s_%d' % (test_collection, query_length))
+        SubqueriesLearning.write_combined_feature_classification_fn(results_root, train, trainging_fn, query_length, True)
+        testing_fn = os.path.join(results_root, 'test_%s_%d' % (test_collection, query_length))
+        SubqueriesLearning.write_combined_feature_classification_fn(results_root, test, testing_fn, query_length, False)
+        
+        methods = {
+            'svm': [10**i for i in range(-5, 5)],
+            'nn': [10**i for i in range(-5, 0, 1)]
+        }
+        for method, paras in methods.items():
+            for para in paras:
+                output_fn = os.path.join(results_root, 'predict_'+str(query_length)+'_'+method+'_'+str(para))
+                if not os.path.exists(output_fn):
+                    train_features, train_classes = 
+                        SubqueriesLearning.read_classification_features(trainging_fn)
+                    testing_features, testing_classes = 
+                        SubqueriesLearning.read_classification_features(testing_fn)
+                    if method == 'nn':
+                        clf = MLPClassifier(solver='lbfgs', alpha=para, random_state=1)
+                    elif method == 'svm':
+                        clf = SVC(C=para)
+                    clf.fit(train_features, train_classes)
+                    predicted = clf.predict(testing_classes)
+                    print query_length, method, para
+                    print classification_report(testing_classes, predicted)
+                    exit()
 
     def output_collection_features(self, query_len=0):
         """
