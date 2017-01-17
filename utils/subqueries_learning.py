@@ -432,6 +432,54 @@ class SubqueriesLearning(RunSubqueries):
             print ele[0], feature_mapping[ele[0]], ele[1]
 
 
+    def output_features_classification(self, query_len=0):
+        """
+        Output the features only for the original queries.
+        We only would like to know whether we should use original 
+        query or the sub-query
+        """
+        output_root = os.path.join(self.subqueries_features_root, 'classification')
+        if not os.path.exists(output_root):
+            os.makedirs(output_root)
+        output_fn = os.path.join(output_root, str(query_len))
+        feature_mapping = self.get_feature_mapping()
+        all_performances = self.get_all_performances()
+        all_features = self.get_all_features(query_len)
+        all_features_matrix = []
+        kendallstau = {}
+        for qid in sorted(all_features):
+            all_performances[qid].sort(key=self.sort_subquery_id)
+            print all_performances[qid].keys()
+            exit()
+            for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
+                if all_performances[qid][qusb]
+                all_features_matrix.append(all_features[qid][subquery_id])
+            this_features = np.array([all_features[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
+            if this_features.shape[0] == 0:
+                continue
+            this_perfm = [float(all_performances[qid][subquery_id]) if qid in all_performances and subquery_id in all_performances[qid] else 0.0 for subquery_id in sorted(all_features[qid])]
+            for col in range(this_features.shape[1]):
+                tau, p_value = scipy.stats.kendalltau(this_features[:, col], this_perfm)
+                if col+1 not in kendallstau:
+                    kendallstau[col+1] = []
+                kendallstau[col+1].append(tau if not np.isnan(tau) else 0)
+        klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
+        klist.sort(key=itemgetter(1), reverse=True)
+        top_features = [ele[0] for ele in klist[:10]]
+        print top_features
+
+        normalized = normalize(all_features_matrix, axis=0) # normalize each feature
+        idx = 0
+        with open(output_fn, 'wb') as f: 
+            for qid in sorted(all_features, key=self.sort_qid):
+                for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
+                    ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
+                    if qid in all_performances and subquery_id in all_performances[qid]:
+                        f.write('%s qid:%s %s # %s\n' % (str(all_performances[qid][subquery_id]), qid, 
+                            ' '.join(['%d:%f' % (i, normalized[idx][i-1] if i in top_features else 0) for i in range(1, len(normalized[idx])+1)]), 
+                            subquery_id))
+                    idx += 1
+
     def output_collection_features(self, query_len=0):
         """
         output the collection level features to output
@@ -765,3 +813,34 @@ class SubqueriesLearning(RunSubqueries):
                 if returncode != 0:
                     raise NameError("Run Query Error: %s %s" % (command, error))
 
+
+    @staticmethod
+    def write_combined_feature_fn(results_root, l, ofn, query_length=2, reorder_qid=False):
+        trainging_fn = os.path.join(results_root, 'train_%d' % query_length)
+        if os.path.exists(ofn):
+            os.remove(ofn)
+        with open(ofn, 'ab') as f:
+            qid_idx = 1
+            qid_lines = {}
+            for ele in l:
+                collection_path = ele[0]
+                collection_name = ele[1]
+                feature_fn = os.path.join(collection_path, 'subqueries', 'features', 'final', str(query_length))
+                with open(feature_fn) as ff:
+                    if not reorder_qid:
+                        f.write(ff.read())
+                    else:
+                        for line in ff:
+                            line = line.strip()
+                            row = line.split()
+                            qid = int(row[1].split(':')[1])
+                            if qid not in qid_lines:
+                                qid_lines[qid] = []
+                            qid_lines[qid].append(line)
+            if reorder_qid:
+                for qid in qid_lines:
+                    for line in qid_lines[qid]:
+                        row = line.split()
+                        row[1] = 'qid:%d' % qid_idx
+                        f.write('%s\n' % ' '.join(row))
+                    qid_idx += 1
