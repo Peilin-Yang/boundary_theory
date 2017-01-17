@@ -593,7 +593,7 @@ class SubqueriesLearning(RunSubqueries):
         for query_length in avg_predict_data:
             avg_predict_data[query_length].sort(key=itemgetter(1), reverse=True)
         for query_length in avg_predict_data:
-            print query_length, avg_predict_data[query_length][0]
+            print query_length, avg_predict_data[query_length][0], avg_predict_data[query_length][1]
 
     def output_collection_features(self, query_len=0):
         """
