@@ -356,6 +356,10 @@ def cross_run_subquery_classification(query_length):
                 this_training.append(collections[j])
         SubqueriesLearning.cross_run_classification(this_training, this_testing, query_length)
 
+def evaluate_cross_classification():
+    collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
+    SubqueriesLearning.evaluate_cross_classification(collections)
+
 def output_subqueries_features_batch(query_length):
     all_paras = []
     for q in g.query:
@@ -649,6 +653,9 @@ if __name__ == '__main__':
             'it should favor subquery or the original one. '
             'arg: query_length')
         )
+    parser.add_argument('-612', '--evaluate_cross_classification', 
+        action='store_true',
+        help='evaluate_cross_classification')
     parser.add_argument('-61', '--output_subqueries_features_batch', 
         nargs=1,
         help='generate subqueries features paras. arg: query length (0 for all queries)')
