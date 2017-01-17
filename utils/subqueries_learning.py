@@ -490,6 +490,7 @@ class SubqueriesLearning(RunSubqueries):
 
     @staticmethod
     def read_classification_features(fn):
+        features = []
         classes = []
         with open(fn) as f:
             for line in f:
