@@ -497,7 +497,7 @@ class SubqueriesLearning(RunSubqueries):
                     row = line.split()
                     features.append([float(ele.split(':')[1]) for ele in row[2:-2]])
                     classes.append(int(row[0]))
-        return features, clssses
+        return features, classes
 
     def run_classification(self, query_len, method, para):
         classification_results_root = os.path.join(self.output_root, 'classification', 'results')
