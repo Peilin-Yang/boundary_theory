@@ -449,7 +449,7 @@ class SubqueriesLearning(RunSubqueries):
         kendallstau = {}
         for qid in sorted(all_features):
             sorted_subqueryid = sorted(all_performances[qid].items(), key=itemgetter(1))
-            print sort_subquery_id
+            print sorted_subqueryid
             exit()
             for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
                 all_features_matrix.append(all_features[qid][subquery_id])
