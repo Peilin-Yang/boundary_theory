@@ -445,28 +445,25 @@ class SubqueriesLearning(RunSubqueries):
         feature_mapping = self.get_feature_mapping()
         all_performances = self.get_all_performances()
         all_features = self.get_all_features(query_len)
+        all_features_matrix = []
         classification_features = {}
+        classification = {}
         for qid in sorted(all_features): 
             classification_features[qid] = all_features[qid][str(query_len)+'-0']
+            all_features_matrix.append(all_features[qid][str(query_len)+'-0'])
             sorted_subqueryid = sorted(all_performances[qid].items(), key=itemgetter(1), reverse=True)
             if int(sorted_subqueryid[0][0].split('-')[0]) != query_len:
-                _class = 0
+                classification[qid] = 0
             else:
-                _class = 1
-        print classification_features
-        exit()
-
+                classification[qid] = 1
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         idx = 0
         with open(output_fn, 'wb') as f: 
             for qid in sorted(all_features, key=self.sort_qid):
-                for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
-                    ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
-                    if qid in all_performances and subquery_id in all_performances[qid]:
-                        f.write('%s qid:%s %s # %s\n' % (str(all_performances[qid][subquery_id]), qid, 
-                            ' '.join(['%d:%f' % (i, normalized[idx][i-1] if i in top_features else 0) for i in range(1, len(normalized[idx])+1)]), 
-                            subquery_id))
-                    idx += 1
+                f.write('%d qid:%s %s # %s\n' % (classification[qid][subquery_id], qid, 
+                    ' '.join(['%d:%f' % (i, normalized[idx][i-1] if i in top_features else 0) for i in range(1, len(normalized[idx])+1)]), 
+                    str(query_len)+'-0'))
+                idx += 1
 
     def output_collection_features(self, query_len=0):
         """
