@@ -488,6 +488,7 @@ class SubqueriesLearning(RunSubqueries):
                         run_paras.append((self.corpus_path, self.collection_name, query_len, method, para))
         return run_paras
 
+    @staticmethod
     def read_classification_features(fn):
         classes = []
         with open(fn) as f:
