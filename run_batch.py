@@ -332,7 +332,7 @@ def output_features_classification_batch(query_length):
         collection_path = os.path.join(_root, q['collection'])
         all_paras.append((collection_path, collection_name, query_length))
     #print all_paras
-    gen_batch_framework('output_features_kendallstau', '610', all_paras)
+    gen_batch_framework('output_features_classification', '610', all_paras)
 
 def output_features_classification_atom(para_file):
     with open(para_file) as f:
