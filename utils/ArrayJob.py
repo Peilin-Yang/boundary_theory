@@ -9,6 +9,8 @@ qs_file_content = Template("""
 SEEDFILE=$seedfile
 SEED=$$(awk "NR==$$SGE_TASK_ID" $$SEEDFILE)
 
+source ~/after_login
+
 $s $quote$$SEED$quote
 """)
 
@@ -16,6 +18,8 @@ qs_file_content_no_para = Template("""
 #!/bin/sh  
 #$$ -t 1-$nodes_range
 #$$ -l m_mem_free=$memory
+
+source ~/after_login
 
 $s
 """)
