@@ -448,7 +448,6 @@ class SubqueriesLearning(RunSubqueries):
         all_features_matrix = []
         kendallstau = {}
         for qid in sorted(all_features):
-            all_performances[qid].sort(key=self.sort_subquery_id)
             sorted_subqueryid = sorted(all_performances[qid].items(), key=itemgetter(1))
             print sort_subquery_id
             exit()
