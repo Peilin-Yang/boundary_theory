@@ -461,7 +461,7 @@ class SubqueriesLearning(RunSubqueries):
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         idx = 0
         with open(output_fn, 'wb') as f: 
-            for qid in sorted(all_features, key=self.sort_qid):
+            for qid in sorted(classification, key=self.sort_qid):
                 f.write('%d qid:%s %s # %s\n' % (classification[qid], qid, 
                     ' '.join(['%d:%f' % (i, normalized[idx][i-1]) for i in range(1, len(normalized[idx])+1)]), 
                     str(query_len)+'-0'))
