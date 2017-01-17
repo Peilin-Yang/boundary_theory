@@ -19,6 +19,7 @@ import scipy.stats
 from sklearn.preprocessing import normalize
 from sklearn.svm import LinearSVC
 from sklearn.feature_selection import SelectFromModel
+from sklearn.neural_network import MLPClassifier
 
 from query import Query
 from performance import Performances
@@ -431,7 +432,6 @@ class SubqueriesLearning(RunSubqueries):
         for ele in sorted_f[:10]:
             print ele[0], feature_mapping[ele[0]], ele[1]
 
-
     def output_features_classification(self, query_len=0):
         """
         Output the features only for the original queries.
@@ -466,6 +466,47 @@ class SubqueriesLearning(RunSubqueries):
                     ' '.join(['%d:%f' % (i, normalized[idx][i-1]) for i in range(1, len(normalized[idx])+1)]), 
                     str(query_len)+'-0'))
                 idx += 1
+
+    def batch_run_classification_paras(self):
+        methods = {
+            'svm': [10**i for i in np.arange(-5, 5, 1)],
+            'nn': [10**i for i in np.arange(-5, 0, 1)]
+        }
+        print methods
+        paras = []
+        classification_results_root = os.path.join(self.output_root, 'classification', 'results')
+        if not os.path.exists(classification_results_root):
+            os.makedirs(classification_results_root)
+        feature_root = os.path.join(self.subqueries_features_root, 'classification')
+        for query_len in os.listdir(feature_root):
+            for method, paras in methods.items():
+                for paras in paras:
+                    output_fn = os.path.join(classification_results_root, query_len+'_'+method+'_'+str(para))
+                    if not os.path.exists(output_fn):
+                        paras.append((self.corpus_path, self.collection_name, query_len, method, para))
+        return paras
+
+    def read_classification_features(self, query_len):
+        feature_root = os.path.join(self.subqueries_features_root, 'classification')
+        features = []
+        classes = []
+        with open(os.path.join(feature_root, query_len)) as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    row = line.split()
+                    features.append([float(ele.split(':')[1]) for ele in row[2:-2]])
+                    classes.append(int(row[0]))
+        return features, clssses
+
+    def run_classification(self, query_len, method, para):
+        classification_results_root = os.path.join(self.output_root, 'classification', 'results')
+        features, classes = self.read_classification_features(query_len)
+        if method == 'nn':
+            clf = MLPClassifier(solver='lbfgs', alpha=para, random_state=1)
+            clf.fit(features, classes)
+            predicted = clf.predict(features)
+            print zip(classes, predicted)
 
     def output_collection_features(self, query_len=0):
         """
