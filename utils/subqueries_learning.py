@@ -351,7 +351,7 @@ class SubqueriesLearning(RunSubqueries):
             try:
                 with open(os.path.join(self.subqueries_performance_root, fn)) as f:
                     first_line = f.readline()
-                    ap = first_line.split()[-1]
+                    ap = float(first_line.split()[-1])
             except:
                 continue
             if qid not in results:
@@ -449,7 +449,7 @@ class SubqueriesLearning(RunSubqueries):
         kendallstau = {}
         for qid in sorted(all_features):
             sorted_subqueryid = sorted(all_performances[qid].items(), key=itemgetter(1), reverse=True)
-            if int(sorted_subqueryid.split('-')[0]) != query_len:
+            if int(sorted_subqueryid[0][0].split('-')[0]) != query_len:
                 print qid, 0
             else:
                 print qid, 1
