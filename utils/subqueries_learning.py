@@ -448,9 +448,12 @@ class SubqueriesLearning(RunSubqueries):
         all_features_matrix = []
         kendallstau = {}
         for qid in sorted(all_features):
-            sorted_subqueryid = sorted(all_performances[qid].items(), key=itemgetter(1))
-            print sorted_subqueryid
-            exit()
+            sorted_subqueryid = sorted(all_performances[qid].items(), key=itemgetter(1), reverse=True)
+            if int(sorted_subqueryid.split('-')[0]) != query_len:
+                print qid, 0
+            else:
+                print qid, 1
+            continue
             for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
                 all_features_matrix.append(all_features[qid][subquery_id])
             this_features = np.array([all_features[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
@@ -462,6 +465,7 @@ class SubqueriesLearning(RunSubqueries):
                 if col+1 not in kendallstau:
                     kendallstau[col+1] = []
                 kendallstau[col+1].append(tau if not np.isnan(tau) else 0)
+        exit()
         klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
         klist.sort(key=itemgetter(1), reverse=True)
         top_features = [ele[0] for ele in klist[:10]]
