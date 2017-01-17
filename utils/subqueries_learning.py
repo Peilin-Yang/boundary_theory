@@ -444,8 +444,11 @@ class SubqueriesLearning(RunSubqueries):
         print 'here'
         output_fn = os.path.join(output_root, str(query_len))
         feature_mapping = self.get_feature_mapping()
+        print 'got feature mapping'
         all_performances = self.get_all_performances()
+        print 'got all performances'
         all_features = self.get_all_features(query_len)
+        print 'got all features'
         all_features_matrix = []
         kendallstau = {}
         for qid in sorted(all_features):
