@@ -21,6 +21,7 @@ from sklearn.svm import LinearSVC
 from sklearn.feature_selection import SelectFromModel
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
+from sklearn.metrics import roc_auc_score
 from sklearn.metrics import classification_report
 
 from query import Query
@@ -562,9 +563,9 @@ class SubqueriesLearning(RunSubqueries):
                         clf = SVC(C=para)
                     clf.fit(train_features, train_classes)
                     predicted = clf.predict(testing_features)
-                    print '-'*30
-                    print query_length, method, para
-                    print classification_report(testing_classes, predicted)
+                    with open(output_fn, 'wb') as f:
+                        f.write('%.4f' % roc_auc_score(testing_classes, predicted))
+
 
     def output_collection_features(self, query_len=0):
         """
