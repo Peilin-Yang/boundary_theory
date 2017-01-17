@@ -573,7 +573,6 @@ class SubqueriesLearning(RunSubqueries):
         all_predict_data = {}
         for fn in os.listdir(results_root):
             m = re.search(r'^predict_(.*?)_(.*?)_(.*)_(.*)$', fn)
-            print fn
             if m:
                 collection_name = m.group(1)
                 query_length = int(m.group(2))
@@ -586,7 +585,13 @@ class SubqueriesLearning(RunSubqueries):
                 with open(os.path.join(results_root, fn)) as f:
                     performance = float(f.read())
                 all_predict_data[query_length][method].append((collection_name, performance))
-        print all_predict_data
+        avg_predict_data = {}
+        for query_length in all_predict_data:
+            avg_predict_data[query_length] = {}
+            for method in all_predict_data[query_length]:
+                avg_predict_data[query_length][method] = np.mean([ele[1] for ele in all_predict_data[query_length][method]])
+
+        print avg_predict_data
 
     def output_collection_features(self, query_len=0):
         """
