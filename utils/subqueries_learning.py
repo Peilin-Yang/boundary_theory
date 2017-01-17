@@ -551,7 +551,7 @@ class SubqueriesLearning(RunSubqueries):
         }
         for method, paras in methods.items():
             for para in paras:
-                output_fn = os.path.join(results_root, 'predict_'+str(query_length)+'_'+method+'_'+str(para))
+                output_fn = os.path.join(results_root, 'predict_'+test_collection+'_'+str(query_length)+'_'+method+'_'+str(para))
                 if not os.path.exists(output_fn):
                     train_features, train_classes = \
                         SubqueriesLearning.read_classification_features(trainging_fn)
