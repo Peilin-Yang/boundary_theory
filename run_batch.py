@@ -361,7 +361,7 @@ def run_subquery_classification_atom(para_file):
             query_len = row[2]
             method = row[3]
             para = float(row[4])
-            SubqueriesLearning(collection_path, collection_name).run_classification(folder, query_len, method, para)
+            SubqueriesLearning(collection_path, collection_name).run_classification(query_len, method, para)
 
 
 
