@@ -573,6 +573,7 @@ class SubqueriesLearning(RunSubqueries):
         all_predict_data = {}
         for fn in os.listdir(results_root):
             m = re.search(r'^predict_(.*?)_(.*?)_(.*)_(.*)$', fn)
+            print fn
             if m:
                 collection_name = m.group(1)
                 query_length = int(m.group(2))
