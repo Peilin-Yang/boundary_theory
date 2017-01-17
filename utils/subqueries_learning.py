@@ -552,7 +552,7 @@ class SubqueriesLearning(RunSubqueries):
                 if not os.path.exists(output_fn):
                     train_features, train_classes = \
                         SubqueriesLearning.read_classification_features(trainging_fn)
-                    testing_features, testing_classes = 
+                    testing_features, testing_classes = \
                         SubqueriesLearning.read_classification_features(testing_fn)
                     if method == 'nn':
                         clf = MLPClassifier(solver='lbfgs', alpha=para, random_state=1)
