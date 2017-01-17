@@ -357,6 +357,7 @@ def cross_run_subquery_classification(query_length):
         SubqueriesLearning.cross_run_classification(this_training, this_testing, query_length)
 
 def evaluate_cross_classification():
+    print '111'
     collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
     SubqueriesLearning.evaluate_cross_classification(collections)
 
