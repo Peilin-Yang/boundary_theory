@@ -507,7 +507,7 @@ class SubqueriesLearning(RunSubqueries):
             clf.fit(features, classes)
             predicted = clf.predict(features)
             print zip(classes, predicted)
-            print [coef.shape for coef in clf.coefs_]
+            print clf.coefs_
 
     def output_collection_features(self, query_len=0):
         """
