@@ -449,6 +449,8 @@ class SubqueriesLearning(RunSubqueries):
         classification_features = {}
         classification = {}
         for qid in sorted(all_performances): 
+            if qid not in all_features:
+                continue
             classification_features[qid] = all_features[qid][str(query_len)+'-0']
             all_features_matrix.append(all_features[qid][str(query_len)+'-0'])
             sorted_subqueryid = sorted(all_performances[qid].items(), key=itemgetter(1), reverse=True)
