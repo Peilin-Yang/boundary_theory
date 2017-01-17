@@ -460,7 +460,7 @@ class SubqueriesLearning(RunSubqueries):
         idx = 0
         with open(output_fn, 'wb') as f: 
             for qid in sorted(all_features, key=self.sort_qid):
-                f.write('%d qid:%s %s # %s\n' % (classification[qid][subquery_id], qid, 
+                f.write('%d qid:%s %s # %s\n' % (classification[qid], qid, 
                     ' '.join(['%d:%f' % (i, normalized[idx][i-1] if i in top_features else 0) for i in range(1, len(normalized[idx])+1)]), 
                     str(query_len)+'-0'))
                 idx += 1
