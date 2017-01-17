@@ -469,8 +469,8 @@ class SubqueriesLearning(RunSubqueries):
 
     def batch_run_classification_paras(self):
         methods = {
-            'svm': [10**i for i in np.arange(-5, 5, 1)],
-            'nn': [10**i for i in np.arange(-5, 0, 1)]
+            'svm': [10**i for i in range(-5, 5)],
+            'nn': [10**i for i in range(-5, 0, 1)]
         }
         print methods
         paras = []
