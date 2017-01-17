@@ -652,6 +652,12 @@ if __name__ == '__main__':
     parser.add_argument('-610', '--output_features_classification_atom', 
         nargs=1,
         help='generate features classification with performance')
+    parser.add_argument('-611', '--run_subquery_classification_batch', 
+        action='store_true',
+        help='run classification on the original queries to see whether it should favor subquery or the original one')
+    parser.add_argument('-612', '--run_subquery_classification_atom', 
+        nargs=1,
+        help='run classification on the original queries to see whether it should favor subquery or the original one')
     parser.add_argument('-61', '--output_subqueries_features_batch', 
         nargs=1,
         help='generate subqueries features paras. arg: query length (0 for all queries)')
@@ -740,6 +746,10 @@ if __name__ == '__main__':
         output_features_classification_batch(args.output_features_classification_batch[0])
     if args.output_features_classification_atom:
         output_features_classification_atom(args.output_features_classification_atom[0])
+    if args.run_subquery_classification_batch:
+        run_subquery_classification_batch()
+    if args.run_subquery_classification_atom:
+        run_subquery_classification_atom(args.run_subquery_classification_atom[0])
     if args.output_subqueries_features_batch:
         output_subqueries_features_batch(args.output_subqueries_features_batch[0])
     if args.output_subqueries_features_atom:
