@@ -577,16 +577,15 @@ class SubqueriesLearning(RunSubqueries):
             if m:
                 collection_name = m.group(1)
                 query_length = int(m.group(2))
-                method = m.group(3)
-                para = float(m.group(4))
-                print collection_name, query_length, method, para
+                method = m.group(3)+'_'+m.group(4)
+                print collection_name, query_length, method
                 if query_length not in all_predict_data:
                     all_predict_data[query_length] = {}
-                if para not in all_predict_data[query_length]:
-                    all_predict_data[query_length][para] = []
+                if method not in all_predict_data[query_length]:
+                    all_predict_data[query_length][method] = []
                 with open(os.path.join(results_root, fn)) as f:
                     performance = float(f.read())
-                all_predict_data[query_length][para].append((collection_name, performance))
+                all_predict_data[query_length][method].append((collection_name, performance))
         print all_predict_data
 
     def output_collection_features(self, query_len=0):
