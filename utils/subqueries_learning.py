@@ -452,7 +452,6 @@ class SubqueriesLearning(RunSubqueries):
             print all_performances[qid].keys()
             exit()
             for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
-                if all_performances[qid][qusb]
                 all_features_matrix.append(all_features[qid][subquery_id])
             this_features = np.array([all_features[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
             if this_features.shape[0] == 0:
