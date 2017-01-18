@@ -553,7 +553,7 @@ class SubqueriesLearning(RunSubqueries):
                         qid_performances.append((subquery_id, ap))
             qid_performances.sort(key=itemgetter(1), reverse=True)
             optimal_ground_truth.append( qid_performances[0][1] )
-        print optimal_ground_truth
+        print collection_path, np.mean(optimal_ground_truth)
         exit()
 
 
