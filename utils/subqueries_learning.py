@@ -590,9 +590,8 @@ class SubqueriesLearning(RunSubqueries):
                 predicted = clf.predict(testing_features)
                 optimal_ground_truth, using_all_terms = \
                     SubqueriesLearning.load_optimal_ground_truth(test[0][0], testing_qids)
-                print optimal_ground_truth, using_all_terms
+                print predicted, testing_classes
                 exit()
-
                 with open(output_fn, 'wb') as f:
                     f.write('%.4f' % roc_auc_score(testing_classes, predicted))
 
