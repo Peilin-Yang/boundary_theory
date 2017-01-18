@@ -493,6 +493,7 @@ class SubqueriesLearning(RunSubqueries):
     def read_classification_features(fn):
         features = []
         classes = []
+        qids = []
         with open(fn) as f:
             for line in f:
                 line = line.strip()
@@ -500,7 +501,8 @@ class SubqueriesLearning(RunSubqueries):
                     row = line.split()
                     features.append([float(ele.split(':')[1]) for ele in row[2:-2]])
                     classes.append(int(row[0]))
-        return features, classes
+                    qids = row[1].split(':')[1]
+        return features, classes, qids
 
 
     @staticmethod
@@ -552,19 +554,19 @@ class SubqueriesLearning(RunSubqueries):
         for method, paras in methods.items():
             for para in paras:
                 output_fn = os.path.join(results_root, 'predict_'+test_collection+'_'+str(query_length)+'_'+method+'_'+str(para))
-                if not os.path.exists(output_fn):
-                    train_features, train_classes = \
-                        SubqueriesLearning.read_classification_features(trainging_fn)
-                    testing_features, testing_classes = \
-                        SubqueriesLearning.read_classification_features(testing_fn)
-                    if method == 'nn':
-                        clf = MLPClassifier(solver='lbfgs', alpha=para, random_state=1)
-                    elif method == 'svm':
-                        clf = SVC(C=para)
-                    clf.fit(train_features, train_classes)
-                    predicted = clf.predict(testing_features)
-                    with open(output_fn, 'wb') as f:
-                        f.write('%.4f' % roc_auc_score(testing_classes, predicted))
+                #if not os.path.exists(output_fn):
+                train_features, train_classes, train_qids = \
+                    SubqueriesLearning.read_classification_features(trainging_fn)
+                testing_features, testing_classes, testing_qids = \
+                    SubqueriesLearning.read_classification_features(testing_fn)
+                if method == 'nn':
+                    clf = MLPClassifier(solver='lbfgs', alpha=para, random_state=1)
+                elif method == 'svm':
+                    clf = SVC(C=para)
+                clf.fit(train_features, train_classes)
+                predicted = clf.predict(testing_features)
+                with open(output_fn, 'wb') as f:
+                    f.write('%.4f' % roc_auc_score(testing_classes, predicted))
 
     @staticmethod
     def evaluate_cross_classification(all_data, query_length=2):
@@ -593,7 +595,7 @@ class SubqueriesLearning(RunSubqueries):
         for query_length in avg_predict_data:
             avg_predict_data[query_length].sort(key=itemgetter(1), reverse=True)
         for query_length in avg_predict_data:
-            print query_length, avg_predict_data[query_length][0], avg_predict_data[query_length][1]
+            print query_length, avg_predict_data[query_length][0]
 
     def output_collection_features(self, query_len=0):
         """
