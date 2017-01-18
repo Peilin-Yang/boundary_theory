@@ -541,7 +541,6 @@ class SubqueriesLearning(RunSubqueries):
         optimal_ground_truth = []
         root = os.path.join(collection_path, 'subqueries', 'collected_results')
         for qid in os.listdir(root):
-            idx += 1
             qid_performances = []
             with open(os.path.join(root, qid)) as f:
                 csvr = csv.reader(f)
