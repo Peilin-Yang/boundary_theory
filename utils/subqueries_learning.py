@@ -600,10 +600,8 @@ class SubqueriesLearning(RunSubqueries):
                         predicted_map[qid] = optimal_ground_truth[qid]
                     elif predicted[i] == 0 and testing_classes[i] == 1:
                         predicted_map[qid] = second_optimal[qid]
-                print predicted_map, np.mean(predicted_map.values())
-                exit()
                 with open(output_fn, 'wb') as f:
-                    f.write('%.4f' % roc_auc_score(testing_classes, predicted))
+                    f.write('%.4f' % np.mean(predicted_map.values()))
 
     @staticmethod
     def evaluate_cross_classification(all_data, query_length=2):
