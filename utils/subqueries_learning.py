@@ -501,7 +501,7 @@ class SubqueriesLearning(RunSubqueries):
                     row = line.split()
                     features.append([float(ele.split(':')[1]) for ele in row[2:-2]])
                     classes.append(int(row[0]))
-                    qids = row[1].split(':')[1]
+                    qids.append(row[1].split(':')[1])
         return features, classes, qids
 
 
