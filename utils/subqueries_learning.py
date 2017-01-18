@@ -592,11 +592,16 @@ class SubqueriesLearning(RunSubqueries):
                 predicted = clf.predict(testing_features)
                 optimal_ground_truth, using_all_terms, second_optimal = \
                     SubqueriesLearning.load_optimal_ground_truth(test[0][0], testing_qids)
-                print predicted
-                exit()
+                predicted_map = {}
                 for i, qid in enumerate(testing_qids):
-                    if predicted == '1':
-                        pass
+                    if predicted[i] == 1:
+                        predicted_map[qid] = using_all_terms[qid]
+                    elif predicted[i] == 0 and testing_classes[i] == 0:
+                        predicted_map[qid] = optimal_ground_truth[qid]
+                    elif predicted[i] == 0 and testing_classes[i] == 1:
+                        predicted_map[qid] = second_optimal[qid]
+                print predicted_map, np.mean(predicted_map.values())
+                exit()
                 with open(output_fn, 'wb') as f:
                     f.write('%.4f' % roc_auc_score(testing_classes, predicted))
 
