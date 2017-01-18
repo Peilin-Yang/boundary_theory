@@ -537,10 +537,10 @@ class SubqueriesLearning(RunSubqueries):
                     qid_idx += 1
 
     @staticmethod
-    def load_optimal_ground_truth(collection_path):
+    def load_optimal_ground_truth(collection_path, qids):
         optimal_ground_truth = []
         root = os.path.join(collection_path, 'subqueries', 'collected_results')
-        for qid in os.listdir(root):
+        for qid in qids:
             qid_performances = []
             with open(os.path.join(root, qid)) as f:
                 csvr = csv.reader(f)
@@ -586,7 +586,7 @@ class SubqueriesLearning(RunSubqueries):
                     clf = SVC(C=para)
                 clf.fit(train_features, train_classes)
                 predicted = clf.predict(testing_features)
-                SubqueriesLearning.load_optimal_ground_truth(test[0][0])
+                SubqueriesLearning.load_optimal_ground_truth(test[0][0], testing_qids)
 
 
                 with open(output_fn, 'wb') as f:
