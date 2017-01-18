@@ -594,8 +594,9 @@ class SubqueriesLearning(RunSubqueries):
                     SubqueriesLearning.load_optimal_ground_truth(test[0][0], testing_qids)
                 print predicted
                 exit()
-                if i, qid in enumerate(testing_qids):
+                for i, qid in enumerate(testing_qids):
                     if predicted == '1':
+                        pass
                 with open(output_fn, 'wb') as f:
                     f.write('%.4f' % roc_auc_score(testing_classes, predicted))
 
