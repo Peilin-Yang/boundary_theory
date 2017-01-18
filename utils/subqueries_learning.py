@@ -621,6 +621,8 @@ class SubqueriesLearning(RunSubqueries):
                 with open(os.path.join(results_root, fn)) as f:
                     performance = float(f.read())
                 all_predict_data[query_length][method].append((collection_name, performance))
+
+        print all_predict_data
         avg_predict_data = {}
         for query_length in all_predict_data:
             avg_predict_data[query_length] = []
