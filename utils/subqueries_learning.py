@@ -622,7 +622,6 @@ class SubqueriesLearning(RunSubqueries):
                     performance = float(f.read())
                 all_predict_data[query_length][method].append((collection_name, performance))
 
-        print all_predict_data
         avg_predict_data = {}
         for query_length in all_predict_data:
             avg_predict_data[query_length] = []
@@ -632,7 +631,8 @@ class SubqueriesLearning(RunSubqueries):
         for query_length in avg_predict_data:
             avg_predict_data[query_length].sort(key=itemgetter(1), reverse=True)
         for query_length in avg_predict_data:
-            print query_length, avg_predict_data[query_length][0]
+            method = avg_predict_data[query_length][0]
+            print query_length, method, all_predict_data[query_length][method]
 
     def output_collection_features(self, query_len=0):
         """
