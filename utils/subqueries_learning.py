@@ -538,8 +538,9 @@ class SubqueriesLearning(RunSubqueries):
 
     @staticmethod
     def load_optimal_ground_truth(collection_path, qids):
-        optimal_ground_truth = []
-        using_all_terms = []
+        optimal_ground_truth = {}
+        using_all_terms = {}
+        second_optimal = {}
         root = os.path.join(collection_path, 'subqueries', 'collected_results')
         for qid in qids:
             qid_performances = []
@@ -555,9 +556,10 @@ class SubqueriesLearning(RunSubqueries):
                         qid_performances.append((subquery_id, ap))
                         ap_all_terms = ap
             qid_performances.sort(key=itemgetter(1), reverse=True)
-            optimal_ground_truth.append( qid_performances[0][1] )
-            using_all_terms.append(ap_all_terms)
-        return np.mean(optimal_ground_truth), np.mean(using_all_terms)
+            optimal_ground_truth[qid] = qid_performances[0][1]
+            second_optimal[qid] = qid_performances[1][1]
+            using_all_terms[qid] = ap_all_terms
+        return optimal_ground_truth, using_all_terms, second_optimal
 
     @staticmethod
     def cross_run_classification(train, test, query_length=2):
@@ -588,10 +590,12 @@ class SubqueriesLearning(RunSubqueries):
                     clf = SVC(C=para)
                 clf.fit(train_features, train_classes)
                 predicted = clf.predict(testing_features)
-                optimal_ground_truth, using_all_terms = \
+                optimal_ground_truth, using_all_terms, second_optimal = \
                     SubqueriesLearning.load_optimal_ground_truth(test[0][0], testing_qids)
-                print predicted, testing_classes
+                print predicted
                 exit()
+                if i, qid in enumerate(testing_qids):
+                    if predicted == '1':
                 with open(output_fn, 'wb') as f:
                     f.write('%.4f' % roc_auc_score(testing_classes, predicted))
 
