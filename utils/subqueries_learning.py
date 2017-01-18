@@ -21,6 +21,7 @@ from sklearn.svm import LinearSVC
 from sklearn.feature_selection import SelectFromModel
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
+from sklearn import tree
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import classification_report
 
@@ -574,7 +575,8 @@ class SubqueriesLearning(RunSubqueries):
         
         methods = {
             'svm': [10**i for i in range(-5, 5)],
-            'nn': [10**i for i in range(-5, 0, 1)]
+            'nn': [10**i for i in range(-5, 0, 1)],
+            'dt': [for i in range(3, 11)]
         }
         for method, paras in methods.items():
             for para in paras:
@@ -588,6 +590,8 @@ class SubqueriesLearning(RunSubqueries):
                     clf = MLPClassifier(solver='lbfgs', alpha=para, random_state=1)
                 elif method == 'svm':
                     clf = SVC(C=para)
+                elif method == 'dt':
+                    clf = tree.DecisionTreeClassifier(max_depth=para)
                 clf.fit(train_features, train_classes)
                 predicted = clf.predict(testing_features)
                 optimal_ground_truth, using_all_terms, second_optimal = \
