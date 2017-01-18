@@ -539,11 +539,13 @@ class SubqueriesLearning(RunSubqueries):
     @staticmethod
     def load_optimal_ground_truth(collection_path, qids):
         optimal_ground_truth = []
+        using_all_terms = []
         root = os.path.join(collection_path, 'subqueries', 'collected_results')
         for qid in qids:
             qid_performances = []
             with open(os.path.join(root, qid)) as f:
                 csvr = csv.reader(f)
+                ap_all_terms = 0.0
                 for row in csvr:
                     subquery_id = row[0]
                     subquery = row[1]
@@ -551,11 +553,11 @@ class SubqueriesLearning(RunSubqueries):
                     ap = float(row[3])
                     if 'okapi' in model_para:
                         qid_performances.append((subquery_id, ap))
+                        ap_all_terms = ap
             qid_performances.sort(key=itemgetter(1), reverse=True)
             optimal_ground_truth.append( qid_performances[0][1] )
-        print collection_path, np.mean(optimal_ground_truth)
-        exit()
-
+            using_all_terms.append(ap_all_terms)
+        return np.mean(optimal_ground_truth), np.mean(using_all_terms)
 
     @staticmethod
     def cross_run_classification(train, test, query_length=2):
@@ -586,9 +588,10 @@ class SubqueriesLearning(RunSubqueries):
                     clf = SVC(C=para)
                 clf.fit(train_features, train_classes)
                 predicted = clf.predict(testing_features)
-                print testing_qids
-                SubqueriesLearning.load_optimal_ground_truth(test[0][0], testing_qids)
-
+                optimal_ground_truth, using_all_terms = \
+                    SubqueriesLearning.load_optimal_ground_truth(test[0][0], testing_qids)
+                print optimal_ground_truth, using_all_terms
+                exit()
 
                 with open(output_fn, 'wb') as f:
                     f.write('%.4f' % roc_auc_score(testing_classes, predicted))
