@@ -586,6 +586,7 @@ class SubqueriesLearning(RunSubqueries):
                     clf = SVC(C=para)
                 clf.fit(train_features, train_classes)
                 predicted = clf.predict(testing_features)
+                print testing_qids
                 SubqueriesLearning.load_optimal_ground_truth(test[0][0], testing_qids)
 
 
