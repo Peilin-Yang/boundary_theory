@@ -576,7 +576,7 @@ class SubqueriesLearning(RunSubqueries):
         methods = {
             'svm': [10**i for i in range(-5, 5)],
             'nn': [10**i for i in range(-5, 0, 1)],
-            'dt': [for i in range(3, 11)]
+            'dt': range(3, 11)
         }
         for method, paras in methods.items():
             for para in paras:
