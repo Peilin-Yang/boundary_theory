@@ -1070,8 +1070,15 @@ class SubqueriesLearning(RunSubqueries):
                 i += 1
             if i >= len(mi_vec):
                 break
-        print cluster
-
+        if len(cluster) == 3:
+            return cluster[-1][0]
+        elif len(cluster) == 1:
+            return '3-0'
+        else:
+            if len(cluster[0]) == 1:
+                return cluster[0][0]
+            elif len(cluster[0]) == 2:
+                return cluster[0][1]
 
     def cluster_subqueries(self, query_length=3, mi_distance=5, thres=1.0):
         """
@@ -1101,7 +1108,7 @@ class SubqueriesLearning(RunSubqueries):
             print qid
             print '-'*30
             all_features[qid].sort(key=itemgetter(1))
-            print all_features[qid]
-            self.mi_learn_algo(all_features[qid], thres)
+            #print all_features[qid]
+            print self.mi_learn_algo(all_features[qid], thres)
 
 
