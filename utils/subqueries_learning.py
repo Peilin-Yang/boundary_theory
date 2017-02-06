@@ -1071,7 +1071,7 @@ class SubqueriesLearning(RunSubqueries):
                 qid_features = json.load(f)
             for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
                 if subquery_id.split('-')[0] == '2': # we only need pairwise mi
-                    all_features[qid].append(qid_features[subquery_id][str(mi_distance)])
+                    all_features[qid].append(qid_features[subquery_id][str(mi_distance)][0])
         print all_features
 
 
