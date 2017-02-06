@@ -1065,13 +1065,13 @@ class SubqueriesLearning(RunSubqueries):
         for qid in os.listdir(self.subqueries_mapping_root):
             if qid not in queries:
                 continue
-            all_features[qid] = []
+            all_features[qid] = {}
             mi_features_root = os.path.join(self.subqueries_features_root, self.feature_mapping[1])
             with open(os.path.join(mi_features_root, qid)) as f:
                 qid_features = json.load(f)
             for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
                 if subquery_id.split('-')[0] == '2': # we only need pairwise mi
-                    all_features[qid].append({subquery_id: qid_features[subquery_id][str(mi_distance)][0]})
+                    all_features[qid][subquery_id] = qid_features[subquery_id][str(mi_distance)][0]
         print all_features
 
 
