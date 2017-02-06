@@ -1066,6 +1066,7 @@ class SubqueriesLearning(RunSubqueries):
             if i < len(mi_vec):
                 cluster.append([])
                 cluster[-1].append(mi_vec[i])
+                i += 1
         print cluster
 
 
