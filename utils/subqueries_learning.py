@@ -1071,7 +1071,7 @@ class SubqueriesLearning(RunSubqueries):
             if i >= len(mi_vec):
                 break
         if len(cluster) == 3:
-            return cluster[-1][0]
+            return cluster[-1][0][0]
         elif len(cluster) == 1:
             return '3-0'
         else:
