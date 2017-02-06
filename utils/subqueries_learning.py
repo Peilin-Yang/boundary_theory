@@ -1057,8 +1057,15 @@ class SubqueriesLearning(RunSubqueries):
         We start from query length of 3 ...
         [TODO] query length > 3
         """
-        for subquery_id, mi in mi_vec:
-            print subquery_id, mi
+        cluster = [[]]
+        cluster[-1].append(mi_vec[0])
+        for i in range(1, len(mi_vec)):
+            while i < len(mi_vec) and mi_vec[i][1] - thres < mi_vec[i-1][1]:
+                i += 1
+                cluster[-1].append(mi_vec[i])
+            cluster.append([])
+            cluster[-1].append(mi_vec[i])
+        print cluster
 
 
     def cluster_subqueries(self, query_length=3, mi_distance=5, thres=1.0):
