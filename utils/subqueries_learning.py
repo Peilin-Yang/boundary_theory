@@ -1061,8 +1061,8 @@ class SubqueriesLearning(RunSubqueries):
         cluster[-1].append(mi_vec[0])
         for i in range(1, len(mi_vec)):
             while i < len(mi_vec) and mi_vec[i][1] - thres < mi_vec[i-1][1]:
-                i += 1
                 cluster[-1].append(mi_vec[i])
+                i += 1
             cluster.append([])
             cluster[-1].append(mi_vec[i])
         print cluster
