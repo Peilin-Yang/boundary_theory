@@ -1048,7 +1048,20 @@ class SubqueriesLearning(RunSubqueries):
                         f.write('%s\n' % ' '.join(row))
                     qid_idx += 1
 
-    def cluster_subqueries(self, query_length=3, mi_distance=5):
+
+    ##########
+    # MI Learn
+    ##########
+    def mi_learn_algo(self, mi_vec, thres=1.0):
+        """
+        We start from query length of 3 ...
+        [TODO] query length > 3
+        """
+        for subquery_id, mi in mi_vec:
+            print subquery_id, mi
+
+
+    def cluster_subqueries(self, query_length=3, mi_distance=5, thres=1.0):
         """
         mi: The distance of mutual information. It decides 
         which mutual information will be used to compute - 
@@ -1065,13 +1078,15 @@ class SubqueriesLearning(RunSubqueries):
         for qid in os.listdir(self.subqueries_mapping_root):
             if qid not in queries:
                 continue
-            all_features[qid] = {}
+            all_features[qid] = []
             mi_features_root = os.path.join(self.subqueries_features_root, self.feature_mapping[1])
             with open(os.path.join(mi_features_root, qid)) as f:
                 qid_features = json.load(f)
             for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
                 if subquery_id.split('-')[0] == '2': # we only need pairwise mi
-                    all_features[qid][subquery_id] = qid_features[subquery_id][str(mi_distance)][0]
-        print all_features
+                    all_features[qid].append((subquery_id, qid_features[subquery_id][str(mi_distance)][0]))
+        for qid in all_features:
+            all_features[qid].sort(key=itemgetter(1))
+            self.mi_learn_algo(all_features[qid], thres)
 
 
