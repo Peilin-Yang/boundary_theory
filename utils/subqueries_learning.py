@@ -1104,11 +1104,27 @@ class SubqueriesLearning(RunSubqueries):
             for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
                 if subquery_id.split('-')[0] == '2': # we only need pairwise mi
                     all_features[qid].append((subquery_id, qid_features[subquery_id][str(mi_distance)][0]))
+        results = {}
         for qid in all_features:
-            print '-'*30
-            print qid
+            # print '-'*30
+            # print qid
             all_features[qid].sort(key=itemgetter(1))
-            #print all_features[qid]
-            print self.mi_learn_algo(all_features[qid], thres)
+            # print all_features[qid]
+            results[qid] = self.mi_learn_algo(all_features[qid], thres)
 
+        self.evaluate_learn(results)
 
+    def evaluate_learn(self, results, method='okapi'):
+        ap_arr = []
+        for qid in results:
+            with open(os.path.join(self.collected_results_root, qid)) as f:
+                csvr = csv.reader(f)
+                for row in csvr:
+                    subquery_id = row[0]
+                    subquery = row[1]
+                    model_para = row[2]
+                    ap = float(row[3])
+                    if method in model_para and results[qid] == subquery_id:
+                        ap_arr.append(ap)
+                        break
+        print np.mean(ap)
