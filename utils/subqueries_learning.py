@@ -409,6 +409,51 @@ class SubqueriesLearning(RunSubqueries):
                             subquery_id))
                     idx += 1
 
+    def output_features_selected(self, query_len=0):
+        """
+        output the selected features.
+        The selected features are carefully selected manually.
+        """
+        output_root = os.path.join(self.subqueries_features_root, 'selected')
+        if not os.path.exists(output_root):
+            os.makedirs(output_root)
+        output_fn = os.path.join(output_root, str(query_len))
+        feature_mapping = self.get_feature_mapping()
+        all_performances = self.get_all_performances()
+        all_features = self.get_all_features(query_len)
+        print all_features
+        exit()
+        all_features_matrix = []
+        selected = {}
+        for qid in sorted(all_features):
+            for subquery_id in sorted(all_features[qid]):
+                all_features_matrix.append(all_features[qid][subquery_id])
+            this_features = np.array([all_features[qid][subquery_id] for subquery_id in sorted(all_features[qid])])
+            if this_features.shape[0] == 0:
+                continue
+            this_perfm = [float(all_performances[qid][subquery_id]) if qid in all_performances and subquery_id in all_performances[qid] else 0.0 for subquery_id in sorted(all_features[qid])]
+            for col in range(this_features.shape[1]):
+                tau, p_value = scipy.stats.kendalltau(this_features[:, col], this_perfm)
+                if col+1 not in kendallstau:
+                    kendallstau[col+1] = []
+                kendallstau[col+1].append(tau if not np.isnan(tau) else 0)
+        klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
+        klist.sort(key=itemgetter(1), reverse=True)
+        top_features = [ele[0] for ele in klist[:10]]
+        print top_features
+
+        normalized = normalize(all_features_matrix, axis=0) # normalize each feature
+        idx = 0
+        with open(output_fn, 'wb') as f: 
+            for qid in sorted(all_features, key=self.sort_qid):
+                for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
+                    ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
+                    if qid in all_performances and subquery_id in all_performances[qid]:
+                        f.write('%s qid:%s %s # %s\n' % (str(all_performances[qid][subquery_id]), qid, 
+                            ' '.join(['%d:%f' % (i, normalized[idx][i-1] if i in top_features else 0) for i in range(1, len(normalized[idx])+1)]), 
+                            subquery_id))
+                    idx += 1
+
     @staticmethod
     def output_features_kendallstau_all_collection(collection_paths_n_names, query_length=0):
         all_features = {}
@@ -1002,3 +1047,31 @@ class SubqueriesLearning(RunSubqueries):
                         row[1] = 'qid:%d' % qid_idx
                         f.write('%s\n' % ' '.join(row))
                     qid_idx += 1
+
+    def cluster_subqueries(self, query_length=3, mi_distance=5):
+        """
+        mi: The distance of mutual information. It decides 
+        which mutual information will be used to compute - 
+        either 1,5,10,20,50,100.
+        """
+        q = Query(self.corpus_path)
+        if query_length == 0:
+            queries = q.get_queries()
+        else:
+            queries = q.get_queries_of_length(query_length)
+        queries = {ele['num']:ele['title'] for ele in queries}
+
+        all_features = {}
+        for qid in os.listdir(self.subqueries_mapping_root):
+            if qid not in queries:
+                continue
+            all_features[qid] = []
+            mi_features_root = os.path.join(self.subqueries_features_root, self.feature_mapping[1])
+            with open(os.path.join(features_root, qid)) as f:
+                qid_features = json.load(f)
+            for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
+                if subquery_id.split('-')[0] == '2': # we only need pairwise mi
+                    all_features[qid].append(qid_features[subquery_id][str(mi_distance)])
+        print all_features
+
+

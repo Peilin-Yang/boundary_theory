@@ -325,6 +325,33 @@ def output_features_kendallstau_all(query_length):
         all_paras.append((collection_path, collection_name))
     SubqueriesLearning.output_features_kendallstau_all_collection(all_paras, query_length)
 
+def output_features_selected_batch(query_length):
+    all_paras = []
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.append((collection_path, collection_name, query_length))
+    #print all_paras
+    gen_batch_framework('output_features_selected', '606', all_paras)
+
+def output_features_selected_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            collection_name = row[1]
+            query_length = int(row[2])
+            SubqueriesLearning(collection_path, collection_name).output_features_selected(query_length)
+
+def output_features_selected_all(query_length):
+    query_length = int(query_length)
+    all_paras = []
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.append((collection_path, collection_name))
+    SubqueriesLearning.output_features_selected_all_collection(all_paras, query_length)
+
 def output_features_classification_batch(query_length):
     all_paras = []
     for q in g.query:
@@ -462,6 +489,27 @@ def cross_testing_svm_model(query_length=2):
 def evaluate_svm_cross_testing():
     collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
     SubqueriesLearning.evaluate_svm_cross_testing(collections)
+
+
+def mi_learn_batch(query_length, mi_distance):
+    all_paras = []
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.append((collection_path, collection_name, query_length, mi_distance))
+    #print all_paras
+    gen_batch_framework('mi_learn', 'mi_learn_atom', all_paras)
+
+def mi_learn_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            collection_name = row[1]
+            query_length = int(row[2])
+            mi_distance = int(row[3])
+            SubqueriesLearning(collection_path, collection_name).cluster_subqueries(query_length, mi_distance)
+
 
 ###################################################
 def run_all_baseline_results_atom(para_file):
@@ -640,7 +688,18 @@ if __name__ == '__main__':
         help='generate features kendallstau with performance')
     parser.add_argument('-603', '--output_features_kendallstau_all', 
         nargs=1,
-        help='generate classification features for all collections. arg: query length')
+        help='generate kendallstau features for all collections. arg: query length')
+
+    parser.add_argument('-605', '--output_features_selected_batch', 
+        nargs=1,
+        help='generate features selected with performance. paras. arg: query length (0 for all queries)')
+    parser.add_argument('-606', '--output_features_selected_atom', 
+        nargs=1,
+        help='generate features selected with performance')
+    parser.add_argument('-607', '--output_features_selected_all', 
+        nargs=1,
+        help='generate selected features for all collections. arg: query length')
+
     parser.add_argument('-609', '--output_features_classification_batch', 
         nargs=1,
         help='generate features classification with performance. paras. arg: query length (0 for all queries)')
@@ -685,6 +744,13 @@ if __name__ == '__main__':
     parser.add_argument('-69', '--evaluate_svm_cross_testing', 
         action='store_true',
         help='evaluate cross testing the svm rank')
+
+    parser.add_argument('-mi_learn_batch', '--mi_learn_batch', 
+        nargs=2,
+        help='arg: [query_length (0 for all queries)] [mi_distance]')
+    parser.add_argument('-mi_learn_atom', '--mi_learn_atom', 
+        nargs=1,
+        help='learn the subquery performances using only Mutual Information')
 
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
@@ -740,6 +806,12 @@ if __name__ == '__main__':
         output_features_kendallstau_atom(args.output_features_kendallstau_atom[0])
     if args.output_features_kendallstau_all:
         output_features_kendallstau_all(args.output_features_kendallstau_all[0])
+    if args.output_features_selected_batch:
+        output_features_selected_batch(args.output_features_selected_batch[0])
+    if args.output_features_selected_atom:
+        output_features_selected_atom(args.output_features_selected_atom[0])
+    if args.output_features_selected_all:
+        output_features_selected_all(args.output_features_selected_all[0])
     if args.output_features_classification_batch:
         output_features_classification_batch(args.output_features_classification_batch[0])
     if args.output_features_classification_atom:
@@ -766,6 +838,11 @@ if __name__ == '__main__':
         cross_testing_svm_model(int(args.svm_cross_testing[0]))
     if args.evaluate_svm_cross_testing:
         evaluate_svm_cross_testing()
+
+    if args.mi_learn_batch:
+        mi_learn_batch(args.mi_learn_batch[0], args.mi_learn_batch[1])
+    if args.mi_learn_atom:
+        mi_learn_atom(args.mi_learn_atom[0])
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)
