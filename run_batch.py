@@ -491,12 +491,12 @@ def evaluate_svm_cross_testing():
     SubqueriesLearning.evaluate_svm_cross_testing(collections)
 
 
-def mi_learn_batch(query_length, mi_distance):
+def mi_learn_batch(query_length, mi_distance, thres):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.append((collection_path, collection_name, query_length, mi_distance))
+        all_paras.append((collection_path, collection_name, query_length, mi_distance, thres))
     #print all_paras
     gen_batch_framework('mi_learn', 'mi_learn_atom', all_paras)
 
@@ -508,7 +508,8 @@ def mi_learn_atom(para_file):
             collection_name = row[1]
             query_length = int(row[2])
             mi_distance = int(row[3])
-            SubqueriesLearning(collection_path, collection_name).cluster_subqueries(query_length, mi_distance)
+            thres = float(row[4])
+            SubqueriesLearning(collection_path, collection_name).cluster_subqueries(query_length, mi_distance, thres)
 
 
 ###################################################
@@ -746,8 +747,8 @@ if __name__ == '__main__':
         help='evaluate cross testing the svm rank')
 
     parser.add_argument('-mi_learn_batch', '--mi_learn_batch', 
-        nargs=2,
-        help='arg: [query_length (0 for all queries)] [mi_distance]')
+        nargs=3,
+        help='arg: [query_length (0 for all queries)] [mi_distance] [cluster_threshold]')
     parser.add_argument('-mi_learn_atom', '--mi_learn_atom', 
         nargs=1,
         help='learn the subquery performances using only Mutual Information')
@@ -840,7 +841,7 @@ if __name__ == '__main__':
         evaluate_svm_cross_testing()
 
     if args.mi_learn_batch:
-        mi_learn_batch(args.mi_learn_batch[0], args.mi_learn_batch[1])
+        mi_learn_batch(args.mi_learn_batch[0], args.mi_learn_batch[1], args.mi_learn_batch[2])
     if args.mi_learn_atom:
         mi_learn_atom(args.mi_learn_atom[0])
 
