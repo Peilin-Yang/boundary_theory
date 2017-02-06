@@ -1105,8 +1105,8 @@ class SubqueriesLearning(RunSubqueries):
                 if subquery_id.split('-')[0] == '2': # we only need pairwise mi
                     all_features[qid].append((subquery_id, qid_features[subquery_id][str(mi_distance)][0]))
         for qid in all_features:
-            print qid
             print '-'*30
+            print qid
             all_features[qid].sort(key=itemgetter(1))
             #print all_features[qid]
             print self.mi_learn_algo(all_features[qid], thres)
