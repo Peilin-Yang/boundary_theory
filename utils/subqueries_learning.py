@@ -1052,6 +1052,23 @@ class SubqueriesLearning(RunSubqueries):
     ##########
     # MI Learn
     ##########
+    def load_gt_optimal(self, qids=[], method='okapi'):
+        r = {}
+        for qid in qids:
+            p = []
+            with open(os.path.join(self.collected_results_root, qid)) as f:
+                csvr = csv.reader(f)
+                for row in csvr:
+                    subquery_id = row[0]
+                    subquery = row[1]
+                    model_para = row[2]
+                    ap = float(row[3])
+                    if method in model_para:
+                        p.append((subquery_id, ap))
+            p.sort(key=itemgetter(1), reverse=True)
+            r[qid] = p[0]
+        return r
+
     def mi_learn_algo(self, mi_vec, thres=1.0):
         """
         We start from query length of 3 ...
@@ -1094,6 +1111,7 @@ class SubqueriesLearning(RunSubqueries):
         queries = {ele['num']:ele['title'] for ele in queries}
 
         all_features = {}
+        gt_optimal = self.load_gt_optimal(queries.keys())
         for qid in os.listdir(self.subqueries_mapping_root):
             if qid not in queries:
                 continue
@@ -1104,6 +1122,8 @@ class SubqueriesLearning(RunSubqueries):
             for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
                 if subquery_id.split('-')[0] == '2': # we only need pairwise mi
                     all_features[qid].append((subquery_id, qid_features[subquery_id][str(mi_distance)][0]))
+            print all_features[qid], gt_optimal[qid]
+        exit()
         results = {}
         for qid in all_features:
             # print '-'*30
