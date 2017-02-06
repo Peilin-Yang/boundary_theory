@@ -1067,7 +1067,7 @@ class SubqueriesLearning(RunSubqueries):
                 continue
             all_features[qid] = []
             mi_features_root = os.path.join(self.subqueries_features_root, self.feature_mapping[1])
-            with open(os.path.join(features_root, qid)) as f:
+            with open(os.path.join(mi_features_root, qid)) as f:
                 qid_features = json.load(f)
             for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
                 if subquery_id.split('-')[0] == '2': # we only need pairwise mi
