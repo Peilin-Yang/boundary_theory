@@ -1135,14 +1135,14 @@ class SubqueriesLearning(RunSubqueries):
             #continue
             results[qid], _type = self.mi_learn_algo(all_features[qid], thres)
             if _type not in patterns:
-                patterns[_type] = {}
-            if results[qid] not in patterns[_type]:
-                patterns[_type][results[qid]] = 0
-            patterns[_type][results[qid]] += 1
+                patterns[_type] = {'predict': {}, 'gt': {}}
+            if results[qid] not in patterns[_type]['predict']:
+                patterns[_type]['predict'][results[qid]] = 0
+            patterns[_type]['predict'][results[qid]] += 1
             if qid in gt_optimal:
-                if gt_optimal[qid][0] not in patterns[_type]:
-                    patterns[_type][gt_optimal[qid][0]] = 0
-                patterns[_type][gt_optimal[qid][0]] += 1
+                if gt_optimal[qid][0] not in patterns[_type]['gt']:
+                    patterns[_type]['gt'][gt_optimal[qid][0]] = 0
+                patterns[_type]['gt'][gt_optimal[qid][0]] += 1
         print json.dumps(patterns, indent=2)
         #exit()    
         self.evaluate_learn(results)
