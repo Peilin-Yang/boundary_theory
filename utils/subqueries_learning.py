@@ -1128,8 +1128,8 @@ class SubqueriesLearning(RunSubqueries):
         results = {}
         patterns = {}
         for qid in all_features:
-            print '-'*30
-            print qid
+            # print '-'*30
+            # print qid
             all_features[qid].sort(key=itemgetter(1))
             #print all_features[qid], gt_optimal[qid] if qid in gt_optimal else None
             #continue
