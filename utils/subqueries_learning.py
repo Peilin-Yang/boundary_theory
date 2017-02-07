@@ -1150,4 +1150,4 @@ class SubqueriesLearning(RunSubqueries):
                     if method in model_para and results[qid] == subquery_id:
                         ap_arr.append(ap)
                         break
-        print np.mean(ap)
+        print np.mean(ap_arr)
