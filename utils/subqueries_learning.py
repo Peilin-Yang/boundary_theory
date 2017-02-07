@@ -1056,6 +1056,7 @@ class SubqueriesLearning(RunSubqueries):
         r = {}
         for qid in qids:
             p = []
+            print os.path.join(self.collected_results_root, qid)
             with open(os.path.join(self.collected_results_root, qid)) as f:
                 csvr = csv.reader(f)
                 for row in csvr:
