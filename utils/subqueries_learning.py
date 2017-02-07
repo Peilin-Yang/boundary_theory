@@ -1123,16 +1123,16 @@ class SubqueriesLearning(RunSubqueries):
             for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
                 if subquery_id.split('-')[0] == '2': # we only need pairwise mi
                     all_features[qid].append((subquery_id, qid_features[subquery_id][str(mi_distance)][0]))
-            print all_features[qid], gt_optimal[qid] if qid in gt_optimal else None
-        exit()
+        
         results = {}
         for qid in all_features:
             # print '-'*30
             # print qid
             all_features[qid].sort(key=itemgetter(1))
-            # print all_features[qid]
+            print all_features[qid], gt_optimal[qid] if qid in gt_optimal else None
+            continue
             results[qid] = self.mi_learn_algo(all_features[qid], thres)
-
+        exit()    
         self.evaluate_learn(results)
 
     def evaluate_learn(self, results, method='okapi'):
