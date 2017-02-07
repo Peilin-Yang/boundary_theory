@@ -1126,6 +1126,7 @@ class SubqueriesLearning(RunSubqueries):
                     all_features[qid].append((subquery_id, qid_features[subquery_id][str(mi_distance)][0]))
         
         results = {}
+        patterns = {}
         for qid in all_features:
             print '-'*30
             print qid
@@ -1133,7 +1134,16 @@ class SubqueriesLearning(RunSubqueries):
             #print all_features[qid], gt_optimal[qid] if qid in gt_optimal else None
             #continue
             results[qid], _type = self.mi_learn_algo(all_features[qid], thres)
-            print _type, results[qid], gt_optimal[qid][0] if qid in gt_optimal else None
+            if _type not in patterns:
+                patterns[_type] = {}
+            if results[qid] not in patterns[_type]:
+                patterns[_type][results[qid]] = 0
+            patterns[_type][results[qid]] += 1
+            if qid in gt_optimal:
+                if gt_optimal[qid][0] not in patterns[_type]:
+                    patterns[_type][gt_optimal[qid][0]] = 0
+                patterns[_type][gt_optimal[qid][0]] += 1
+        print json.dumps(patterns, indent=2)
         #exit()    
         self.evaluate_learn(results)
 
