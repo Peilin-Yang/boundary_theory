@@ -1127,12 +1127,13 @@ class SubqueriesLearning(RunSubqueries):
         
         results = {}
         for qid in all_features:
-            # print '-'*30
-            # print qid
+            print '-'*30
+            print qid
             all_features[qid].sort(key=itemgetter(1))
             #print all_features[qid], gt_optimal[qid] if qid in gt_optimal else None
             #continue
             results[qid] = self.mi_learn_algo(all_features[qid], thres)
+            print all_features[qid], results[qid], gt_optimal[qid] if qid in gt_optimal else None
         #exit()    
         self.evaluate_learn(results)
 
