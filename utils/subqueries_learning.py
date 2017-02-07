@@ -1096,7 +1096,8 @@ class SubqueriesLearning(RunSubqueries):
             if len(cluster[0]) == 1:
                 return cluster[0][0][0]
             elif len(cluster[0]) == 2:
-                return cluster[0][1][0]
+                #return cluster[0][1][0]
+                return '3-0'
 
     def cluster_subqueries(self, query_length=3, mi_distance=5, thres=1.0):
         """
@@ -1129,10 +1130,10 @@ class SubqueriesLearning(RunSubqueries):
             # print '-'*30
             # print qid
             all_features[qid].sort(key=itemgetter(1))
-            print all_features[qid], gt_optimal[qid] if qid in gt_optimal else None
-            continue
+            #print all_features[qid], gt_optimal[qid] if qid in gt_optimal else None
+            #continue
             results[qid] = self.mi_learn_algo(all_features[qid], thres)
-        exit()    
+        #exit()    
         self.evaluate_learn(results)
 
     def evaluate_learn(self, results, method='okapi'):
