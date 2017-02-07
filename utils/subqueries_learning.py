@@ -1056,7 +1056,6 @@ class SubqueriesLearning(RunSubqueries):
         r = {}
         for qid in qids:
             p = []
-            print os.path.join(self.collected_results_root, qid)
             with open(os.path.join(self.collected_results_root, qid)) as f:
                 csvr = csv.reader(f)
                 for row in csvr:
@@ -1066,8 +1065,9 @@ class SubqueriesLearning(RunSubqueries):
                     ap = float(row[3])
                     if method in model_para:
                         p.append((subquery_id, ap))
-            p.sort(key=itemgetter(1), reverse=True)
-            r[qid] = p[0]
+            if p:
+                p.sort(key=itemgetter(1), reverse=True)
+                r[qid] = p[0]
         return r
 
     def mi_learn_algo(self, mi_vec, thres=1.0):
@@ -1123,7 +1123,7 @@ class SubqueriesLearning(RunSubqueries):
             for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
                 if subquery_id.split('-')[0] == '2': # we only need pairwise mi
                     all_features[qid].append((subquery_id, qid_features[subquery_id][str(mi_distance)][0]))
-            print all_features[qid], gt_optimal[qid]
+            print all_features[qid], gt_optimal[qid] if qid in gt_optimal else None
         exit()
         results = {}
         for qid in all_features:
