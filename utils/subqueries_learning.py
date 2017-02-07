@@ -1089,14 +1089,14 @@ class SubqueriesLearning(RunSubqueries):
             if i >= len(mi_vec):
                 break
         if len(cluster) == 3:
-            return cluster[-1][0][0]
+            return cluster[-1][0][0], 1
         elif len(cluster) == 1:
-            return '3-0'
+            return '3-0', 2
         else:
             if len(cluster[0]) == 1:
-                return cluster[0][0][0]
+                return cluster[0][0][0], 3
             elif len(cluster[0]) == 2:
-                return cluster[0][1][0]
+                return cluster[0][1][0], 4
                 #return '3-0'
 
     def cluster_subqueries(self, query_length=3, mi_distance=5, thres=1.0):
@@ -1132,8 +1132,8 @@ class SubqueriesLearning(RunSubqueries):
             all_features[qid].sort(key=itemgetter(1))
             #print all_features[qid], gt_optimal[qid] if qid in gt_optimal else None
             #continue
-            results[qid] = self.mi_learn_algo(all_features[qid], thres)
-            print all_features[qid], results[qid], gt_optimal[qid] if qid in gt_optimal else None
+            results[qid], _type = self.mi_learn_algo(all_features[qid], thres)
+            print _type, results[qid], gt_optimal[qid][0] if qid in gt_optimal else None
         #exit()    
         self.evaluate_learn(results)
 
