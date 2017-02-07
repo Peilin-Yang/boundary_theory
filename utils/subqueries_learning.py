@@ -1096,8 +1096,8 @@ class SubqueriesLearning(RunSubqueries):
             if len(cluster[0]) == 1:
                 return cluster[0][0][0]
             elif len(cluster[0]) == 2:
-                #return cluster[0][1][0]
-                return '3-0'
+                return cluster[0][1][0]
+                #return '3-0'
 
     def cluster_subqueries(self, query_length=3, mi_distance=5, thres=1.0):
         """
