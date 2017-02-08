@@ -1141,9 +1141,10 @@ class SubqueriesLearning(RunSubqueries):
                 patterns[_type]['predict'][results[qid]] = 0
             patterns[_type]['predict'][results[qid]] += 1
             if qid in gt_optimal:
-                if gt_optimal[qid][0] not in patterns[_type]['gt']:
-                    patterns[_type]['gt'][gt_optimal[qid][0]] = 0
-                patterns[_type]['gt'][gt_optimal[qid][0]] += 1
+                opt_subquery_id = gt_optimal[qid]['max'][0]
+                if opt_subquery_id not in patterns[_type]['gt']:
+                    patterns[_type]['gt'][opt_subquery_id] = 0
+                patterns[_type]['gt'][opt_subquery_id] += 1
         print json.dumps(patterns, indent=2)
         #exit()    
         self.evaluate_learn(results)
