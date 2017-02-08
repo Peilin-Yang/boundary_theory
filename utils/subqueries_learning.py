@@ -1131,10 +1131,9 @@ class SubqueriesLearning(RunSubqueries):
             # print '-'*30
             # print qid
             all_features[qid].sort(key=itemgetter(1))
-            print all_features[qid], gt_optimal[qid] if qid in gt_optimal else None
-            raw_input()
-            #continue
             results[qid], _type = self.mi_learn_algo(all_features[qid], thres)
+            print all_features[qid], results[qid], _type, gt_optimal[qid] if qid in gt_optimal else None
+            raw_input()
             if _type not in patterns:
                 patterns[_type] = {'predict': {}, 'gt': {}}
             if results[qid] not in patterns[_type]['predict']:
