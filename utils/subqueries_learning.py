@@ -1054,6 +1054,7 @@ class SubqueriesLearning(RunSubqueries):
     ##########
     def load_gt_optimal(self, qids=[], method='okapi'):
         r = {}
+        for_sort = []
         for qid in qids:
             p = []
             with open(os.path.join(self.collected_results_root, qid)) as f:
@@ -1069,7 +1070,9 @@ class SubqueriesLearning(RunSubqueries):
                 p_all_term = p[-1][1]
                 p.sort(key=itemgetter(1), reverse=True)
                 r[qid] = {'max': p[0], 'diff': p[0][1]-p_all_term}
-        return r
+                for_sort.append((qid, p[0][1]-p_all_term))
+        for_sort.sort(key=itemgetter(1), reverse=True)
+        return r, for_sort
 
     def mi_learn_algo(self, mi_vec, thres=1.0):
         """
@@ -1114,7 +1117,7 @@ class SubqueriesLearning(RunSubqueries):
         queries = {ele['num']:ele['title'] for ele in queries}
 
         all_features = {}
-        gt_optimal = self.load_gt_optimal(queries.keys())
+        gt_optimal, diff_sorted_qid = self.load_gt_optimal(queries.keys())
         for qid in os.listdir(self.subqueries_mapping_root):
             if qid not in queries:
                 continue
@@ -1128,7 +1131,7 @@ class SubqueriesLearning(RunSubqueries):
         
         results = {}
         patterns = {}
-        for qid in all_features:
+        for qid, diff in diff_sorted_qid:
             # print '-'*30
             # print qid
             all_features[qid].sort(key=itemgetter(1))
