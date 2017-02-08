@@ -1136,7 +1136,7 @@ class SubqueriesLearning(RunSubqueries):
             # print qid
             all_features[qid].sort(key=itemgetter(1))
             results[qid], _type = self.mi_learn_algo(all_features[qid], thres)
-            print all_features[qid], results[qid], _type, gt_optimal[qid] if qid in gt_optimal else None
+            print qid, all_features[qid], results[qid], _type, gt_optimal[qid] if qid in gt_optimal else None
             raw_input()
             if _type not in patterns:
                 patterns[_type] = {'predict': {}, 'gt': {}}
