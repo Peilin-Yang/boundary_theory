@@ -1065,7 +1065,7 @@ class SubqueriesLearning(RunSubqueries):
                     ap = float(row[3])
                     if method in model_para:
                         p.append((subquery_id, ap))
-            p_all_term = p[-1]
+            p_all_term = p[-1][1]
             if p:
                 p.sort(key=itemgetter(1), reverse=True)
                 r[qid] = {'max': p[0], 'diff': p[0][1]-p_all_term}
