@@ -199,6 +199,7 @@ class RunSubqueries(object):
                     ap = first_line.split()[-1]
             except:
                 continue
+            print fn, subquery_mapping
             qid_results.append( (subquery_id, subquery_mapping[subquery_id], model_para, ap) )
 
         qid_results.sort(key=self.sort_subquery_id)
