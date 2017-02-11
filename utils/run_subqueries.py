@@ -125,7 +125,12 @@ class RunSubqueries(object):
             returncode = p.wait()
             p.communicate()
             if returncode != 0:
-                raise NameError("Run Query Error: %s" % (command) )
+                #raise NameError("Run Query Error: %s" % (command) )
+                command = ['IndriRunQuery_EX -index=%s -trecFormat=True -count=1000 -query.number=%s -query.text="%s" -rule=%s' 
+                % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)]
+                p = Popen(command, shell=True, stdout=f, stderr=PIPE)
+                returncode = p.wait()
+                p.communicate()
 
     def eval(self, runfile_ofn, eval_ofn):
         judgment_file = os.path.join(self.corpus_path, 'judgement_file')
