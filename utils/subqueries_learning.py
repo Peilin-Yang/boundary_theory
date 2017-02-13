@@ -1207,12 +1207,12 @@ class SubqueriesLearning(RunSubqueries):
         with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
         subquery = subquery_mapping[optimal_subquery_id]
-        rel_docs = Judgment(corpus_path).get_relevant_docs_of_some_queries([ele[2]], format='dict')
-        cs = CollectionStats(corpus_path)
+        rel_docs = Judgment(self.corpus_path).get_relevant_docs_of_some_queries([ele[2]], format='dict')
+        cs = CollectionStats(self.corpus_path)
         terms_stats = {}
         for term in orig_query:
             terms_stats[term] = cs.get_term_stats(term)
-        all_runfiles = os.listdir(os.path.join(ele[0], 'subqueries', 'runfiles'))
+        all_runfiles = os.listdir(self.subqueries_runfiles_root)
         optimal_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+optimal_subquery_id+'_method:okapi')][0]
         allterm_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+allterm_subquery_id+'_method:okapi')][0]
             
