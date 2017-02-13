@@ -1200,7 +1200,7 @@ class SubqueriesLearning(RunSubqueries):
         return all_qids 
 
     def dump_doc(self, fn, rel_docs, output_dir, subquery=True):
-        with open(optimal_subquery_runfile) as f:
+        with open(fn) as f:
             first_100_lines = [line.strip() for line in f.readlines()[:100]]
         doc_dir = os.path.join(output_dir, 'docs')
         if not os.path.exists(doc_dir):
@@ -1248,8 +1248,8 @@ class SubqueriesLearning(RunSubqueries):
         if not os.path.exists(results_root):
             os.makedirs(results_root)
         self.dump_doc(os.path.join(self.subqueries_runfiles_root, optimal_subquery_runfile), 
-            rel_docs, results_root)
+            rel_docs, results_root, True)
         self.dump_doc(os.path.join(self.subqueries_runfiles_root, allterm_subquery_runfile), 
-            rel_docs, results_root)
+            rel_docs, results_root, False)
         print json.dumps(info, indent=2)
         
