@@ -1190,7 +1190,7 @@ class SubqueriesLearning(RunSubqueries):
                     ele.insert(0, collection_name)
                     ele.insert(0, collection_path)
                     all_qids.append(ele)
-        all_qids.sort(key=itemgetter(-1), reverse=True)
+        all_qids.sort(key=itemgetter(4), reverse=True)
         results_root = os.path.join('../all_results', 'subqueries', 'crowdsourcing')
         if not os.path.exists(results_root):
             os.makedirs(results_root)
@@ -1250,7 +1250,7 @@ class SubqueriesLearning(RunSubqueries):
             'subquery_runfile': 'runfile_subquery',
             'allterm_runfile': 'runfile_allterm'
         }
-        results_root = os.path.join('../all_results', 'subqueries', 'crowdsourcing', qid)
+        results_root = os.path.join('../all_results', 'subqueries', 'crowdsourcing', self.collection_name+'_'+qid)
         if not os.path.exists(results_root):
             os.makedirs(results_root)
         self.dump_doc(os.path.join(self.subqueries_runfiles_root, optimal_subquery_runfile), 
