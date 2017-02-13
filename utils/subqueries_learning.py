@@ -1196,12 +1196,12 @@ class SubqueriesLearning(RunSubqueries):
             q_class = Query(ele[0])
             queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
             qid = ele[2]
+            optimal_subquery_id = ele[3]
+            allterm_subquery_id = str(len(orig_query.split()))+'_0'
             with open(os.path.join(SubqueriesLearning(ele[0], ele[1]).subqueries_mapping_root, qid)) as f:
                 subquery_mapping = json.load(f)
             orig_query = queries[qid]
-            subquery = subquery_mapping[subquery_id]
-            optimal_subquery_id = ele[3]
-            allterm_subquery_id = str(len(orig_query.split()))+'_0'
+            subquery = subquery_mapping[optimal_subquery_id]
             ap_diff = ele[4]
             rel_docs = Judgment(ele[0]).get_relevant_docs_of_some_queries([ele[2]], format='dict')
             cs = CollectionStats(ele[0])
