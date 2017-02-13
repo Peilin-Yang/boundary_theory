@@ -1182,8 +1182,12 @@ class SubqueriesLearning(RunSubqueries):
 
             gt_optimal, diff_sorted_qid = SubqueriesLearning(collection_path, collection_name)\
                                                 .load_gt_optimal(queries.keys())
-            all_qids.extend([ele for ele in diff_sorted_qid if ele[-1]!=0.0])
-        all_qids.sort(key=itemgetter(2), reverse=True)
+            for ele in diff_sorted_qid:
+                if ele[-1] != 0.0:
+                    ele.insert(0, collection_path)
+                    ele.insert(0, collection_name)
+                    all_qids.append(ele)
+        all_qids.sort(key=itemgetter(-1), reverse=True)
         print all_qids
             
         
