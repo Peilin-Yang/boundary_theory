@@ -1055,6 +1055,9 @@ class SubqueriesLearning(RunSubqueries):
     # MI Learn
     ##########
     def load_gt_optimal(self, qids=[], method='okapi'):
+        q_class = Query(self.corpus_path)
+        queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
+        orig_query = queries[qid]
         r = {}
         for_sort = []
         for qid in qids:
@@ -1068,14 +1071,13 @@ class SubqueriesLearning(RunSubqueries):
                     ap = float(row[3])
                     if method in model_para:
                         p.append((subquery_id, ap))
+                        if subquery_id == str(len(orig_query.split()))+'-0':
+                            p_all_term = ap
             if p:
-                p_all_term = p[-1][1]
                 p.sort(key=itemgetter(1), reverse=True)
                 r[qid] = {'max': p[0], 'diff': p[0][1]-p_all_term}
                 for_sort.append((qid, p[0][0], p[0][1]-p_all_term))
         for_sort.sort(key=itemgetter(1), reverse=True)
-        print for_sort
-        raw_input()
         return r, for_sort
 
     def mi_learn_algo(self, mi_vec, thres=1.0):
