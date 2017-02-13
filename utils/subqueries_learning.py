@@ -1207,8 +1207,7 @@ class SubqueriesLearning(RunSubqueries):
         with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
         subquery = subquery_mapping[optimal_subquery_id]
-        rel_docs = Judgment(self.corpus_path).get_relevant_docs_of_some_queries([qid], format='dict')
-        print rel_docs
+        rel_docs = Judgment(self.corpus_path).get_relevant_docs_of_some_queries([qid], format='dict')[qid]
         cs = CollectionStats(self.corpus_path)
         terms_stats = {}
         for term in orig_query:
