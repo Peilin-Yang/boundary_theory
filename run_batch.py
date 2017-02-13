@@ -443,13 +443,18 @@ def evaluate_svm_model_atom(para_file):
             feature_type = int(row[2])
             SubqueriesLearning(collection_path, collection_name).evaluate_svm_model(feature_type)
 
-def print_svm_model_feature_importance(top=10):
+def print_svm_model_feature_importance(feature_type=1, top=10):
+    if feature_type == 1:
+        folder = 'final'
+    elif feature_type == 2:
+        folder = 'kendallstau'
+            
     all_top_features = {}
     for q in g.query:
         collection_path = os.path.join(_root, q['collection'])
         collection_name = q['collection_formal_name']
         all_top_features[collection_name] = {}
-        res_folder = os.path.join(collection_path, 'subqueries', 'svm_rank', 'featurerank')
+        res_folder = os.path.join(collection_path, 'subqueries', 'svm_rank', folder, 'featurerank')
         for fn in os.listdir(res_folder):
             query_length = int(fn)
             all_top_features[collection_name][query_length] = []
