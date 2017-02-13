@@ -1234,12 +1234,18 @@ class SubqueriesLearning(RunSubqueries):
         all_runfiles = os.listdir(self.subqueries_runfiles_root)
         optimal_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+optimal_subquery_id+'_method:okapi')][0]
         allterm_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+allterm_subquery_id+'_method:okapi')][0]
+        with open(os.path.join(self.subqueries_performance_root, optimal_subquery_runfile)) as f:
+            subquery_ap = float(f.read().split()[-1])
+        with open(os.path.join(self.subqueries_performance_root, allterm_subquery_runfile)) as f:
+            allterm_ap = float(f.read().split()[-1])    
         info = {
             'collection': self.collection_name,
             'optimal_subqid': optimal_subquery_id,
             'allterm_subqid': allterm_subquery_id,
             'orig_query': orig_query,
             'optimal_subquery': subquery,
+            'allterm_ap': allterm_ap,
+            'subquery_ap': subquery_ap,
             'terms_stats': terms_stats,
             'subquery_runfile': 'runfile_subquery',
             'allterm_runfile': 'runfile_allterm'
