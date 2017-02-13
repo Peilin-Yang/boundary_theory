@@ -469,11 +469,11 @@ def print_svm_model_feature_importance(feature_type=1, top=10):
                         break
     print all_top_features
     print '### Top Features'
-    print '| Query Len | 2 | 3 | 4 |'
+    print '| Query Len | 0 |'
     print '|--------|--------|--------|--------|'
     for collection_name in all_top_features:
         for idx in range(top):
-            print '| **%s** | %s | %s | %s |' % (collection_name if idx == 0 else '', 
+            print '| **%s** | %s |' % (collection_name if idx == 0 else '', 
                 all_top_features[collection_name][0][idx])
 
 def cross_testing_svm_model(query_length=2):
