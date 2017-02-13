@@ -1074,6 +1074,8 @@ class SubqueriesLearning(RunSubqueries):
                 r[qid] = {'max': p[0], 'diff': p[0][1]-p_all_term}
                 for_sort.append((qid, p[0][0], p[0][1]-p_all_term))
         for_sort.sort(key=itemgetter(1), reverse=True)
+        print for_sort
+        raw_input()
         return r, for_sort
 
     def mi_learn_algo(self, mi_vec, thres=1.0):
