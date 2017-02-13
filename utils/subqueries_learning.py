@@ -1184,6 +1184,7 @@ class SubqueriesLearning(RunSubqueries):
                                                 .load_gt_optimal(queries.keys())
             for ele in diff_sorted_qid:
                 if ele[-1] != 0.0:
+                    ele = list(ele)
                     ele.insert(0, collection_path)
                     ele.insert(0, collection_name)
                     all_qids.append(ele)
