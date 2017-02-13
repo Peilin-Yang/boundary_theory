@@ -473,9 +473,7 @@ def print_svm_model_feature_importance(feature_type=1, top=10):
     for collection_name in all_top_features:
         for idx in range(top):
             print '| **%s** | %s | %s | %s |' % (collection_name if idx == 0 else '', 
-                all_top_features[collection_name][2][idx],
-                all_top_features[collection_name][3][idx],
-                all_top_features[collection_name][4][idx])
+                all_top_features[collection_name][0][idx])
 
 def cross_testing_svm_model(query_length=2):
     query_length = int(query_length)
