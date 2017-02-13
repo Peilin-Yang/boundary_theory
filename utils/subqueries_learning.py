@@ -1170,7 +1170,7 @@ class SubqueriesLearning(RunSubqueries):
         print np.mean(ap_arr)
 
     @staticmethod
-    def gen_resources_for_crowdsourcing(collection_paths_n_names, query_length=0):
+    def gen_resources_for_crowdsourcing_batch(collection_paths_n_names, query_length=0):
         # 1. get qids from all collections where the AP gap between the 
         # optimal subquery and original query is sorted in descending order
         all_qids = []
@@ -1191,25 +1191,29 @@ class SubqueriesLearning(RunSubqueries):
                     ele.insert(0, collection_path)
                     all_qids.append(ele)
         all_qids.sort(key=itemgetter(-1), reverse=True)
-        for ele in all_qids:
-            print ele
-            q_class = Query(ele[0])
-            queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
-            qid = ele[2]
-            orig_query = queries[qid]
-            optimal_subquery_id = ele[3]
-            allterm_subquery_id = str(len(orig_query.split()))+'-0'
-            with open(os.path.join(SubqueriesLearning(ele[0], ele[1]).subqueries_mapping_root, qid)) as f:
-                subquery_mapping = json.load(f)
-            subquery = subquery_mapping[optimal_subquery_id]
-            ap_diff = ele[4]
-            rel_docs = Judgment(ele[0]).get_relevant_docs_of_some_queries([ele[2]], format='dict')
-            cs = CollectionStats(ele[0])
-            terms_stats = {}
-            for term in orig_query:
-                terms_stats[term] = cs.get_term_stats(term)
-            all_runfiles = os.listdir(os.path.join(ele[0], 'subqueries', 'runfiles'))
-            optimal_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+optimal_subquery_id+'_method:okapi')][0]
-            allterm_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+allterm_subquery_id+'_method:okapi')][0]
+        results_root = os.path.join('../all_results', 'subqueries', 'crowdsourcing')
+        if not os.path.exists(results_root):
+            os.makedirs(results_root)
+        with open(os.path.join(results_root, 'gt.csv'), 'wb') as f:
+            cw = csv.writer(f)
+            cw.writerows(all_qids)
+        return all_qids 
+
+    def gen_resources_for_crowdsourcing_atom(self, qid, optimal_subquery_id, ap_diff):
+        q_class = Query(self.corpus_path)
+        queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
+        orig_query = queries[qid]
+        allterm_subquery_id = str(len(orig_query.split()))+'-0'
+        with open(os.path.join(SubqueriesLearning(ele[0], ele[1]).subqueries_mapping_root, qid)) as f:
+            subquery_mapping = json.load(f)
+        subquery = subquery_mapping[optimal_subquery_id]
+        rel_docs = Judgment(corpus_path).get_relevant_docs_of_some_queries([ele[2]], format='dict')
+        cs = CollectionStats(corpus_path)
+        terms_stats = {}
+        for term in orig_query:
+            terms_stats[term] = cs.get_term_stats(term)
+        all_runfiles = os.listdir(os.path.join(ele[0], 'subqueries', 'runfiles'))
+        optimal_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+optimal_subquery_id+'_method:okapi')][0]
+        allterm_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+allterm_subquery_id+'_method:okapi')][0]
             
         

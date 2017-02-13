@@ -515,9 +515,22 @@ def mi_learn_atom(para_file):
             thres = float(row[4])
             SubqueriesLearning(collection_path, collection_name).cluster_subqueries(query_length, mi_distance, thres)
 
-def gen_resources_for_crowdsourcing():
+def gen_resources_for_crowdsourcing_batch():
     collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
-    SubqueriesLearning.gen_resources_for_crowdsourcing(collections)
+    all_paras = SubqueriesLearning.gen_resources_for_crowdsourcing(collections)
+    gen_batch_framework('gen_crowdsourcing_atom', 'gen_crowdsourcing_atom', all_paras)
+
+def gen_resources_for_crowdsourcing_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            collection_name = row[1]
+            qid = row[2]
+            subquery_id = row[3]
+            ap_diff = float(row[4])
+            SubqueriesLearning(collection_path, collection_name).cluster_subqueries(query_length, mi_distance, thres)
+
 
 
 ###################################################
@@ -763,8 +776,11 @@ if __name__ == '__main__':
         nargs=1,
         help='learn the subquery performances using only Mutual Information')
 
-    parser.add_argument('-gen_crowdsourcing', '--gen_crowdsourcing', 
+    parser.add_argument('-gen_crowdsourcing_batch', '--gen_crowdsourcing_batch', 
         action='store_true',
+        help='')
+    parser.add_argument('-gen_crowdsourcing_atom', '--gen_crowdsourcing_atom', 
+        nargs=1,
         help='')
 
     parser.add_argument("-2", "--run_all_baseline_results",
@@ -859,8 +875,10 @@ if __name__ == '__main__':
     if args.mi_learn_atom:
         mi_learn_atom(args.mi_learn_atom[0])
 
-    if args.gen_crowdsourcing:
-        gen_resources_for_crowdsourcing()
+    if args.gen_crowdsourcing_batch:
+        gen_resources_for_crowdsourcing_batch()
+    if args.gen_crowdsourcing_atom:
+        gen_resources_for_crowdsourcing_atom(args.gen_crowdsourcing_atom[0])
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)
