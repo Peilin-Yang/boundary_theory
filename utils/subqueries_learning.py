@@ -1194,7 +1194,7 @@ class SubqueriesLearning(RunSubqueries):
         for ele in all_qids:
             print ele
             q_class = Query(ele[0])
-            queries = q_class.get_queries()
+            queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
             qid = ele[2]
             orig_query = queries[qid]
             subquery = subquery_mapping[subquery_id]
