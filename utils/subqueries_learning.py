@@ -1198,7 +1198,7 @@ class SubqueriesLearning(RunSubqueries):
             qid = ele[2]
             orig_query = queries[qid]
             optimal_subquery_id = ele[3]
-            allterm_subquery_id = str(len(orig_query.split()))+'_0'
+            allterm_subquery_id = str(len(orig_query.split()))+'-0'
             with open(os.path.join(SubqueriesLearning(ele[0], ele[1]).subqueries_mapping_root, qid)) as f:
                 subquery_mapping = json.load(f)
             subquery = subquery_mapping[optimal_subquery_id]
@@ -1209,10 +1209,6 @@ class SubqueriesLearning(RunSubqueries):
             for term in orig_query:
                 terms_stats[term] = cs.get_term_stats(term)
             all_runfiles = os.listdir(os.path.join(ele[0], 'subqueries', 'runfiles'))
-            print all_runfiles
-            print ele[1], qid, orig_query, optimal_subquery_id, allterm_subquery_id
-            print [fn for fn in all_runfiles if fn.startswith(qid+'_'+optimal_subquery_id+'_method:okapi')]
-            print [fn for fn in all_runfiles if fn.startswith(qid+'_'+allterm_subquery_id+'_method:okapi')]
             optimal_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+optimal_subquery_id+'_method:okapi')][0]
             allterm_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+allterm_subquery_id+'_method:okapi')][0]
             
