@@ -26,6 +26,8 @@ from sklearn.metrics import roc_auc_score
 from sklearn.metrics import classification_report
 
 from query import Query
+from evaluation import Evaluation
+from judgment import Judgment
 from performance import Performances
 from collection_stats import CollectionStats
 from run_subqueries import RunSubqueries
@@ -1189,6 +1191,22 @@ class SubqueriesLearning(RunSubqueries):
                     ele.insert(0, collection_name)
                     all_qids.append(ele)
         all_qids.sort(key=itemgetter(-1), reverse=True)
-        print len(all_qids)
+        for ele in all_qids:
+            qid = ele[2]
+            orig_query = queries[qid]
+            subquery = subquery_mapping[subquery_id]
+            optimal_subquery_id = ele[3]
+            allterm_subquery_id = str(len(orig_query.split()))+'_0'
+            ap_diff = ele[4]
+            with open(os.path.join(SubqueriesLearning(ele[0], ele[1]).subqueries_mapping_root, qid)) as f:
+                subquery_mapping = json.load(f)
+            
+            rel_docs = Judgment(ele[0]).get_relevant_docs_of_some_queries([ele[2]], format='dict')
+            cs = CollectionStats(ele[0])
+            terms_stats = {}
+            for term in orig_query:
+                terms_stats[term] = cs.get_term_stats(t)
+            optimal_subquery_runfile = [fn for fn os.listdir(os.path.join(ele[0], 'subqueries', 'runfiles')) if fn.startswith(qid+'_'+optimal_subquery_id+'_method:okapi')][0]
+            allterm_subquery_runfile = [fn for fn os.listdir(os.path.join(ele[0], 'subqueries', 'runfiles')) if fn.startswith(qid+'_'+allterm_subquery_id+'_method:okapi')][0]
             
         
