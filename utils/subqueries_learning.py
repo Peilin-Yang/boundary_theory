@@ -1056,12 +1056,12 @@ class SubqueriesLearning(RunSubqueries):
     ##########
     def load_gt_optimal(self, qids=[], method='okapi'):
         q_class = Query(self.corpus_path)
-        queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
-        orig_query = queries[qid]
+        queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}      
         r = {}
         for_sort = []
         for qid in qids:
             p = []
+            orig_query = queries[qid]
             with open(os.path.join(self.collected_results_root, qid)) as f:
                 csvr = csv.reader(f)
                 for row in csvr:
