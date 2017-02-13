@@ -1189,6 +1189,6 @@ class SubqueriesLearning(RunSubqueries):
                     ele.insert(0, collection_name)
                     all_qids.append(ele)
         all_qids.sort(key=itemgetter(-1), reverse=True)
-        print all_qids
+        print len(all_qids)
             
         
