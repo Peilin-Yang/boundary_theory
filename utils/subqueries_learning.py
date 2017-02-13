@@ -1209,6 +1209,7 @@ class SubqueriesLearning(RunSubqueries):
             for term in orig_query:
                 terms_stats[term] = cs.get_term_stats(term)
             all_runfiles = os.listdir(os.path.join(ele[0], 'subqueries', 'runfiles'))
+            print all_runfiles
             print ele[1], qid, orig_query, optimal_subquery_id, allterm_subquery_id
             print [fn for fn in all_runfiles if fn.startswith(qid+'_'+optimal_subquery_id+'_method:okapi')]
             print [fn for fn in all_runfiles if fn.startswith(qid+'_'+allterm_subquery_id+'_method:okapi')]
