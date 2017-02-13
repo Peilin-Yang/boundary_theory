@@ -1212,8 +1212,19 @@ class SubqueriesLearning(RunSubqueries):
         terms_stats = {}
         for term in orig_query:
             terms_stats[term] = cs.get_term_stats(term)
+
         all_runfiles = os.listdir(self.subqueries_runfiles_root)
         optimal_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+optimal_subquery_id+'_method:okapi')][0]
         allterm_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+allterm_subquery_id+'_method:okapi')][0]
-            
+        info = {
+            'collection': self.collection_name,
+            'optimal_subqid': optimal_subquery_id,
+            'allterm_subqid': allterm_subquery_id,
+            'orig_query': orig_query,
+            'optimal_subquery': subquery,
+            'terms_stats': terms_stats,
+            'subquery_runfile': optimal_subquery_runfile,
+            'allterm_runfile': allterm_subquery_runfile
+        }
+        print json.dumps(info, indent=2)
         
