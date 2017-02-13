@@ -1204,7 +1204,7 @@ class SubqueriesLearning(RunSubqueries):
         queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
         orig_query = queries[qid]
         allterm_subquery_id = str(len(orig_query.split()))+'-0'
-        with open(os.path.join(SubqueriesLearning(ele[0], ele[1]).subqueries_mapping_root, qid)) as f:
+        with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
         subquery = subquery_mapping[optimal_subquery_id]
         rel_docs = Judgment(corpus_path).get_relevant_docs_of_some_queries([ele[2]], format='dict')
