@@ -1070,7 +1070,7 @@ class SubqueriesLearning(RunSubqueries):
                 p_all_term = p[-1][1]
                 p.sort(key=itemgetter(1), reverse=True)
                 r[qid] = {'max': p[0], 'diff': p[0][1]-p_all_term}
-                for_sort.append((qid, p[0][1]-p_all_term))
+                for_sort.append((qid, p[0][0], p[0][1]-p_all_term))
         for_sort.sort(key=itemgetter(1), reverse=True)
         return r, for_sort
 
@@ -1166,3 +1166,24 @@ class SubqueriesLearning(RunSubqueries):
                         ap_arr.append(ap)
                         break
         print np.mean(ap_arr)
+
+    @staticmethod
+    def gen_resources_for_crowdsourcing(collection_paths_n_names, query_length=0):
+        # 1. get qids from all collections where the AP gap between the 
+        # optimal subquery and original query is sorted in descending order
+        all_qids = []
+        for collection_path, collection_name in collection_paths_n_names:
+            q = Query(collection_path)
+            if query_length == 0:
+                queries = q.get_queries()
+            else:
+                queries = q.get_queries_of_length(query_length)
+            queries = {ele['num']:ele['title'] for ele in queries}
+
+            gt_optimal, diff_sorted_qid = SubqueriesLearning(collection_path, collection_name)
+                                                .load_gt_optimal(queries.keys())
+            all_qids.extend([ele for ele in diff_sorted_qid if ele[-1]!=0.0])
+        all_qids.sort(key=itemgetter(2), reverse=True)
+        print all_qids
+            
+        

@@ -515,6 +515,10 @@ def mi_learn_atom(para_file):
             thres = float(row[4])
             SubqueriesLearning(collection_path, collection_name).cluster_subqueries(query_length, mi_distance, thres)
 
+def gen_resources_for_crowdsourcing():
+    collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
+    SubqueriesLearning.gen_resources_for_crowdsourcing(collections)
+
 
 ###################################################
 def run_all_baseline_results_atom(para_file):
@@ -759,6 +763,10 @@ if __name__ == '__main__':
         nargs=1,
         help='learn the subquery performances using only Mutual Information')
 
+    parser.add_argument('-gen_crowdsourcing', '--gen_crowdsourcing', 
+        action='store_true',
+        help='')
+
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
         help="Run all parameters for Pivoted, Okapi and Dirichlet.")
@@ -850,6 +858,9 @@ if __name__ == '__main__':
         mi_learn_batch(args.mi_learn_batch[0], args.mi_learn_batch[1], args.mi_learn_batch[2])
     if args.mi_learn_atom:
         mi_learn_atom(args.mi_learn_atom[0])
+
+    if args.gen_crowdsourcing:
+        gen_resources_for_crowdsourcing()
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)
