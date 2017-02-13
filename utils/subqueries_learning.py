@@ -1187,8 +1187,8 @@ class SubqueriesLearning(RunSubqueries):
             for ele in diff_sorted_qid:
                 if ele[-1] != 0.0:
                     ele = list(ele)
-                    ele.insert(0, collection_path)
                     ele.insert(0, collection_name)
+                    ele.insert(0, collection_path)
                     all_qids.append(ele)
         all_qids.sort(key=itemgetter(-1), reverse=True)
         for ele in all_qids:
