@@ -467,6 +467,7 @@ def print_svm_model_feature_importance(feature_type=1, top=10):
                     idx += 1
                     if idx >= top:
                         break
+    print all_top_features
     print '### Top Features'
     print '| Query Len | 2 | 3 | 4 |'
     print '|--------|--------|--------|--------|'
