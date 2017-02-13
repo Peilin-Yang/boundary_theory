@@ -517,7 +517,7 @@ def mi_learn_atom(para_file):
 
 def gen_resources_for_crowdsourcing_batch():
     collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
-    all_paras = SubqueriesLearning.gen_resources_for_crowdsourcing(collections)
+    all_paras = SubqueriesLearning.gen_resources_for_crowdsourcing_batch(collections)
     gen_batch_framework('gen_crowdsourcing_atom', 'gen_crowdsourcing_atom', all_paras)
 
 def gen_resources_for_crowdsourcing_atom(para_file):
@@ -529,7 +529,7 @@ def gen_resources_for_crowdsourcing_atom(para_file):
             qid = row[2]
             subquery_id = row[3]
             ap_diff = float(row[4])
-            SubqueriesLearning(collection_path, collection_name).cluster_subqueries(query_length, mi_distance, thres)
+            SubqueriesLearning(collection_path, collection_name).gen_resources_for_crowdsourcing_atom(qid, subquery_id, ap_diff)
 
 
 
