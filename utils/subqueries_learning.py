@@ -1180,7 +1180,7 @@ class SubqueriesLearning(RunSubqueries):
                 queries = q.get_queries_of_length(query_length)
             queries = {ele['num']:ele['title'] for ele in queries}
 
-            gt_optimal, diff_sorted_qid = SubqueriesLearning(collection_path, collection_name)
+            gt_optimal, diff_sorted_qid = SubqueriesLearning(collection_path, collection_name)\
                                                 .load_gt_optimal(queries.keys())
             all_qids.extend([ele for ele in diff_sorted_qid if ele[-1]!=0.0])
         all_qids.sort(key=itemgetter(2), reverse=True)
