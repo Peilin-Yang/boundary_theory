@@ -1210,7 +1210,7 @@ class SubqueriesLearning(RunSubqueries):
         rel_docs = Judgment(self.corpus_path).get_relevant_docs_of_some_queries([qid], format='dict')[qid]
         cs = CollectionStats(self.corpus_path)
         terms_stats = {}
-        for term in orig_query:
+        for term in orig_query.split():
             terms_stats[term] = cs.get_term_stats(term)
 
         all_runfiles = os.listdir(self.subqueries_runfiles_root)
