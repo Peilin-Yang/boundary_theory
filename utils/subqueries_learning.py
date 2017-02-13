@@ -1192,6 +1192,8 @@ class SubqueriesLearning(RunSubqueries):
                     all_qids.append(ele)
         all_qids.sort(key=itemgetter(-1), reverse=True)
         for ele in all_qids:
+            q_class = Query(ele[0])
+            queries = q_class.get_queries()
             qid = ele[2]
             orig_query = queries[qid]
             subquery = subquery_mapping[subquery_id]
