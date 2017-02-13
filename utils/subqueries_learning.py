@@ -1199,6 +1199,24 @@ class SubqueriesLearning(RunSubqueries):
             cw.writerows(all_qids)
         return all_qids 
 
+    def dump_doc(self, fn, rel_docs, output_dir, subquery=True):
+        with open(optimal_subquery_runfile) as f:
+            first_100_lines = [line.strip() for line in f.readlines()[:100]]
+        doc_dir = os.path.join(output_dir, 'docs')
+        if not os.path.exists(doc_dir):
+            os.makedirs(doc_dir)
+        if subquery:
+            runfile_fn = os.path.join(output_dir, 'runfile_subquery')
+        else:
+            runfile_fn = os.path.join(output_dir, 'runfile_allterm')
+        with open(runfile_fn, 'wb') as f:
+            for line in first_100_lines:
+                qid, tf_details, docid, rank, score, doc_details = line.split()
+                if not os.path.exists(os.path.join(doc_dir, docid)):
+                    subprocess.call(['dumpindex_EX %s/index dt `dumpindex_EX %s/index di docno %s` > %s' 
+                        % (self.corpus_path, self.corpus_path, docid, os.path.join(doc_dir, docid))], shell=True)
+                f.write('%s %s %s %d %s %s\n' % (qid, tf_details, docid, 1 if docid in rel_docs else 0, score, doc_details))
+
     def gen_resources_for_crowdsourcing_atom(self, qid, optimal_subquery_id, ap_diff):
         q_class = Query(self.corpus_path)
         queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
@@ -1226,5 +1244,12 @@ class SubqueriesLearning(RunSubqueries):
             'subquery_runfile': optimal_subquery_runfile,
             'allterm_runfile': allterm_subquery_runfile
         }
+        results_root = os.path.join('../all_results', 'subqueries', 'crowdsourcing', qid)
+        if not os.path.exists(results_root):
+            os.makedirs(results_root)
+        self.dump_doc(os.path.join(self.subqueries_runfiles_root, optimal_subquery_runfile), 
+            rel_docs, results_root)
+        self.dump_doc(os.path.join(self.subqueries_runfiles_root, allterm_subquery_runfile), 
+            rel_docs, results_root)
         print json.dumps(info, indent=2)
         
