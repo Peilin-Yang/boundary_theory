@@ -336,7 +336,7 @@ class PlotTermRelationship(object):
         all_performances = {k:{'all': {}, 'higher-IDF': {}, 'lower-IDF': {}} for k in model_mapping}
         num_cols = min(4, len(details_rel_data)+1) # extra one for explanations
         num_rows = int(math.ceil((len(details_rel_data)+1)*1.0/num_cols))
-        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols, 3*num_rows))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols+1, 3*num_rows))
         plt.rc('font', size=8)
         plt.rc('text', usetex=False)
         row_idx = 0

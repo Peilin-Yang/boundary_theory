@@ -20,7 +20,7 @@ from collection_stats import CollectionStats
 
 class RunProximitySubqueries(object):
     """
-    run the sub-queries since they potentially outperform the original query.
+    run the proximity sub-queries.
     """
     def __init__(self, path, corpus_name):
         self.corpus_path = os.path.abspath(path)
@@ -48,7 +48,7 @@ class RunProximitySubqueries(object):
         self.subqueries_mapping_root = os.path.join(self.output_root, 'mappings')
         if not os.path.exists(self.subqueries_mapping_root):
             os.makedirs(self.subqueries_mapping_root)
-        self.subqueries_runfiles_root = os.path.join(self.output_root, 'runfiles')
+        self.subqueries_runfiles_root = os.path.join(self.output_root, 'proximity_runfiles')
         if not os.path.exists(self.subqueries_runfiles_root):
             os.makedirs(self.subqueries_runfiles_root)
         self.subqueries_performance_root = os.path.join(self.output_root, 'performances')
