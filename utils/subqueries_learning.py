@@ -1223,8 +1223,14 @@ class SubqueriesLearning(RunSubqueries):
 
     def gen_resources_for_crowdsourcing_atom(self, qid, optimal_subquery_id, ap_diff):
         q_class = Query(self.corpus_path)
-        queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
-        orig_query = queries[qid]
+        queries = {ele['num']: {
+            'title':ele['title'],
+            'desc':ele['desc'],
+            'narr':ele['narr']
+        } for ele in q_class.get_queries()}
+        orig_query = queries[qid]['title']
+        desc_query = queries[qid]['desc']
+        narr_query = queries[qid]['narr']
         allterm_subquery_id = str(len(orig_query.split()))+'-0'
         with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
@@ -1246,7 +1252,7 @@ class SubqueriesLearning(RunSubqueries):
             'collection': self.collection_name,
             'optimal_subqid': optimal_subquery_id,
             'allterm_subqid': allterm_subquery_id,
-            'orig_query': orig_query,
+            'orig_query': {'title': orig_query, 'desc': desc_query, 'narr':narr_query},
             'optimal_subquery': subquery,
             'allterm_ap': allterm_ap,
             'subquery_ap': subquery_ap,
@@ -1257,10 +1263,10 @@ class SubqueriesLearning(RunSubqueries):
         results_root = os.path.join('../all_results', 'subqueries', 'crowdsourcing', self.collection_name+'_'+qid)
         if not os.path.exists(results_root):
             os.makedirs(results_root)
-        self.dump_doc(os.path.join(self.subqueries_runfiles_root, optimal_subquery_runfile), 
-            rel_docs, results_root, True)
-        self.dump_doc(os.path.join(self.subqueries_runfiles_root, allterm_subquery_runfile), 
-            rel_docs, results_root, False)
+        # self.dump_doc(os.path.join(self.subqueries_runfiles_root, optimal_subquery_runfile), 
+        #     rel_docs, results_root, True)
+        # self.dump_doc(os.path.join(self.subqueries_runfiles_root, allterm_subquery_runfile), 
+        #     rel_docs, results_root, False)
         with open( os.path.join(results_root, 'info.json'), 'wb' ) as f:
             json.dump(info, f, indent=2, sort_keys=True)
         
