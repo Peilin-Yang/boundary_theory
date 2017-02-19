@@ -68,7 +68,7 @@ class RunProximitySubqueries(RunSubqueries):
                     subquery_str = '#combine(' + '#uw%d(' % (4*subquery_len)+subquery_str+')' \
                         + '#od%d(' % (4*subquery_len)+subquery_str+')' \
                         +')'
-                type_str = type_mapping[_type]
+                type_str = self.type_mapping[_type]
                 run_file_root = os.path.join(self.subqueries_runfiles_root, type_str)
                 if not os.path.exists(run_file_root):
                     os.makedirs(run_file_root)
