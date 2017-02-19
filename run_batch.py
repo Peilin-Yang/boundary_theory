@@ -255,7 +255,7 @@ def gen_run_proximity_subqueries_batch(_type=1, query_length=0):
         collection_path = os.path.join(_root, q['collection'])
         all_paras.extend(RunProximitySubqueries(collection_path, collection_name).batch_run_subqueries_paras(int(_type), int(query_length)))
     #print all_paras
-    gen_batch_framework('run_proximity_subqueries', '42', all_paras)
+    gen_batch_framework('run_proximity_subqueries', '42p', all_paras)
 
 def run_proximity_subqueries_atom(para_file):
     with open(para_file) as f:
