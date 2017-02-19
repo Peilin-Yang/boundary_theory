@@ -720,7 +720,7 @@ if __name__ == '__main__':
         help='output the optimal performances distribution')
 
     parser.add_argument('-41p', '--gen_run_proximity_subqueries_batch', 
-        nargs=1,
+        nargs=2,
         help='generate run subqueries paras. para indicating the query length')
     parser.add_argument('-42p', '--run_proximity_subqueries_atom', 
         nargs=1,
