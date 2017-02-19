@@ -64,9 +64,8 @@ class RunProximitySubqueries(RunSubqueries):
                 elif _type == 2:
                     subquery_str = '#od%d(' % (4*subquery_len)+subquery_str+')'
                 elif _type == 3:
-                    subquery_str = '#combine('
-                        + '#uw%d(' % (4*subquery_len)+subquery_str+')' 
-                        + '#od%d(' % (4*subquery_len)+subquery_str+')' 
+                    subquery_str = '#combine(' + '#uw%d(' % (4*subquery_len)+subquery_str+')' \
+                        + '#od%d(' % (4*subquery_len)+subquery_str+')' \
                         +')'
                 type_str = type_mapping[_type]
                 run_file_root = os.path.join(self.subqueries_runfiles_root, type_str)
