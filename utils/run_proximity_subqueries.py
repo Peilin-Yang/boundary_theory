@@ -46,6 +46,16 @@ class RunProximitySubqueries(RunSubqueries):
             3: 'uw+od'
         }
 
+    def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
+        with open(runfile_ofn, 'w') as f:
+            command = ['IndriRunQuery_EX -index=%s -trecFormat=True -count=1000 -query.number=%s -query.text="%s" -rule=%s' 
+                % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)]
+                p = Popen(command, shell=True, stdout=f, stderr=PIPE)
+                returncode = p.wait()
+                p.communicate()
+            if returncode != 0:
+                raise NameError("Run Query Error: %s" % (command) )
+                
     def batch_run_subqueries_paras(self, _type=1, query_length=0):
         all_paras = []
         if query_length == 0: #all queries
