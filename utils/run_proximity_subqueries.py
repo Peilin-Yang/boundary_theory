@@ -50,9 +50,9 @@ class RunProximitySubqueries(RunSubqueries):
         with open(runfile_ofn, 'w') as f:
             command = ['IndriRunQuery_EX -index=%s -trecFormat=True -count=1000 -query.number=%s -query.text="%s" -rule=%s' 
                 % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)]
-                p = Popen(command, shell=True, stdout=f, stderr=PIPE)
-                returncode = p.wait()
-                p.communicate()
+            p = Popen(command, shell=True, stdout=f, stderr=PIPE)
+            returncode = p.wait()
+            p.communicate()
             if returncode != 0:
                 raise NameError("Run Query Error: %s" % (command) )
                 
