@@ -18,43 +18,19 @@ import numpy as np
 from performance import Performances
 from collection_stats import CollectionStats
 
-class RunProximitySubqueries(object):
+class RunProximitySubqueries(RunSubqueries):
     """
     run the proximity sub-queries.
     """
     def __init__(self, path, corpus_name):
-        self.corpus_path = os.path.abspath(path)
-        if not os.path.exists(self.corpus_path):
-            frameinfo = getframeinfo(currentframe())
-            print frameinfo.filename, frameinfo.lineno
-            print '[Query Constructor]:path "' + self.corpus_path + '" is not a valid path'
-            print '[Query Constructor]:Please provide a valid corpus path'
-            exit(1)
-
-        self.collection_name = corpus_name
-        self.query_file_path = os.path.join(self.corpus_path, 'raw_topics')
-        if not os.path.exists(self.query_file_path):
-            frameinfo = getframeinfo(currentframe())
-            print frameinfo.filename, frameinfo.lineno
-            print """No query file found! 
-                query file should be called "raw_topics" under 
-                corpus path. You can create a symlink for it"""
-            exit(1)
-
-        self.parsed_query_file_path = os.path.join(self.corpus_path, 'parsed_topics.json')
-        self.output_root = os.path.join(self.corpus_path, 'subqueries')
-        if not os.path.exists(self.output_root):
-            os.makedirs(self.output_root)
-        self.subqueries_mapping_root = os.path.join(self.output_root, 'mappings')
-        if not os.path.exists(self.subqueries_mapping_root):
-            os.makedirs(self.subqueries_mapping_root)
+        super(RunProximitySubqueries, self).__init__(path, corpus_name)
         self.subqueries_runfiles_root = os.path.join(self.output_root, 'proximity_runfiles')
         if not os.path.exists(self.subqueries_runfiles_root):
             os.makedirs(self.subqueries_runfiles_root)
-        self.subqueries_performance_root = os.path.join(self.output_root, 'performances')
+        self.subqueries_performance_root = os.path.join(self.output_root, 'proximity_performances')
         if not os.path.exists(self.subqueries_performance_root):
             os.makedirs(self.subqueries_performance_root)
-        self.collected_results_root = os.path.join(self.output_root, 'collected_results')
+        self.collected_results_root = os.path.join(self.output_root, 'proximity_collected_results')
         if not os.path.exists(self.collected_results_root):
             os.makedirs(self.collected_results_root)
 
@@ -63,99 +39,14 @@ class RunProximitySubqueries(object):
         if not os.path.exists(self.final_output_root):
             os.makedirs(self.final_output_root)
 
-    def get_queries(self):
-        """
-        Get the query of a corpus
+        type_mapping = {
+            1: 'uw',
+            2: 'od',
+            3: 'uw+od'
+        }
 
-        @Return: a list of dict [{'num':'401', 'title':'the query terms',
-         'desc':description, 'narr': narrative description}, ...]
-        """
-        with open(self.parsed_query_file_path) as f:
-            return json.load(f)
-
-    def get_queries_dict(self):
-        """
-        Get the query of a corpus
-
-        @Return: a dict with keys as qids {'401':{'title':'the title', 'desc':'the desc'}, ...}
-        """
-        all_queries = self.get_queries()
-        all_queries_dict = {}
-        for ele in all_queries:
-            qid = ele['num']
-            all_queries_dict[qid] = ele
-
-        return all_queries_dict
-        
-    def get_queries_lengths(self, part='title'):
-        """
-        For a set of queries, return the lengths of the queries
-
-        @Return: a list of integers showing the lengths of the queries
-        """
-        queries = self.get_queries()
-        lengths = set([len(q[part].split()) for q in queries])
-        lengths = list(lengths)
-        lengths.sort()
-        return lengths
-
-
-    def get_queries_of_length(self, length, part='title'):
-        """
-        Get the queries of a specific length
-
-        @Input:
-            length - the specific length. For example, length=1 get all queries
-                     with single term
-
-        @Return: a list of dict [{'num':'403', 'title':'osteoporosis',
-         'desc':description, 'narr': narrative description}, ...]
-        """
-
-        all_queries = self.get_queries()
-        filtered_queries = [ele for ele in all_queries if len(ele[part].split()) == length]
-
-        return filtered_queries
-
-    def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
-        with open(runfile_ofn, 'w') as f:
-            command = ['IndriRunQuery_EX -index=%s -trecFormat=True -count=1000 -docDetails=100 -query.number=%s -query.text="%s" -rule=%s' 
-                % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)]
-            p = Popen(command, shell=True, stdout=f, stderr=PIPE)
-            returncode = p.wait()
-            p.communicate()
-            if returncode != 0:
-                #raise NameError("Run Query Error: %s" % (command) )
-                command = ['IndriRunQuery_EX -index=%s -trecFormat=True -count=1000 -query.number=%s -query.text="%s" -rule=%s' 
-                % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)]
-                p = Popen(command, shell=True, stdout=f, stderr=PIPE)
-                returncode = p.wait()
-                p.communicate()
-
-    def eval(self, runfile_ofn, eval_ofn):
-        judgment_file = os.path.join(self.corpus_path, 'judgement_file')
-        with open(eval_ofn, 'w') as f:
-            p = Popen(['trec_eval -m map %s %s' % (judgment_file, runfile_ofn)], shell=True, stdout=f, stderr=PIPE)
-            returncode = p.wait()
-            p.communicate()
-
-    def get_subqueries(self, query_str):
-        """
-        return {'subquery string': 'subquery id', ...}
-        """
-        all_subqueries = {}
-        terms = query_str.split()
-        for i in range(1, len(terms)+1): # including the query itself
-            j = 0
-            for ele in itertools.combinations(terms, i):
-                all_subqueries['%d-%d' % (i, j)] = ' '.join(ele)
-                j += 1
-        return all_subqueries
-
-    def batch_run_subqueries_paras(self, query_length=0):
+    def batch_run_subqueries_paras(self, _type=1, query_length=0):
         all_paras = []
-        methods = ['okapi', 'dir']
-        optimal_model_performances = Performances(self.corpus_path).load_optimal_performance(methods)
         if query_length == 0: #all queries
             queries = self.get_queries()
         else:
@@ -167,21 +58,32 @@ class RunProximitySubqueries(object):
                 with open(os.path.join(self.subqueries_mapping_root, qid), 'wb') as f:
                     json.dump(all_subqueries, f, indent=2)
             for subquery_id, subquery_str in all_subqueries.items():
-                for p in optimal_model_performances:
-                    indri_model_para = 'method:%s,' % p[0] + p[2]
-                    runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
-                    performance_fn = os.path.join(self.subqueries_performance_root, qid+'_'+subquery_id+'_'+indri_model_para)
-                    if not os.path.exists(performance_fn):
-                        all_paras.append((self.corpus_path, self.collection_name, qid, subquery_str, subquery_id, indri_model_para, runfile_fn, performance_fn))
+                subquery_len = len(subquery_str.split())
+                if _type == 1:
+                    subquery_str = '#uw%d(' % (4*subquery_len)+subquery_str+')'
+                elif _type == 2:
+                    subquery_str = '#od%d(' % (4*subquery_len)+subquery_str+')'
+                elif _type == 3:
+                    subquery_str = '#combine('
+                        + '#uw%d(' % (4*subquery_len)+subquery_str+')' 
+                        + '#od%d(' % (4*subquery_len)+subquery_str+')' 
+                        +')'
+                type_str = type_mapping[_type]
+                run_file_root = os.path.join(self.subqueries_runfiles_root, type_str)
+                if not os.path.exists(run_file_root):
+                    os.makedirs(run_file_root)
+                performance_root = os.path.join(self.subqueries_performance_root, type_str)
+                if not os.path.exists(performance_root):
+                    os.makedirs(performance_root)
+                runfile_fn = os.path.join(run_file_root, qid+'_'+subquery_id)
+                performance_fn = os.path.join(performance_root, qid+'_'+subquery_id)
+                if not os.path.exists(performance_fn):
+                    all_paras.append((self.corpus_path, self.collection_name, qid, subquery_str, subquery_id, type_str, runfile_fn, performance_fn))
         return all_paras
 
-    def run_subqueries(self, qid, subquery_id, query, indri_model_para, runfile_ofn, eval_ofn):
-        self.run_indri_runquery(query, runfile_ofn, qid, indri_model_para)
+    def run_subqueries(self, qid, subquery_id, query, type_str, runfile_ofn, eval_ofn):
+        self.run_indri_runquery(query, runfile_ofn, qid, type_str)
         self.eval(runfile_ofn, eval_ofn)
-
-    def sort_subquery_id(self, result):
-        subquery_id = result[0]
-        return int(subquery_id.split('-')[0])+float(subquery_id.split('-')[1])/10.0
 
     def batch_collect_results_paras(self):
         queries = self.get_queries()
