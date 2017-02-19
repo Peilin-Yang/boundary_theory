@@ -18,6 +18,7 @@ from tie_breaker import TieBreaker
 from utils.evaluation import Evaluation
 from utils.rel_tf_stats import RelTFStats
 from run_subqueries import RunSubqueries
+from run_proximity_subqueries import RunProximitySubqueries
 from subqueries_learning import SubqueriesLearning
 
 _root = '../../reproduce/collections/'
