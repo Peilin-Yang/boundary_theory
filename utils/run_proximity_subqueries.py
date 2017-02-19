@@ -17,6 +17,7 @@ import numpy as np
 
 from performance import Performances
 from collection_stats import CollectionStats
+from run_subqueries import RunSubqueries
 
 class RunProximitySubqueries(RunSubqueries):
     """
