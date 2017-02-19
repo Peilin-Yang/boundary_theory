@@ -248,6 +248,30 @@ def run_subqueries_atom(para_file):
             eval_ofn = row[7]
             RunSubqueries(collection_path, collection_name).run_subqueries(qid, subquery_id, query, indri_model_para, runfile_ofn, eval_ofn)
 
+def gen_run_proximity_subqueries_batch(_type=1, query_length=0):
+    all_paras = []
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.extend(RunProximitySubqueries(collection_path, collection_name).batch_run_subqueries_paras(int(_type), int(query_length)))
+    #print all_paras
+    gen_batch_framework('run_proximity_subqueries', '42', all_paras)
+
+def run_proximity_subqueries_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            collection_name = row[1]
+            qid = row[2]
+            query = row[3]
+            subquery_id = row[4]
+            type_str = row[5]
+            runfile_ofn = row[6]
+            eval_ofn = row[7]
+            RunProximitySubqueries(collection_path, collection_name).run_subqueries(qid, subquery_id, query, type_str, runfile_ofn, eval_ofn)
+
+
 def gen_collect_subqueries_results_batch():
     all_paras = []
     for q in g.query:
@@ -695,6 +719,13 @@ if __name__ == '__main__':
         action='store_true',
         help='output the optimal performances distribution')
 
+    parser.add_argument('-41p', '--gen_run_proximity_subqueries_batch', 
+        nargs=1,
+        help='generate run subqueries paras. para indicating the query length')
+    parser.add_argument('-42p', '--run_proximity_subqueries_atom', 
+        nargs=1,
+        help='generate run subqueries paras')
+
 
     parser.add_argument('-51', '--gen_subqueries_features_batch', 
         nargs=1, # feature type
@@ -826,6 +857,11 @@ if __name__ == '__main__':
         output_subqueries_results(args.output_subqueries_results[0])
     if args.output_optimal_dist:
         output_optimal_dist()
+
+    if args.gen_run_proximity_subqueries_batch:
+        gen_run_proximity_subqueries_batch(args.gen_run_proximity_subqueries_batch[0], args.gen_run_proximity_subqueries_batch[1])
+    if args.run_proximity_subqueries_atom:
+        run_proximity_subqueries_atom(args.run_proximity_subqueries_atom[0])
 
     if args.gen_subqueries_features_batch:
         gen_subqueries_features_batch(args.gen_subqueries_features_batch[0])
