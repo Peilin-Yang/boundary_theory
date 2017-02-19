@@ -40,7 +40,7 @@ class RunProximitySubqueries(RunSubqueries):
         if not os.path.exists(self.final_output_root):
             os.makedirs(self.final_output_root)
 
-        type_mapping = {
+        self.type_mapping = {
             1: 'uw',
             2: 'od',
             3: 'uw+od'
