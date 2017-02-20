@@ -321,7 +321,7 @@ class SubqueriesLearning(RunSubqueries):
                 prox_features = self.get_all_sorts_features(prox_ranking_scores)
                 diff = np.array(prox_ranking_scores) - np.array(orig_ranking_scores)
                 diff_features = self.get_all_sorts_features(diff)
-                print prox_features, diff_features
+                print orig_runfile_fn, proximity_runfile_fn, prox_features, diff_features
                 raw_input()
 
         outfn = os.path.join(features_root, qid)
