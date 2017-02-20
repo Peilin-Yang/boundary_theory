@@ -210,7 +210,7 @@ class RunSubqueries(object):
         return all_paras
 
     def rerun_subqueries(self, query, runfile_ofn):
-        cs = CollectionStats(self.corpus_pathr)
+        cs = CollectionStats(self.corpus_path)
         query_terms = query.split()
         with open(runfile_ofn) as f:
             for line in f:
