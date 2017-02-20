@@ -113,7 +113,7 @@ class CollectionStats(object):
                     doc_term_dict[term] = 0
                 doc_term_dict[term] += 1
                 idx += 1
-            r.apppend({'doc_term_dict': doc_term_dict, 'doc_len': idx})
+            r.append({'doc_term_dict': doc_term_dict, 'doc_len': idx})
         return r
 
     def get_document_stats(self, internal_docids):
