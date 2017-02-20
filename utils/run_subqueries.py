@@ -206,6 +206,7 @@ class RunSubqueries(object):
                         row = first_line.split()
                         if row and row[1] == 'Q0':
                             all_paras.append((self.corpus_path, self.collection_name, subquery_str, runfile_fn))
+                            return all_paras
         return all_paras
 
     def rerun_subqueries(self, query, runfile_ofn):
