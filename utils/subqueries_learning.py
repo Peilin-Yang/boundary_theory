@@ -418,7 +418,6 @@ class SubqueriesLearning(RunSubqueries):
         feature_mapping = self.get_feature_mapping()
         all_performances = self.get_all_performances()
         all_features = self.get_all_features(query_len)
-        print json.dumps(all_features, indent=2)
         all_features_matrix = []
         kendallstau = {}
         for qid in sorted(all_features):
@@ -436,7 +435,7 @@ class SubqueriesLearning(RunSubqueries):
         klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
         klist.sort(key=itemgetter(1), reverse=True)
         top_features = [ele[0] for ele in klist[:10]]
-        print top_features
+        print [{ele: feature_mapping[ele]} for ele in top_features]
 
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         idx = 0
