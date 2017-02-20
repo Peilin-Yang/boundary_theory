@@ -318,9 +318,18 @@ class SubqueriesLearning(RunSubqueries):
                 proximity_runfile_fn = os.path.join(self.corpus_path, 'subqueries', 'proximity_runfiles', name, qid+'_'+subquery_id)
                 orig_ranking_scores = self.read_runfile_scores(orig_runfile_fn)
                 prox_ranking_scores = self.read_runfile_scores(proximity_runfile_fn)
-                orig_features = self.get_all_sorts_features(orig_ranking_scores)
-                prox_features = self.get_all_sorts_features(prox_ranking_scores)
-                diff_features = np.array(prox_features) - np.array(orig_features)
+                if orig_ranking_scores:
+                    orig_features = self.get_all_sorts_features(orig_ranking_scores)
+                else:
+                    orig_features = [0, 0, 0, 0, 0, 0, 0, 0]
+                if prox_ranking_scores:
+                    prox_features = self.get_all_sorts_features(prox_ranking_scores)
+                else:
+                    prox_features = [0, 0, 0, 0, 0, 0, 0, 0]
+                if orig_ranking_scores and prox_ranking_scores:
+                    diff_features = np.array(prox_features) - np.array(orig_features)
+                else:
+                    diff_features = [0, 0, 0, 0, 0, 0, 0, 0]
                 features[subquery_id][name] = []
                 features[subquery_id][name].extend(orig_features)
                 features[subquery_id][name].extend(prox_features)
