@@ -203,9 +203,9 @@ class RunSubqueries(object):
                     if os.path.exists(runfile_fn):
                         with open(runfile_fn) as f:
                             first_line = f.readline()
-                            row = first_line.split()
-                            if row[1] == 'Q0':
-                                all_paras.append((self.corpus_path, self.collection_name, subquery_str, runfile_fn))
+                        row = first_line.split()
+                        if row and row[1] == 'Q0':
+                            all_paras.append((self.corpus_path, self.collection_name, subquery_str, runfile_fn))
         return all_paras
 
     def rerun_subqueries(self, query, runfile_ofn):
