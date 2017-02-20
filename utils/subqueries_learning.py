@@ -1252,16 +1252,51 @@ class SubqueriesLearning(RunSubqueries):
                         % (self.corpus_path, self.corpus_path, docid, os.path.join(doc_dir, docid))], shell=True)
                 f.write('%s %s %s %d %s %s\n' % (qid, tf_details, docid, 1 if docid in rel_docs else 0, score, doc_details))
 
+    def get_queries(self):
+        query_file_path = os.path.join(self.corpus_path, 'raw_topics')
+        with open(query_file_path) as f:
+            s = f.read()
+            all_topics = re.findall(r'<top>.*?<\/top>', s, re.DOTALL)
+            #print all_topics
+            #print len(all_topics)
+
+            _all = []
+            for t in all_topics:
+                t = re.sub(r'<\/.*?>', r'', t, flags=re.DOTALL)
+                a = re.split(r'(<.*?>)', t.replace('<top>',''), re.DOTALL)
+                #print a
+                aa = [ele.strip() for ele in a if ele.strip()]
+                d = {}
+                for i in range(0, len(aa), 2):
+                    """
+                    if i%2 != 0:
+                        if aa[i-1] == '<num>':
+                            aa[i] = aa[i].split()[1]
+                        d[aa[i-1][1:-1]] = aa[i].strip().replace('\n', ' ')
+                    """
+                    tag = aa[i][1:-1]
+                    value = aa[i+1].replace('\n', ' ').strip().split(':')[-1].strip()
+                    if tag == 'num':
+                        value = str(int(value)) # remove the trailing '0' at the beginning
+                    d[tag] = value
+                _all.append(d)
+        return _all
+
     def gen_resources_for_crowdsourcing_atom(self, qid, optimal_subquery_id, ap_diff):
         q_class = Query(self.corpus_path)
+        raw_queries = {ele['num']: {
+            'title':ele['title'],
+            'desc':ele['desc'],
+            'narr':ele['narr']
+        } for ele in self.get_queries()}
         queries = {ele['num']: {
             'title':ele['title'],
             'desc':ele['desc'],
             'narr':ele['narr']
         } for ele in q_class.get_queries()}
         orig_query = queries[qid]['title']
-        desc_query = queries[qid]['desc']
-        narr_query = queries[qid]['narr']
+        desc_query = raw_queries[qid]['desc']
+        narr_query = raw_queries[qid]['narr']
         allterm_subquery_id = str(len(orig_query.split()))+'-0'
         with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
