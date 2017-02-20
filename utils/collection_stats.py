@@ -96,6 +96,25 @@ class CollectionStats(object):
 
 
     #document############################################################
+    def get_document_vector(self, docids=[]):
+        r = []
+        for docid in docids:
+            internal_did = self.get_internal_docid(docid)
+            process = Popen([self.dumpindex, 
+                os.path.join(self.collection_path, 'index'), 'dv', internal_did], 
+                stdout=PIPE)
+            stdout, stderr = process.communicate()
+            doc_term_dict = {}
+            idx = 0
+            for line in stdout[2:]:
+                row = line.split()
+                term = row[-1]
+                if term not in doc_term_dict:
+                    doc_term_dict[term] = 0
+                doc_term_dict[term] += 1
+                idx += 1
+            r.apppend({'doc_term_dict': doc_term_dict, 'doc_len': idx})
+        return r
 
     def get_document_stats(self, internal_docids):
         """

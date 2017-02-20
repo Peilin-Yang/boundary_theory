@@ -179,6 +179,52 @@ class RunSubqueries(object):
         self.run_indri_runquery(query, runfile_ofn, qid, indri_model_para)
         self.eval(runfile_ofn, eval_ofn)
 
+    def batch_rerun_subqueries_paras(self, query_length=0):
+        """
+        Generate the doc details if IndriRunQuery encounters problem
+        """
+        all_paras = []
+        methods = ['okapi', 'dir']
+        optimal_model_performances = Performances(self.corpus_path).load_optimal_performance(methods)
+        if query_length == 0: #all queries
+            queries = self.get_queries()
+        else:
+            queries = self.get_queries_of_length(query_length)
+        queries = {ele['num']:ele['title'] for ele in queries}
+        for qid, query in queries.items():
+            all_subqueries = self.get_subqueries(query)
+            if not os.path.exists(os.path.join(self.subqueries_mapping_root, qid)):
+                with open(os.path.join(self.subqueries_mapping_root, qid), 'wb') as f:
+                    json.dump(all_subqueries, f, indent=2)
+            for subquery_id, subquery_str in all_subqueries.items():
+                for p in optimal_model_performances:
+                    indri_model_para = 'method:%s,' % p[0] + p[2]
+                    runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
+                    if os.path.exists(runfile_fn):
+                        with open(runfile_fn) as f:
+                            first_line = f.readline()
+                            row = first_line.split()
+                            if row[1] == 'Q0':
+                                all_paras.append((self.corpus_path, self.collection_name, subquery_str, runfile_fn))
+        return all_paras
+
+    def rerun_subqueries(self, query, runfile_ofn):
+        cs = CollectionStats(self.corpus_pathr)
+        query_terms = query.split()
+        with open(runfile_ofn) as f:
+            for line in f:
+                row = line.split()
+                docid = row[2]
+                doc_vec = cs.get_document_vector([docid])[0]
+                doc_term_dict = doc_vec['doc_term_dict']
+                unique_term_cnt = len(doc_term_dict)
+                doc_len = doc_vec['doc_len']
+                print docid
+                for term in query_terms:
+                    print term, doc_term_dict[term]
+                print unique_term_cnt, doc_len
+                exit()
+
     def sort_subquery_id(self, result):
         subquery_id = result[0]
         return int(subquery_id.split('-')[0])+float(subquery_id.split('-')[1])/10.0

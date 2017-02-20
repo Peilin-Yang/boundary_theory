@@ -249,6 +249,26 @@ def run_subqueries_atom(para_file):
             eval_ofn = row[7]
             RunSubqueries(collection_path, collection_name).run_subqueries(qid, subquery_id, query, indri_model_para, runfile_ofn, eval_ofn)
 
+def gen_rerun_subqueries_batch(query_length=0):
+    all_paras = []
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.extend(RunSubqueries(collection_path, collection_name).batch_rerun_subqueries_paras(int(query_length)))
+    #print all_paras
+    gen_batch_framework('rerun_subqueries', '422', all_paras)
+
+def rerun_subqueries_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            collection_name = row[1]
+            query = row[2]
+            runfile_ofn = row[3]
+            RunSubqueries(collection_path, collection_name).rerun_subqueries(query, runfile_ofn)
+
+
 def gen_run_proximity_subqueries_batch(_type=1, query_length=0):
     all_paras = []
     for q in g.query:
@@ -704,7 +724,13 @@ if __name__ == '__main__':
     parser.add_argument('-41', '--gen_run_subqueries_batch', 
         nargs=1,
         help='generate run subqueries paras. para indicating the query length')
+    parser.add_argument('-411', '--gen_rerun_subqueries_batch', 
+        nargs=1,
+        help='generate rerun subqueries paras. para indicating the query length')
     parser.add_argument('-42', '--run_subqueries_atom', 
+        nargs=1,
+        help='generate run subqueries paras')
+    parser.add_argument('-422', '--rerun_subqueries_atom', 
         nargs=1,
         help='generate run subqueries paras')
     parser.add_argument('-43', '--gen_collect_subqueries_results_batch', 
@@ -850,6 +876,10 @@ if __name__ == '__main__':
         gen_run_subqueries_batch(args.gen_run_subqueries_batch[0])
     if args.run_subqueries_atom:
         run_subqueries_atom(args.run_subqueries_atom[0])
+    if args.gen_rerun_subqueries_batch:
+        gen_rerun_subqueries_batch(args.gen_rerun_subqueries_batch[0])
+    if args.rerun_subqueries_atom:
+        rerun_subqueries_atom(args.rerun_subqueries_atom[0])
     if args.gen_collect_subqueries_results_batch:
         gen_collect_subqueries_results_batch()
     if args.collect_subqueries_results_atom:
