@@ -380,8 +380,6 @@ class SubqueriesLearning(RunSubqueries):
                             all_features[qid][subquery_id].extend(qid_features[subquery_id][str_w])
                     elif feature_idx == 9 or feature_idx == 10: # query length and Clarity
                         all_features[qid][subquery_id].append(qid_features[subquery_id])
-                    elif feature_idx == 13: # prox
-                        all_features[qid][subquery_id].append(qid_features[subquery_id])
                     else:
                         all_features[qid][subquery_id].extend(qid_features[subquery_id])
         return all_features
