@@ -435,7 +435,7 @@ class SubqueriesLearning(RunSubqueries):
         klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
         klist.sort(key=itemgetter(1), reverse=True)
         top_features = [ele[0] for ele in klist[:10]]
-        print [{ele: feature_mapping[ele]} for ele in top_features]
+        print [[ele, feature_mapping[ele], klist[i][1]] for i, ele in enumerate(top_features)]
 
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         idx = 0
