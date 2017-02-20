@@ -222,7 +222,7 @@ class RunSubqueries(object):
                 doc_len = doc_vec['doc_len']
                 print docid
                 for term in query_terms:
-                    print term, doc_term_dict[term]
+                    print term, doc_term_dict[term] if term in doc_term_dict else 0
                 print unique_term_cnt, doc_len
                 exit()
 
