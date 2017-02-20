@@ -420,6 +420,7 @@ class SubqueriesLearning(RunSubqueries):
         feature_mapping = self.get_feature_mapping()
         all_performances = self.get_all_performances()
         all_features = self.get_all_features(query_len)
+        print json.dumps(all_features, indent=2)
         all_features_matrix = []
         kendallstau = {}
         for qid in sorted(all_features):
