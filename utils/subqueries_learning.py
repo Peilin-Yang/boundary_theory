@@ -283,6 +283,11 @@ class SubqueriesLearning(RunSubqueries):
         with open(outfn, 'wb') as f:
             json.dump(features, f, indent=2)
 
+
+    def read_runfile_scores(self, fn):
+        with open(fn) as f:
+            return [float(line.split()[4]) for line in f.readlines()]
+
     def gen_proximity(self, qid):
         features_root = os.path.join(self.subqueries_features_root, self.feature_mapping[13])
         cs = CollectionStats(self.corpus_path)
@@ -294,18 +299,30 @@ class SubqueriesLearning(RunSubqueries):
             2: 'od',
             3: 'uw+od'
         }
+        methods = ['dir']
+        optimal_lm_performances = Performances(self.corpus_path).load_optimal_performance(methods)[0]
+        indri_model_para = 'method:%s,' % p[0] + p[2]
         for subquery_id, subquery_str in subquery_mapping.items():
             features[subquery_id] = []
             for _type in sorted(type_mapping):
                 name = type_mapping[_type]
-                with open(os.path.join(self.corpus_path, 'subqueries', 'proximity_performances', name, qid+'_'+subquery_id)) as f:
-                    line = f.readline()
-                    row = line.split()
-                    try:
-                        p = float(row[-1])
-                    except:
-                        p = 0.0
-                    features[subquery_id].append(p)
+                # with open(os.path.join(self.corpus_path, 'subqueries', 'proximity_performances', name, qid+'_'+subquery_id)) as f:
+                #     line = f.readline()
+                #     row = line.split()
+                #     try:
+                #         p = float(row[-1])
+                #     except:
+                #         p = 0.0
+                #     features[subquery_id].append(p)
+                orig_runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
+                proximity_runfile_fn = os.path.join(self.corpus_path, 'subqueries', 'proximity_runfiles', name, qid+'_'+subquery_id)
+                orig_ranking_scores = self.read_runfile_scores(orig_runfile_fn)
+                prox_ranking_scores = self.read_runfile_scores(proximity_runfile_fn)
+                prox_features = self.get_all_sorts_features(prox_ranking_scores)
+                diff = np.array(prox_ranking_scores) - np.array(orig_ranking_scores)
+                diff_features = self.get_all_sorts_features(diff)
+                print prox_features, diff_features
+                raw_input()
 
         outfn = os.path.join(features_root, qid)
         with open(outfn, 'wb') as f:
