@@ -475,7 +475,7 @@ class SubqueriesLearning(RunSubqueries):
                     ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
                     if qid in all_performances and subquery_id in all_performances[qid]:
                         f.write('%s qid:%s %s # %s\n' % (str(all_performances[qid][subquery_id]), qid, 
-                            ' '.join(['%d:%f' % (i, normalized[idx][i-1] if i in top_features else 0) for i in range(1, len(normalized[idx])+1)]), 
+                            ' '.join(['%d:%f' % (i, normalized[idx][i-1]) for i in range(1, len(normalized[idx])+1) if i in top_features]), 
                             subquery_id))
                     idx += 1
 
