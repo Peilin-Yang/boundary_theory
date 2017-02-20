@@ -303,7 +303,7 @@ class SubqueriesLearning(RunSubqueries):
         optimal_lm_performances = Performances(self.corpus_path).load_optimal_performance(methods)[0]
         indri_model_para = 'method:%s,' % optimal_lm_performances[0] + optimal_lm_performances[2]
         for subquery_id, subquery_str in subquery_mapping.items():
-            features[subquery_id] = []
+            features[subquery_id] = {}
             for _type in sorted(type_mapping):
                 name = type_mapping[_type]
                 # with open(os.path.join(self.corpus_path, 'subqueries', 'proximity_performances', name, qid+'_'+subquery_id)) as f:
