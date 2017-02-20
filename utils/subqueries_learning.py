@@ -301,9 +301,12 @@ class SubqueriesLearning(RunSubqueries):
                 with open(os.path.join(self.corpus_path, 'subqueries', 'proximity_performances', name, qid+'_'+subquery_id)) as f:
                     line = f.readline()
                     row = line.split()
-                    p = float(row[-1])
+                    try:
+                        p = float(row[-1])
+                    except:
+                        p = 0.0
                     features[subquery_id].append(p)
-                    
+
         outfn = os.path.join(features_root, qid)
         with open(outfn, 'wb') as f:
             json.dump(features, f, indent=2)
