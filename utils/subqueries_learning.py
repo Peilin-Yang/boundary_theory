@@ -59,7 +59,8 @@ class SubqueriesLearning(RunSubqueries):
             9: 'SCS',
             10: 'QLEN',
             11: 'LOGAVGTFIDF',
-            12: 'AVGTFCTF'
+            12: 'AVGTFCTF',
+            13: 'PROXIMITY' # performance score of using proximity query
         }
 
 
@@ -101,6 +102,8 @@ class SubqueriesLearning(RunSubqueries):
             self.gen_logavgtf_idf(qid)
         elif feature_type == 12:
             self.gen_avgtf_cdf(qid)
+        elif feature_type == 13:
+            self.gen_proximity(qid)
 
     ############## for mutual information ##############
     def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
@@ -276,6 +279,31 @@ class SubqueriesLearning(RunSubqueries):
                 stats.append(avgtf+ctf)
             features[subquery_id] = self.get_all_sorts_features(stats)
 
+        outfn = os.path.join(features_root, qid)
+        with open(outfn, 'wb') as f:
+            json.dump(features, f, indent=2)
+
+    def gen_proximity(self, qid):
+        features_root = os.path.join(self.subqueries_features_root, self.feature_mapping[13])
+        cs = CollectionStats(self.corpus_path)
+        with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
+            subquery_mapping = json.load(f)
+        features = {}
+        type_mapping = {
+            1: 'uw',
+            2: 'od',
+            3: 'uw+od'
+        }
+        for subquery_id, subquery_str in subquery_mapping.items():
+            features[subquery_id] = []
+            for _type in sorted(type_mapping):
+                name = type_mapping[_type]
+                with open(os.path.join(self.corpus_path, 'subqueries', 'proximity_performances', name, qid+'_'+subquery_id)) as f:
+                    line = f.readline()
+                    row = line.split()
+                    p = float(row[-1])
+                    features[subquery_id].append(p)
+                    
         outfn = os.path.join(features_root, qid)
         with open(outfn, 'wb') as f:
             json.dump(features, f, indent=2)
