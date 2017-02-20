@@ -367,10 +367,12 @@ class SubqueriesLearning(RunSubqueries):
                 idx += 1
             elif feature_idx == 13: # proximity query features
                 withins = ['uw', 'od', 'uw+od']
+                feature_types = ['orig', 'prox', 'diff']
                 for w in withins:
-                    for fa in features:
-                        mapping[idx] = feature_name+str(w)+'('+fa+')'
-                        idx += 1
+                    for t in feature_types:
+                        for fa in features:
+                            mapping[idx] = feature_name+str(w)+'('+t+'-'+fa+')'
+                            idx += 1
             else:
                 for fa in features:
                     mapping[idx] = feature_name+'('+fa+')'
@@ -407,7 +409,7 @@ class SubqueriesLearning(RunSubqueries):
                     elif feature_idx == 13: # proximity query
                         withins = ['uw', 'od', 'uw+od']
                         for w in withins:
-                            all_features[qid][subquery_id].extend(qid_features[subquery_id][str_w])
+                            all_features[qid][subquery_id].extend(qid_features[subquery_id][w])
                     else:
                         all_features[qid][subquery_id].extend(qid_features[subquery_id])
         return all_features
