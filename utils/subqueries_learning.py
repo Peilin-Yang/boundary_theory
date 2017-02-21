@@ -1286,8 +1286,9 @@ class SubqueriesLearning(RunSubqueries):
                 qid, tf_details, docid, rank, score, doc_details = line.split()
                 if not os.path.exists(os.path.join(doc_dir, docid)):
                     dumpindex = '~/usr/indri-5.11/bin/dumpindex' if self.collection_name == 'GOV2' else 'dumpindex_EX'
-                    subprocess.call(['%s %s/index dt `%s %s/index di docno %s` > %s' 
-                        % (dumpindex, self.corpus_path, dumpindex, self.corpus_path, docid, os.path.join(doc_dir, docid))], shell=True)
+                    index = 'index_indri511' if self.collection_name == 'GOV2' else 'index'
+                    subprocess.call(['%s %s/%s dt `%s %s/%s di docno %s` > %s' 
+                        % (dumpindex, self.corpus_path, index, dumpindex, self.corpus_path, index, docid, os.path.join(doc_dir, docid))], shell=True)
                 f.write('%s %s %s %d %s %s\n' % (qid, tf_details, docid, 1 if docid in rel_docs else 0, score, doc_details))
 
     def get_queries(self):
