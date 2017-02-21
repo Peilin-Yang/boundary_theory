@@ -1366,10 +1366,10 @@ class SubqueriesLearning(RunSubqueries):
         results_root = os.path.join('../all_results', 'subqueries', 'crowdsourcing', self.collection_name+'_'+qid)
         if not os.path.exists(results_root):
             os.makedirs(results_root)
-        # self.dump_doc(os.path.join(self.subqueries_runfiles_root, optimal_subquery_runfile), 
-        #     rel_docs, results_root, True)
-        # self.dump_doc(os.path.join(self.subqueries_runfiles_root, allterm_subquery_runfile), 
-        #     rel_docs, results_root, False)
+        self.dump_doc(os.path.join(self.subqueries_runfiles_root, optimal_subquery_runfile), 
+            rel_docs, results_root, True)
+        self.dump_doc(os.path.join(self.subqueries_runfiles_root, allterm_subquery_runfile), 
+            rel_docs, results_root, False)
         with open( os.path.join(results_root, 'info.json'), 'wb' ) as f:
             json.dump(info, f, indent=2, sort_keys=True)
         
