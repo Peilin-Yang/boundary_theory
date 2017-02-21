@@ -127,7 +127,7 @@ class RunSubqueries(object):
             if returncode != 0:
                 #raise NameError("Run Query Error: %s" % (command) )
                 command = ['~/usr/indri-5.11/bin/IndriRunQuery -index=%s -trecFormat=True -count=1000 -query.number=%s -query.text="%s" -rule=%s' 
-                % (os.path.join(self.corpus_path, 'index'), qid, query_str, rule)]
+                % (os.path.join(self.corpus_path, 'index_indri511'), qid, query_str, rule)]
                 p = Popen(command, shell=True, stdout=f, stderr=PIPE)
                 returncode = p.wait()
                 p.communicate()
