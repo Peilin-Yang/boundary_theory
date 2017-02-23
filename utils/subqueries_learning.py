@@ -374,7 +374,7 @@ class SubqueriesLearning(RunSubqueries):
             all_features[subquery_id] = {}
             for i, w in enumerate(withins):
                 all_features[subquery_id][w] = []
-                for column in features_wpara[i].T:
+                for column in np.array(features_wpara[i]).T:
                     all_features[subquery_id][w].extend(self.get_all_sorts_features(column))
 
         outfn = os.path.join(features_root, qid)
