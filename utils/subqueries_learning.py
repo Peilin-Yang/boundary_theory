@@ -345,7 +345,7 @@ class SubqueriesLearning(RunSubqueries):
             os.makedirs(features_root)
 
         cs = CollectionStats(self.corpus_path)
-        tdc_mapping = {}
+        all_features = {}
         withins = [1, 5, 10, 20, 50, 100]
         features_wpara = [[] for ele in withins]
         methods = ['okapi']
@@ -355,7 +355,6 @@ class SubqueriesLearning(RunSubqueries):
             subquery_mapping = json.load(f)
 
         for subquery_id, subquery_str in subquery_mapping.items():
-            terms = subquery_str.split()
             orig_runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
             with open(orig_runfile_fn) as f:
                 line_idx = 0
@@ -372,29 +371,15 @@ class SubqueriesLearning(RunSubqueries):
                     line_idx += 1
                     if line_idx >= 100:
                         break
-        print features_wpara
-        exit()
-        #print json.dumps(mi_mapping, indent=2)
-        all_mis = {}
-        for subquery_id, subquery_str in subquery_mapping.items():
-            terms = subquery_str.split()
-            if len(terms) < 2:
-                all_mis[subquery_id] = {w:self.get_all_sorts_features([0]) for w in withins}
-                continue
-            all_mis[subquery_id] = {}
-            tmp = {}
-            for i in range(len(terms)-1): # including the query itself
-                for j in range(i+1, len(terms)):
-                    key = terms[i]+' '+terms[j] if terms[i]+' '+terms[j] in mi_mapping else terms[j]+' '+terms[i]
-                    for w in mi_mapping[key]:
-                        if w not in tmp:
-                            tmp[w] = []
-                        tmp[w].append(mi_mapping[key][w]) 
-            for w in tmp:
-                all_mis[subquery_id][w] = self.get_all_sorts_features(tmp[w])
+            all_features[subquery_id] = {}
+            for i, w in enumerate(withins):
+                all_features[subquery_id][w] = []
+                for column in features_wpara[i].T:
+                    all_features[subquery_id][w].extend(self.get_all_sorts_features(column))
+
         outfn = os.path.join(features_root, qid)
         with open(outfn, 'wb') as f:
-            json.dump(all_mis, f, indent=2)
+            json.dump(all_features, f, indent=2)
 
 
     def get_all_sorts_features(self, feature_vec):
