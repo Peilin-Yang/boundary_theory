@@ -105,6 +105,8 @@ class SubqueriesLearning(RunSubqueries):
             self.gen_avgtf_cdf(qid)
         elif feature_type == 13:
             self.gen_proximity(qid)
+        elif feature_type == 14:
+            self.gen_tdc(qid)
 
     ############## for mutual information ##############
     def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
