@@ -339,7 +339,7 @@ class SubqueriesLearning(RunSubqueries):
         with open(outfn, 'wb') as f:
             json.dump(features, f, indent=2)
 
-    def gen_tdc(self, qid):
+    def gen_tdc(self, qid, _type=2):
         features_root = os.path.join(self.subqueries_features_root, 'TDC')
         if not os.path.exists(features_root):
             os.makedirs(features_root)
@@ -351,6 +351,7 @@ class SubqueriesLearning(RunSubqueries):
         methods = ['okapi']
         optimal_lm_performances = Performances(self.corpus_path).load_optimal_performance(methods)[0]
         indri_model_para = 'method:%s,' % optimal_lm_performances[0] + optimal_lm_performances[2]
+        model_para = float(optimal_lm_performances[2].split(':')[1])
         with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
 
@@ -363,8 +364,14 @@ class SubqueriesLearning(RunSubqueries):
                     if line:
                         row = line.split()
                         tf_details = row[1]
+                        terms = [ele.split('-')[0] for ele in tf_details.split(',')]
                         tfs = [float(ele.split('-')[1]) for ele in tf_details.split(',')]
-                        tf_features = self.get_all_sorts_features(tfs)
+                        dl = float(row[-1].split(',')[0].split(':')[1])
+                        if _type == 1: # simple TF
+                            scores = tfs
+                        elif _type == 2: # BM25
+                            scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_para+model_para*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
+                        tf_features = self.get_all_sorts_features(scores)
                         for i, w in enumerate(withins):
                             if line_idx < w:
                                 features_wpara[i].append(tf_features)
