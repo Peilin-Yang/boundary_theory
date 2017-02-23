@@ -60,7 +60,8 @@ class SubqueriesLearning(RunSubqueries):
             10: 'QLEN',
             11: 'LOGAVGTFIDF',
             12: 'AVGTFCTF',
-            13: 'PROXIMITY' # performance score of using proximity query
+            13: 'PROXIMITY', # performance score of using proximity query
+            14: 'TDC' # TDC looks at the TF relationship in the top docs of ranking list
         }
 
 
@@ -335,6 +336,64 @@ class SubqueriesLearning(RunSubqueries):
         outfn = os.path.join(features_root, qid)
         with open(outfn, 'wb') as f:
             json.dump(features, f, indent=2)
+
+    def gen_tdc(self, qid):
+        features_root = os.path.join(self.subqueries_features_root, 'TDC')
+        if not os.path.exists(features_root):
+            os.makedirs(features_root)
+
+        cs = CollectionStats(self.corpus_path)
+        tdc_mapping = {}
+        withins = [1, 5, 10, 20, 50, 100]
+        features_wpara = [[] for ele in withins]
+        methods = ['okapi']
+        optimal_lm_performances = Performances(self.corpus_path).load_optimal_performance(methods)[0]
+        indri_model_para = 'method:%s,' % optimal_lm_performances[0] + optimal_lm_performances[2]
+        with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
+            subquery_mapping = json.load(f)
+
+        for subquery_id, subquery_str in subquery_mapping.items():
+            terms = subquery_str.split()
+            orig_runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
+            with open(orig_runfile_fn) as f:
+                line_idx = 0
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        row = line.split()
+                        tf_details = row[1]
+                        tfs = [float(ele.split('-')[1]) for ele in tf_details.split(',')]
+                        tf_features = self.get_all_sorts_features(tfs)
+                        for i, w in enumerate(withins):
+                            if line_idx < w:
+                                features_wpara[i].append(tf_features)
+                    line_idx += 1
+                    if line_idx >= 100:
+                        break
+        print features_wpara
+        exit()
+        #print json.dumps(mi_mapping, indent=2)
+        all_mis = {}
+        for subquery_id, subquery_str in subquery_mapping.items():
+            terms = subquery_str.split()
+            if len(terms) < 2:
+                all_mis[subquery_id] = {w:self.get_all_sorts_features([0]) for w in withins}
+                continue
+            all_mis[subquery_id] = {}
+            tmp = {}
+            for i in range(len(terms)-1): # including the query itself
+                for j in range(i+1, len(terms)):
+                    key = terms[i]+' '+terms[j] if terms[i]+' '+terms[j] in mi_mapping else terms[j]+' '+terms[i]
+                    for w in mi_mapping[key]:
+                        if w not in tmp:
+                            tmp[w] = []
+                        tmp[w].append(mi_mapping[key][w]) 
+            for w in tmp:
+                all_mis[subquery_id][w] = self.get_all_sorts_features(tmp[w])
+        outfn = os.path.join(features_root, qid)
+        with open(outfn, 'wb') as f:
+            json.dump(all_mis, f, indent=2)
+
 
     def get_all_sorts_features(self, feature_vec):
         return [np.min(feature_vec), np.max(feature_vec), 
