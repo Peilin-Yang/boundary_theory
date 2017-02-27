@@ -376,7 +376,7 @@ class PlotTermRelationship(object):
             all_xaxis = all_tfs[smaller_idf_idx,:]
             all_yaxis = all_tfs[larger_idf_idx,:]
             all_counts = collections.Counter(zip(all_xaxis, all_yaxis))
-            prob_counts = {k:rel_counts[k]*1./v for k,v in all_counts.items()}
+            prob_counts = {k:rel_counts[k]*1./v for k,v in all_counts.items() if k in rel_counts}
             nonrel_counts = {k:v for k,v in all_counts.items() if k not in rel_counts}
             if plot_option == 1:
                 counts = rel_counts
