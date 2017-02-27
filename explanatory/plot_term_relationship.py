@@ -314,7 +314,7 @@ class PlotTermRelationship(object):
         return np.sum(r, axis=0)
 
     def plot_only_rel_tf_relationship(self, details_data, details_rel_data, 
-            rel_data, query_length=2, oformat='png'):
+            rel_data, query_length=2, plot_option=1, oformat='png'):
         rel_tf_stats = RelTFStats(self.collection_path)
         if query_length == 0:
             queries = Query(self.collection_path).get_queries()
@@ -376,14 +376,15 @@ class PlotTermRelationship(object):
             all_xaxis = all_tfs[smaller_idf_idx,:]
             all_yaxis = all_tfs[larger_idf_idx,:]
             all_counts = collections.Counter(zip(all_xaxis, all_yaxis))
-
-            # xaxis = tfs[smaller_idf_idx,:]
-            # yaxis = tfs[larger_idf_idx,:]
-            # count = collections.Counter(zip(xaxis, yaxis))
-            # xaxis_plot, yaxis_plot = zip(*count.keys())
-            # sizes = np.array(count.values())
-            xaxis_plot, yaxis_plot = zip(*rel_counts.keys())
-            sizes = np.array(rel_counts.values())
+            prob_counts = {k:rel_counts[k]*1./v if k in rel_counts else 0.0 for k,v in all_counts.items()}
+            if plot_option == 1:
+                counts = rel_counts
+            elif plot_option == 2:
+                counts = prob_counts
+            elif plot_option == 3:
+                pass
+            xaxis_plot, yaxis_plot = zip(*counts.keys())
+            sizes = np.array(counts.values())
             max_value = max(max(xaxis_plot), max(yaxis_plot))
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
             cbar = fig.colorbar(scatter, ax=ax)
@@ -531,5 +532,6 @@ class PlotTermRelationship(object):
         ##### plot ONLY the docs that contain all query terms
         #self.plot_only_rel_with_all_qterms(rel_contain_alls, details_data, rel_data, query_length, oformat)
         ##### plot the relationship between terms only, no ranking function involved...
-        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, oformat)
+        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 1, oformat)
+        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 2, oformat)
         #self.plot_tf_rel_prob(details_data, details_rel_data, rel_data, query_length, oformat)
