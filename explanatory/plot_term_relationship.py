@@ -532,4 +532,4 @@ class PlotTermRelationship(object):
         #self.plot_only_rel_with_all_qterms(rel_contain_alls, details_data, rel_data, query_length, oformat)
         ##### plot the relationship between terms only, no ranking function involved...
         self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, oformat)
-        self.plot_tf_rel_prob(details_data, details_rel_data, rel_data, query_length, oformat)
+        #self.plot_tf_rel_prob(details_data, details_rel_data, rel_data, query_length, oformat)
