@@ -357,7 +357,7 @@ class PlotTermRelationship(object):
             terms = queries[qid].split()
             dfs = np.array([cs.get_term_df(t) for t in terms])
             qid_details = {row['docid']:row for row in doc_details.get_qid_details(qid)}
-            tfs = details_rel_data[qid][1]
+            rel_tfs = details_rel_data[qid][1]
             #dfs = details_rel_data[qid][2]
             doclens = details_rel_data[qid][3]
             all_tfs = details_data[qid][1]
@@ -366,20 +366,24 @@ class PlotTermRelationship(object):
             all_rels = details_data[qid][4]
             if dfs.size == 0:
                 continue
-            if query_length == 2 and dfs.size == 3:
-                terms = terms[1:]
-                tfs = tfs[1:]
-                dfs = dfs[1:]
-                all_tfs = all_tfs[1:]
-                all_dfs = all_dfs[1:]
             idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
             smaller_idf_idx = np.argmax(dfs)
             larger_idf_idx = np.argmin(dfs)
-            xaxis = tfs[smaller_idf_idx,:]
-            yaxis = tfs[larger_idf_idx,:]
-            count = collections.Counter(zip(xaxis, yaxis))
-            xaxis_plot, yaxis_plot = zip(*count.keys())
-            sizes = np.array(count.values())
+
+            rel_xaxis = rel_tfs[smaller_idf_idx,:]
+            rel_yaxis = rel_tfs[larger_idf_idx,:]
+            rel_counts = collections.Counter(zip(rel_xaxis, rel_yaxis))
+            all_xaxis = all_tfs[smaller_idf_idx,:]
+            all_yaxis = all_tfs[larger_idf_idx,:]
+            all_counts = collections.Counter(zip(all_xaxis, all_yaxis))
+
+            # xaxis = tfs[smaller_idf_idx,:]
+            # yaxis = tfs[larger_idf_idx,:]
+            # count = collections.Counter(zip(xaxis, yaxis))
+            # xaxis_plot, yaxis_plot = zip(*count.keys())
+            # sizes = np.array(count.values())
+            xaxis_plot, yaxis_plot = zip(*rel_counts.keys())
+            sizes = np.array(rel_counts.values())
             max_value = max(max(xaxis_plot), max(yaxis_plot))
             scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
             cbar = fig.colorbar(scatter, ax=ax)
@@ -528,4 +532,4 @@ class PlotTermRelationship(object):
         #self.plot_only_rel_with_all_qterms(rel_contain_alls, details_data, rel_data, query_length, oformat)
         ##### plot the relationship between terms only, no ranking function involved...
         self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, oformat)
-        #self.plot_tf_rel_prob(details_data, details_rel_data, rel_data, query_length, oformat)
+        self.plot_tf_rel_prob(details_data, details_rel_data, rel_data, query_length, oformat)
