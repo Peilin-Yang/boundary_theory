@@ -376,13 +376,14 @@ class PlotTermRelationship(object):
             all_xaxis = all_tfs[smaller_idf_idx,:]
             all_yaxis = all_tfs[larger_idf_idx,:]
             all_counts = collections.Counter(zip(all_xaxis, all_yaxis))
-            prob_counts = {k:rel_counts[k]*1./v if k in rel_counts else 0.0 for k,v in all_counts.items()}
+            prob_counts = {k:rel_counts[k]*1./v for k,v in all_counts.items()}
+            nonrel_counts = {v for k,v in all_counts.items() if k not in rel_counts}
             if plot_option == 1:
                 counts = rel_counts
             elif plot_option == 2:
                 counts = prob_counts
             elif plot_option == 3:
-                pass
+                counts = nonrel_counts
             xaxis_plot, yaxis_plot = zip(*counts.keys())
             sizes = np.array(counts.values())
             max_value = max(max(xaxis_plot), max(yaxis_plot))
@@ -453,6 +454,8 @@ class PlotTermRelationship(object):
             output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
         elif plot_option == 2:
             output_fn = os.path.join(self.output_root, '%s-%d-tf_rel_prob.%s' % (self.collection_name, query_length, oformat) )
+        elif plot_option == 3:
+            output_fn = os.path.join(self.output_root, '%s-%d-tf_norel.%s' % (self.collection_name, query_length, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
 
@@ -470,4 +473,5 @@ class PlotTermRelationship(object):
         ##### plot the relationship between terms only, no ranking function involved...
         self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 1, oformat)
         self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 2, oformat)
+        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 3, oformat)
         
