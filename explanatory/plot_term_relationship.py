@@ -507,6 +507,7 @@ class PlotTermRelationship(object):
         return all_qids
 
     def get_runfiles_n_performances(self, req_qid, model='okapi'):
+        print req_qid
         subquery_learn_class = SubqueriesLearning(self.collection_path, self.collection_name)
         results = {}
         for fn in os.listdir(subquery_learn_class.subqueries_performance_root):
