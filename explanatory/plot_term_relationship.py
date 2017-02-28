@@ -485,7 +485,7 @@ class PlotTermRelationship(object):
         and plot the term frequencies (or the BM25 score) to see whether they are 
         concentrated around the diagnal line or near the axis lines.
         """
-        results_root = os.path.join('../all_results', 'tdc_violation')
+        results_root = os.path.join(all_results_root, 'tdc_violation')
         if not os.path.exists(results_root):
             os.makedirs(results_root)
         all_qids = []
