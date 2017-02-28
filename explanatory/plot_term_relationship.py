@@ -588,5 +588,4 @@ class PlotTermRelationship(object):
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([qid], format='dict')[qid]
         cs = CollectionStats(self.collection_path)
         rps = self.get_runfiles_n_performances(qid)
-        for ele in rps:
-            self.plot_tdc_violation(ele, subquery_mapping, _type, output_fn, ofn_format)
+        self.plot_tdc_violation(rps, subquery_mapping, _type, output_fn, ofn_format)
