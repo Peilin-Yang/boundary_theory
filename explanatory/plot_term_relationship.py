@@ -562,6 +562,7 @@ class PlotTermRelationship(object):
         plt.rc('text', usetex=False)
         row_idx = 0
         col_idx = 0
+        print runfiles_n_performances.keys()
         for subquery_id in sorted(runfiles_n_performances, key=self.sort_subquery_id):
             #print qid
             if num_rows > 1:
