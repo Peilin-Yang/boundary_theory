@@ -346,7 +346,8 @@ class SubqueriesLearning(RunSubqueries):
 
         cs = CollectionStats(self.corpus_path)
         all_features = {}
-        withins = [1, 5, 10, 20, 50, 100]
+        # withins = [1, 5, 10, 20, 50, 100]
+        withins = [20]
         features_wpara = [[] for ele in withins]
         methods = ['okapi']
         optimal_lm_performances = Performances(self.corpus_path).load_optimal_performance(methods)[0]
