@@ -562,7 +562,6 @@ class PlotTermRelationship(object):
         plt.rc('text', usetex=False)
         row_idx = 0
         col_idx = 0
-        print runfiles_n_performances.keys()
         for subquery_id in sorted(runfiles_n_performances, key=self.sort_subquery_id):
             #print qid
             if num_rows > 1:
@@ -581,6 +580,7 @@ class PlotTermRelationship(object):
             if all_scores.shape[1] > 3:
                 continue
             ax.plot(all_scores)
+        plt.savefig(output_fn, format=ofn_format, bbox_inches='tight', dpi=400)
 
     def plot_tdc_violation_atom(self, qid, query, _type, output_fn, ofn_format='png'):
         q_class = Query(self.collection_path)
