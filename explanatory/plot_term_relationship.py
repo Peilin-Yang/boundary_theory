@@ -21,6 +21,7 @@ from judgment import Judgment
 from evaluation import Evaluation
 from performance import Performances
 from plot_corr_tf_performance import PlotCorrTFPeformance
+from subqueries_learning import SubqueriesLearning
 
 import numpy as np
 import scipy.stats
@@ -474,4 +475,70 @@ class PlotTermRelationship(object):
         self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 1, oformat)
         self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 2, oformat)
         self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 3, oformat)
-        
+    
+
+    @staticmethod
+    def plot_tdc_violation_batch(collection_paths_n_names, query_length=0, _type=1, ofn_format='png'):
+        """
+        Plot the TDC (Term Discrimination Constraint) violation.
+        We pick top ranked documents from the original query and the subquery
+        and plot the term frequencies (or the BM25 score) to see whether they are 
+        concentrated around the diagnal line or near the axis lines.
+        """
+        results_root = os.path.join('../all_results', 'tdc_violation')
+        if not os.path.exists(results_root):
+            os.makedirs(results_root)
+        all_qids = []
+        for collection_path, collection_name in collection_paths_n_names:
+            q = Query(collection_path)
+            if query_length == 0:
+                queries = q.get_queries()
+            else:
+                queries = q.get_queries_of_length(query_length)
+            queries = {ele['num']:ele['title'] for ele in queries}
+
+            gt_optimal, diff_sorted_qid = SubqueriesLearning(collection_path, collection_name)\
+                                                .load_gt_optimal(queries.keys())
+            for ele in diff_sorted_qid:
+                if ele[-1] != 0.0:
+                    qid = ele[0]
+                    tmp = [collection_path, collection_name, qid, queries[qid], _type, os.path.join(results_root, qid+'_'+str(_type)+'.'+ofn_format)]
+                    all_qids.append(tmp)
+        return all_qids
+
+    def get_runfiles_n_performances(self, qid, model='okapi'):
+        subquery_learn_class = SubqueriesLearning(self.corpus_path, self.corpus_name)
+        results = {}
+        for fn in os.listdir(subquery_learn_class.subqueries_performance_root):
+            fn_split = fn.split('_')
+            qid = fn_split[0]
+            if qid != qid:
+                continue
+            subquery_id = fn_split[1]
+            model_para = fn_split[2]
+            if model not in model_para:
+                continue
+            try:
+                with open(os.path.join(subquery_learn_class.subqueries_performance_root, fn)) as f:
+                    first_line = f.readline()
+                    ap = float(first_line.split()[-1])
+            except:
+                continue
+            with open(os.path.join(subquery_learn_class.subqueries_runfiles_root, fn)) as f:
+                first_100_lines = f.readlines[:100]
+            results[subquery_id] = {'ap': ap, 'first_lines': first_100_lines}
+
+    def plot_tdc_violation_atom(self, qid, query, _type, output_fn, ofn_format='png'):
+        q_class = Query(self.corpus_path)
+        subquery_learn_class = SubqueriesLearning(self.corpus_path, self.corpus_name)
+        queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
+        with open(os.path.join(subquery_learn_class.subqueries_mapping_root, qid)) as f:
+            subquery_mapping = json.load(f)
+        rel_docs = Judgment(self.corpus_path).get_relevant_docs_of_some_queries([qid], format='dict')[qid]
+        cs = CollectionStats(self.corpus_path)
+        rps = self.get_runfiles_n_performances(qid)
+        for ele in rps:
+            # self.plot_tdc_violation(ele)
+            pass
+
+
