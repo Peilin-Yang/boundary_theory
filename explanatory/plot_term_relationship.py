@@ -525,7 +525,7 @@ class PlotTermRelationship(object):
             except:
                 continue
             with open(os.path.join(subquery_learn_class.subqueries_runfiles_root, fn)) as f:
-                first_100_lines = f.readlines[:100]
+                first_100_lines = f.readlines()[:100]
             results[subquery_id] = {'ap': ap, 'first_lines': first_100_lines}
 
     def plot_tdc_violation_atom(self, qid, query, _type, output_fn, ofn_format='png'):
