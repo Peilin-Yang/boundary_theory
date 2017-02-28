@@ -506,13 +506,13 @@ class PlotTermRelationship(object):
                     all_qids.append(tmp)
         return all_qids
 
-    def get_runfiles_n_performances(self, qid, model='okapi'):
+    def get_runfiles_n_performances(self, req_qid, model='okapi'):
         subquery_learn_class = SubqueriesLearning(self.collection_path, self.collection_name)
         results = {}
         for fn in os.listdir(subquery_learn_class.subqueries_performance_root):
             fn_split = fn.split('_')
             qid = fn_split[0]
-            if qid != qid:
+            if qid != req_qid:
                 continue
             subquery_id = fn_split[1]
             model_para = fn_split[2]
