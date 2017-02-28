@@ -507,7 +507,7 @@ class PlotTermRelationship(object):
         return all_qids
 
     def get_runfiles_n_performances(self, qid, model='okapi'):
-        subquery_learn_class = SubqueriesLearning(self.corpus_path, self.corpus_name)
+        subquery_learn_class = SubqueriesLearning(self.collection_path, self.collection_name)
         results = {}
         for fn in os.listdir(subquery_learn_class.subqueries_performance_root):
             fn_split = fn.split('_')
@@ -529,8 +529,8 @@ class PlotTermRelationship(object):
             results[subquery_id] = {'ap': ap, 'first_lines': first_100_lines}
 
     def plot_tdc_violation_atom(self, qid, query, _type, output_fn, ofn_format='png'):
-        q_class = Query(self.corpus_path)
-        subquery_learn_class = SubqueriesLearning(self.corpus_path, self.corpus_name)
+        q_class = Query(self.collection_path)
+        subquery_learn_class = SubqueriesLearning(self.collection_path, self.collection_name)
         queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
         with open(os.path.join(subquery_learn_class.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
