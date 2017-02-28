@@ -278,7 +278,7 @@ def print_para_ranknet(method):
         r.print_results_para(method)
 
 def plot_tdc_violation_batch(qlen, _type, ofn_format):
-    collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
+    collections = [(os.path.abspath(os.path.join(collection_root, q['collection'])), q['collection_formal_name']) for q in g.query]
     all_paras = PlotTermRelationship.plot_tdc_violation_batch(collections, int(qlen), int(_type), ofn_format)
     gen_batch_framework('plot_tdc_violation_atom', 'plot_tdc_violation_atom', all_paras)
 
