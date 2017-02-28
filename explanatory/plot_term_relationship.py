@@ -530,6 +530,54 @@ class PlotTermRelationship(object):
             results[subquery_id] = {'ap': ap, 'first_lines': first_100_lines}
         return results
 
+    def sort_subquery_id(self, subquery_id):
+        return int(subquery_id.split('-')[0])+float(subquery_id.split('-')[1])/10.0
+
+    def get_terms_scores_for_tdc_violation(self, ranking_list, _type=1):
+        all_scores = []
+        line_idx = 0
+        for line in ranking_list:
+            line = line.strip()
+            if line:
+                row = line.split()
+                tf_details = row[1]
+                terms = [ele.split('-')[0] for ele in tf_details.split(',')]
+                tfs = [float(ele.split('-')[1]) for ele in tf_details.split(',')]
+                dl = float(row[-1].split(',')[0].split(':')[1])
+                if _type == 1: # simple TF
+                    scores = tfs
+                elif _type == 2: # BM25
+                    scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_para+model_para*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
+                all_scores.append(scores)
+            line_idx += 1
+            if line_idx >= 100:
+                break
+        return all_scores
+
+    def plot_tdc_violation(self, runfiles_n_performances, _type, output_fn, ofn_format='png'):
+        num_cols = min(4, len(runfiles_n_performances)+1) # extra one for explanations
+        num_rows = int(math.ceil((len(runfiles_n_performances)+1)*1.0/num_cols))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols+3, 3*num_rows+3))
+        plt.rc('font', size=8)
+        plt.rc('text', usetex=False)
+        row_idx = 0
+        col_idx = 0
+        for subquery_id in sorted(runfiles_n_performances, key=self.sort_subquery_id):
+            #print qid
+            if num_rows > 1:
+                ax = axs[row_idx][col_idx]
+            else:
+                if num_cols > 1:
+                    ax = axs[col_idx]
+                else:
+                    ax = axs
+            col_idx += 1
+            if col_idx >= num_cols:
+                row_idx += 1
+                col_idx = 0
+            all_scores = self.get_terms_scores_for_tdc_violation(runfiles_n_performances[subquery_id]['first_lines'])
+            print all_scores
+
     def plot_tdc_violation_atom(self, qid, query, _type, output_fn, ofn_format='png'):
         q_class = Query(self.collection_path)
         subquery_learn_class = SubqueriesLearning(self.collection_path, self.collection_name)
@@ -540,7 +588,4 @@ class PlotTermRelationship(object):
         cs = CollectionStats(self.collection_path)
         rps = self.get_runfiles_n_performances(qid)
         for ele in rps:
-            # self.plot_tdc_violation(ele)
-            pass
-
-
+            self.plot_tdc_violation(ele, subquery_mapping, _type, output_fn, ofn_format)
