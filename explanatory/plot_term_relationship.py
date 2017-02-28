@@ -502,7 +502,7 @@ class PlotTermRelationship(object):
             for ele in diff_sorted_qid:
                 if ele[-1] != 0.0:
                     qid = ele[0]
-                    tmp = [collection_path, collection_name, qid, queries[qid], _type, os.path.join(results_root, qid+'_'+str(_type)+'.'+ofn_format)]
+                    tmp = [collection_path, collection_name, qid, queries[qid], _type, os.path.join(results_root, qid+'_'+str(_type)+'.'+ofn_format), ofn_format]
                     all_qids.append(tmp)
         return all_qids
 
