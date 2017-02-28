@@ -277,9 +277,9 @@ def print_para_ranknet(method):
         print '-'*40
         r.print_results_para(method)
 
-def plot_tdc_violation_batch():
+def plot_tdc_violation_batch(qlen, _type, ofn_format):
     collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
-    all_paras = SubqueriesLearning.gen_resources_for_crowdsourcing_batch(collections)
+    all_paras = PlotTermRelationship.plot_tdc_violation_batch(collections, int(qlen), int(_type), ofn_format)
     gen_batch_framework('plot_tdc_violation_atom', 'plot_tdc_violation_atom', all_paras)
 
 def plot_tdc_violation_atom(para_file):
@@ -401,7 +401,7 @@ if __name__ == '__main__':
                        help='Output the data files for SVMMAP')
 
     parser.add_argument('-plot_tdc_violation_batch', '--plot_tdc_violation_batch', 
-        nargs=1, # query length
+        nargs=3, # query length; type: 1-tf, 2-BM25; ofo_format: png or eps
         help='')
     parser.add_argument('-plot_tdc_violation_atom', '--plot_tdc_violation_atom', 
         nargs=1,
@@ -599,6 +599,6 @@ if __name__ == '__main__':
             s.output_data_file()
 
     if args.plot_tdc_violation_batch:
-        plot_tdc_violation_batch()
+        plot_tdc_violation_batch(args.plot_tdc_violation_batch[0], args.plot_tdc_violation_batch[1])
     if args.plot_tdc_violation_atom:
         plot_tdc_violation_atom(args.plot_tdc_violation_atom[0])
