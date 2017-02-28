@@ -554,7 +554,7 @@ class PlotTermRelationship(object):
                 break
         return all_scores
 
-    def plot_tdc_violation(self, runfiles_n_performances, _type, output_fn, ofn_format='png'):
+    def plot_tdc_violation(self, runfiles_n_performances, subquery_mapping, _type, output_fn, ofn_format='png'):
         num_cols = min(4, len(runfiles_n_performances)+1) # extra one for explanations
         num_rows = int(math.ceil((len(runfiles_n_performances)+1)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols+3, 3*num_rows+3))
