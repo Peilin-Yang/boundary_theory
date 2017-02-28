@@ -518,6 +518,7 @@ class PlotTermRelationship(object):
             model_para = fn_split[2]
             if model not in model_para:
                 continue
+            print fn
             try:
                 with open(os.path.join(subquery_learn_class.subqueries_performance_root, fn)) as f:
                     first_line = f.readline()
