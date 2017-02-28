@@ -578,7 +578,7 @@ class PlotTermRelationship(object):
             all_scores = np.array(all_scores)
             if all_scores.shape[1] > 3:
                 continue
-            ax.plot(all_scores)
+            ax.plot(all_scores, 'o')
         plt.savefig(output_fn, format=ofn_format, bbox_inches='tight', dpi=400)
 
     def plot_tdc_violation_atom(self, qid, query, _type, output_fn, ofn_format='png'):
