@@ -534,8 +534,8 @@ class PlotTermRelationship(object):
         queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
         with open(os.path.join(subquery_learn_class.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
-        rel_docs = Judgment(self.corpus_path).get_relevant_docs_of_some_queries([qid], format='dict')[qid]
-        cs = CollectionStats(self.corpus_path)
+        rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([qid], format='dict')[qid]
+        cs = CollectionStats(self.collection_path)
         rps = self.get_runfiles_n_performances(qid)
         for ele in rps:
             # self.plot_tdc_violation(ele)
