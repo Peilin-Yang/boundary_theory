@@ -579,7 +579,7 @@ class PlotTermRelationship(object):
             if all_scores.shape[1] > 3:
                 continue
             ax.plot(all_scores, 'o')
-            ax.set_title(subquery_mapping[subquery_id])
+            ax.set_title(subquery_mapping[subquery_id] + '(%.4f)' % runfiles_n_performances[subquery_id]['ap'])
             # ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]), labelpad=-2)
             # ax.set_ylabel('%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx]), labelpad=0)
             # ax.set_xlim([0, max_value])
