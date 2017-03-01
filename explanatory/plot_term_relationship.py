@@ -557,14 +557,13 @@ class PlotTermRelationship(object):
                     scores = tfs
                 elif _type == 2: # BM25
                     scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_paras[0]+model_paras[0]*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
-                print tfs, scores
                 all_scores['rel' if docid in rel_docs else 'nonrel'].append(scores)
             line_idx += 1
             if line_idx >= 100:
                 break
         for k,v in all_scores.items():
             v = np.array(v).T
-        return all_scores
+        return {np.array(all_scores[k]).T for k in all_scores}
 
     def plot_tdc_violation(self, runfiles_n_performances, rel_docs, 
             subquery_mapping, _type, output_fn, ofn_format='png'):
