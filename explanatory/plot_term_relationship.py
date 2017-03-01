@@ -579,6 +579,12 @@ class PlotTermRelationship(object):
             if all_scores.shape[1] > 3:
                 continue
             ax.plot(all_scores, 'o')
+            ax.set_title(subquery_mapping[subquery_id])
+            # ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]), labelpad=-2)
+            # ax.set_ylabel('%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx]), labelpad=0)
+            # ax.set_xlim([0, max_value])
+            # ax.set_ylim([0, max_value])
+            ax.grid(ls='dotted')
         plt.savefig(output_fn, format=ofn_format, bbox_inches='tight', dpi=400)
 
     def plot_tdc_violation_atom(self, qid, query, _type, output_fn, ofn_format='png'):
