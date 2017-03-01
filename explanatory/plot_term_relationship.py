@@ -535,6 +535,13 @@ class PlotTermRelationship(object):
 
     def get_terms_scores_for_tdc_violation(self, ranking_list, _type=1):
         cs = CollectionStats(self.collection_path)
+        methods = ['okapi', 'dir']
+        optimal_performances = Performances(self.collection_path).load_optimal_performance(methods)
+        indri_model_paras = []
+        model_paras = []
+        for ele in optimal_performances:
+            indri_model_paras.append('method:%s,' % ele[0] + ele[2])
+            model_paras.append(float(ele[2].split(':')[1]))
         all_scores = []
         line_idx = 0
         for line in ranking_list:
@@ -548,7 +555,7 @@ class PlotTermRelationship(object):
                 if _type == 1: # simple TF
                     scores = tfs
                 elif _type == 2: # BM25
-                    scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_para+model_para*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
+                    scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_paras[0]+model_para*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
                 all_scores.append(scores)
             line_idx += 1
             if line_idx >= 100:
