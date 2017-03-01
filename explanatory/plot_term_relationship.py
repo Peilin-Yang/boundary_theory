@@ -558,7 +558,7 @@ class PlotTermRelationship(object):
         if len(subquery_mapping) > 7: # we can not draw the plots for query len > 3
             return
         if len(subquery_mapping) == 7:
-            fig = plt.figure(1)
+            fig = plt.figure(2)
         elif len(subquery_mapping) == 3:
             return
         # num_cols = min(4, len(runfiles_n_performances)+1) # extra one for explanations
