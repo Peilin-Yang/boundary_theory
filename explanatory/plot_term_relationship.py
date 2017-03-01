@@ -556,6 +556,7 @@ class PlotTermRelationship(object):
                     scores = tfs
                 elif _type == 2: # BM25
                     scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_paras[0]+model_paras[0]*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
+                print tfs, scores
                 all_scores.append(scores)
             line_idx += 1
             if line_idx >= 100:
