@@ -534,6 +534,7 @@ class PlotTermRelationship(object):
         return int(subquery_id.split('-')[0])+float(subquery_id.split('-')[1])/10.0
 
     def get_terms_scores_for_tdc_violation(self, ranking_list, _type=1):
+        cs = CollectionStats(self.collection_path)
         all_scores = []
         line_idx = 0
         for line in ranking_list:
@@ -622,6 +623,5 @@ class PlotTermRelationship(object):
         with open(os.path.join(subquery_learn_class.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([qid], format='dict')[qid]
-        cs = CollectionStats(self.collection_path)
         rps = self.get_runfiles_n_performances(qid)
         self.plot_tdc_violation(rps, subquery_mapping, _type, output_fn, ofn_format)
