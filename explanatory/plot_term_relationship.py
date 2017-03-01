@@ -606,18 +606,21 @@ class PlotTermRelationship(object):
                     ax = fig.add_subplot(2, 4, idx)
                 elif len(subquery_mapping) == 3:
                     ax = fig.add_subplot(1, 3, idx)
-                ax.plot(all_scores['rel'][0], all_scores['rel'][0], 'go', alpha=0.5)
+                if all_scores['rel'].shape[0] > 0:
+                    ax.plot(all_scores['rel'][0], all_scores['rel'][0], 'go', alpha=0.5)
                 ax.plot(all_scores['nonrel'][0], all_scores['nonrel'][0], 'ro', alpha=0.5)
             elif all_scores['nonrel'].shape[0] == 2:
                 if len(subquery_mapping) == 7:
                     ax = fig.add_subplot(2, 4, idx)
                 elif len(subquery_mapping) == 3:
                     ax = fig.add_subplot(1, 3, idx)
-                ax.plot(all_scores['rel'][0], all_scores['rel'][1], 'go', alpha=0.5)
+                if all_scores['rel'].shape[0] > 0:
+                    ax.plot(all_scores['rel'][0], all_scores['rel'][1], 'go', alpha=0.5)
                 ax.plot(all_scores['nonrel'][0], all_scores['nonrel'][1], 'ro', alpha=0.5)
             elif all_scores['nonrel'].shape[0] == 3:
                 ax = fig.add_subplot(2, 4, idx, projection='3d')
-                ax.scatter(all_scores['rel'][0], all_scores['rel'][1], all_scores['rel'][2], 'go')
+                if all_scores['rel'].shape[0] > 0:
+                    ax.scatter(all_scores['rel'][0], all_scores['rel'][1], all_scores['rel'][2], 'go')
                 ax.scatter(all_scores['nonrel'][0], all_scores['nonrel'][1], all_scores['nonrel'][2], 'ro')
             else:
                 continue
