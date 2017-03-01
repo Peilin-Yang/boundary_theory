@@ -533,7 +533,7 @@ class PlotTermRelationship(object):
     def sort_subquery_id(self, subquery_id):
         return int(subquery_id.split('-')[0])+float(subquery_id.split('-')[1])/10.0
 
-    def get_terms_scores_for_tdc_violation(self, ranking_list, _type=1):
+    def get_terms_scores_for_tdc_violation(self, ranking_list, rel_docs, _type=1):
         cs = CollectionStats(self.collection_path)
         methods = ['okapi', 'dir']
         optimal_performances = Performances(self.collection_path).load_optimal_performance(methods)
@@ -542,13 +542,14 @@ class PlotTermRelationship(object):
         for ele in optimal_performances:
             indri_model_paras.append('method:%s,' % ele[0] + ele[2])
             model_paras.append(float(ele[2].split(':')[1]))
-        all_scores = []
+        all_scores = {'rel': [], 'nonrel': []}
         line_idx = 0
         for line in ranking_list:
             line = line.strip()
             if line:
                 row = line.split()
                 tf_details = row[1]
+                docid = row[2]
                 terms = [ele.split('-')[0] for ele in tf_details.split(',')]
                 tfs = [float(ele.split('-')[1]) for ele in tf_details.split(',')]
                 dl = float(row[-1].split(',')[0].split(':')[1])
@@ -557,13 +558,16 @@ class PlotTermRelationship(object):
                 elif _type == 2: # BM25
                     scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_paras[0]+model_paras[0]*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
                 print tfs, scores
-                all_scores.append(scores)
+                all_scores['rel' if docid in rel_docs else 'nonrel'].append(scores)
             line_idx += 1
             if line_idx >= 100:
                 break
+        for k,v in all_scores.items():
+            v = np.array(v).T
         return all_scores
 
-    def plot_tdc_violation(self, runfiles_n_performances, subquery_mapping, _type, output_fn, ofn_format='png'):
+    def plot_tdc_violation(self, runfiles_n_performances, rel_docs, 
+            subquery_mapping, _type, output_fn, ofn_format='png'):
         if len(subquery_mapping) > 7: # we can not draw the plots for query len > 3
             return
         if len(subquery_mapping) == 7:
@@ -593,33 +597,37 @@ class PlotTermRelationship(object):
             #     col_idx = 0
             all_scores = self.get_terms_scores_for_tdc_violation(
                 runfiles_n_performances[subquery_id]['first_lines'],
+                rel_docs, 
                 _type
             )
-            all_scores = np.array(all_scores).T
-            if all_scores.shape[0] > 3:
+            if all_scores['nonrel'].shape[0] > 3:
                 continue
-            if all_scores.shape[0] == 1:
+            if all_scores['nonrel'].shape[0] == 1:
                 if len(subquery_mapping) == 7:
                     ax = fig.add_subplot(2, 4, idx)
                 elif len(subquery_mapping) == 3:
                     ax = fig.add_subplot(1, 3, idx)
-                ax.plot(all_scores[0], all_scores[0], 'o')
-            elif all_scores.shape[0] == 2:
+                ax.plot(all_scores['rel'][0], all_scores['rel'][0], 'go', alpha=0.5)
+                ax.plot(all_scores['nonrel'][0], all_scores['nonrel'][0], 'ro', alpha=0.5)
+            elif all_scores['nonrel'].shape[0] == 2:
                 if len(subquery_mapping) == 7:
                     ax = fig.add_subplot(2, 4, idx)
                 elif len(subquery_mapping) == 3:
                     ax = fig.add_subplot(1, 3, idx)
-                ax.plot(all_scores[0], all_scores[1], 'o')
-            elif all_scores.shape[0] == 3:
+                ax.plot(all_scores['rel'][0], all_scores['rel'][1], 'go', alpha=0.5)
+                ax.plot(all_scores['nonrel'][0], all_scores['nonrel'][1], 'ro', alpha=0.5)
+            elif all_scores['nonrel'].shape[0] == 3:
                 ax = fig.add_subplot(2, 4, idx, projection='3d')
-                ax.scatter(all_scores[0], all_scores[1], all_scores[2], 'o')
+                ax.scatter(all_scores['rel'][0], all_scores['rel'][1], all_scores['rel'][2], 'go')
+                ax.scatter(all_scores['nonrel'][0], all_scores['nonrel'][1], all_scores['nonrel'][2], 'ro')
             else:
                 continue
+            max_value = max(np.amax(all_scores['rel']), np.amax(all_scores['nonrel']))
             ax.set_title(subquery_mapping[subquery_id] + '(%.4f)' % runfiles_n_performances[subquery_id]['ap'])
             # ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]), labelpad=-2)
             # ax.set_ylabel('%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx]), labelpad=0)
-            # ax.set_xlim([0, max_value])
-            # ax.set_ylim([0, max_value])
+            ax.set_xlim([0, max_value])
+            ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
             idx += 1
         plt.savefig(output_fn, format=ofn_format, bbox_inches='tight', dpi=400)
@@ -632,4 +640,4 @@ class PlotTermRelationship(object):
             subquery_mapping = json.load(f)
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([qid], format='dict')[qid]
         rps = self.get_runfiles_n_performances(qid)
-        self.plot_tdc_violation(rps, subquery_mapping, _type, output_fn, ofn_format)
+        self.plot_tdc_violation(rps, rel_docs, subquery_mapping, _type, output_fn, ofn_format)
