@@ -561,6 +561,7 @@ class PlotTermRelationship(object):
             line_idx += 1
             if line_idx >= 100:
                 break
+        print all_scores
         for k,v in all_scores.items():
             v = np.array(v).T
         return {np.array(all_scores[k]).T for k in all_scores}
