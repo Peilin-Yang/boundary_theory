@@ -29,6 +29,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.legend_handler import HandlerLine2D
+from mpl_toolkits.mplot3d import Axes3D
 
 
 class PlotTermRelationship(object):
@@ -554,26 +555,33 @@ class PlotTermRelationship(object):
         return all_scores
 
     def plot_tdc_violation(self, runfiles_n_performances, subquery_mapping, _type, output_fn, ofn_format='png'):
-        num_cols = min(4, len(runfiles_n_performances)+1) # extra one for explanations
-        num_rows = int(math.ceil((len(runfiles_n_performances)+1)*1.0/num_cols))
-        fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols+3, 3*num_rows+3))
-        plt.rc('font', size=8)
-        plt.rc('text', usetex=False)
-        row_idx = 0
-        col_idx = 0
+        if len(subquery_mapping) > 7: # we can not draw the plots for query len > 3
+            return
+        if len(subquery_mapping) == 7:
+            fig = plt.figure(figsize=plt.figaspect(3.))
+        elif len(subquery_mapping) == 3:
+            return
+        # num_cols = min(4, len(runfiles_n_performances)+1) # extra one for explanations
+        # num_rows = int(math.ceil((len(runfiles_n_performances)+1)*1.0/num_cols))
+        # fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols+3, 3*num_rows+3))
+        # plt.rc('font', size=8)
+        # plt.rc('text', usetex=False)
+        # row_idx = 0
+        # col_idx = 0
+        idx = 1
         for subquery_id in sorted(runfiles_n_performances, key=self.sort_subquery_id):
             #print qid
-            if num_rows > 1:
-                ax = axs[row_idx][col_idx]
-            else:
-                if num_cols > 1:
-                    ax = axs[col_idx]
-                else:
-                    ax = axs
-            col_idx += 1
-            if col_idx >= num_cols:
-                row_idx += 1
-                col_idx = 0
+            # if num_rows > 1:
+            #     ax = axs[row_idx][col_idx]
+            # else:
+            #     if num_cols > 1:
+            #         ax = axs[col_idx]
+            #     else:
+            #         ax = axs
+            # col_idx += 1
+            # if col_idx >= num_cols:
+            #     row_idx += 1
+            #     col_idx = 0
             all_scores = self.get_terms_scores_for_tdc_violation(runfiles_n_performances[subquery_id]['first_lines'])
             all_scores = np.array(all_scores).T
             if all_scores.shape[0] > 3:
@@ -581,7 +589,12 @@ class PlotTermRelationship(object):
             if all_scores.shape[0] == 1:
                 continue
             elif all_scores.shape[0] == 2:
+                if len(subquery_mapping) == 7:
+                    ax = fig.add_subplot(2, 4, idx%4)
                 ax.plot(all_scores[0], all_scores[1], 'o')
+            elif all_scores.shape[0] == 3:
+                ax = fig.add_subplot(2, 4, 8, projection='3d')
+                ax.scatter(all_scores[0], all_scores[1], all_scores[2], 'o')
             else:
                 continue
             ax.set_title(subquery_mapping[subquery_id] + '(%.4f)' % runfiles_n_performances[subquery_id]['ap'])
@@ -590,6 +603,7 @@ class PlotTermRelationship(object):
             # ax.set_xlim([0, max_value])
             # ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
+            idx += 1
         plt.savefig(output_fn, format=ofn_format, bbox_inches='tight', dpi=400)
 
     def plot_tdc_violation_atom(self, qid, query, _type, output_fn, ofn_format='png'):
