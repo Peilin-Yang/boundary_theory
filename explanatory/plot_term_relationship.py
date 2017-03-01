@@ -620,8 +620,8 @@ class PlotTermRelationship(object):
             elif all_scores['nonrel'].shape[0] == 3:
                 ax = fig.add_subplot(2, 4, idx, projection='3d')
                 if all_scores['rel'].shape[0] > 0:
-                    ax.scatter(all_scores['rel'][0], all_scores['rel'][1], all_scores['rel'][2], 'go')
-                ax.scatter(all_scores['nonrel'][0], all_scores['nonrel'][1], all_scores['nonrel'][2], 'ro')
+                    ax.scatter(all_scores['rel'][0], all_scores['rel'][1], all_scores['rel'][2], c='g')
+                ax.scatter(all_scores['nonrel'][0], all_scores['nonrel'][1], all_scores['nonrel'][2], c='r')
             else:
                 continue
             max_value = max(np.amax(all_scores['rel']) if all_scores['rel'].shape[0] > 0 else 0, np.amax(all_scores['nonrel']))
