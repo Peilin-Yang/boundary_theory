@@ -582,7 +582,10 @@ class PlotTermRelationship(object):
             # if col_idx >= num_cols:
             #     row_idx += 1
             #     col_idx = 0
-            all_scores = self.get_terms_scores_for_tdc_violation(runfiles_n_performances[subquery_id]['first_lines'])
+            all_scores = self.get_terms_scores_for_tdc_violation(
+                runfiles_n_performances[subquery_id]['first_lines'],
+                _type
+            )
             all_scores = np.array(all_scores).T
             if all_scores.shape[0] > 3:
                 continue
