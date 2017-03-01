@@ -575,7 +575,7 @@ class PlotTermRelationship(object):
                 row_idx += 1
                 col_idx = 0
             all_scores = self.get_terms_scores_for_tdc_violation(runfiles_n_performances[subquery_id]['first_lines'])
-            all_scores = np.array(all_scores)
+            all_scores = np.array(all_scores).T
             if all_scores.shape[1] > 3:
                 continue
             ax.plot(all_scores, 'o')
