@@ -624,7 +624,7 @@ class PlotTermRelationship(object):
                 ax.scatter(all_scores['nonrel'][0], all_scores['nonrel'][1], all_scores['nonrel'][2], 'ro')
             else:
                 continue
-            max_value = max(np.amax(all_scores['rel']), np.amax(all_scores['nonrel']))
+            max_value = max(np.amax(all_scores['rel']) if all_scores['rel'].shape[0] > 0 else 0, np.amax(all_scores['nonrel']))
             ax.set_title(subquery_mapping[subquery_id] + '(%.4f)' % runfiles_n_performances[subquery_id]['ap'])
             # ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]), labelpad=-2)
             # ax.set_ylabel('%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx]), labelpad=0)
