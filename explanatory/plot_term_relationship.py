@@ -593,13 +593,13 @@ class PlotTermRelationship(object):
                     ax = fig.add_subplot(1, 3, idx)
             elif all_scores.shape[0] == 2:
                 if len(subquery_mapping) == 7:
-                    ax = fig.add_subplot(2, 4, idx%4)
+                    ax = fig.add_subplot(2, 4, idx)
                 elif len(subquery_mapping) == 3:
                     ax = fig.add_subplot(1, 3, idx)
                 ax.plot(all_scores[0], all_scores[1], 'o')
             elif all_scores.shape[0] == 3:
                 continue
-                #ax = fig.add_subplot(2, 4, 8, projection='3d')
+                #ax = fig.add_subplot(2, 4, idx, projection='3d')
                 #ax.scatter(all_scores[0], all_scores[1], all_scores[2], 'o')
             else:
                 continue
