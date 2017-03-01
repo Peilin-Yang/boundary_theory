@@ -593,8 +593,9 @@ class PlotTermRelationship(object):
                     ax = fig.add_subplot(2, 4, idx%4)
                 ax.plot(all_scores[0], all_scores[1], 'o')
             elif all_scores.shape[0] == 3:
-                ax = fig.add_subplot(2, 4, 8, projection='3d')
-                ax.scatter(all_scores[0], all_scores[1], all_scores[2], 'o')
+                continue
+                #ax = fig.add_subplot(2, 4, 8, projection='3d')
+                #ax.scatter(all_scores[0], all_scores[1], all_scores[2], 'o')
             else:
                 continue
             ax.set_title(subquery_mapping[subquery_id] + '(%.4f)' % runfiles_n_performances[subquery_id]['ap'])
