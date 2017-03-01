@@ -581,7 +581,7 @@ class PlotTermRelationship(object):
             if all_scores.shape[0] == 1:
                 continue
             elif all_scores.shape[0] == 2:
-                ax.plot(all_scores[0], all_scores[1] 'o')
+                ax.plot(all_scores[0], all_scores[1], 'o')
             else:
                 continue
             ax.set_title(subquery_mapping[subquery_id] + '(%.4f)' % runfiles_n_performances[subquery_id]['ap'])
