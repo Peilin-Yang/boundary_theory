@@ -542,6 +542,7 @@ class PlotTermRelationship(object):
         for ele in optimal_performances:
             indri_model_paras.append('method:%s,' % ele[0] + ele[2])
             model_paras.append(float(ele[2].split(':')[1]))
+        print model_paras
         all_scores = []
         line_idx = 0
         for line in ranking_list:
