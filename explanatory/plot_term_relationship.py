@@ -587,10 +587,15 @@ class PlotTermRelationship(object):
             if all_scores.shape[0] > 3:
                 continue
             if all_scores.shape[0] == 1:
-                continue
+                if len(subquery_mapping) == 7:
+                    ax = fig.add_subplot(2, 4, idx)
+                elif len(subquery_mapping) == 3:
+                    ax = fig.add_subplot(1, 3, idx)
             elif all_scores.shape[0] == 2:
                 if len(subquery_mapping) == 7:
                     ax = fig.add_subplot(2, 4, idx%4)
+                elif len(subquery_mapping) == 3:
+                    ax = fig.add_subplot(1, 3, idx)
                 ax.plot(all_scores[0], all_scores[1], 'o')
             elif all_scores.shape[0] == 3:
                 continue
