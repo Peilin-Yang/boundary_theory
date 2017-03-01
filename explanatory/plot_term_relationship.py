@@ -561,8 +561,7 @@ class PlotTermRelationship(object):
             line_idx += 1
             if line_idx >= 100:
                 break
-        print all_scores
-        return {np.array(all_scores[k]).T for k in all_scores}
+        return all_scores
 
     def plot_tdc_violation(self, runfiles_n_performances, rel_docs, 
             subquery_mapping, _type, output_fn, ofn_format='png'):
@@ -598,6 +597,8 @@ class PlotTermRelationship(object):
                 rel_docs, 
                 _type
             )
+            for k in all_scores:
+                all_scores[k] = np.array(all_scores[k]).T
             if all_scores['nonrel'].shape[0] > 3:
                 continue
             if all_scores['nonrel'].shape[0] == 1:
