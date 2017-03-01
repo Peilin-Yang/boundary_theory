@@ -576,13 +576,14 @@ class PlotTermRelationship(object):
                 col_idx = 0
             all_scores = self.get_terms_scores_for_tdc_violation(runfiles_n_performances[subquery_id]['first_lines'])
             all_scores = np.array(all_scores).T
-            print all_scores.shape
-            # raw_input()
-            # print all_scores.T
-            # exit()
-            # if all_scores.shape[1] > 3:
-            #     continue
-            ax.plot(all_scores, 'o')
+            if all_scores.shape[0] > 3:
+                continue
+            if all_scores.shape[0] == 1:
+                continue
+            elif all_scores.shape[0] == 2:
+                ax.plot(all_scores[0], all_scores[1] 'o')
+            else:
+                continue
             ax.set_title(subquery_mapping[subquery_id] + '(%.4f)' % runfiles_n_performances[subquery_id]['ap'])
             # ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]), labelpad=-2)
             # ax.set_ylabel('%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx]), labelpad=0)
