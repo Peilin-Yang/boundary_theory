@@ -534,13 +534,13 @@ class SubqueriesLearning(RunSubqueries):
             this_perfm = [float(all_performances[qid][subquery_id]) if qid in all_performances and subquery_id in all_performances[qid] else 0.0 for subquery_id in sorted(all_features[qid])]
             for col in range(this_features.shape[1]):
                 tau, p_tau = scipy.stats.kendalltau(this_features[:, col], this_perfm)
-                pearsonr, p_r = scipy.stats.pearsonr(this_features[:, col], this_perfm)
+                pea, p_r = scipy.stats.pearsonr(this_features[:, col], this_perfm)
                 if col+1 not in kendallstau:
                     kendallstau[col+1] = []
                 if col+1 not in pearsonr:
                     pearsonr[col+1] = []
                 kendallstau[col+1].append(tau if not np.isnan(tau) else 0)
-                pearsonr[col+1].append(pearsonr if not np.isnan(pearsonr) else 0)
+                pearsonr[col+1].append(pea if not np.isnan(pea) else 0)
         if corr_type == 1:
             klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
         elif corr_type == 2:
