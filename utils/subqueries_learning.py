@@ -502,12 +502,19 @@ class SubqueriesLearning(RunSubqueries):
 
         return results
 
-    def output_features_kendallstau(self, query_len=0):
+    def output_correlation_features(self, query_len=0, corr_type=1):
         """
-        output the kendallstau between features and the ranking of subqueries.
+        corr_type: 1-kendallstau, 2-pearsonr, 3-ken_n_pea
+        output the correlation between features and the ranking of subqueries.
         The output can be used to reduce the dimension of the feature space
         """
-        output_root = os.path.join(self.subqueries_features_root, 'kendallstau')
+        if corr_type == 1:
+            corr_type_str = 'kendallstau'
+        elif corr_type == 2:
+            corr_type_str = 'pearsonr'
+        elif corr_type == 3:
+            corr_type_str = 'ken_n_pea'
+        output_root = os.path.join(self.subqueries_features_root, corr_type_str)
         if not os.path.exists(output_root):
             os.makedirs(output_root)
         output_fn = os.path.join(output_root, str(query_len))
@@ -516,6 +523,8 @@ class SubqueriesLearning(RunSubqueries):
         all_features = self.get_all_features(query_len)
         all_features_matrix = []
         kendallstau = {}
+        pearsonr = {}
+        ken_n_pea = {}
         for qid in sorted(all_features):
             for subquery_id in sorted(all_features[qid]):
                 all_features_matrix.append(all_features[qid][subquery_id])
@@ -524,18 +533,25 @@ class SubqueriesLearning(RunSubqueries):
                 continue
             this_perfm = [float(all_performances[qid][subquery_id]) if qid in all_performances and subquery_id in all_performances[qid] else 0.0 for subquery_id in sorted(all_features[qid])]
             for col in range(this_features.shape[1]):
-                tau, p_value = scipy.stats.kendalltau(this_features[:, col], this_perfm)
+                tau, p_tau = scipy.stats.kendalltau(this_features[:, col], this_perfm)
+                pearsonr, p_r = scipy.stats.pearsonr(this_features[:, col], this_perfm)
                 if col+1 not in kendallstau:
                     kendallstau[col+1] = []
+                if col+1 not in pearsonr:
+                    pearsonr[col+1] = []
                 kendallstau[col+1].append(tau if not np.isnan(tau) else 0)
-        klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
+                pearsonr[col+1].append(pearsonr if not np.isnan(pearsonr) else 0)
+        if corr_type == 1:
+            klist = [(col, np.mean(kendallstau[col])) for col in kendallstau]
+        elif corr_type == 2:
+            klist = [(col, np.mean(pearsonr[col])) for col in pearsonr]
         klist.sort(key=itemgetter(1), reverse=True)
         top_features = [ele[0] for ele in klist[:10]]
         print [[ele, feature_mapping[ele], klist[i][1]] for i, ele in enumerate(top_features)]
 
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         idx = 0
-        with open(output_fn, 'wb') as f: 
+        with open(output_fn, 'wb') as f:
             for qid in sorted(all_features, key=self.sort_qid):
                 for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
                     ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
@@ -591,7 +607,7 @@ class SubqueriesLearning(RunSubqueries):
                     idx += 1
 
     @staticmethod
-    def output_features_kendallstau_all_collection(collection_paths_n_names, query_length=0):
+    def output_correlation_features_all_collection(collection_paths_n_names, query_length=0, corr_type=1):
         all_features = {}
         feature_mapping = {}
         for ele in collection_paths_n_names:

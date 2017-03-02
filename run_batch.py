@@ -343,32 +343,33 @@ def gen_subqueries_features_atom(para_file):
             SubqueriesLearning(collection_path, collection_name).gen_subqueries_features(qid, feature_type)
 
 
-def output_features_kendallstau_batch(query_length):
+def output_corr_features_batch(query_length):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.append((collection_path, collection_name, query_length))
+        all_paras.append((collection_path, collection_name, query_length, _type))
     #print all_paras
-    gen_batch_framework('output_features_kendallstau', '602', all_paras)
+    gen_batch_framework('output_corr_features', '602', all_paras)
 
-def output_features_kendallstau_atom(para_file):
+def output_corr_features_atom(para_file):
     with open(para_file) as f:
         reader = csv.reader(f)
         for row in reader:
             collection_path = row[0]
             collection_name = row[1]
             query_length = int(row[2])
-            SubqueriesLearning(collection_path, collection_name).output_features_kendallstau(query_length)
+            corr_type = int(row[3])
+            SubqueriesLearning(collection_path, collection_name).output_correlation_features(query_length, corr_type)
 
-def output_features_kendallstau_all(query_length):
+def output_corr_features_all(query_length, corr_type):
     query_length = int(query_length)
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
         all_paras.append((collection_path, collection_name))
-    SubqueriesLearning.output_features_kendallstau_all_collection(all_paras, query_length)
+    SubqueriesLearning.output_correlation_features_all_collection(all_paras, query_length, corr_type)
 
 def output_features_selected_batch(query_length):
     all_paras = []
@@ -760,14 +761,14 @@ if __name__ == '__main__':
     parser.add_argument('-52', '--gen_subqueries_features_atom', 
         nargs=1,
         help='generate subqueries features')
-    parser.add_argument('-601', '--output_features_kendallstau_batch', 
-        nargs=1,
+    parser.add_argument('-601', '--output_corr_features_batch', 
+        nargs=2, # [(query_len), (type: 1-kendallstau, 2-pearsonr, 3-ken_n_pea)]
         help='generate features kendallstau with performance. paras. arg: query length (0 for all queries)')
-    parser.add_argument('-602', '--output_features_kendallstau_atom', 
+    parser.add_argument('-602', '--output_corr_features_atom', 
         nargs=1,
         help='generate features kendallstau with performance')
-    parser.add_argument('-603', '--output_features_kendallstau_all', 
-        nargs=1,
+    parser.add_argument('-603', '--output_corr_features_all', 
+        nargs=2, # [(query_len), (type: 1-kendallstau, 2-pearsonr, 3-ken_n_pea)]
         help='generate kendallstau features for all collections. arg: query length')
 
     parser.add_argument('-605', '--output_features_selected_batch', 
@@ -898,12 +899,12 @@ if __name__ == '__main__':
         gen_subqueries_features_batch(args.gen_subqueries_features_batch[0])
     if args.gen_subqueries_features_atom:
         gen_subqueries_features_atom(args.gen_subqueries_features_atom[0])
-    if args.output_features_kendallstau_batch:
-        output_features_kendallstau_batch(args.output_features_kendallstau_batch[0])
-    if args.output_features_kendallstau_atom:
-        output_features_kendallstau_atom(args.output_features_kendallstau_atom[0])
-    if args.output_features_kendallstau_all:
-        output_features_kendallstau_all(args.output_features_kendallstau_all[0])
+    if args.output_corr_features_batch:
+        output_corr_features_batch(args.output_features_batch[0], args.output_features_batch[1])
+    if args.output_corr_features_atom:
+        output_corr_features_atom(args.output_corr_features_atom[0])
+    if args.output_corr_features_all:
+        output_corr_features_all(args.output_corr_features_all[0], args.output_corr_features_all[1])
     if args.output_features_selected_batch:
         output_features_selected_batch(args.output_features_selected_batch[0])
     if args.output_features_selected_atom:
