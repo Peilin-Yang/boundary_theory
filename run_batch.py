@@ -900,7 +900,7 @@ if __name__ == '__main__':
     if args.gen_subqueries_features_atom:
         gen_subqueries_features_atom(args.gen_subqueries_features_atom[0])
     if args.output_corr_features_batch:
-        output_corr_features_batch(args.output_features_batch[0], args.output_features_batch[1])
+        output_corr_features_batch(args.output_corr_features_batch[0], args.output_corr_features_batch[1])
     if args.output_corr_features_atom:
         output_corr_features_atom(args.output_corr_features_atom[0])
     if args.output_corr_features_all:
