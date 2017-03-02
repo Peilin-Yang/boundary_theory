@@ -508,6 +508,7 @@ class PlotTermRelationship(object):
             gt_optimal, diff_sorted_qid = SubqueriesLearning(collection_path, collection_name)\
                                                 .load_gt_optimal(queries.keys())
 
+            print gt_optimal, diff_sorted_qid
             for ele in diff_sorted_qid:
                 if ele[-1] != 0.0:
                     qid = ele[0]
