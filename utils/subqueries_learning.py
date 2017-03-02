@@ -347,7 +347,7 @@ class SubqueriesLearning(RunSubqueries):
         cs = CollectionStats(self.corpus_path)
         all_features = {}
         # withins = [1, 5, 10, 20, 50, 100]
-        withins = [20]
+        withins = [50]
         features_wpara = [[] for ele in withins]
         methods = ['okapi']
         optimal_lm_performances = Performances(self.corpus_path).load_optimal_performance(methods)[0]
@@ -428,7 +428,7 @@ class SubqueriesLearning(RunSubqueries):
                             mapping[idx] = feature_name+str(w)+'('+t+'-'+fa+')'
                             idx += 1
             elif feature_idx == 14: # mutual information
-                withins = [20]
+                withins = [50]
                 for w in withins:
                     for fa in features:
                         for fb in features:
@@ -466,7 +466,7 @@ class SubqueriesLearning(RunSubqueries):
                             str_w = str(w)
                             all_features[qid][subquery_id].extend(qid_features[subquery_id][str_w])
                     elif feature_idx == 14: # TDC
-                        withins = [20]
+                        withins = [50]
                         for w in withins:
                             str_w = str(w)
                             all_features[qid][subquery_id].extend(qid_features[subquery_id][str_w])
