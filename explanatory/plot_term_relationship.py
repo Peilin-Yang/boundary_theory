@@ -515,6 +515,7 @@ class PlotTermRelationship(object):
                         top_n_docs, _type, 
                         os.path.join(results_root, collection_name+'_'+qid+'_top'+str(top_n_docs)+'_'+type_str+'.'+ofn_format), 
                         ofn_format]
+                    print tmp
                     all_qids.append(tmp)
         return all_qids
 
