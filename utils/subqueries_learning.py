@@ -868,7 +868,7 @@ class SubqueriesLearning(RunSubqueries):
     def batch_gen_svm_rank_paras(self, feature_type=1):
         if feature_type == 2:
             folder = 'kendallstau'
-        if feature_type == 3:
+        elif feature_type == 3:
             folder = 'pearsonr'
         else:
             folder = 'final'
@@ -895,6 +895,8 @@ class SubqueriesLearning(RunSubqueries):
     def evaluate_svm_model(self, feature_type=1):
         if feature_type == 2:
             folder = 'kendallstau'
+        elif feature_type == 3:
+            folder = 'pearsonr'
         else:
             folder = 'final'
         svm_model_root = os.path.join(self.output_root, 'svm_rank', folder, 'models')
