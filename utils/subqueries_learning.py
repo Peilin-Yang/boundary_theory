@@ -868,6 +868,8 @@ class SubqueriesLearning(RunSubqueries):
     def batch_gen_svm_rank_paras(self, feature_type=1):
         if feature_type == 2:
             folder = 'kendallstau'
+        if feature_type == 3:
+            folder = 'pearsonr'
         else:
             folder = 'final'
         paras = []
