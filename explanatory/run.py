@@ -277,9 +277,9 @@ def print_para_ranknet(method):
         print '-'*40
         r.print_results_para(method)
 
-def plot_tdc_violation_batch(qlen, _type, ofn_format):
+def plot_tdc_violation_batch(qlen, top_n_docs, _type, ofn_format):
     collections = [(os.path.abspath(os.path.join(collection_root, q['collection'])), q['collection_formal_name']) for q in g.query]
-    all_paras = PlotTermRelationship.plot_tdc_violation_batch(collections, int(qlen), int(_type), ofn_format)
+    all_paras = PlotTermRelationship.plot_tdc_violation_batch(collections, int(top_n_docs), int(qlen), int(_type), ofn_format)
     gen_batch_framework('plot_tdc_violation_atom', 'plot_tdc_violation_atom', all_paras)
 
 def plot_tdc_violation_atom(para_file):
@@ -290,11 +290,12 @@ def plot_tdc_violation_atom(para_file):
             collection_name = row[1]
             qid = row[2]
             query = row[3]
-            _type = int(row[4])
-            output_fn = row[5]
-            ofn_format = row[6]
+            top_n_docs = int(row[4])
+            _type = int(row[5])
+            output_fn = row[6]
+            ofn_format = row[7]
             PlotTermRelationship(collection_path, collection_name) \
-              .plot_tdc_violation_atom(qid, query, _type, output_fn, ofn_format)
+              .plot_tdc_violation_atom(qid, query, top_n_docs, _type, output_fn, ofn_format)
 
 
 if __name__ == '__main__':
@@ -401,7 +402,7 @@ if __name__ == '__main__':
                        help='Output the data files for SVMMAP')
 
     parser.add_argument('-plot_tdc_violation_batch', '--plot_tdc_violation_batch', 
-        nargs=3, # query length; type: 1-tf, 2-BM25; ofo_format: png or eps
+        nargs=4, # query length; top_n_docs: [20,50,100,etc]; type: 1-tf, 2-BM25; ofo_format: png or eps
         help='')
     parser.add_argument('-plot_tdc_violation_atom', '--plot_tdc_violation_atom', 
         nargs=1,

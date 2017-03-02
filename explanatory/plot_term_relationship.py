@@ -479,7 +479,8 @@ class PlotTermRelationship(object):
     
 
     @staticmethod
-    def plot_tdc_violation_batch(collection_paths_n_names, query_length=0, _type=1, ofn_format='png'):
+    def plot_tdc_violation_batch(collection_paths_n_names, query_length=0, 
+            top_n_docs=100, _type=1, ofn_format='png'):
         """
         Plot the TDC (Term Discrimination Constraint) violation.
         We pick top ranked documents from the original query and the subquery
@@ -490,6 +491,12 @@ class PlotTermRelationship(object):
         if not os.path.exists(results_root):
             os.makedirs(results_root)
         all_qids = []
+        if _type == 1:
+            type_str = 'TF'
+        elif _type == 2:
+            type_str = 'BM25'
+        elif _type == 3:
+            type_str = 'LM'
         for collection_path, collection_name in collection_paths_n_names:
             q = Query(collection_path)
             if query_length == 0:
@@ -500,10 +507,14 @@ class PlotTermRelationship(object):
 
             gt_optimal, diff_sorted_qid = SubqueriesLearning(collection_path, collection_name)\
                                                 .load_gt_optimal(queries.keys())
+
             for ele in diff_sorted_qid:
                 if ele[-1] != 0.0:
                     qid = ele[0]
-                    tmp = [collection_path, collection_name, qid, queries[qid], _type, os.path.join(results_root, collection_name+'_'+qid+'_'+str(_type)+'.'+ofn_format), ofn_format]
+                    tmp = [collection_path, collection_name, qid, queries[qid], 
+                        top_n_docs, _type, 
+                        os.path.join(results_root, collection_name+'_'+qid+'_top'+str(top_n_docs)+'_'+type_str+'.'+ofn_format), 
+                        ofn_format]
                     all_qids.append(tmp)
         return all_qids
 
@@ -533,7 +544,7 @@ class PlotTermRelationship(object):
     def sort_subquery_id(self, subquery_id):
         return int(subquery_id.split('-')[0])+float(subquery_id.split('-')[1])/10.0
 
-    def get_terms_scores_for_tdc_violation(self, ranking_list, rel_docs, _type=1):
+    def get_terms_scores_for_tdc_violation(self, ranking_list, rel_docs, top_n_docs=20, _type=1):
         cs = CollectionStats(self.collection_path)
         methods = ['okapi', 'dir']
         optimal_performances = Performances(self.collection_path).load_optimal_performance(methods)
@@ -559,12 +570,12 @@ class PlotTermRelationship(object):
                     scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_paras[0]+model_paras[0]*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
                 all_scores['rel' if docid in rel_docs else 'nonrel'].append(scores)
             line_idx += 1
-            if line_idx >= 100:
+            if line_idx >= top_n_docs:
                 break
         return all_scores
 
     def plot_tdc_violation(self, runfiles_n_performances, rel_docs, 
-            subquery_mapping, _type, output_fn, ofn_format='png'):
+            subquery_mapping, top_n_docs, _type, output_fn, ofn_format='png'):
         if len(subquery_mapping) > 7: # we can not draw the plots for query len > 3
             return
         if len(subquery_mapping) == 7:
@@ -595,6 +606,7 @@ class PlotTermRelationship(object):
             all_scores = self.get_terms_scores_for_tdc_violation(
                 runfiles_n_performances[subquery_id]['first_lines'],
                 rel_docs, 
+                top_n_docs, 
                 _type
             )
             for k in all_scores:
@@ -634,7 +646,7 @@ class PlotTermRelationship(object):
             idx += 1
         plt.savefig(output_fn, format=ofn_format, bbox_inches='tight', dpi=400)
 
-    def plot_tdc_violation_atom(self, qid, query, _type, output_fn, ofn_format='png'):
+    def plot_tdc_violation_atom(self, qid, query, top_n_docs, _type, output_fn, ofn_format='png'):
         q_class = Query(self.collection_path)
         subquery_learn_class = SubqueriesLearning(self.collection_path, self.collection_name)
         queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
@@ -642,4 +654,4 @@ class PlotTermRelationship(object):
             subquery_mapping = json.load(f)
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([qid], format='dict')[qid]
         rps = self.get_runfiles_n_performances(qid)
-        self.plot_tdc_violation(rps, rel_docs, subquery_mapping, _type, output_fn, ofn_format)
+        self.plot_tdc_violation(rps, rel_docs, subquery_mapping, top_n_docs, _type, output_fn, ofn_format)
