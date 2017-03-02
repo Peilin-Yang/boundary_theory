@@ -428,7 +428,7 @@ class SubqueriesLearning(RunSubqueries):
                             mapping[idx] = feature_name+str(w)+'('+t+'-'+fa+')'
                             idx += 1
             elif feature_idx == 14: # mutual information
-                withins = [1, 5, 10, 20, 50, 100]
+                withins = [20]
                 for w in withins:
                     for fa in features:
                         for fb in features:
@@ -460,8 +460,13 @@ class SubqueriesLearning(RunSubqueries):
                 for subquery_id in sorted(qid_features, key=self.sort_subquery_id):
                     if subquery_id not in all_features[qid]:
                         all_features[qid][subquery_id] = []
-                    if feature_idx == 1 or feature_idx == 14: # mutual information or TDC
+                    if feature_idx == 1: # mutual information
                         withins = [1, 5, 10, 20, 50, 100]
+                        for w in withins:
+                            str_w = str(w)
+                            all_features[qid][subquery_id].extend(qid_features[subquery_id][str_w])
+                    elif feature_idx == 14: # TDC
+                        withins = [20]
                         for w in withins:
                             str_w = str(w)
                             all_features[qid][subquery_id].extend(qid_features[subquery_id][str_w])
