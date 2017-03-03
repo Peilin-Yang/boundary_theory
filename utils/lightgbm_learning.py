@@ -44,8 +44,12 @@ class LGBMLearning(SubqueriesLearning):
         super(LGBMLearning, self).__init__(path, corpus_name)
 
     def test(self):
+        num_round = 10
         train_data = lgb.Dataset(os.path.join(self.subqueries_features_root, 'final', '2'))
-        print train_data
+        param = {'application': 'lambdarank', 'metric': 'ndcg' }
+        bst = lgb.train(param, train_data, num_round)
+        bst.save_model('lightgbm_test_model.txt')
+        ypred = bst.predict(train_data)
 
 
 
