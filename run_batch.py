@@ -805,21 +805,21 @@ if __name__ == '__main__':
     parser.add_argument('-63', '--gen_svm_rank_batch', 
         nargs=1,
         help=('generate the batch runs for svm rank. '
-            'arg: [feature_type(1-all features, 2-top features gen by kendallstau correlation)]')
+            'arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr)]')
     )
     parser.add_argument('-64', '--svm_rank_atom', 
         nargs=1,
         help='svm rank atom')
     parser.add_argument('-65', '--gen_evaluate_svm_model_batch', 
         nargs=1,
-        help='generate the batch runs for svm rank. arg: [feature_type(1-all features, 2-top features gen by kendallstau correlation')
+        help='generate the batch runs for svm rank. arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr')
     parser.add_argument('-66', '--evaluate_svm_model_atom', 
         nargs=1,
         help='svm rank atom')
     parser.add_argument('-67', '--print_svm_model_feature_importance', 
         nargs=2,
         help=('print the top features of svm model.'
-         ' arg: [feature_type(1-all features, 2-top features gen by kendallstau correlation)] '
+         ' arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr)] '
          '[N (top N will be printed)]'))
     parser.add_argument('-68', '--svm_cross_testing', 
         nargs=1,
