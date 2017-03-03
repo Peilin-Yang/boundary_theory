@@ -34,7 +34,10 @@ from performance import Performances
 from collection_stats import CollectionStats
 from run_subqueries import RunSubqueries
 from ArrayJob import ArrayJob
-import ..g
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+import g
 
 class LGBMLearning(SubqueriesLearning):
     """
