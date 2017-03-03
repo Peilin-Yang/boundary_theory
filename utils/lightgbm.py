@@ -96,8 +96,7 @@ if __name__ == '__main__':
     parser.add_argument("--test", dest='test',
         action='store_true',
         required=False, nargs='+', 
-        help="generate the batch run parameters for running \
-               the baseline method")
+        help="generate the batch run parameters for running the baseline method")
 
     args = parser.parse_args()
 
