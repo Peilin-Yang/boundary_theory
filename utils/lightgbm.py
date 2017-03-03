@@ -33,6 +33,7 @@ from judgment import Judgment
 from performance import Performances
 from collection_stats import CollectionStats
 from run_subqueries import RunSubqueries
+from subqueries_learning import SubqueriesLearning
 from ArrayJob import ArrayJob
 
 class LGBMLearning(SubqueriesLearning):
