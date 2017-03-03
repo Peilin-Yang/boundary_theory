@@ -25,6 +25,8 @@ from sklearn import tree
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import classification_report
 
+import lightgbm as lgb
+
 from query import Query
 from evaluation import Evaluation
 from judgment import Judgment
