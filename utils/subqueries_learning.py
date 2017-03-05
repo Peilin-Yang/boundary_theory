@@ -1122,11 +1122,17 @@ class SubqueriesLearning(RunSubqueries):
         results_root = os.path.join('../all_results', 'subqueries', 'cross_training', _type, method)
         all_predict_data = {}
         for fn in os.listdir(results_root):
-            m = re.search(r'^predict_(.*?)_(.*?)_(.*)$', fn)
+            if method == 'lambdamart':
+                m = re.search(r'^predict_(.*?)_(.*?)$', fn)
+            else:
+                m = re.search(r'^predict_(.*?)_(.*?)_(.*)$', fn)
             if m:
                 collection_name = m.group(1)
                 query_length = int(m.group(2))
-                c = m.group(3)
+                if method == 'lambdamart':
+                    c = '1000'
+                else:
+                    c = m.group(3)
                 if query_length not in all_predict_data:
                     all_predict_data[query_length] = {}
                 if c not in all_predict_data[query_length]:
@@ -1150,7 +1156,10 @@ class SubqueriesLearning(RunSubqueries):
                 for collection_name in all_predict_data[query_length][c]: 
                     predict_optimal_performance = {}
                     feature_fn = os.path.join(results_root, 'test_%s_%d' % (collection_name, query_length))
-                    predict_fn = os.path.join(results_root, 'predict_%s_%d_%s' % (collection_name, query_length, c))
+                    if method == 'lambdamart':
+                        predict_fn = os.path.join(results_root, 'predict_%s_%d' % (collection_name, query_length))
+                    else:
+                        predict_fn = os.path.join(results_root, 'predict_%s_%d_%s' % (collection_name, query_length, c))
                     with open(predict_fn) as f:
                         predict_res = [float(line.strip()) for line in f.readlines()]
                     with open(feature_fn) as f:
@@ -1192,6 +1201,8 @@ class SubqueriesLearning(RunSubqueries):
                     collection_predict_performance[collection_name] = collection_predict / len(predict_optimal_performance)        
                 all_performances[query_length].append((c, optimal_svm_predict, collection_predict_performance))
             all_performances[query_length].sort(key=itemgetter(1), reverse=True)
+
+        print 'Method: %s' % method
         for query_length in all_performances:
             print query_length, json.dumps(all_performances[query_length][0], indent=2)
 
