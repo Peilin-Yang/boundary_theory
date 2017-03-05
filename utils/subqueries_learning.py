@@ -1223,7 +1223,6 @@ class SubqueriesLearning(RunSubqueries):
                 out, error = p.communicate()
                 if returncode != 0:
                     print "Run Query Error: %s %s" % (command, error)
-                    continue
 
             predict_fn = os.path.join(results_root, 'predict_%s_%d' 
                 % (test_collection, query_length))
