@@ -1232,11 +1232,11 @@ class SubqueriesLearning(RunSubqueries):
             if not os.path.exists(model_output_fn):
                 command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -save %s' % (trainging_fn, model_output_fn)]
                 print ' '.join(command)
-                # p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-                # returncode = p.wait()
-                # out, error = p.communicate()
-                # if returncode != 0:
-                #     print "Run Query Error: %s %s" % (command, error)
+                p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+                returncode = p.wait()
+                out, error = p.communicate()
+                if returncode != 0:
+                    print "Run Query Error: %s %s" % (command, error)
 
             predict_fn = os.path.join(results_root, 'predict_%s_%d' 
                 % (test_collection, query_length))
@@ -1244,11 +1244,11 @@ class SubqueriesLearning(RunSubqueries):
                 command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -load %s -rank %s -score %s' 
                     % (model_output_fn, testing_fn, predict_fn)]
                 print ' '.join(command)
-                # p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-                # returncode = p.wait()
-                # out, error = p.communicate()
-                # if returncode != 0:
-                #     raise NameError("Run Query Error: %s %s" % (command, error))
+                p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+                returncode = p.wait()
+                out, error = p.communicate()
+                if returncode != 0:
+                    raise NameError("Run Query Error: %s %s" % (command, error))
         elif method == 'svmrank':
             for c in range(-3, 5):
                 model_output_fn = os.path.join(results_root, 'model_%s_%d_%s' 
