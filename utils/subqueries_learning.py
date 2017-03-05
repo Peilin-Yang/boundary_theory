@@ -547,11 +547,11 @@ class SubqueriesLearning(RunSubqueries):
             klist = [(col, np.mean(pearsonr[col])) for col in pearsonr]
         klist.sort(key=itemgetter(1), reverse=True)
         top_features = [ele[0] for ele in klist[:10]]
-        print [[ele, feature_mapping[ele], klist[i][1]] for i, ele in enumerate(top_features)]
+        #print [[ele, feature_mapping[ele], klist[i][1]] for i, ele in enumerate(top_features)]
 
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         idx = 0
-        with open(output_fn, 'wb') as f:
+        with open(output_fn+'.ap', 'wb') as f:
             for qid in sorted(all_features, key=self.sort_qid):
                 for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
                     ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
@@ -559,6 +559,37 @@ class SubqueriesLearning(RunSubqueries):
                         f.write('%s qid:%s %s # %s\n' % (str(all_performances[qid][subquery_id]), qid, 
                             ' '.join(['%d:%f' % (i, normalized[idx][i-1]) for i in range(1, len(normalized[idx])+1) if i in top_features]), 
                             subquery_id))
+                    idx += 1
+        idx = 0
+        with open(output_fn+'.int', 'wb') as f:
+            for qid in sorted(all_features, key=self.sort_qid):
+                tmp_label = []
+                for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
+                    ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
+                    if qid in all_performances and subquery_id in all_performances[qid]:
+                        tmp_label.append(all_performances[qid][subquery_id])
+                tmptmp_label = [round((ele-min(tmp_label))*4/(max(tmp_label) - min(tmp_label)), 0) for ele in tmp_label]
+                max_cnts = []
+                for i, ele in enumerate(tmptmp_label):
+                    if ele == 4.0:
+                        max_cnts.append(i)
+                if len(max_cnts) > 1:
+                    orig_max_idx = 0
+                    for j in range(1, len(tmp_label)):
+                        if tmp_label[j] > tmp_label[orig_max_idx]:
+                            orig_max_idx = j
+                    for max_cnt in max_cnts:
+                        if max_cnt != orig_max_idx:
+                            tmptmp_label[max_cnt] -= 1
+                tmp_label = tmptmp_label
+                tmp_label_idx = 0
+                for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
+                    ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
+                    if qid in all_performances and subquery_id in all_performances[qid]:
+                        f.write('%d qid:%s %s # %s\n' % (tmp_label[tmp_label_idx], qid, 
+                            ' '.join(['%d:%f' % (i, normalized[idx][i-1]) for i in range(1, len(normalized[idx])+1) if i in top_features]), 
+                            subquery_id))
+                        tmp_label_idx += 1
                     idx += 1
 
     def output_features_selected(self, query_len=0):
@@ -855,7 +886,7 @@ class SubqueriesLearning(RunSubqueries):
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         all_performances = self.get_all_performances()
         idx = 0
-        with open(os.path.join(output_root, str(query_len)), 'wb') as f: 
+        with open(os.path.join(output_root, str(query_len)+'.ap'), 'wb') as f: 
             for qid in sorted(all_features, key=self.sort_qid):
                 for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
                     ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
@@ -863,6 +894,37 @@ class SubqueriesLearning(RunSubqueries):
                         f.write('%s qid:%s %s # %s\n' % (str(all_performances[qid][subquery_id]), qid, 
                             ' '.join(['%d:%f' % (i, normalized[idx][i-1]) for i in range(1, len(normalized[idx])+1)]), 
                             subquery_id))
+                    idx += 1
+        idx = 0
+        with open(os.path.join(output_root, str(query_len)+'.int'), 'wb') as f:
+            for qid in sorted(all_features, key=self.sort_qid):
+                tmp_label = []
+                for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
+                    ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
+                    if qid in all_performances and subquery_id in all_performances[qid]:
+                        tmp_label.append(all_performances[qid][subquery_id])
+                tmptmp_label = [round((ele-min(tmp_label))*4/(max(tmp_label) - min(tmp_label)), 0) for ele in tmp_label]
+                max_cnts = []
+                for i, ele in enumerate(tmptmp_label):
+                    if ele == 4.0:
+                        max_cnts.append(i)
+                if len(max_cnts) > 1:
+                    orig_max_idx = 0
+                    for j in range(1, len(tmp_label)):
+                        if tmp_label[j] > tmp_label[orig_max_idx]:
+                            orig_max_idx = j
+                    for max_cnt in max_cnts:
+                        if max_cnt != orig_max_idx:
+                            tmptmp_label[max_cnt] -= 1
+                tmp_label = tmptmp_label
+                tmp_label_idx = 0
+                for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
+                    ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
+                    if qid in all_performances and subquery_id in all_performances[qid]:
+                        f.write('%d qid:%s %s # %s\n' % (tmp_label[tmp_label_idx], qid, 
+                            ' '.join(['%d:%f' % (i, normalized[idx][i-1]) for i in range(1, len(normalized[idx])+1) if i in top_features]), 
+                            subquery_id))
+                        tmp_label_idx += 1
                     idx += 1
 
     def batch_gen_svm_rank_paras(self, feature_type=1):
@@ -1171,39 +1233,6 @@ class SubqueriesLearning(RunSubqueries):
                 out, error = p.communicate()
                 if returncode != 0:
                     raise NameError("Run Query Error: %s %s" % (command, error))
-
-
-    @staticmethod
-    def write_combined_feature_fn(results_root, l, ofn, query_length=2, reorder_qid=False):
-        trainging_fn = os.path.join(results_root, 'train_%d' % query_length)
-        if os.path.exists(ofn):
-            os.remove(ofn)
-        with open(ofn, 'ab') as f:
-            qid_idx = 1
-            qid_lines = {}
-            for ele in l:
-                collection_path = ele[0]
-                collection_name = ele[1]
-                feature_fn = os.path.join(collection_path, 'subqueries', 'features', 'final', str(query_length))
-                with open(feature_fn) as ff:
-                    if not reorder_qid:
-                        f.write(ff.read())
-                    else:
-                        for line in ff:
-                            line = line.strip()
-                            row = line.split()
-                            qid = int(row[1].split(':')[1])
-                            if qid not in qid_lines:
-                                qid_lines[qid] = []
-                            qid_lines[qid].append(line)
-            if reorder_qid:
-                for qid in qid_lines:
-                    for line in qid_lines[qid]:
-                        row = line.split()
-                        row[1] = 'qid:%d' % qid_idx
-                        f.write('%s\n' % ' '.join(row))
-                    qid_idx += 1
-
 
     ##########
     # MI Learn

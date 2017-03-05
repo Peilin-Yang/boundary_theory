@@ -16,14 +16,7 @@ import argparse
 
 import numpy as np
 import scipy.stats
-from sklearn.preprocessing import normalize
-from sklearn.svm import LinearSVC
-from sklearn.feature_selection import SelectFromModel
-from sklearn.neural_network import MLPClassifier
-from sklearn.svm import SVC
-from sklearn import tree
-from sklearn.metrics import roc_auc_score
-from sklearn.metrics import classification_report
+from sklearn.datasets import load_svmlight_file
 
 import lightgbm as lgb
 
@@ -32,7 +25,6 @@ from evaluation import Evaluation
 from judgment import Judgment
 from performance import Performances
 from collection_stats import CollectionStats
-from run_subqueries import RunSubqueries
 from subqueries_learning import SubqueriesLearning
 from ArrayJob import ArrayJob
 
@@ -43,14 +35,87 @@ class LGBMLearning(SubqueriesLearning):
     def __init__(self, path, corpus_name):
         super(LGBMLearning, self).__init__(path, corpus_name)
 
-    def test(self):
-        num_round = 10
-        train_data = lgb.Dataset(os.path.join(self.subqueries_features_root, 'final', '2'))
-        param = {'application': 'lambdarank', 'query': 0, 'metric': 'ndcg' }
-        bst = lgb.train(param, train_data, num_round)
-        bst.save_model('lightgbm_test_model.txt')
-        ypred = bst.predict(train_data)
+    def read_data_from_feature_file(self, fn, integer_label=False):
+        orig_rows = []
+        data = []
+        label = []
+        tmp_label = []
+        query_data = []
+        cur_query = -1
+        cur_query_line_cnt = -1
+        with open(fn) as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    row = line.split()
+                    orig_rows.append(row)
+                    row_data = [float(ele.split(':')[-1]) for ele in row[2:-2]] # do not include qid
+                    data.append(row_data)
+                    qid = row[1].split(':')[1]
+                    if qid != cur_query:
+                        if cur_query_line_cnt != -1:
+                            query_data.append(cur_query_line_cnt)
+                            if integer_label:
+                                tmptmp_label = [round((ele-min(tmp_label))*4/(max(tmp_label) - min(tmp_label)), 0) for ele in tmp_label]
+                                max_cnts = []
+                                for i, ele in enumerate(tmptmp_label):
+                                    if ele == 4.0:
+                                        max_cnts.append(i)
+                                if len(max_cnts) > 1:
+                                    orig_max_idx = 0
+                                    for j in range(1, len(tmp_label)):
+                                        if tmp_label[j] > tmp_label[orig_max_idx]:
+                                            orig_max_idx = j
+                                    for max_cnt in max_cnts:
+                                        if max_cnt != orig_max_idx:
+                                            tmptmp_label[max_cnt] -= 1
+                                tmp_label = tmptmp_label
+                            label.extend(tmp_label)
+                        cur_query = qid
+                        cur_query_line_cnt = 0
+                        tmp_label = []
+                    tmp_label.append(float(row[0]))
+                    cur_query_line_cnt += 1
+        
+        if cur_query_line_cnt > 0:
+            query_data.append(cur_query_line_cnt)
 
+        if integer_label:
+            tmptmp_label = [round((ele-min(tmp_label))*4/(max(tmp_label) - min(tmp_label)), 0) for ele in tmp_label]
+            max_cnts = []
+            for i, ele in enumerate(tmptmp_label):
+                if ele == 4.0:
+                    max_cnts.append(i)
+            if len(max_cnts) > 1:
+                orig_max_idx = 0
+                for j in range(1, len(tmp_label)):
+                    if tmp_label[j] > tmp_label[orig_max_idx]:
+                        orig_max_idx = j
+                for max_cnt in max_cnts:
+                    if max_cnt != orig_max_idx:
+                        tmptmp_label[max_cnt] -= 1
+            tmp_label = tmptmp_label
+        label.extend(tmp_label)          
+   
+        with open(fn+'.new', 'w') as of:
+            for i, row in enumerate(orig_rows):
+                of.write('%d %s\n' % (label[i], ' '.join(row[1:])))
+        
+        return [data, label, query_data]
+
+
+    def test(self):
+        # X_train, y_train = load_svmlight_file('lgbm_test_data.txt')
+        # print X_train, y_train
+        X_train, y_train, q_train = self.read_data_from_feature_file('lgbm_test_data.txt', integer_label=True)
+        #X_test, y_test, q_test = self.read_data_from_feature_file('lgbm_test_data.txt')
+        # lgb_model  = lgb.LGBMRanker().fit(X_train, y_train,
+        #                          group=q_train,
+        #                          eval_set=[(X_test, y_test)],
+        #                          eval_group=[q_test],
+        #                          eval_at=[10],
+        #                          verbose=True,
+        #                          callbacks=[lgb.reset_parameter(learning_rate=lambda x: 0.95 ** x * 0.1)])
 
 
 _root = '../../../reproduce/collections/'
@@ -105,4 +170,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.test:
-        LGBMLearning(os.path.join(_root, 'aquaint_nostopwords'), 'AQUAINT').test()
+        LGBMLearning('.', 'test').test()
