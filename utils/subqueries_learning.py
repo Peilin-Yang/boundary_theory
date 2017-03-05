@@ -1158,10 +1158,12 @@ class SubqueriesLearning(RunSubqueries):
                     feature_fn = os.path.join(results_root, 'test_%s_%d' % (collection_name, query_length))
                     if method == 'lambdamart':
                         predict_fn = os.path.join(results_root, 'predict_%s_%d' % (collection_name, query_length))
+                        with open(predict_fn) as f:
+                            predict_res = [float(line.strip().split()[-1]) for line in f.readlines()]
                     else:
                         predict_fn = os.path.join(results_root, 'predict_%s_%d_%s' % (collection_name, query_length, c))
-                    with open(predict_fn) as f:
-                        predict_res = [float(line.strip()) for line in f.readlines()]
+                        with open(predict_fn) as f:
+                            predict_res = [float(line.strip()) for line in f.readlines()]
                     with open(feature_fn) as f:
                         idx = 0
                         for line in f:
