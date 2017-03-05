@@ -1217,8 +1217,8 @@ class SubqueriesLearning(RunSubqueries):
             model_output_fn = os.path.join(results_root, 'model_%s_%d' 
                 % (test_collection, query_length) )
             if not os.path.exists(model_output_fn):
-                command = 'java -jar ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -save %s' % (trainging_fn, model_output_fn)
-                p = Popen(command.split(), stdout=PIPE, stderr=PIPE)
+                command = ['java -jar ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -save %s' % (trainging_fn, model_output_fn)]
+                p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
                 returncode = p.wait()
                 out, error = p.communicate()
                 if returncode != 0:
@@ -1227,8 +1227,9 @@ class SubqueriesLearning(RunSubqueries):
             predict_fn = os.path.join(results_root, 'predict_%s_%d' 
                 % (test_collection, query_length))
             if not os.path.exists(predict_fn):
-                command = 'java -jar ~/Downloads/RankLib-2.8.jar -load %s -rank %s -score %s' % (model_output_fn, testing_fn, predict_fn)
-                p = Popen(command.split(), stdout=PIPE, stderr=PIPE)
+                command = ['java -jar ~/Downloads/RankLib-2.8.jar -load %s -rank %s -score %s' 
+                    % (model_output_fn, testing_fn, predict_fn)]
+                p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
                 returncode = p.wait()
                 out, error = p.communicate()
                 if returncode != 0:
