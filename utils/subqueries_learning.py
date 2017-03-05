@@ -1096,7 +1096,7 @@ class SubqueriesLearning(RunSubqueries):
             for ele in l:
                 collection_path = ele[0]
                 collection_name = ele[1]
-                feature_fn = os.path.join(collection_path, 'subqueries', 'features', 'final', str(query_length))
+                feature_fn = os.path.join(collection_path, 'subqueries', 'features', 'final', str(query_length)+'.int')
                 with open(feature_fn) as ff:
                     if not reorder_qid:
                         f.write(ff.read())
@@ -1206,9 +1206,9 @@ class SubqueriesLearning(RunSubqueries):
         results_root = os.path.join('../all_results', 'subqueries', 'cross_training')
         if not os.path.exists(results_root):
             os.makedirs(results_root)
-        trainging_fn = os.path.join(results_root, 'train_%s_%d' % (test_collection, query_length))
+        trainging_fn = os.path.join(results_root, 'train_%s_%d.int' % (test_collection, query_length))
         SubqueriesLearning.write_combined_feature_fn(results_root, train, trainging_fn, query_length, True)
-        testing_fn = os.path.join(results_root, 'test_%s_%d' % (test_collection, query_length))
+        testing_fn = os.path.join(results_root, 'test_%s_%d.int' % (test_collection, query_length))
         SubqueriesLearning.write_combined_feature_fn(results_root, test, testing_fn, query_length, False)
         for c in range(-3, 5):
             model_output_fn = os.path.join(results_root, 'model_%s_%d_%s' 
