@@ -1227,8 +1227,7 @@ class SubqueriesLearning(RunSubqueries):
             predict_fn = os.path.join(results_root, 'predict_%s_%d' 
                 % (test_collection, query_length))
             if not os.path.exists(predict_fn):
-                command = 'java -jar ~/Downloads/RankLib-2.8.jar -load %s -rank %s -score %s'
-                    % (model_output_fn, testing_fn, predict_fn)
+                command = 'java -jar ~/Downloads/RankLib-2.8.jar -load %s -rank %s -score %s' % (model_output_fn, testing_fn, predict_fn)
                 p = Popen(command.split(), stdout=PIPE, stderr=PIPE)
                 returncode = p.wait()
                 out, error = p.communicate()
