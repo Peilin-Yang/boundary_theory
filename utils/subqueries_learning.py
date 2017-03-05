@@ -1117,9 +1117,9 @@ class SubqueriesLearning(RunSubqueries):
                     qid_idx += 1
 
     @staticmethod
-    def evaluate_svm_cross_testing(all_data, query_length=2):
+    def evaluate_svm_cross_testing(all_data, query_length=2, _type='int'):
         data_mapping = {d[1]:d[0] for d in all_data}
-        results_root = os.path.join('../all_results', 'subqueries', 'cross_training')
+        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', _type)
         all_predict_data = {}
         for fn in os.listdir(results_root):
             m = re.search(r'^predict_(.*?)_(.*?)_(.*)$', fn)
