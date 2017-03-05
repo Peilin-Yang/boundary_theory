@@ -1086,7 +1086,7 @@ class SubqueriesLearning(RunSubqueries):
                 ssdf.write('\n')
 
     @staticmethod
-    def write_combined_feature_fn(results_root, l, ofn, query_length=2, reorder_qid=False):
+    def write_combined_feature_fn(results_root, l, ofn, query_length=2, reorder_qid=False, _type='int'):
         trainging_fn = os.path.join(results_root, 'train_%d' % query_length)
         if os.path.exists(ofn):
             os.remove(ofn)
@@ -1096,7 +1096,7 @@ class SubqueriesLearning(RunSubqueries):
             for ele in l:
                 collection_path = ele[0]
                 collection_name = ele[1]
-                feature_fn = os.path.join(collection_path, 'subqueries', 'features', 'final', str(query_length)+'.int')
+                feature_fn = os.path.join(collection_path, 'subqueries', 'features', 'final', str(query_length)+'.'+_type)
                 with open(feature_fn) as ff:
                     if not reorder_qid:
                         f.write(ff.read())
@@ -1198,18 +1198,19 @@ class SubqueriesLearning(RunSubqueries):
 
 
     @staticmethod
-    def cross_testing(train, test, query_length=2):
+    def cross_testing(train, test, query_length=2, _type='int'):
         """
         train and test are list of (collection_path, collection_name)
+        # _type: int (use integer as labels) or ap (use ap value floating numbers as labels)
         """
         test_collection = test[0][1]
-        results_root = os.path.join('../all_results', 'subqueries', 'cross_training')
+        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', _type)
         if not os.path.exists(results_root):
             os.makedirs(results_root)
-        trainging_fn = os.path.join(results_root, 'train_%s_%d.int' % (test_collection, query_length))
-        SubqueriesLearning.write_combined_feature_fn(results_root, train, trainging_fn, query_length, True)
-        testing_fn = os.path.join(results_root, 'test_%s_%d.int' % (test_collection, query_length))
-        SubqueriesLearning.write_combined_feature_fn(results_root, test, testing_fn, query_length, False)
+        trainging_fn = os.path.join(results_root, 'train_%s_%d' % (test_collection, query_length))
+        SubqueriesLearning.write_combined_feature_fn(results_root, train, trainging_fn, query_length, True, _type)
+        testing_fn = os.path.join(results_root, 'test_%s_%d' % (test_collection, query_length))
+        SubqueriesLearning.write_combined_feature_fn(results_root, test, testing_fn, query_length, False, _type)
         for c in range(-3, 5):
             model_output_fn = os.path.join(results_root, 'model_%s_%d_%s' 
                 % (test_collection, query_length, str(10**c)) )
