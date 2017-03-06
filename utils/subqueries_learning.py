@@ -1022,7 +1022,6 @@ class SubqueriesLearning(RunSubqueries):
             elif method == 2:
                 command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -leaf %s' 
                     % (os.path.join(self.subqueries_features_root, folder, feature_fn), para)]
-            print command
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             returncode = p.wait()
             out, error = p.communicate()
@@ -1132,6 +1131,7 @@ class SubqueriesLearning(RunSubqueries):
                             optimal_model_predict/query_cnt))
 
                     # feature ranking related
+                    print type(query_length), type(label_type)
                     model_fn = query_length+'.'+label_type+'_'+str(all_models[query_length][label_type][0][0])
                     with open(os.path.join(model_root, model_fn)) as f:
                         model = f.readlines()[-1]
