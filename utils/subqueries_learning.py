@@ -1010,8 +1010,7 @@ class SubqueriesLearning(RunSubqueries):
 
     def read_lambdamart_model_file(self, fn):
         with open(fn) as f:
-            tree = ET.fromstring('\n'.join(f.readlines()[6:]))
-        root = tree.getroot()
+            root = ET.fromstring('\n'.join(f.readlines()[6:]))
         all_features = []
         for feature in root.findall('feature'):
             all_features.append(float(feature.text))
