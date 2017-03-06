@@ -1176,7 +1176,7 @@ class SubqueriesLearning(RunSubqueries):
                     output_root = os.path.join(self.output_root, method_folder, folder, 'featurerank')
                     if not os.path.exists(output_root):
                         os.makedirs(output_root)
-                    with open(os.path.join(output_root, query_length), 'wb') as f:
+                    with open(os.path.join(output_root, str(query_length)), 'wb') as f:
                         for ele in feature_weights:
                             f.write('%s: %f\n' % (feature_mapping[ele[0]], ele[1]))
 
