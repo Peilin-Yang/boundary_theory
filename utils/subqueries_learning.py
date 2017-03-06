@@ -1161,19 +1161,18 @@ class SubqueriesLearning(RunSubqueries):
                         with open(os.path.join(model_root, model_fn)) as f:
                             model = f.readlines()[-1]
                         feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
-                        feature_weights.sort(key=itemgetter(1, 0), reverse=True)
                     elif method == 2:
-                        train_data, train_label = self.read_data_from_feature_file(feature_fn)
-                        clf = GradientBoostingRegressor(n_estimators=1000, max_depth=1, random_state=0).fit(train_data, train_label)
-                        print clf.feature_importances_
+                        # train_data, train_label = self.read_data_from_feature_file(feature_fn)
+                        # clf = GradientBoostingRegressor(n_estimators=1000, max_depth=1, random_state=0).fit(train_data, train_label)
+                        # print clf.feature_importances_
                         all_features = self.read_lambdamart_model_file(os.path.join(model_root, model_fn))
                         features_dict = {}
                         for feature in all_features:
                             if feature not in features_dict:
                                 features_dict[feature] = 0
                             features_dict[feature] += 1
-                        print features_dict
-                        exit()
+                        feature_weights = [(k,v) for k,v in features_dict.items()]
+                    feature_weights.sort(key=itemgetter(1, 0), reverse=True)
                     output_root = os.path.join(self.output_root, method_folder, folder, 'featurerank')
                     if not os.path.exists(output_root):
                         os.makedirs(output_root)
