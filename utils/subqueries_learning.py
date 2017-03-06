@@ -1029,6 +1029,7 @@ class SubqueriesLearning(RunSubqueries):
             if returncode != 0:
                 raise NameError("Run Query Error: %s" % (command) )
             query_length = int(feature_fn.split('.')[0])
+            print out
             err_rate = float(out.split('\n')[-2].split(':')[1])
             if method == 2:
                 command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -load %s -rank %s -score %s'
