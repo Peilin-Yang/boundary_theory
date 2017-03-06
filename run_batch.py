@@ -812,7 +812,7 @@ if __name__ == '__main__':
         nargs=1,
         help='svm rank atom')
     parser.add_argument('-65', '--gen_evaluate_learning_to_rank_model_batch', 
-        nargs=1,
+        nargs=2,
         help='generate the batch runs for learning to rank. arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr), method(1-svmrank, 2-lambdamart)]')
     parser.add_argument('-66', '--evaluate_learning_to_rank_model_atom', 
         nargs=1,
