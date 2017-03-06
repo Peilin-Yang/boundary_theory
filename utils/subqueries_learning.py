@@ -980,11 +980,17 @@ class SubqueriesLearning(RunSubqueries):
             subprocess.call(command)
         elif method == 2:
             leaf = int(method_para)
-            command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -leaf %d -save %s' % ( 
+            command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -test %s -ranker 6 -leaf %d -save %s' % ( 
+                os.path.join(self.subqueries_features_root, folder, feature_fn), 
                 os.path.join(self.subqueries_features_root, folder, feature_fn), 
                 leaf,
                 os.path.join(model_root, feature_fn+'_'+str(leaf)))
-            subprocess.call(command, shell=True)
+            p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+            returncode = p.wait()
+            out, error = p.communicate()
+            if returncode != 0:
+                raise NameError("Run Query Error: %s" % (command) )
+            print out
 
     def evaluate_learning_to_rank_model(self, feature_type=1, method=1):
         if feature_type == 2:
@@ -1009,10 +1015,16 @@ class SubqueriesLearning(RunSubqueries):
             feature_fn = fn.split('_')[0]
             label_type = feature_fn.split('.')[1]
             para = fn.split('_')[1]
-            command = ['svm_rank_classify %s %s %s' 
-                % (os.path.join(self.subqueries_features_root, folder, feature_fn), 
-                    os.path.join(model_root, fn), 
-                    os.path.join(predict_root, fn))]
+            if method == 1:
+                command = ['svm_rank_classify %s %s %s' 
+                    % (os.path.join(self.subqueries_features_root, folder, feature_fn), 
+                        os.path.join(model_root, fn), 
+                        os.path.join(predict_root, fn))]
+            elif method == 2:
+                command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s %s %s' 
+                    % (os.path.join(self.subqueries_features_root, folder, feature_fn), 
+                        os.path.join(model_root, fn), 
+                        os.path.join(predict_root, fn))]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             returncode = p.wait()
             out, error = p.communicate()
