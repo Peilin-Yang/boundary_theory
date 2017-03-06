@@ -1085,7 +1085,7 @@ class SubqueriesLearning(RunSubqueries):
                     if label_type not in all_models[query_length]:
                         all_models[query_length][label_type] = []
                     for para in error_rates[query_length][label_type]:
-                        all_models[query_length][label_type].append((para, error_rates[query_length][label_type]))
+                        all_models[query_length][label_type].append((para, error_rates[query_length][label_type][para]))
         feature_mapping = self.get_feature_mapping()
         predict_optimal_subquery_len_dist = {}
         print error_rates
