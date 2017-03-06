@@ -1047,10 +1047,10 @@ class SubqueriesLearning(RunSubqueries):
         print json.dumps(all_models, indent=2)
         exit()
         feature_mapping = self.get_feature_mapping()
-        svm_predict_optimal_subquery_len_dist = {}
-        with open(os.path.join(self.final_output_root, self.collection_name+'-svm_subquery_dist-%s.md' % folder), 'wb') as ssdf:
+        predict_optimal_subquery_len_dist = {}
+        with open(os.path.join(self.final_output_root, self.collection_name+'-%s_subquery_dist-%s.md' % (method_folder, folder)), 'wb') as ssdf:
             ssdf.write('### %s\n' % (self.collection_name))
-            ssdf.write('| query len | using all terms | optimal (ground truth) | svm optimal |\n')
+            ssdf.write('| query len | using all terms | optimal (ground truth) | %s optimal |\n' % (method_folder))
             ssdf.write('|--------|--------|--------|--------|\n')
             for query_length in sorted(all_models):
                 # first sort based on err_rate
