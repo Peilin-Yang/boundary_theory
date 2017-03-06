@@ -1010,7 +1010,7 @@ class SubqueriesLearning(RunSubqueries):
             label_type = feature_fn.split('.')[1]
             para = fn.split('_')[1]
             command = ['svm_rank_classify %s %s %s' 
-                % (os.path.join(self.subqueries_features_root, folder, query_length), 
+                % (os.path.join(self.subqueries_features_root, folder, feature_fn), 
                     os.path.join(svm_model_root, fn), 
                     os.path.join(svm_predict_root, fn))]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
@@ -1018,24 +1018,34 @@ class SubqueriesLearning(RunSubqueries):
             out, error = p.communicate()
             if returncode != 0:
                 raise NameError("Run Query Error: %s" % (command) )
-            query_length = int(query_length)
+            query_length = int(feature_fn.split('.')[0])
             err_rate = float(out.split('\n')[-2].split(':')[1])
-            error_rates[fn] = err_rate
+            if query_length not in error_rates:
+                error_rates[query_length] = {}
+            if label_type not in error_rates[query_length]:
+                error_rates[query_length][label_type] = {}
+            error_rates[query_length][label_type][para] = err_rate
             if query_length not in all_models:
-                all_models[query_length] = []
-            all_models[query_length].append((fn, err_rate))
+                all_models[query_length] = {}
+            if label_type not in all_models[query_length]:
+                all_models[query_length][label_type] = []
+            all_models[query_length][label_type].append((para, err_rate))
         if error_rates:
             with open(error_rate_fn, 'wb') as f:
                 json.dump(error_rates, f, indent=2)
         if not all_models:
             with open(error_rate_fn) as f:
                 error_rates = json.load(f)
-            for fn in error_rates:
-                query_length = int(fn.split('_')[0])
+            for query_length in error_rates:
                 if query_length not in all_models:
-                    all_models[query_length] = []
-                all_models[query_length].append((fn, error_rates[fn]))
-
+                    all_models[query_length] = {}
+                for label_type in error_rates[query_length]:
+                    if label_type not in all_models[query_length]:
+                        all_models[query_length][label_type] = []
+                    for para in error_rates[query_length][label_type]:
+                        all_models[query_length][label_type].append((para, error_rates[query_length][label_type]))
+        print json.dumps(all_models, indent=2)
+        exit()
         feature_mapping = self.get_feature_mapping()
         svm_predict_optimal_subquery_len_dist = {}
         with open(os.path.join(self.final_output_root, self.collection_name+'-svm_subquery_dist-%s.md' % folder), 'wb') as ssdf:
