@@ -1127,10 +1127,12 @@ class SubqueriesLearning(RunSubqueries):
             ssdf.write('| | | | | |\n')
             ssdf.write('|--------|--------|--------|--------|--------|\n')
             for query_len in predict_optimal_subquery_len_dist:
-                ssdf.write('| %d |' % (query_len))
-                for subquery_len in predict_optimal_subquery_len_dist[query_len]:
-                    ssdf.write(' %d:%d |' % (subquery_len, predict_optimal_subquery_len_dist[query_len][subquery_len]))
-                ssdf.write('\n')
+                ssdf.write('| %s |' % (query_len))
+                for label_type in predict_optimal_subquery_len_dist[query_len]:
+                    ssdf.write(' %s |' % (label_type))
+                    for subquery_len in predict_optimal_subquery_len_dist[query_len][label_type]:
+                        ssdf.write(' %d:%d |' % (subquery_len, predict_optimal_subquery_len_dist[query_len][label_type][subquery_len]))
+                    ssdf.write('\n')
 
     @staticmethod
     def write_combined_feature_fn(results_root, l, ofn, query_length=2, reorder_qid=False, _type='int'):
