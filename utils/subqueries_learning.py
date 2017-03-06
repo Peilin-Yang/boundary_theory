@@ -953,7 +953,8 @@ class SubqueriesLearning(RunSubqueries):
         if not os.path.exists(predict_root):
             os.makedirs(predict_root)
         for fn in os.listdir(os.path.join(self.subqueries_features_root, folder)):
-            if fn.split('.')[1] != label_type:
+            fn_splits = fn.split('.')
+            if len(fn_splits) != 2 or fn_splits[1] != label_type:
                 continue
             if method == 1:
                 for c in range(-5, 5):
