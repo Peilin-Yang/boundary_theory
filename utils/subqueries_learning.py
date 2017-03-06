@@ -1022,6 +1022,7 @@ class SubqueriesLearning(RunSubqueries):
             elif method == 2:
                 command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -leaf %s' 
                     % (os.path.join(self.subqueries_features_root, folder, feature_fn), para)]
+            print command
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             returncode = p.wait()
             out, error = p.communicate()
