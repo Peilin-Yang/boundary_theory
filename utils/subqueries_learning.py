@@ -1013,6 +1013,7 @@ class SubqueriesLearning(RunSubqueries):
             root = ET.fromstring('\n'.join(f.readlines()[6:]))
         all_features = []
         for feature in root.findall('feature'):
+            print feature
             all_features.append(float(feature.text))
         return all_features
 
