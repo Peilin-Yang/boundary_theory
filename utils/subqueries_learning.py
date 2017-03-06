@@ -1155,8 +1155,7 @@ class SubqueriesLearning(RunSubqueries):
                         feature_weights.sort(key=itemgetter(1, 0), reverse=True)
                     elif method == 2:
                         train_data, train_label = self.read_data_from_feature_file(feature_fn)
-                        clf = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, 
-                            max_depth=1, random_state=0).fit(train_data, train_label)
+                        clf = GradientBoostingRegressor(n_estimators=1000, max_depth=1, random_state=0).fit(train_data, train_label)
                         print clf.feature_importances_
                         exit()
                     output_root = os.path.join(self.output_root, method_folder, folder, 'featurerank')
