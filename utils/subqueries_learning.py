@@ -1048,8 +1048,8 @@ class SubqueriesLearning(RunSubqueries):
         predict_optimal_subquery_len_dist = {}
         with open(os.path.join(self.final_output_root, self.collection_name+'-%s_subquery_dist-%s.md' % (method_folder, folder)), 'wb') as ssdf:
             ssdf.write('### %s\n' % (self.collection_name))
-            ssdf.write('| query len | using all terms | optimal (ground truth) | optimal |\n')
-            ssdf.write('|--------|--------|--------|--------|\n')
+            ssdf.write('| query len | label_type | using all terms | optimal (ground truth) | optimal |\n')
+            ssdf.write('|--------|--------|--------|--------|--------|\n')
             for query_length in sorted(all_models):
                 predict_optimal_subquery_len_dist[query_length] = {}
                 # first sort based on err_rate
@@ -1104,8 +1104,8 @@ class SubqueriesLearning(RunSubqueries):
                         predict_optimal_subquery_len_dist[query_length][label_type][subquery_len] += 1
 
                     query_cnt = len(predict_optimal_performance)
-                    ssdf.write('| %s | %.4f | %.4f | %.4f |\n' 
-                        % ( query_length, 
+                    ssdf.write('| %s | %s | %.4f | %.4f | %.4f |\n' 
+                        % ( query_length, label_type,
                             performance_using_all_terms/query_cnt, 
                             optimal_ground_truth/query_cnt, 
                             optimal_model_predict/query_cnt))
@@ -1127,9 +1127,8 @@ class SubqueriesLearning(RunSubqueries):
             ssdf.write('| | | | | |\n')
             ssdf.write('|--------|--------|--------|--------|--------|\n')
             for query_len in predict_optimal_subquery_len_dist:
-                ssdf.write('| %s |' % (query_len))
                 for label_type in predict_optimal_subquery_len_dist[query_len]:
-                    ssdf.write(' %s |' % (label_type))
+                    ssdf.write('| %s | %s |' % (query_len, label_type))
                     for subquery_len in predict_optimal_subquery_len_dist[query_len][label_type]:
                         ssdf.write(' %d:%d |' % (subquery_len, predict_optimal_subquery_len_dist[query_len][label_type][subquery_len]))
                     ssdf.write('\n')
