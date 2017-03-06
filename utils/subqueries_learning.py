@@ -24,6 +24,7 @@ from sklearn.svm import SVC
 from sklearn import tree
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import classification_report
+from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 
 from query import Query
 from evaluation import Evaluation
@@ -991,6 +992,21 @@ class SubqueriesLearning(RunSubqueries):
                 raise NameError("Run Query Error: %s" % (command) )
             print out
 
+    def read_data_from_feature_file(self, fn):
+        data = []
+        labels = []
+        with open(fn) as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    row = line.split()
+                    row_data = [float(ele.split(':')[-1]) for ele in row[2:-2]] # do not include qid
+                    data.append(row_data)
+                    qid = row[1].split(':')[1]
+                    label = float(row[0])
+                    labels.append(label)
+        return data, labels
+
     def evaluate_learning_to_rank_model(self, feature_type=1, method=1):
         if feature_type == 2:
             folder = 'kendallstau'
@@ -1131,16 +1147,22 @@ class SubqueriesLearning(RunSubqueries):
                             optimal_model_predict/query_cnt))
 
                     # feature ranking related
-                    print type(query_length), type(label_type)
                     model_fn = query_length+'.'+label_type+'_'+str(all_models[query_length][label_type][0][0])
-                    with open(os.path.join(model_root, model_fn)) as f:
-                        model = f.readlines()[-1]
-                    feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
-                    feature_weights.sort(key=itemgetter(1, 0), reverse=True)
+                    if method == 1:
+                        with open(os.path.join(model_root, model_fn)) as f:
+                            model = f.readlines()[-1]
+                        feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
+                        feature_weights.sort(key=itemgetter(1, 0), reverse=True)
+                    elif method == 2:
+                        train_data, train_label = self.read_data_from_feature_file(feature_fn)
+                        clf = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, 
+                            max_depth=1, random_state=0).fit(train_data, train_label)
+                        print clf.feature_importances_
+                        exit()
                     output_root = os.path.join(self.output_root, method_folder, folder, 'featurerank')
                     if not os.path.exists(output_root):
                         os.makedirs(output_root)
-                    with open(os.path.join(output_root, str(query_length)), 'wb') as f:
+                    with open(os.path.join(output_root, model_fn), 'wb') as f:
                         for ele in feature_weights:
                             f.write('%s: %f\n' % (feature_mapping[ele[0]], ele[1]))
 
