@@ -986,24 +986,29 @@ class SubqueriesLearning(RunSubqueries):
                 os.path.join(model_root, feature_fn+'_'+str(leaf)))
             subprocess.call(command, shell=True)
 
-    def evaluate_svm_model(self, feature_type=1):
+    def evaluate_learning_to_rank_model(self, feature_type=1, method=1):
         if feature_type == 2:
             folder = 'kendallstau'
         elif feature_type == 3:
             folder = 'pearsonr'
         else:
             folder = 'final'
-        svm_model_root = os.path.join(self.output_root, 'svm_rank', folder, 'models')
-        svm_predict_root = os.path.join(self.output_root, 'svm_rank', folder, 'predict')
+        if method == 1:
+            method_folder = 'svm_rank'
+        elif method == 2:
+            method_folder = 'lambdamart'
+        model_root = os.path.join(self.output_root, method_folder, folder, 'models')
+        predict_root = os.path.join(self.output_root, method_folder, folder, 'predict')
         all_models = {}
-        error_rate_fn = os.path.join(self.output_root, 'svm_rank', folder, 'err_rate')
+        error_rate_fn = os.path.join(self.output_root, method_folder, folder, 'err_rate')
         error_rates = {}
-        for fn in os.listdir(svm_model_root):
-            predict_output_fn = os.path.join(svm_predict_root, fn)
+        for fn in os.listdir(model_root):
+            predict_output_fn = os.path.join(predict_root, fn)
             if os.path.exists(predict_output_fn) and os.path.exists(error_rate_fn):
                 continue
-            query_length = fn.split('_')[0]
-            c = fn.split('_')[1]
+            feature_fn = fn.split('_')[0]
+            label_type = feature_fn.split('.')[1]
+            para = fn.split('_')[1]
             command = ['svm_rank_classify %s %s %s' 
                 % (os.path.join(self.subqueries_features_root, folder, query_length), 
                     os.path.join(svm_model_root, fn), 

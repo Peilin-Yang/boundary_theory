@@ -471,23 +471,24 @@ def learning_to_rank_atom(para_file):
             method_para = float(row[5])
             SubqueriesLearning(collection_path, collection_name).learning_to_rank_wrapper(folder, feature_fn, method, method_para)
 
-def gen_evaluate_svm_model_batch(feature_type=1):
+def gen_evaluate_learning_to_rank_model_batch(feature_type=1, method=1):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.append((collection_path, collection_name, feature_type))
+        all_paras.append((collection_path, collection_name, feature_type, method))
     #print all_paras
-    gen_batch_framework('evaluate_svm_rank_model', '66', all_paras)
+    gen_batch_framework('evaluate_learning_to_rank_model', '66', all_paras)
 
-def evaluate_svm_model_atom(para_file):
+def evaluate_learning_to_rank_model_atom(para_file):
     with open(para_file) as f:
         reader = csv.reader(f)
         for row in reader:
             collection_path = row[0]
             collection_name = row[1]
             feature_type = int(row[2])
-            SubqueriesLearning(collection_path, collection_name).evaluate_svm_model(feature_type)
+            method = int(row[3])
+            SubqueriesLearning(collection_path, collection_name).evaluate_learning_to_rank_model(feature_type, method)
 
 def print_svm_model_feature_importance(feature_type=1, top=10):
     if feature_type == 1:
@@ -810,12 +811,12 @@ if __name__ == '__main__':
     parser.add_argument('-64', '--learning_to_rank_atom', 
         nargs=1,
         help='svm rank atom')
-    parser.add_argument('-65', '--gen_evaluate_svm_model_batch', 
+    parser.add_argument('-65', '--gen_evaluate_learning_to_rank_model_batch', 
         nargs=1,
-        help='generate the batch runs for svm rank. arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr')
-    parser.add_argument('-66', '--evaluate_svm_model_atom', 
+        help='generate the batch runs for learning to rank. arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr), method(1-svmrank, 2-lambdamart)]')
+    parser.add_argument('-66', '--evaluate_learning_to_rank_model_atom', 
         nargs=1,
-        help='svm rank atom')
+        help='rank atom')
     parser.add_argument('-67', '--print_svm_model_feature_importance', 
         nargs=2,
         help=('print the top features of svm model.'
@@ -930,10 +931,12 @@ if __name__ == '__main__':
             args.gen_learning_to_rank_batch[2])
     if args.learning_to_rank_atom:
         learning_to_rank_atom(args.learning_to_rank_atom[0])
-    if args.gen_evaluate_svm_model_batch:
-        gen_evaluate_svm_model_batch(int(args.gen_evaluate_svm_model_batch[0]))
-    if args.evaluate_svm_model_atom:
-        evaluate_svm_model_atom(args.evaluate_svm_model_atom[0])
+    if args.gen_evaluate_learning_to_rank_model_batch:
+        gen_evaluate_learning_to_rank_model_batch(
+            int(args.gen_evaluate_learning_to_rank_model_batch[0]),
+            int(args.gen_evaluate_learning_to_rank_model_batch[1]))
+    if args.evaluate_learning_to_rank_model_atom:
+        evaluate_learning_to_rank_model_atom(args.evaluate_learning_to_rank_model_atom[0])
     if args.print_svm_model_feature_importance:
         print_svm_model_feature_importance(int(args.print_svm_model_feature_importance[0]))
     if args.svm_cross_testing:
