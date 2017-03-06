@@ -450,25 +450,26 @@ def output_subqueries_features_atom(para_file):
             query_length = int(row[2])
             SubqueriesLearning(collection_path, collection_name).output_collection_features(query_length)
 
-def gen_svm_rank_batch(feature_type=1):
+def gen_learning_to_rank_batch(feature_type=1, method=1, label_type='int'):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.extend(SubqueriesLearning(collection_path, collection_name).batch_gen_svm_rank_paras(feature_type))
+        all_paras.extend(SubqueriesLearning(collection_path, collection_name).batch_gen_learning_to_rank_paras(feature_type, method, label_type))
     #print all_paras
-    gen_batch_framework('svm_rank_train', '64', all_paras)
+    gen_batch_framework('learning_to_rank_train', '64', all_paras)
 
-def svm_rank_atom(para_file):
+def learning_to_rank_atom(para_file):
     with open(para_file) as f:
         reader = csv.reader(f)
         for row in reader:
             collection_path = row[0]
             collection_name = row[1]
             folder = row[2]
-            query_length = row[3]
-            c = int(row[4])
-            SubqueriesLearning(collection_path, collection_name).svm_rank_wrapper(folder, query_length, c)
+            feature_fn = row[3]
+            method = int(row[4])
+            method_para = float(row[5])
+            SubqueriesLearning(collection_path, collection_name).learning_to_rank_wrapper(folder, feature_fn, method, method_para)
 
 def gen_evaluate_svm_model_batch(feature_type=1):
     all_paras = []
@@ -801,12 +802,12 @@ if __name__ == '__main__':
     parser.add_argument('-62', '--output_subqueries_features_atom', 
         nargs=1,
         help='generate subqueries features')
-    parser.add_argument('-63', '--gen_svm_rank_batch', 
-        nargs=1,
+    parser.add_argument('-63', '--gen_learning_to_rank_batch', 
+        nargs=3,
         help=('generate the batch runs for svm rank. '
-            'arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr)]')
+            'arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr), ranking_method(1-svmrank, 2-lambdamart), label_type(int,ap)]')
     )
-    parser.add_argument('-64', '--svm_rank_atom', 
+    parser.add_argument('-64', '--learning_to_rank_atom', 
         nargs=1,
         help='svm rank atom')
     parser.add_argument('-65', '--gen_evaluate_svm_model_batch', 
@@ -922,10 +923,13 @@ if __name__ == '__main__':
         output_subqueries_features_batch(args.output_subqueries_features_batch[0])
     if args.output_subqueries_features_atom:
         output_subqueries_features_atom(args.output_subqueries_features_atom[0])
-    if args.gen_svm_rank_batch:
-        gen_svm_rank_batch(int(args.gen_svm_rank_batch[0]))
-    if args.svm_rank_atom:
-        svm_rank_atom(args.svm_rank_atom[0])
+    if args.gen_learning_to_rank_batch:
+        gen_learning_to_rank_batch(
+            int(args.gen_learning_to_rank_batch[0]), 
+            int(args.gen_learning_to_rank_batch[1]),
+            args.gen_learning_to_rank_batch[2])
+    if args.learning_to_rank_atom:
+        learning_to_rank_atom(args.learning_to_rank_atom[0])
     if args.gen_evaluate_svm_model_batch:
         gen_evaluate_svm_model_batch(int(args.gen_evaluate_svm_model_batch[0]))
     if args.evaluate_svm_model_atom:

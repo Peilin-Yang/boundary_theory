@@ -547,7 +547,7 @@ class SubqueriesLearning(RunSubqueries):
             klist = [(col, np.mean(pearsonr[col])) for col in pearsonr]
         klist.sort(key=itemgetter(1), reverse=True)
         top_features = [ele[0] for ele in klist[:10]]
-        #print [[ele, feature_mapping[ele], klist[i][1]] for i, ele in enumerate(top_features)]
+        print [[ele, feature_mapping[ele], klist[i][1]] for i, ele in enumerate(top_features)]
 
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         idx = 0
@@ -933,32 +933,47 @@ class SubqueriesLearning(RunSubqueries):
                         tmp_label_idx += 1
                     idx += 1
 
-    def batch_gen_svm_rank_paras(self, feature_type=1):
+    def batch_gen_learning_to_rank_paras(self, feature_type=1, method=1, label_type='int'):
         if feature_type == 2:
             folder = 'kendallstau'
         elif feature_type == 3:
             folder = 'pearsonr'
         else:
             folder = 'final'
+
+        if method == 1:
+            method_folder = 'svm_rank'
+        elif method == 2:
+            method_folder = 'lambdamart'
         paras = []
-        svm_model_root = os.path.join(self.output_root, 'svm_rank', folder, 'models')
-        if not os.path.exists(svm_model_root):
-            os.makedirs(svm_model_root)
-        svm_predict_root = os.path.join(self.output_root, 'svm_rank', folder, 'predict')
-        if not os.path.exists(svm_predict_root):
-            os.makedirs(svm_predict_root)
+        model_root = os.path.join(self.output_root, method_folder, folder, 'models')
+        if not os.path.exists(model_root):
+            os.makedirs(model_root)
+        predict_root = os.path.join(self.output_root, method_folder, folder, 'predict')
+        if not os.path.exists(predict_root):
+            os.makedirs(predict_root)
         for fn in os.listdir(os.path.join(self.subqueries_features_root, folder)):
-            for c in range(-5, 5):
-                if not os.path.exists(os.path.join(svm_model_root, fn+'_'+str(10**c))):
-                    paras.append((self.corpus_path, self.collection_name, folder, fn, c))
+            if fn.split('.')[1] != label_type:
+                continue
+            if method == 1:
+                for c in range(-5, 5):
+                    if not os.path.exists(os.path.join(model_root, fn+'_'+str(10**c))):
+                        paras.append((self.corpus_path, self.collection_name, folder, fn, c))
+            elif method == 2:
+                for leaf in range(2, 10):
+                    if not os.path.exists(os.path.join(model_root, fn+'_'+str(leaf))):
+                        paras.append((self.corpus_path, self.collection_name, folder, fn, method, leaf))
         return paras
 
-    def svm_rank_wrapper(self, folder, query_length, c):
-        svm_model_root = os.path.join(self.output_root, 'svm_rank', folder, 'models')
-        command = ['svm_rank_learn', '-c', str(10**c), 
-            os.path.join(self.subqueries_features_root, folder, query_length), 
-            os.path.join(svm_model_root, query_length+'_'+str(10**c))]
-        subprocess.call(command)
+    def learning_to_rank_wrapper(self, folder, feature_fn, method, method_para):
+        if method == 1:
+            svm_model_root = os.path.join(self.output_root, 'svm_rank', folder, 'models')
+            c = int(method_para)
+            command = ['svm_rank_learn', '-c', str(10**c), 
+                os.path.join(self.subqueries_features_root, folder, feature_fn), 
+                os.path.join(svm_model_root, feature_fn+'_'+str(10**c))]
+            subprocess.call(command)
+        elif method == 2:
 
     def evaluate_svm_model(self, feature_type=1):
         if feature_type == 2:
