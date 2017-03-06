@@ -967,13 +967,23 @@ class SubqueriesLearning(RunSubqueries):
 
     def learning_to_rank_wrapper(self, folder, feature_fn, method, method_para):
         if method == 1:
-            svm_model_root = os.path.join(self.output_root, 'svm_rank', folder, 'models')
+            method_folder = 'svm_rank'
+        elif method == 2:
+            method_folder = 'lambdamart'
+        model_root = os.path.join(self.output_root, method_folder, folder, 'models')
+        if method == 1:
             c = int(method_para)
             command = ['svm_rank_learn', '-c', str(10**c), 
                 os.path.join(self.subqueries_features_root, folder, feature_fn), 
                 os.path.join(svm_model_root, feature_fn+'_'+str(10**c))]
             subprocess.call(command)
         elif method == 2:
+            leaf = int(method_para)
+            command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -leaf %d -save %s' % ( 
+                os.path.join(self.subqueries_features_root, folder, feature_fn), 
+                leaf,
+                os.path.join(svm_model_root, feature_fn+'_'+leaf))
+            subprocess.call(command, shell=True)
 
     def evaluate_svm_model(self, feature_type=1):
         if feature_type == 2:
