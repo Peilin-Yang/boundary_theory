@@ -1044,28 +1044,26 @@ class SubqueriesLearning(RunSubqueries):
                         all_models[query_length][label_type] = []
                     for para in error_rates[query_length][label_type]:
                         all_models[query_length][label_type].append((para, error_rates[query_length][label_type]))
-        print json.dumps(all_models, indent=2)
-        exit()
         feature_mapping = self.get_feature_mapping()
         predict_optimal_subquery_len_dist = {}
         with open(os.path.join(self.final_output_root, self.collection_name+'-%s_subquery_dist-%s.md' % (method_folder, folder)), 'wb') as ssdf:
             ssdf.write('### %s\n' % (self.collection_name))
-            ssdf.write('| query len | using all terms | optimal (ground truth) | %s optimal |\n' % (method_folder))
+            ssdf.write('| query len | using all terms | optimal (ground truth) | optimal |\n')
             ssdf.write('|--------|--------|--------|--------|\n')
             for query_length in sorted(all_models):
                 # first sort based on err_rate
                 all_models[query_length].sort(key=itemgetter(1))
 
                 # model prediction performance related
-                svm_predict_optimal_subquery_len_dist[query_length] = {}
+                predict_optimal_subquery_len_dist[query_length] = {}
                 predict_optimal_performance = {}
                 existing_performance = {}
                 optimal_ground_truth = 0.0
-                optimal_svm_predict = 0.0
+                optimal_model_predict = 0.0
                 performance_using_all_terms = 0.0
                 fn = all_models[query_length][0][0]
                 feature_fn = os.path.join(self.subqueries_features_root, folder, str(query_length))
-                predict_fn = os.path.join(svm_predict_root, fn)
+                predict_fn = os.path.join(predict_root, fn)
                 with open(predict_fn) as f:
                     predict_res = [float(line.strip()) for line in f.readlines()]
                 with open(feature_fn) as f:
@@ -1097,39 +1095,39 @@ class SubqueriesLearning(RunSubqueries):
                         idx += 1
                 for qid in predict_optimal_performance:
                     predict_optimal_performance[qid].sort(key=itemgetter(1), reverse=True)
-                    optimal_svm_predict += predict_optimal_performance[qid][0][2]
+                    optimal_model_predict += predict_optimal_performance[qid][0][2]
                     subquery_len = int(predict_optimal_performance[qid][0][0].split('-')[0])
-                    if subquery_len not in svm_predict_optimal_subquery_len_dist[query_length]:
-                        svm_predict_optimal_subquery_len_dist[query_length][subquery_len] = 0
-                    svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1
+                    if subquery_len not in predict_optimal_subquery_len_dist[query_length]:
+                        predict_optimal_subquery_len_dist[query_length][subquery_len] = 0
+                    predict_optimal_subquery_len_dist[query_length][subquery_len] += 1
 
                 query_cnt = len(predict_optimal_performance)
                 ssdf.write('| %d | %.4f | %.4f | %.4f |\n' 
                     % ( query_length, 
                         performance_using_all_terms/query_cnt, 
                         optimal_ground_truth/query_cnt, 
-                        optimal_svm_predict/query_cnt))
+                        optimal_model_predict/query_cnt))
 
                 # feature ranking related
                 model_fn = all_models[query_length][0][0]
-                with open(os.path.join(svm_model_root, model_fn)) as f:
+                with open(os.path.join(model_root, model_fn)) as f:
                     model = f.readlines()[-1]
                 feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
                 feature_weights.sort(key=itemgetter(1, 0), reverse=True)
-                output_root = os.path.join(self.output_root, 'svm_rank', folder, 'featurerank')
+                output_root = os.path.join(self.output_root, method_folder, folder, 'featurerank')
                 if not os.path.exists(output_root):
                     os.makedirs(output_root)
                 with open(os.path.join(output_root, str(query_length)), 'wb') as f:
                     for ele in feature_weights:
                         f.write('%s: %f\n' % (feature_mapping[ele[0]], ele[1]))
 
-            ssdf.write('\n#### svm predict subquery length distribution\n')
+            ssdf.write('\n#### predict subquery length distribution\n')
             ssdf.write('| | | | | |\n')
             ssdf.write('|--------|--------|--------|--------|--------|\n')
-            for query_len in svm_predict_optimal_subquery_len_dist:
+            for query_len in predict_optimal_subquery_len_dist:
                 ssdf.write('| %d |' % (query_len))
-                for subquery_len in svm_predict_optimal_subquery_len_dist[query_len]:
-                    ssdf.write(' %d:%d |' % (subquery_len, svm_predict_optimal_subquery_len_dist[query_len][subquery_len]))
+                for subquery_len in predict_optimal_subquery_len_dist[query_len]:
+                    ssdf.write(' %d:%d |' % (subquery_len, predict_optimal_subquery_len_dist[query_len][subquery_len]))
                 ssdf.write('\n')
 
     @staticmethod
