@@ -8,6 +8,7 @@ import ast
 import uuid
 import itertools
 import codecs
+import xml.etree.ElementTree as ET
 from operator import itemgetter
 import subprocess
 from subprocess import Popen, PIPE
@@ -1007,6 +1008,14 @@ class SubqueriesLearning(RunSubqueries):
                     labels.append(label)
         return data, labels
 
+    def read_lambdamart_model_file(self, fn):
+        tree = ET.parse(fn)
+        root = tree.getroot()
+        all_features = []
+        for feature in root.findall('feature'):
+            all_features.append(float(feature.text))
+        return all_features
+
     def evaluate_learning_to_rank_model(self, feature_type=1, method=1):
         if feature_type == 2:
             folder = 'kendallstau'
@@ -1157,6 +1166,13 @@ class SubqueriesLearning(RunSubqueries):
                         train_data, train_label = self.read_data_from_feature_file(feature_fn)
                         clf = GradientBoostingRegressor(n_estimators=1000, max_depth=1, random_state=0).fit(train_data, train_label)
                         print clf.feature_importances_
+                        all_features = self.read_lambdamart_model_file(os.path.join(model_root, model_fn))
+                        features_dict = {}
+                        for feature in all_features:
+                            if feature not in features_dict:
+                                features_dict[feature] = 0
+                            features_dict[feature] += 1
+                        print features_dict
                         exit()
                     output_root = os.path.join(self.output_root, method_folder, folder, 'featurerank')
                     if not os.path.exists(output_root):
