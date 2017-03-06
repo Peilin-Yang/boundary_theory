@@ -959,7 +959,7 @@ class SubqueriesLearning(RunSubqueries):
             if method == 1:
                 for c in range(-5, 5):
                     if not os.path.exists(os.path.join(model_root, fn+'_'+str(10**c))):
-                        paras.append((self.corpus_path, self.collection_name, folder, fn, c))
+                        paras.append((self.corpus_path, self.collection_name, folder, fn, method, c))
             elif method == 2:
                 for leaf in range(2, 10):
                     if not os.path.exists(os.path.join(model_root, fn+'_'+str(leaf))):
