@@ -1011,8 +1011,8 @@ class SubqueriesLearning(RunSubqueries):
             para = fn.split('_')[1]
             command = ['svm_rank_classify %s %s %s' 
                 % (os.path.join(self.subqueries_features_root, folder, feature_fn), 
-                    os.path.join(svm_model_root, fn), 
-                    os.path.join(svm_predict_root, fn))]
+                    os.path.join(model_root, fn), 
+                    os.path.join(predict_root, fn))]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             returncode = p.wait()
             out, error = p.communicate()
