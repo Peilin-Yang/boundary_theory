@@ -983,7 +983,7 @@ class SubqueriesLearning(RunSubqueries):
             command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -leaf %d -save %s' % ( 
                 os.path.join(self.subqueries_features_root, folder, feature_fn), 
                 leaf,
-                os.path.join(model_root, feature_fn+'_'+leaf))
+                os.path.join(model_root, feature_fn+'_'+str(leaf)))
             subprocess.call(command, shell=True)
 
     def evaluate_svm_model(self, feature_type=1):
