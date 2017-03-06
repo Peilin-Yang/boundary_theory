@@ -980,8 +980,7 @@ class SubqueriesLearning(RunSubqueries):
             subprocess.call(command)
         elif method == 2:
             leaf = int(method_para)
-            command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -test %s -ranker 6 -leaf %d -save %s' % ( 
-                os.path.join(self.subqueries_features_root, folder, feature_fn), 
+            command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -leaf %d -save %s' % ( 
                 os.path.join(self.subqueries_features_root, folder, feature_fn), 
                 leaf,
                 os.path.join(model_root, feature_fn+'_'+str(leaf)))
@@ -1021,17 +1020,23 @@ class SubqueriesLearning(RunSubqueries):
                         os.path.join(model_root, fn), 
                         os.path.join(predict_root, fn))]
             elif method == 2:
-                command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s %s %s' 
-                    % (os.path.join(self.subqueries_features_root, folder, feature_fn), 
-                        os.path.join(model_root, fn), 
-                        os.path.join(predict_root, fn))]
+                command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -leaf %s' 
+                    % (os.path.join(self.subqueries_features_root, folder, feature_fn), para)]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             returncode = p.wait()
             out, error = p.communicate()
             if returncode != 0:
                 raise NameError("Run Query Error: %s" % (command) )
             query_length = int(feature_fn.split('.')[0])
-            err_rate = float(out.split('\n')[-2].split(':')[1])
+            if method == 1:
+                err_rate = float(out.split('\n')[-2].split(':')[1])
+            elif method == 2:
+                err_rate = float(out.split('\n')[-4].split(':')[1])
+                command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -load %s -rank %s -score %s'
+                    % (os.path.join(model_root, fn), 
+                    os.path.join(self.subqueries_features_root, folder, feature_fn),
+                    os.path.join(predict_root, fn))]
+                subprocess.call(command, shell=True)
             if query_length not in error_rates:
                 error_rates[query_length] = {}
             if label_type not in error_rates[query_length]:
@@ -1079,7 +1084,10 @@ class SubqueriesLearning(RunSubqueries):
                     feature_fn = os.path.join(self.subqueries_features_root, folder, str(query_length)+'.'+label_type)
                     predict_fn = os.path.join(predict_root, str(query_length)+'.'+label_type+'_'+para)
                     with open(predict_fn) as f:
-                        predict_res = [float(line.strip()) for line in f.readlines()]
+                        if method == 1:
+                            predict_res = [float(line.strip()) for line in f.readlines()]
+                        elif method == 2:
+                            predict_res = [float(line.split()[-1].strip()) for line in f.readlines()]
                     with open(feature_fn) as f:
                         idx = 0
                         for line in f:
