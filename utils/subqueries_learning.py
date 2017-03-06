@@ -1111,7 +1111,7 @@ class SubqueriesLearning(RunSubqueries):
                             optimal_model_predict/query_cnt))
 
                     # feature ranking related
-                    model_fn = all_models[query_length][0][0]
+                    model_fn = query_length+'.'+label_type+'_'+all_models[query_length][label_type][0][0]
                     with open(os.path.join(model_root, model_fn)) as f:
                         model = f.readlines()[-1]
                     feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
