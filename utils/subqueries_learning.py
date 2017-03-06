@@ -1088,7 +1088,7 @@ class SubqueriesLearning(RunSubqueries):
                         all_models[query_length][label_type].append((para, error_rates[query_length][label_type]))
         feature_mapping = self.get_feature_mapping()
         predict_optimal_subquery_len_dist = {}
-        print all_models
+        print error_rates, all_models
         with open(os.path.join(self.final_output_root, self.collection_name+'-%s_subquery_dist-%s.md' % (method_folder, folder)), 'wb') as ssdf:
             ssdf.write('### %s\n' % (self.collection_name))
             ssdf.write('| query len | label_type | using all terms | optimal (ground truth) | optimal |\n')
