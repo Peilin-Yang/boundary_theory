@@ -363,13 +363,12 @@ def output_corr_features_atom(para_file):
             SubqueriesLearning(collection_path, collection_name).output_correlation_features(query_length, corr_type)
 
 def output_corr_features_all(query_length, corr_type):
-    query_length = int(query_length)
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
         all_paras.append((collection_path, collection_name))
-    SubqueriesLearning.output_correlation_features_all_collection(all_paras, query_length, corr_type)
+    SubqueriesLearning.output_correlation_features_all_collection(all_paras, int(query_length), int(corr_type))
 
 def output_features_selected_batch(query_length):
     all_paras = []
