@@ -1104,7 +1104,7 @@ class SubqueriesLearning(RunSubqueries):
                         predict_optimal_subquery_len_dist[query_length][label_type][subquery_len] += 1
 
                     query_cnt = len(predict_optimal_performance)
-                    ssdf.write('| %d | %.4f | %.4f | %.4f |\n' 
+                    ssdf.write('| %s | %.4f | %.4f | %.4f |\n' 
                         % ( query_length, 
                             performance_using_all_terms/query_cnt, 
                             optimal_ground_truth/query_cnt, 
