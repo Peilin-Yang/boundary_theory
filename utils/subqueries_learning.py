@@ -639,6 +639,12 @@ class SubqueriesLearning(RunSubqueries):
 
     @staticmethod
     def output_correlation_features_all_collection(collection_paths_n_names, query_length=0, corr_type=1):
+        if corr_type == 1:
+            corr_type_str = 'kendallstau'
+        elif corr_type == 2:
+            corr_type_str = 'pearsonr'
+        elif corr_type == 3:
+            corr_type_str = 'ken_n_pea'
         all_features = {}
         feature_mapping = {}
         for ele in collection_paths_n_names:
@@ -650,7 +656,7 @@ class SubqueriesLearning(RunSubqueries):
             else:
                 queries = q.get_queries_of_length(query_length)
             queries = {ele['num']:ele['title'] for ele in queries}
-            with open(os.path.join(collection_path, 'subqueries', 'features', 'kendallstau', str(query_length))) as f:
+            with open(os.path.join(collection_path, 'subqueries', 'features', corr_type_str, str(query_length))) as f:
                 r = csv.reader(f)
                 for row in r:
                     feature_id = row[0]
