@@ -1156,7 +1156,7 @@ class SubqueriesLearning(RunSubqueries):
                             optimal_model_predict/query_cnt))
 
                     # feature ranking related
-                    model_fn = query_length+'.'+label_type+'_'+str(all_models[query_length][label_type][0][0])
+                    model_fn = str(query_length)+'.'+str(label_type)+'_'+str(all_models[query_length][label_type][0][0])
                     if method == 1:
                         with open(os.path.join(model_root, model_fn)) as f:
                             model = f.readlines()[-1]
