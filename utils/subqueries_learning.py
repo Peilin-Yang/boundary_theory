@@ -1013,7 +1013,7 @@ class SubqueriesLearning(RunSubqueries):
             root = ET.fromstring('\n'.join(f.readlines()[6:]))
         all_features = []
         for tree in root.findall('tree'):
-            all_features.append(float(tree.find('split').find('feature').text))
+            all_features.append(int(tree.find('split').find('feature').text))
         return all_features
 
     def evaluate_learning_to_rank_model(self, feature_type=1, method=1):
