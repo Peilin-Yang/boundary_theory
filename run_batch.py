@@ -533,7 +533,7 @@ def cross_testing_learning_to_rank_model(query_length=2, method=1, label_type='i
                 this_testing.append(collections[j])
             else:
                 this_training.append(collections[j])
-        SubqueriesLearning.cross_testing(this_training, this_testing, int(query_length), int(method), label_type)
+        SubqueriesLearning.cross_testing_learning_to_rank_model(this_training, this_testing, int(query_length), int(method), label_type)
 
 def evaluate_learning_to_rank_cross_testing():
     collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
