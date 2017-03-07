@@ -1222,7 +1222,7 @@ class SubqueriesLearning(RunSubqueries):
                     qid_idx += 1
 
     @staticmethod
-    def evaluate_svm_cross_testing(all_data, query_length=2, _type='int', method='lambdamart'):
+    def evaluate_learning_to_rank_cross_testing(all_data, query_length=2, method=1, label_type='int'):
         data_mapping = {d[1]:d[0] for d in all_data}
         results_root = os.path.join('../all_results', 'subqueries', 'cross_training', _type, method)
         all_predict_data = {}
@@ -1316,45 +1316,26 @@ class SubqueriesLearning(RunSubqueries):
 
 
     @staticmethod
-    def cross_testing(train, test, query_length=2, _type='int', method='lambdamart'):
+    def cross_testing_learning_to_rank_model(train, test, query_length=2, method=1, label_type='int'):
         """
         train and test are list of (collection_path, collection_name)
-        # _type: int (use integer as labels) or ap (use ap value floating numbers as labels)
-        method: lambdamart, svmrank
+        # label_type: int (use integer as labels) or ap (use ap value floating numbers as labels)
+        method: 1: svm_rank, 2: lambdamart
         """
         test_collection = test[0][1]
-        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', _type, method)
+        if method == 1:
+            method_folder = 'svm_rank'
+        elif method == 2:
+            method_folder = 'lambdamart'
+        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', label_type, method_folder)
         if not os.path.exists(results_root):
             os.makedirs(results_root)
         trainging_fn = os.path.join(results_root, 'train_%s_%d' % (test_collection, query_length))
-        SubqueriesLearning.write_combined_feature_fn(results_root, train, trainging_fn, query_length, True, _type)
+        SubqueriesLearning.write_combined_feature_fn(results_root, train, trainging_fn, query_length, True, label_type)
         testing_fn = os.path.join(results_root, 'test_%s_%d' % (test_collection, query_length))
-        SubqueriesLearning.write_combined_feature_fn(results_root, test, testing_fn, query_length, False, _type)
+        SubqueriesLearning.write_combined_feature_fn(results_root, test, testing_fn, query_length, False, label_type)
 
-        if method == 'lambdamart':
-            model_output_fn = os.path.join(results_root, 'model_%s_%d' 
-                % (test_collection, query_length) )
-            if not os.path.exists(model_output_fn):
-                command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -save %s' % (trainging_fn, model_output_fn)]
-                print ' '.join(command)
-                p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-                returncode = p.wait()
-                out, error = p.communicate()
-                if returncode != 0:
-                    print "Run Query Error: %s %s" % (command, error)
-
-            predict_fn = os.path.join(results_root, 'predict_%s_%d' 
-                % (test_collection, query_length))
-            if not os.path.exists(predict_fn):
-                command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -load %s -rank %s -score %s' 
-                    % (model_output_fn, testing_fn, predict_fn)]
-                print ' '.join(command)
-                p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-                returncode = p.wait()
-                out, error = p.communicate()
-                if returncode != 0:
-                    raise NameError("Run Query Error: %s %s" % (command, error))
-        elif method == 'svmrank':
+        if method == 1:
             for c in range(-3, 5):
                 model_output_fn = os.path.join(results_root, 'model_%s_%d_%s' 
                     % (test_collection, query_length, str(10**c)) )
@@ -1377,6 +1358,29 @@ class SubqueriesLearning(RunSubqueries):
                     out, error = p.communicate()
                     if returncode != 0:
                         raise NameError("Run Query Error: %s %s" % (command, error))
+        elif method == 2:
+            for leaf in range(2, 10):
+                model_output_fn = os.path.join(results_root, 'model_%s_%d_%d' 
+                    % (test_collection, query_length, leaf) )
+                if not os.path.exists(model_output_fn):
+                    command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -leaf %d -save %s' % (trainging_fn, leaf, model_output_fn)]
+                    p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+                    returncode = p.wait()
+                    out, error = p.communicate()
+                    if returncode != 0:
+                        print "Run Query Error: %s %s" % (command, error)
+
+                predict_fn = os.path.join(results_root, 'predict_%s_%d_%d' 
+                    % (test_collection, query_length, leaf))
+                if not os.path.exists(predict_fn):
+                    command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -load %s -rank %s -score %s' 
+                        % (model_output_fn, testing_fn, predict_fn)]
+                    p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+                    returncode = p.wait()
+                    out, error = p.communicate()
+                    if returncode != 0:
+                        raise NameError("Run Query Error: %s %s" % (command, error))
+        
 
     ##########
     # MI Learn
