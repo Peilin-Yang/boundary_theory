@@ -824,8 +824,8 @@ if __name__ == '__main__':
         nargs=3,
         help='cross testing the learning to rank model. arg: [query_length, ranking_method(1-svmrank, 2-lambdamart), label_type(int,ap)]')
     parser.add_argument('-69', '--evaluate_learning_to_rank_cross_testing', 
-        action='store_true',
-        help='evaluate cross testing the learning to rank')
+        nargs=3,
+        help='evaluate cross testing the learning to rank. arg: [query_length, ranking_method(1-svmrank, 2-lambdamart), label_type(int,ap)]')
 
     parser.add_argument('-mi_learn_batch', '--mi_learn_batch', 
         nargs=3,
