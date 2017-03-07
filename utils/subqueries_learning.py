@@ -1222,7 +1222,7 @@ class SubqueriesLearning(RunSubqueries):
                     qid_idx += 1
 
     @staticmethod
-    def evaluate_learning_to_rank_cross_testing(all_data, query_length=2, method=1, label_type='int'):
+    def evaluate_learning_to_rank_cross_testing(all_data, method=1, label_type='int'):
         if method == 1:
             method_folder = 'svm_rank'
         elif method == 2:
