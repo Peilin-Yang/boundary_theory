@@ -1223,34 +1223,32 @@ class SubqueriesLearning(RunSubqueries):
 
     @staticmethod
     def evaluate_learning_to_rank_cross_testing(all_data, query_length=2, method=1, label_type='int'):
+        if method == 1:
+            method_folder = 'svm_rank'
+        elif method == 2:
+            method_folder = 'lambdamart'
         data_mapping = {d[1]:d[0] for d in all_data}
-        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', _type, method)
+        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', label_type, method_folder)
         all_predict_data = {}
         for fn in os.listdir(results_root):
-            if method == 'lambdamart':
-                m = re.search(r'^predict_(.*?)_(.*?)$', fn)
-            else:
-                m = re.search(r'^predict_(.*?)_(.*?)_(.*)$', fn)
+            m = re.search(r'^predict_(.*?)_(.*?)_(.*)$', fn)
             if m:
                 collection_name = m.group(1)
                 query_length = int(m.group(2))
-                if method == 'lambdamart':
-                    c = '1000'
-                else:
-                    c = m.group(3)
+                para = m.group(3)
                 if query_length not in all_predict_data:
                     all_predict_data[query_length] = {}
-                if c not in all_predict_data[query_length]:
-                    all_predict_data[query_length][c] = []
-                all_predict_data[query_length][c].append(collection_name)
+                if para not in all_predict_data[query_length]:
+                    all_predict_data[query_length][para] = []
+                all_predict_data[query_length][para].append(collection_name)
 
         all_performances = {}
         for query_length in all_predict_data:
             all_performances[query_length] = []
-            for c in all_predict_data[query_length]:
-                if len(all_predict_data[query_length][c]) != len(all_data):
-                    print 'query length: %d and c: %s does not have enough data ... %d/%d' \
-                        % (query_length, c, len(all_predict_data[query_length][c]), len(all_data))
+            for para in all_predict_data[query_length]:
+                if len(all_predict_data[query_length][para]) != len(all_data):
+                    print 'query length: %d and para: %s does not have enough data ... %d/%d' \
+                        % (query_length, para, len(all_predict_data[query_length][para]), len(all_data))
                     continue
                 #svm_predict_optimal_subquery_len_dist[query_length] = {}
                 existing_performance = {}
@@ -1258,17 +1256,15 @@ class SubqueriesLearning(RunSubqueries):
                 optimal_ground_truth = 0.0
                 optimal_svm_predict = 0.0
                 performance_using_all_terms = 0.0
-                for collection_name in all_predict_data[query_length][c]: 
+                for collection_name in all_predict_data[query_length][para]: 
                     predict_optimal_performance = {}
                     feature_fn = os.path.join(results_root, 'test_%s_%d' % (collection_name, query_length))
-                    if method == 'lambdamart':
-                        predict_fn = os.path.join(results_root, 'predict_%s_%d' % (collection_name, query_length))
-                        with open(predict_fn) as f:
-                            predict_res = [float(line.strip().split()[-1]) for line in f.readlines()]
-                    else:
-                        predict_fn = os.path.join(results_root, 'predict_%s_%d_%s' % (collection_name, query_length, c))
-                        with open(predict_fn) as f:
+                    predict_fn = os.path.join(results_root, 'predict_%s_%d_%s' % (collection_name, query_length, para))
+                    with open(predict_fn) as f:
+                        if method == 1:
                             predict_res = [float(line.strip()) for line in f.readlines()]
+                        elif method == 2:
+                            predict_res = [float(line.strip().split()[-1]) for line in f.readlines()]
                     with open(feature_fn) as f:
                         idx = 0
                         for line in f:
@@ -1306,7 +1302,7 @@ class SubqueriesLearning(RunSubqueries):
                         #     svm_predict_optimal_subquery_len_dist[query_length][subquery_len] = 0
                         # svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1 
                     collection_predict_performance[collection_name] = collection_predict / len(predict_optimal_performance)        
-                all_performances[query_length].append((c, optimal_svm_predict, collection_predict_performance))
+                all_performances[query_length].append((para, optimal_svm_predict, collection_predict_performance))
             all_performances[query_length].sort(key=itemgetter(1), reverse=True)
 
         print 'Method: %s' % method
