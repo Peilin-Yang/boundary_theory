@@ -398,6 +398,7 @@ class PlotTermRelationship(object):
                 counts = prob_counts
             elif plot_option == 3:
                 counts = all_counts
+            print plot_option, counts
             xaxis_plot, yaxis_plot = zip(*counts.keys())
             sizes = np.array(counts.values())
             max_value = max(max(xaxis_plot), max(yaxis_plot))
