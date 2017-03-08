@@ -369,7 +369,7 @@ class PlotTermRelationship(object):
                 optimal_b = float(okapi_optimal[2].split(':')[1])
                 col_idx = 0
                 for tf_col in all_tfs:
-                    print tf_col, doclens, optimal_b
+                    print qid, tf_col, doclens, optimal_b
                     tf_col = tf_col*cs.get_term_logidf1(terms[col_idx])*2.2/(tf_col+1.2*(1-optimal_b+optimal_b*doclens.T[col_idx]/cs.get_avdl()))
                     print tf_col
                     raw_input()
