@@ -316,7 +316,7 @@ class PlotTermRelationship(object):
         return np.sum(r, axis=0)
 
     def plot_only_rel_tf_relationship(self, details_data, details_rel_data, 
-            rel_data, query_length=2, plot_option=1, oformat='png'):
+            rel_data, query_length=2, plot_option=1, method=1, oformat='png'):
         rel_tf_stats = RelTFStats(self.collection_path)
         if query_length == 0:
             queries = Query(self.collection_path).get_queries()
@@ -363,6 +363,18 @@ class PlotTermRelationship(object):
             #dfs = details_rel_data[qid][2]
             doclens = details_rel_data[qid][3]
             all_tfs = details_data[qid][1]
+            if method == 2: # BM25
+                okapi_optimal = Performances(self.collection_path).load_optimal_performance(['okapi'])[0]
+                okapi_para = 'method:%s,' % okapi_optimal[0] + okapi_optimal[2]
+                optimal_b = float(okapi_optimal[2].split(':')[1])
+                col_idx = 0
+                for tf_col in all_tfs.T:
+                    print tf_col, doclens.T[tf_col], optimal_b
+                    tf_col = tf_col*cs.get_term_logidf1(terms[col_idx])*2.2/(tf_col+1.2*(1-optimal_b+optimal_b*doclens.T[col_idx]/cs.get_avdl()))
+                    print tf_col
+                    raw_input()
+                    col_idx += 1
+
             all_dfs = details_data[qid][2]
             all_doclens = details_data[qid][3]
             all_rels = details_data[qid][4]
@@ -461,8 +473,9 @@ class PlotTermRelationship(object):
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
 
-    def plot_all(self, query_length=2, oformat='png'):
+    def plot_all(self, query_length=2, method=1, oformat='png'):
         query_length = int(query_length)
+        method = int(method)
         details_data = self.read_docdetails_data(query_length)
         details_rel_data = self.read_docdetails_data(query_length, only_rel=True)
         rel_data = self.read_rel_data(query_length)
@@ -473,9 +486,9 @@ class PlotTermRelationship(object):
         ##### plot ONLY the docs that contain all query terms
         #self.plot_only_rel_with_all_qterms(rel_contain_alls, details_data, rel_data, query_length, oformat)
         ##### plot the relationship between terms only, no ranking function involved...
-        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 1, oformat)
-        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 2, oformat)
-        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 3, oformat)
+        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 1, method, oformat)
+        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 2, method, oformat)
+        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 3, method, oformat)
     
 
     @staticmethod

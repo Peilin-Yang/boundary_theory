@@ -331,6 +331,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-321', '--gen_plot_term_relationship_batch', nargs='+',
                        help='args: [query_len(0 for all queries)] \
+                       [method (1:TF, 2:BM25)] \
                        [output_format(eps|png)]')
     parser.add_argument('-322', '--plot_term_relationship_atom', nargs=1, help='')
 
