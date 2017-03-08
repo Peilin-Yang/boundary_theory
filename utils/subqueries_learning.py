@@ -332,7 +332,7 @@ class SubqueriesLearning(RunSubqueries):
                     prox_features = self.get_all_sorts_features(prox_ranking_scores)
                 else:
                     # orig_features = [0, 0, 0, 0, 0, 0, 0, 0]
-                    orig_features = [0, 0, 0]
+                    prox_features = [0, 0, 0]
                 diff_features = np.array(prox_features) - np.array(orig_features)
                 features[subquery_id][name] = []
                 features[subquery_id][name].extend(orig_features)
