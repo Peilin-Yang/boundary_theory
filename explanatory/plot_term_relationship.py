@@ -363,19 +363,21 @@ class PlotTermRelationship(object):
             #dfs = details_rel_data[qid][2]
             doclens = details_rel_data[qid][3]
             all_tfs = details_data[qid][1]
-            print rel_tfs
-            raw_input()
             if method == 2: # BM25
                 okapi_optimal = Performances(self.collection_path).load_optimal_performance(['okapi'])[0]
                 okapi_para = 'method:%s,' % okapi_optimal[0] + okapi_optimal[2]
                 optimal_b = float(okapi_optimal[2].split(':')[1])
                 tf_col_idx = 0
                 tmp_all_tfs = []
+                tmp_rel_tfs = []
                 for tf_col in all_tfs:
                     tf_col = tf_col*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(tf_col+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
-                    tf_col_idx += 1
+                    rel_tf_col = rel_tfs[tf_col]*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(rel_tfs[tf_col]+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
                     tmp_all_tfs.append(tf_col)
+                    tmp_rel_tfs.append(rel_tf_col)
+                    tf_col_idx += 1
                 all_tfs = np.array(tmp_all_tfs)
+                rel_tfs = np.array(tmp_rel_tfs)
             
             all_dfs = details_data[qid][2]
             all_doclens = details_data[qid][3]
