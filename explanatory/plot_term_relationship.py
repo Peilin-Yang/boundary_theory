@@ -363,7 +363,6 @@ class PlotTermRelationship(object):
             #dfs = details_rel_data[qid][2]
             doclens = details_rel_data[qid][3]
             all_tfs = details_data[qid][1]
-            print all_tfs
             if method == 2: # BM25
                 okapi_optimal = Performances(self.collection_path).load_optimal_performance(['okapi'])[0]
                 okapi_para = 'method:%s,' % okapi_optimal[0] + okapi_optimal[2]
