@@ -366,6 +366,7 @@ class PlotTermRelationship(object):
             if method == 2: # BM25
                 okapi_optimal = Performances(self.collection_path).load_optimal_performance(['okapi'])[0]
                 okapi_para = 'method:%s,' % okapi_optimal[0] + okapi_optimal[2]
+                print okapi_optimal
                 optimal_b = float(okapi_optimal[2].split(':')[1])
                 col_idx = 0
                 for tf_col in all_tfs:
