@@ -1064,7 +1064,7 @@ class SubqueriesLearning(RunSubqueries):
             if method == 1:
                 err_rate = float(out.split('\n')[-2].split(':')[1])
             elif method == 2:
-                err_rate = 100-float(out.split('\n')[-3].split(':')[1])
+                err_rate = 1-float(out.split('\n')[-3].split(':')[1])
                 command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -load %s -rank %s -score %s'
                     % (os.path.join(model_root, fn), 
                     os.path.join(self.subqueries_features_root, folder, feature_fn),
