@@ -393,12 +393,15 @@ class SubqueriesLearning(RunSubqueries):
 
 
     def get_all_sorts_features(self, feature_vec):
-        return [np.min(feature_vec), np.max(feature_vec), 
-                np.max(feature_vec)-np.min(feature_vec),
-                np.max(feature_vec)/np.min(feature_vec) if np.min(feature_vec) != 0 else 0,
-                np.mean(feature_vec), np.std(feature_vec), 
-                np.sum(feature_vec), 
+        # return [np.min(feature_vec), np.max(feature_vec), 
+        #         np.max(feature_vec)-np.min(feature_vec),
+        #         np.max(feature_vec)/np.min(feature_vec) if np.min(feature_vec) != 0 else 0,
+        #         np.mean(feature_vec), np.std(feature_vec), 
+        #         np.sum(feature_vec), 
+        #         0 if np.isnan(scipy.stats.mstats.gmean(feature_vec)) else scipy.stats.mstats.gmean(feature_vec)]
+        return [np.mean(feature_vec), np.std(feature_vec), 
                 0 if np.isnan(scipy.stats.mstats.gmean(feature_vec)) else scipy.stats.mstats.gmean(feature_vec)]
+
 
 
     def sort_qid(self, qid):
@@ -410,10 +413,12 @@ class SubqueriesLearning(RunSubqueries):
     def get_feature_mapping(self):
         mapping = {}
         idx = 1
-        features = ['min', 'max', 'max-min', 'max/min', 'mean', 'std', 'sum', 'gmean']
+        #features = ['min', 'max', 'max-min', 'max/min', 'mean', 'std', 'sum', 'gmean']
+        features = ['mean', 'std', 'gmean']
         for feature_idx, feature_name in self.feature_mapping.items():
             if feature_idx == 1: # mutual information
-                withins = [1, 5, 10, 20, 50, 100]
+                #withins = [1, 5, 10, 20, 50, 100]
+                withins = [50]
                 for w in withins:
                     for fa in features:
                         mapping[idx] = feature_name+str(w)+'('+fa+')'
@@ -429,11 +434,11 @@ class SubqueriesLearning(RunSubqueries):
                         for fa in features:
                             mapping[idx] = feature_name+str(w)+'('+t+'-'+fa+')'
                             idx += 1
-            elif feature_idx == 14: # mutual information
+            elif feature_idx == 14: # TDC
                 withins = [50]
                 for w in withins:
-                    for fa in features:
-                        for fb in features:
+                    for fa in features: # on a single doc
+                        for fb in features: # on the column
                             mapping[idx] = feature_name+str(w)+'('+fa+'-'+fb+')'
                             idx += 1
             else:
@@ -463,7 +468,8 @@ class SubqueriesLearning(RunSubqueries):
                     if subquery_id not in all_features[qid]:
                         all_features[qid][subquery_id] = []
                     if feature_idx == 1: # mutual information
-                        withins = [1, 5, 10, 20, 50, 100]
+                        # withins = [1, 5, 10, 20, 50, 100]
+                        withins = [50]
                         for w in withins:
                             str_w = str(w)
                             all_features[qid][subquery_id].extend(qid_features[subquery_id][str_w])
