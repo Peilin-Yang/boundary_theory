@@ -464,12 +464,16 @@ class PlotTermRelationship(object):
                 np.mean(all_performances[model]['higher-IDF'].values()), np.mean(all_performances[model]['lower-IDF'].values()))
         ax.text(0.5, 0.5, explanations, fontsize=6, horizontalalignment='center', verticalalignment='center', transform=ax.transAxes)
 
+        if method == 1:
+            method_name = 'TF'
+        elif method == 2:
+            method_name = 'BM25'
         if plot_option == 1:
-            output_fn = os.path.join(self.output_root, '%s-%d-tf_relation.%s' % (self.collection_name, query_length, oformat) )
+            output_fn = os.path.join(self.output_root, '%s-%d-tf_relation-%s.%s' % (self.collection_name, query_length, method_name, oformat) )
         elif plot_option == 2:
-            output_fn = os.path.join(self.output_root, '%s-%d-tf_rel_prob.%s' % (self.collection_name, query_length, oformat) )
+            output_fn = os.path.join(self.output_root, '%s-%d-tf_rel_prob-%s.%s' % (self.collection_name, query_length, method_name, oformat) )
         elif plot_option == 3:
-            output_fn = os.path.join(self.output_root, '%s-%d-tf_norel.%s' % (self.collection_name, query_length, oformat) )
+            output_fn = os.path.join(self.output_root, '%s-%d-tf_norel-%s.%s' % (self.collection_name, query_length, method_name, oformat) )
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
 
