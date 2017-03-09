@@ -115,6 +115,10 @@ class SubqueriesClassification(SubqueriesLearning):
             ranking_scores = self.load_term_scores(runfile_fn, model_para, 2)
             centeroid = np.mean(ranking_scores, axis=0)
             distances = [np.linalg.norm(doc_scores_vec-centeroid) for doc_scores_vec in ranking_scores]
+            print ranking_scores
+            print centeroid
+            print distances
+            raw_input()
             mean_distance = np.mean(distances)
             std_distance = np.std(distances)
             features[subquery_id] = [mean_distance, std_distance]
@@ -148,7 +152,7 @@ class SubqueriesClassification(SubqueriesLearning):
             for r in relations:
                 features[k+'_'+r] = self.get_all_sorts_features(values, [r])
         features['ranking_scores'] = self.ranking_scores_features(qid)
-        print json.dumps(features, indent=2)
+        #print json.dumps(features, indent=2)
         raw_input()
 
 
