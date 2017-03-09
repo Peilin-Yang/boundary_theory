@@ -60,7 +60,7 @@ class SubqueriesClassification(SubqueriesLearning):
         queries = {ele['num']:ele['title'] for ele in queries}
         features = {}
         for term in queries[qid].split():
-            features[subquery_id] = cs.get_term_stats(term)[required_feature]
+            features[term] = cs.get_term_stats(term)[required_feature]
 
         return features
 
