@@ -142,7 +142,7 @@ class SubqueriesClassification(SubqueriesLearning):
         for k,v in self.term_stats_mapping.items():
             features[k] = self.get_term_stats(qid, k, v)
         relations = ['mean', 'std']
-        for k in features:
+        for k in self.term_stats_mapping:
             values = features[k].values()
             for r in relations:
                 features[k+'_'+r] = self.get_all_sorts_features(values, [r])
