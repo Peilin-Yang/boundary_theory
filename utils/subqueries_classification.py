@@ -149,6 +149,7 @@ class SubqueriesClassification(SubqueriesLearning):
                 features[k+'_'+r] = self.get_all_sorts_features(values, [r])
         features['ranking_scores'] = self.ranking_scores_features(qid)
         print json.dumps(features, indent=2)
+        raw_input()
 
 
     def output_features_classification(self, query_len=0):
