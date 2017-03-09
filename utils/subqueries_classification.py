@@ -114,7 +114,7 @@ class SubqueriesClassification(SubqueriesLearning):
             runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
             ranking_scores = self.load_term_scores(runfile_fn, model_para, 2)
             centeroid = np.mean(ranking_scores, axis=0)
-            distances = [numpy.linalg.norm(doc_scores_vec-centeroid) for doc_scores_vec in ranking_scores]
+            distances = [np.linalg.norm(doc_scores_vec-centeroid) for doc_scores_vec in ranking_scores]
             mean_distance = np.mean(distances)
             std_distance = np.std(distances)
             features[subquery_id] = [mean_distance, std_distance]
