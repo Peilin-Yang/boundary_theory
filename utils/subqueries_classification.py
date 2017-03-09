@@ -162,7 +162,7 @@ class SubqueriesClassification(SubqueriesLearning):
         print terms_scores_fl
         raw_input()
         for subquery_len in terms_scores_fl:
-            features['scores_'+subquery_len] = self.get_all_sorts_features(values, relations) 
+            features['scores_'+subquery_len] = self.get_all_sorts_features(terms_scores_fl[subquery_len], relations) 
         print json.dumps(features, indent=2)
         raw_input()
 
