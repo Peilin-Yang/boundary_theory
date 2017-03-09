@@ -159,6 +159,8 @@ class SubqueriesClassification(SubqueriesLearning):
             if not subquery_len in terms_scores_fl:
                 terms_scores_fl[subquery_len] = []
             terms_scores_fl[subquery_len].append(terms_scores[subquery_id][1]) # std
+        print terms_scores_fl
+        raw_input()
         for subquery_len in terms_scores_fl:
             features['scores_'+subquery_len] = self.get_all_sorts_features(values, relations) 
         print json.dumps(features, indent=2)
