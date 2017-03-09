@@ -20,6 +20,7 @@ from utils.rel_tf_stats import RelTFStats
 from run_subqueries import RunSubqueries
 from run_proximity_subqueries import RunProximitySubqueries
 from subqueries_learning import SubqueriesLearning
+from subqueries_classification import SubqueriesClassification
 
 _root = '../../reproduce/collections/'
 output_root = '../all_results/'
@@ -397,12 +398,12 @@ def output_features_selected_all(query_length):
         all_paras.append((collection_path, collection_name))
     SubqueriesLearning.output_features_selected_all_collection(all_paras, query_length)
 
-def output_features_classification_batch(query_length):
+def output_features_classification_batch():
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.append((collection_path, collection_name, query_length))
+        all_paras.extend(SubqueriesClassification(collection_path, collection_name).batch_gen_query_classification_features_paras())
     #print all_paras
     gen_batch_framework('output_features_classification', '610', all_paras)
 
@@ -412,8 +413,9 @@ def output_features_classification_atom(para_file):
         for row in reader:
             collection_path = row[0]
             collection_name = row[1]
-            query_length = int(row[2])
-            SubqueriesLearning(collection_path, collection_name).output_features_classification(query_length)
+            qid = row[2]
+            query = row[3]
+            SubqueriesClassification(collection_path, collection_name).gen_query_classification_features(qid, query)
 
 def cross_run_subquery_classification(query_length):
     query_length = int(query_length)
@@ -781,7 +783,7 @@ if __name__ == '__main__':
         help='generate selected features for all collections. arg: query length')
 
     parser.add_argument('-609', '--output_features_classification_batch', 
-        nargs=1,
+        action='store_true',
         help='generate features classification with performance. paras. arg: query length (0 for all queries)')
     parser.add_argument('-610', '--output_features_classification_atom', 
         nargs=1,
@@ -911,7 +913,7 @@ if __name__ == '__main__':
     if args.output_features_selected_all:
         output_features_selected_all(args.output_features_selected_all[0])
     if args.output_features_classification_batch:
-        output_features_classification_batch(args.output_features_classification_batch[0])
+        output_features_classification_batch()
     if args.output_features_classification_atom:
         output_features_classification_atom(args.output_features_classification_atom[0])
     if args.cross_run_subquery_classification:
