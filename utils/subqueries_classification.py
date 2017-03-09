@@ -115,10 +115,6 @@ class SubqueriesClassification(SubqueriesLearning):
             ranking_scores = self.load_term_scores(runfile_fn, model_para, 2)
             centeroid = np.mean(ranking_scores, axis=0)
             distances = [np.linalg.norm(doc_scores_vec-centeroid) for doc_scores_vec in ranking_scores]
-            print ranking_scores
-            print centeroid
-            print distances
-            raw_input()
             mean_distance = np.mean(distances)
             std_distance = np.std(distances)
             features[subquery_id] = [mean_distance, std_distance]
@@ -144,15 +140,28 @@ class SubqueriesClassification(SubqueriesLearning):
 
     def gen_query_classification_features(self, qid, query_str):
         features = {}
+
+        # term features
+        terms_stats = {}
         for k,v in self.term_stats_mapping.items():
-            features[k] = self.get_term_stats(qid, k, v)
-        relations = ['mean', 'std']
+            terms_stats[k] = self.get_term_stats(qid, k, v)
+        relations = ['max', 'min', 'mean', 'std']
         for k in self.term_stats_mapping:
             values = features[k].values()
             for r in relations:
                 features[k+'_'+r] = self.get_all_sorts_features(values, [r])
-        features['ranking_scores'] = self.ranking_scores_features(qid)
-        #print json.dumps(features, indent=2)
+
+        # term scores features
+        terms_scores = self.ranking_scores_features(qid)
+        terms_scores_fl = {}
+        for subquery_id in terms_scores:
+            subquery_len = subquery_id.split('-')[0]
+            if not subquery_len in terms_scores_fl:
+                terms_scores_fl[subquery_len] = []
+            terms_scores_fl[subquery_len].append(terms_scores[subquery_id][1]) # std
+        for subquery_len in terms_scores_fl:
+            features['scores_'+subquery_len] = self.get_all_sorts_features(values, relations) 
+        print json.dumps(features, indent=2)
         raw_input()
 
 
