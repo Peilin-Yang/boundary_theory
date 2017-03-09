@@ -79,6 +79,7 @@ class SubqueriesClassification(SubqueriesLearning):
         return {k:v for k,v in _all.items() if k in allowed}
 
     def load_term_scores(self, runfile, model_para, method=1, cutoff=50):
+        cs = CollectionStats(self.corpus_path)
         all_scores = []
         with open(runfile) as f:
             line_idx = 0
