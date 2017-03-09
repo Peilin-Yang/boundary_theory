@@ -90,9 +90,9 @@ class SubqueriesClassification(SubqueriesLearning):
                     terms = [ele.split('-')[0] for ele in tf_details.split(',')]
                     tfs = [float(ele.split('-')[1]) for ele in tf_details.split(',')]
                     dl = float(row[-1].split(',')[0].split(':')[1])
-                    if _type == 1: # simple TF
+                    if method == 1: # simple TF
                         scores = tfs
-                    elif _type == 2: # BM25
+                    elif method == 2: # BM25
                         scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_para+model_para*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
                     all_scores.append(scores)
                 line_idx += 1
