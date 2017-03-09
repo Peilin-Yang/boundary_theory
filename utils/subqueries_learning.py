@@ -326,18 +326,28 @@ class SubqueriesLearning(RunSubqueries):
                 if orig_ranking_scores:
                     orig_features = self.get_all_sorts_features(orig_ranking_scores)
                 else:
-                    # orig_features = [0, 0, 0, 0, 0, 0, 0, 0]
-                    orig_features = [0, 0, 0]
+                    orig_features = [0, 0, 0, 0, 0, 0, 0, 0]
+                    # orig_features = [0, 0, 0]
                 if prox_ranking_scores:
                     prox_features = self.get_all_sorts_features(prox_ranking_scores)
                 else:
-                    # orig_features = [0, 0, 0, 0, 0, 0, 0, 0]
-                    prox_features = [0, 0, 0]
+                    orig_features = [0, 0, 0, 0, 0, 0, 0, 0]
+                    # prox_features = [0, 0, 0]
                 diff_features = np.array(prox_features) - np.array(orig_features)
+                # correlation between proximity ranking list and orig ranking list
+                rankinglist_cutoff = 50
+                if len(orig_ranking_scores) < rankinglist_cutoff or len(prox_ranking_scores) < rankinglist_cutoff:
+                    rankinglist_cutoff = min(len(orig_ranking_scores), len(prox_ranking_scores))
+                tau, p_tau = scipy.stats.kendalltau(prox_ranking_scores[: rankinglist_cutoff], orig_ranking_scores[: rankinglist_cutoff])
+                pea, p_r = scipy.stats.pearsonr(prox_ranking_scores[: rankinglist_cutoff], orig_ranking_scores[: rankinglist_cutoff])
+                tau = tau if not np.isnan(tau) else 0
+                pea = pea if not np.isnan(pea) else 0
                 features[subquery_id][name] = []
                 features[subquery_id][name].extend(orig_features)
                 features[subquery_id][name].extend(prox_features)
                 features[subquery_id][name].extend(diff_features)
+                features[subquery_id][name].append(tau)
+                features[subquery_id][name].append(pea)
 
         outfn = os.path.join(features_root, qid)
         with open(outfn, 'wb') as f:
@@ -395,14 +405,14 @@ class SubqueriesLearning(RunSubqueries):
 
 
     def get_all_sorts_features(self, feature_vec):
-        # return [np.min(feature_vec), np.max(feature_vec), 
-        #         np.max(feature_vec)-np.min(feature_vec),
-        #         np.max(feature_vec)/np.min(feature_vec) if np.min(feature_vec) != 0 else 0,
-        #         np.mean(feature_vec), np.std(feature_vec), 
-        #         np.sum(feature_vec), 
-        #         0 if np.isnan(scipy.stats.mstats.gmean(feature_vec)) else scipy.stats.mstats.gmean(feature_vec)]
-        return [np.mean(feature_vec), np.std(feature_vec), 
+        return [np.min(feature_vec), np.max(feature_vec), 
+                np.max(feature_vec)-np.min(feature_vec),
+                np.max(feature_vec)/np.min(feature_vec) if np.min(feature_vec) != 0 else 0,
+                np.mean(feature_vec), np.std(feature_vec), 
+                np.sum(feature_vec), 
                 0 if np.isnan(scipy.stats.mstats.gmean(feature_vec)) else scipy.stats.mstats.gmean(feature_vec)]
+        # return [np.mean(feature_vec), np.std(feature_vec), 
+        #         0 if np.isnan(scipy.stats.mstats.gmean(feature_vec)) else scipy.stats.mstats.gmean(feature_vec)]
 
 
 
@@ -415,8 +425,8 @@ class SubqueriesLearning(RunSubqueries):
     def get_feature_mapping(self):
         mapping = {}
         idx = 1
-        #features = ['min', 'max', 'max-min', 'max/min', 'mean', 'std', 'sum', 'gmean']
-        features = ['mean', 'std', 'gmean']
+        features = ['min', 'max', 'max-min', 'max/min', 'mean', 'std', 'sum', 'gmean']
+        # features = ['mean', 'std', 'gmean']
         for feature_idx, feature_name in self.feature_mapping.items():
             if feature_idx == 1: # mutual information
                 #withins = [1, 5, 10, 20, 50, 100]
@@ -436,6 +446,10 @@ class SubqueriesLearning(RunSubqueries):
                         for fa in features:
                             mapping[idx] = feature_name+str(w)+'('+t+'-'+fa+')'
                             idx += 1
+                    mapping[idx] = feature_name+str(w)+'(ktau)'
+                    idx += 1
+                    mapping[idx] = feature_name+str(w)+'(pear)'
+                    idx += 1
             elif feature_idx == 14: # TDC
                 withins = [50]
                 for w in withins:
