@@ -360,11 +360,11 @@ class PlotTermRelationship(object):
             output_root = os.path.join(self.output_root, self.collection_name)
             if not os.path.exists(output_root):
                 os.makedirs(output_root)
-            output_fn = os.path.join(output_root, '%s-%s-%s.json' % (self.collection_name, qid, method_name) )
+            output_fn = os.path.join(output_root, '%s-%s-%s.json' % (self.collection_name, qid, method_name))
             d = {
                 'terms': terms,
                 'idfs': idfs,
-                'rel_tfs': rel_tfs
+                'rel_tfs': rel_tfs.tolist()
             }
             with open(output_fn, 'wb') as f:
                 json.dump(d, f, indent=2)
