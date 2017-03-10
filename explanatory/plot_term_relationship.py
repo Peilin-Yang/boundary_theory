@@ -328,49 +328,50 @@ class PlotTermRelationship(object):
         cs = CollectionStats(self.collection_path)
         doc_details = GenDocDetails(self.collection_path)
         for qid in sorted(queries):
-            terms = queries[qid].split()
-            dfs = np.array([cs.get_term_df(t) for t in terms])
             try:
+                terms = queries[qid].split()
+                dfs = np.array([cs.get_term_df(t) for t in terms])          
                 qid_details = {row['docid']:row for row in doc_details.get_qid_details(qid)}
-            except:
-                continue
-            rel_tfs = details_rel_data[qid][1]
-            #dfs = details_rel_data[qid][2]
-            doclens = details_rel_data[qid][3]
-            all_tfs = details_data[qid][1]
-            if method == 2: # BM25
-                okapi_optimal = Performances(self.collection_path).load_optimal_performance(['okapi'])[0]
-                okapi_para = 'method:%s,' % okapi_optimal[0] + okapi_optimal[2]
-                optimal_b = float(okapi_optimal[2].split(':')[1])
-                tf_col_idx = 0
-                tmp_all_tfs = []
-                tmp_rel_tfs = []
-                for tf_col in all_tfs:
-                    tf_col = tf_col*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(tf_col+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
-                    rel_tf_col = rel_tfs[tf_col_idx]*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(rel_tfs[tf_col_idx]+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
-                    tmp_all_tfs.append(tf_col)
-                    tmp_rel_tfs.append(rel_tf_col)
-                    tf_col_idx += 1
-                all_tfs = np.array(tmp_all_tfs)
-                rel_tfs = np.array(tmp_rel_tfs)
             
-            all_dfs = details_data[qid][2]
-            all_doclens = details_data[qid][3]
-            all_rels = details_data[qid][4]
-            if dfs.size == 0:
-                continue
-            idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
-            output_root = os.path.join(self.output_root, self.collection_name)
-            if not os.path.exists(output_root):
-                os.makedirs(output_root)
-            output_fn = os.path.join(output_root, '%s-%s-%s.json' % (self.collection_name, qid, method_name))
-            d = {
-                'terms': terms,
-                'idfs': idfs.tolist(),
-                'rel_tfs': rel_tfs.transpose().tolist()
-            }
-            with open(output_fn, 'wb') as f:
-                json.dump(d, f, indent=2)
+                rel_tfs = details_rel_data[qid][1]
+                #dfs = details_rel_data[qid][2]
+                doclens = details_rel_data[qid][3]
+                all_tfs = details_data[qid][1]
+                if method == 2: # BM25
+                    okapi_optimal = Performances(self.collection_path).load_optimal_performance(['okapi'])[0]
+                    okapi_para = 'method:%s,' % okapi_optimal[0] + okapi_optimal[2]
+                    optimal_b = float(okapi_optimal[2].split(':')[1])
+                    tf_col_idx = 0
+                    tmp_all_tfs = []
+                    tmp_rel_tfs = []
+                    for tf_col in all_tfs:
+                        tf_col = tf_col*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(tf_col+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
+                        rel_tf_col = rel_tfs[tf_col_idx]*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(rel_tfs[tf_col_idx]+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
+                        tmp_all_tfs.append(tf_col)
+                        tmp_rel_tfs.append(rel_tf_col)
+                        tf_col_idx += 1
+                    all_tfs = np.array(tmp_all_tfs)
+                    rel_tfs = np.array(tmp_rel_tfs)
+                
+                all_dfs = details_data[qid][2]
+                all_doclens = details_data[qid][3]
+                all_rels = details_data[qid][4]
+                if dfs.size == 0:
+                    continue
+                idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
+                output_root = os.path.join(self.output_root, self.collection_name)
+                if not os.path.exists(output_root):
+                    os.makedirs(output_root)
+                output_fn = os.path.join(output_root, '%s-%s-%s.json' % (self.collection_name, qid, method_name))
+                d = {
+                    'terms': terms,
+                    'idfs': idfs.tolist(),
+                    'rel_tfs': rel_tfs.transpose().tolist()
+                }
+                with open(output_fn, 'wb') as f:
+                    json.dump(d, f, indent=2)
+            except:
+                print 'We have some problems with qid:' % qid
 
 
 
