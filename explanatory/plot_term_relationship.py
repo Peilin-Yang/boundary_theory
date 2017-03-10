@@ -418,9 +418,16 @@ class PlotTermRelationship(object):
                 runfile_fn = os.path.join(self.collection_path, 'split_results', 'title_'+qid+'-'+indri_model_para)
                 with open(runfile_fn) as runf:
                     model_ranking_list = runf.readlines()
-                model_topranked_tfs = np.array([[float(t.split('-')[1]) for t in qid_details[line.split()[2]]['tf'].split(',')] for line in model_ranking_list[:20]])
-                # if model_topranked_tfs.shape[1] > query_length:
-                #     model_topranked_tfs = np.delete(model_topranked_tfs, 0, 1)
+                model_topranked_tfs = np.array([[float(t.split('-')[1]) for t in qid_details[line.split()[2]]['tf'].split(',')] for line in model_ranking_list[:50]])
+                if method == 2:
+                    optimal_b = float(model_optimal[2].split(':')[1])
+                    tf_col_idx = 0
+                    tmp_model_tfs = []
+                    for tf_col in model_topranked_tfs:
+                        tf_col = tf_col*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(tf_col+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
+                        tmp_model_tfs.append(tf_col)
+                        tf_col_idx += 1
+                    model_topranked_tfs = np.array(tmp_model_tfs)
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
                 subquery_perfms = {}
                 with open(os.path.join(self.collection_path, 'subqueries/collected_results', qid)) as subf:
