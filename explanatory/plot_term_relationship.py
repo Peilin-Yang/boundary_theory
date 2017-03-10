@@ -428,7 +428,9 @@ class PlotTermRelationship(object):
                         if model_name == 'okapi':
                             tf_col = tf_col*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(tf_col+1.2*(1-optimal_para+optimal_para*doclens[tf_col_idx]/cs.get_avdl()))
                         elif model_name == 'dir':
+                            print tf_col
                             tf_col = np.log((tf_col+optimal_para*cs.get_term_collection_occur(terms[tf_col_idx])/cs.get_total_terms())/(optimal_para+doclens[tf_col_idx]))
+                            print tf_col
                         tmp_model_tfs.append(tf_col)
                         tf_col_idx += 1
                     model_topranked_tfs = np.array(tmp_model_tfs)
