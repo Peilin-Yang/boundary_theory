@@ -412,6 +412,8 @@ class PlotTermRelationship(object):
             ranking_models = [('okapi', 'x'), ('dir', '^')]
             for model in ranking_models:
                 model_name = model[0]
+                if method == 2 and model_name != 'okapi':
+                    continue
                 marker = model[1]
                 model_optimal = Performances(self.collection_path).load_optimal_performance([model_name])[0]
                 indri_model_para = 'method:%s,' % model_optimal[0] + model_optimal[2]
@@ -428,9 +430,7 @@ class PlotTermRelationship(object):
                         if model_name == 'okapi':
                             tf_col = tf_col*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(tf_col+1.2*(1-optimal_para+optimal_para*doclens[tf_col_idx]/cs.get_avdl()))
                         elif model_name == 'dir':
-                            print tf_col
                             tf_col = np.log((tf_col+optimal_para*cs.get_term_collection_occur(terms[tf_col_idx])/cs.get_total_terms())/(optimal_para+doclens[tf_col_idx]))
-                            print tf_col
                         tmp_model_tfs.append(tf_col)
                         tf_col_idx += 1
                     model_topranked_tfs = np.array(tmp_model_tfs)
