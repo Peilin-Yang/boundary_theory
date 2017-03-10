@@ -357,7 +357,10 @@ class PlotTermRelationship(object):
             if dfs.size == 0:
                 continue
             idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
-            output_fn = os.path.join(self.output_root, '%s-%s-%s.json' % (self.collection_name, qid, method_name) )
+            output_root = os.path.join(self.output_root, self.collection_name)
+            if not os.path.exists(output_root):
+                os.makedirs(output_root)
+            output_fn = os.path.join(output_root, '%s-%s-%s.json' % (self.collection_name, qid, method_name) )
             d = {
                 'terms': terms,
                 'idfs': idfs,
