@@ -334,7 +334,6 @@ class PlotTermRelationship(object):
             'okapi': self.okapi,
             'dir': self.dir,
         }
-        ranking_models = [('okapi', 'x'), ('dir', '^')]
         all_performances = {k:{'all': {}, 'higher-IDF': {}, 'lower-IDF': {}} for k in model_mapping}
         num_cols = min(4, len(details_rel_data)+1) # extra one for explanations
         num_rows = int(math.ceil((len(details_rel_data)+1)*1.0/num_cols))
@@ -410,6 +409,7 @@ class PlotTermRelationship(object):
             #cbar.ax.set_ylabel('Counts')
             # plot model top ranked docs
             legend_handlers = {}
+            ranking_models = [('okapi', 'x'), ('dir', '^')]
             for model in ranking_models:
                 model_name = model[0]
                 marker = model[1]
@@ -420,12 +420,15 @@ class PlotTermRelationship(object):
                     model_ranking_list = runf.readlines()
                 model_topranked_tfs = np.array([[float(t.split('-')[1]) for t in qid_details[line.split()[2]]['tf'].split(',')] for line in model_ranking_list[:50]])
                 model_topranked_tfs = np.transpose(model_topranked_tfs)
-                if method == 2:
-                    optimal_b = float(model_optimal[2].split(':')[1])
+                if method != 1:
+                    optimal_para = float(model_optimal[2].split(':')[1])
                     tf_col_idx = 0
                     tmp_model_tfs = []
                     for tf_col in model_topranked_tfs:
-                        tf_col = tf_col*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(tf_col+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
+                        if model_name == 'okapi':
+                            tf_col = tf_col*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(tf_col+1.2*(1-optimal_para+optimal_para*doclens[tf_col_idx]/cs.get_avdl()))
+                        elif model_name == 'dir':
+                            tf_col = np.log((tf_col+optimal_para*cs.get_term_collection_occur(terms[tf_col_idx])/cs.get_total_terms())/(optimal_para+doclens[tf_col_idx]))
                         tmp_model_tfs.append(tf_col)
                         tf_col_idx += 1
                     model_topranked_tfs = np.array(tmp_model_tfs)
