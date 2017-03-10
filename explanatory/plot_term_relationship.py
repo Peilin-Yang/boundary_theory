@@ -419,6 +419,7 @@ class PlotTermRelationship(object):
                 with open(runfile_fn) as runf:
                     model_ranking_list = runf.readlines()
                 model_topranked_tfs = np.array([[float(t.split('-')[1]) for t in qid_details[line.split()[2]]['tf'].split(',')] for line in model_ranking_list[:50]])
+                model_topranked_tfs = np.transpose(model_topranked_tfs)
                 if method == 2:
                     optimal_b = float(model_optimal[2].split(':')[1])
                     tf_col_idx = 0
@@ -428,7 +429,6 @@ class PlotTermRelationship(object):
                         tmp_model_tfs.append(tf_col)
                         tf_col_idx += 1
                     model_topranked_tfs = np.array(tmp_model_tfs)
-                model_topranked_tfs = np.transpose(model_topranked_tfs)
                 subquery_perfms = {}
                 with open(os.path.join(self.collection_path, 'subqueries/collected_results', qid)) as subf:
                     csvr = csv.reader(subf)
