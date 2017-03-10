@@ -362,7 +362,7 @@ class PlotTermRelationship(object):
                 os.makedirs(output_root)
             output_fn = os.path.join(output_root, '%s-%s-%s.json' % (self.collection_name, qid, method_name))
             d = {
-                'terms': terms.tolist(),
+                'terms': terms,
                 'idfs': idfs.tolist(),
                 'rel_tfs': rel_tfs.tolist()
             }
