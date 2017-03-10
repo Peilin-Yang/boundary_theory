@@ -316,7 +316,7 @@ class PlotTermRelationship(object):
         return np.sum(r, axis=0)
 
     def plot_only_rel_tf_relationship_mul(self, details_data, details_rel_data, 
-            rel_data, query_length=2, plot_option=1, method=1):
+            rel_data, plot_option=1, method=1):
         if method == 1:
             method_name = 'TF'
         elif method == 2:
@@ -330,7 +330,10 @@ class PlotTermRelationship(object):
         for qid in sorted(queries):
             terms = queries[qid].split()
             dfs = np.array([cs.get_term_df(t) for t in terms])
-            qid_details = {row['docid']:row for row in doc_details.get_qid_details(qid)}
+            try:
+                qid_details = {row['docid']:row for row in doc_details.get_qid_details(qid)}
+            except:
+                continue
             rel_tfs = details_rel_data[qid][1]
             #dfs = details_rel_data[qid][2]
             doclens = details_rel_data[qid][3]
