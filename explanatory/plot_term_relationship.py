@@ -315,8 +315,64 @@ class PlotTermRelationship(object):
         r = (k1+1.0)*tfs/(tfs+k1*(1-b+b*doclens*1.0/avdl))*idfs
         return np.sum(r, axis=0)
 
+    def plot_only_rel_tf_relationship_mul(self, details_data, details_rel_data, 
+            rel_data, query_length=2, plot_option=1, method=1):
+        if method == 1:
+            method_name = 'TF'
+        elif method == 2:
+            method_name = 'BM25'
+        queries = Query(self.collection_path).get_queries()
+        queries = {ele['num']:ele['title'] for ele in queries}
+        rel_tf_stats = RelTFStats(self.collection_path)
+        rel_data = rel_tf_stats.get_data(queries.keys())
+        cs = CollectionStats(self.collection_path)
+        doc_details = GenDocDetails(self.collection_path)
+        for qid in sorted(queries):
+            terms = queries[qid].split()
+            dfs = np.array([cs.get_term_df(t) for t in terms])
+            qid_details = {row['docid']:row for row in doc_details.get_qid_details(qid)}
+            rel_tfs = details_rel_data[qid][1]
+            #dfs = details_rel_data[qid][2]
+            doclens = details_rel_data[qid][3]
+            all_tfs = details_data[qid][1]
+            if method == 2: # BM25
+                okapi_optimal = Performances(self.collection_path).load_optimal_performance(['okapi'])[0]
+                okapi_para = 'method:%s,' % okapi_optimal[0] + okapi_optimal[2]
+                optimal_b = float(okapi_optimal[2].split(':')[1])
+                tf_col_idx = 0
+                tmp_all_tfs = []
+                tmp_rel_tfs = []
+                for tf_col in all_tfs:
+                    tf_col = tf_col*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(tf_col+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
+                    rel_tf_col = rel_tfs[tf_col_idx]*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(rel_tfs[tf_col_idx]+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
+                    tmp_all_tfs.append(tf_col)
+                    tmp_rel_tfs.append(rel_tf_col)
+                    tf_col_idx += 1
+                all_tfs = np.array(tmp_all_tfs)
+                rel_tfs = np.array(tmp_rel_tfs)
+            
+            all_dfs = details_data[qid][2]
+            all_doclens = details_data[qid][3]
+            all_rels = details_data[qid][4]
+            if dfs.size == 0:
+                continue
+            idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
+            output_fn = os.path.join(self.output_root, '%s-%s-%s.json' % (self.collection_name, qid, method_name) )
+            d = {
+                'terms': terms,
+                'idfs': idfs,
+                'rel_tfs': rel_tfs
+            }
+            with open(output_fn, 'wb') as f:
+                json.dump(d, f, indent=2)
+
+
+
     def plot_only_rel_tf_relationship(self, details_data, details_rel_data, 
             rel_data, query_length=2, plot_option=1, method=1, oformat='png'):
+        if query_length != 2:
+            return self.plot_only_rel_tf_relationship_mul(details_data, details_rel_data, 
+                rel_data, plot_option, method)
         rel_tf_stats = RelTFStats(self.collection_path)
         if query_length == 0:
             queries = Query(self.collection_path).get_queries()
