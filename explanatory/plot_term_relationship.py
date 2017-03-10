@@ -364,7 +364,7 @@ class PlotTermRelationship(object):
             d = {
                 'terms': terms,
                 'idfs': idfs.tolist(),
-                'rel_tfs': rel_tfs.tolist()
+                'rel_tfs': rel_tfs.transpose().tolist()
             }
             with open(output_fn, 'wb') as f:
                 json.dump(d, f, indent=2)
