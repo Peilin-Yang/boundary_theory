@@ -371,7 +371,7 @@ class PlotTermRelationship(object):
                 with open(output_fn, 'wb') as f:
                     json.dump(d, f, indent=2)
             except:
-                print 'We have some problems with qid:' % qid
+                print 'We have some problems with qid: %s' % qid
 
 
 
