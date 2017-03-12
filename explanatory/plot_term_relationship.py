@@ -620,7 +620,7 @@ class PlotTermRelationship(object):
             prob_counts = {k:rel_counts[k]*1./v for k,v in all_counts.items() if k in rel_counts}
             nonrel_counts = {k:v for k,v in all_counts.items() if k not in rel_counts}
             for plot_option in range(3):
-                ax = axs[0][plot_option]
+                ax = axs[plot_option]
                 if plot_option == 0:
                     counts = rel_counts
                 elif plot_option == 1:
