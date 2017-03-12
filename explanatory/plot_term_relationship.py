@@ -430,6 +430,7 @@ class PlotTermRelationship(object):
                 tf_col_idx = 0
                 tmp_all_tfs = []
                 tmp_rel_tfs = []
+                print terms, doclens
                 for tf_col in all_tfs:
                     tf_col = tf_col*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(tf_col+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
                     rel_tf_col = rel_tfs[tf_col_idx]*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(rel_tfs[tf_col_idx]+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
