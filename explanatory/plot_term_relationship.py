@@ -378,9 +378,6 @@ class PlotTermRelationship(object):
 
     def plot_only_rel_tf_relationship(self, details_data, details_rel_data, 
             rel_data, query_length=2, plot_option=1, method=1, oformat='png'):
-        if query_length != 2:
-            return self.plot_only_rel_tf_relationship_mul(details_data, details_rel_data, 
-                rel_data, plot_option, method)
         rel_tf_stats = RelTFStats(self.collection_path)
         if query_length == 0:
             queries = Query(self.collection_path).get_queries()
@@ -557,6 +554,152 @@ class PlotTermRelationship(object):
         plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
 
+    def plot_rel_tf_relationship_qids(self, details_data, details_rel_data, 
+            rel_data, query_length=2, method=1, oformat='png'):
+        rel_tf_stats = RelTFStats(self.collection_path)
+        if query_length == 0:
+            queries = Query(self.collection_path).get_queries()
+        else:
+            queries = Query(self.collection_path).get_queries_of_length(query_length)
+        queries = {ele['num']:ele['title'] for ele in queries}
+        rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
+        queries = {k:v for k,v in queries.items() if k in rel_docs and len(rel_docs[k]) > 0}
+
+        rel_data = rel_tf_stats.get_data(queries.keys())
+        cs = CollectionStats(self.collection_path)
+        doc_details = GenDocDetails(self.collection_path)
+
+        model_mapping = {
+            'okapi': self.okapi,
+            'dir': self.dir,
+        }
+        all_performances = {k:{'all': {}, 'higher-IDF': {}, 'lower-IDF': {}} for k in model_mapping}
+
+        for qid in sorted(queries):
+            fig, axs = plt.subplots(nrows=1, ncols=3, sharex=False, sharey=False, figsize=(3*3+2, 3*1+1))
+            plt.rc('font', size=10)
+            plt.rc('text', usetex=False)
+            terms = queries[qid].split()
+            dfs = np.array([cs.get_term_df(t) for t in terms])
+            qid_details = {row['docid']:row for row in doc_details.get_qid_details(qid)}
+            rel_tfs = details_rel_data[qid][1]
+            #dfs = details_rel_data[qid][2]
+            doclens = details_rel_data[qid][3]
+            all_tfs = details_data[qid][1]
+            if method == 2: # BM25
+                okapi_optimal = Performances(self.collection_path).load_optimal_performance(['okapi'])[0]
+                okapi_para = 'method:%s,' % okapi_optimal[0] + okapi_optimal[2]
+                optimal_b = float(okapi_optimal[2].split(':')[1])
+                tf_col_idx = 0
+                tmp_all_tfs = []
+                tmp_rel_tfs = []
+                for tf_col in all_tfs:
+                    tf_col = tf_col*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(tf_col+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
+                    rel_tf_col = rel_tfs[tf_col_idx]*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(rel_tfs[tf_col_idx]+1.2*(1-optimal_b+optimal_b*doclens[tf_col_idx]/cs.get_avdl()))
+                    tmp_all_tfs.append(tf_col)
+                    tmp_rel_tfs.append(rel_tf_col)
+                    tf_col_idx += 1
+                all_tfs = np.array(tmp_all_tfs)
+                rel_tfs = np.array(tmp_rel_tfs)
+            
+            all_dfs = details_data[qid][2]
+            all_doclens = details_data[qid][3]
+            all_rels = details_data[qid][4]
+            if dfs.size == 0:
+                continue
+            idfs = np.log((cs.get_doc_counts() + 1)/(dfs+1e-4))
+            smaller_idf_idx = np.argmax(dfs)
+            larger_idf_idx = np.argmin(dfs)
+
+            rel_xaxis = rel_tfs[smaller_idf_idx,:]
+            rel_yaxis = rel_tfs[larger_idf_idx,:]
+            rel_counts = collections.Counter(zip(rel_xaxis, rel_yaxis))
+            all_xaxis = all_tfs[smaller_idf_idx,:]
+            all_yaxis = all_tfs[larger_idf_idx,:]
+            all_counts = collections.Counter(zip(all_xaxis, all_yaxis))
+            prob_counts = {k:rel_counts[k]*1./v for k,v in all_counts.items() if k in rel_counts}
+            nonrel_counts = {k:v for k,v in all_counts.items() if k not in rel_counts}
+            for plot_option in range(3):
+                ax = axs[0][plot_option]
+                if plot_option == 0:
+                    counts = rel_counts
+                elif plot_option == 1:
+                    counts = prob_counts
+                elif plot_option == 2:
+                    counts = all_counts
+                xaxis_plot, yaxis_plot = zip(*counts.keys())
+                sizes = np.array(counts.values())
+                max_value = max(max(xaxis_plot), max(yaxis_plot))
+                scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
+                cbar = fig.colorbar(scatter, ax=ax)
+                #cbar.ax.set_ylabel('Counts')
+                # plot model top ranked docs
+                legend_handlers = {}
+                ranking_models = [('okapi', 'x'), ('dir', '^')]
+                for model in ranking_models:
+                    model_name = model[0]
+                    if method == 2 and model_name != 'okapi':
+                        continue
+                    marker = model[1]
+                    model_optimal = Performances(self.collection_path).load_optimal_performance([model_name])[0]
+                    indri_model_para = 'method:%s,' % model_optimal[0] + model_optimal[2]
+                    runfile_fn = os.path.join(self.collection_path, 'split_results', 'title_'+qid+'-'+indri_model_para)
+                    with open(runfile_fn) as runf:
+                        model_ranking_list = runf.readlines()
+                    model_topranked_tfs = np.array([[float(t.split('-')[1]) for t in qid_details[line.split()[2]]['tf'].split(',')] for line in model_ranking_list[:50]])
+                    model_topranked_tfs = np.transpose(model_topranked_tfs)
+                    if method != 1:
+                        optimal_para = float(model_optimal[2].split(':')[1])
+                        tf_col_idx = 0
+                        tmp_model_tfs = []
+                        for tf_col in model_topranked_tfs:
+                            if model_name == 'okapi':
+                                tf_col = tf_col*cs.get_term_logidf1(terms[tf_col_idx])*2.2/(tf_col+1.2*(1-optimal_para+optimal_para*doclens[tf_col_idx]/cs.get_avdl()))
+                            elif model_name == 'dir':
+                                tf_col = np.log((tf_col+optimal_para*cs.get_term_collection_occur(terms[tf_col_idx])/cs.get_total_terms())/(optimal_para+doclens[tf_col_idx]))
+                            tmp_model_tfs.append(tf_col)
+                            tf_col_idx += 1
+                        model_topranked_tfs = np.array(tmp_model_tfs)
+                    subquery_perfms = {}
+                    with open(os.path.join(self.collection_path, 'subqueries/collected_results', qid)) as subf:
+                        csvr = csv.reader(subf)
+                        for row in csvr:
+                            subquery_id = row[0]
+                            subquery_len = int(subquery_id.split('-')[0])
+                            if subquery_len == 1 and model_name in row[2]:
+                                subquery_perfms[row[1]] = float(row[3])
+                    qid_optimal = Performances(self.collection_path).gen_optimal_performances_queries([model_name], [qid])
+                    all_performances[model_name]['all'][qid] = float(qid_optimal[0][1])
+                    all_performances[model_name]['higher-IDF'][qid] = subquery_perfms[terms[larger_idf_idx]]
+                    all_performances[model_name]['lower-IDF'][qid] = subquery_perfms[terms[smaller_idf_idx]]
+                    this_plot, = ax.plot(model_topranked_tfs[smaller_idf_idx][:], \
+                        model_topranked_tfs[larger_idf_idx][:], marker, \
+                        alpha=0.3, label='%s:%.3f(%.3f)(%.3f)' % (model_name, \
+                            float(qid_optimal[0][1]), subquery_perfms[terms[larger_idf_idx]], \
+                            subquery_perfms[terms[smaller_idf_idx]]))
+                    legend_handlers[this_plot] = HandlerLine2D(numpoints=1)
+
+                ax.plot([0, max_value], [0, max_value], ls="dotted")
+                ax.set_title(qid+':'+queries[qid])
+                ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]), labelpad=-2)
+                ax.set_ylabel('%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx]), labelpad=0)
+                ax.set_xlim([0, max_value])
+                ax.set_ylim([0, max_value])
+                ax.grid(ls='dotted')
+                #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
+                ax.legend(handler_map=legend_handlers, loc='best', fontsize=6, markerscale=0.6, handletextpad=-0.5, frameon=False, framealpha=0.6)
+
+        if method == 1:
+            method_name = 'TF'
+        elif method == 2:
+            method_name = 'BM25'
+        output_root = os.path.join(self.output_root, self.collection_name)
+            if not os.path.exists(output_root):
+                os.makedirs(output_root)
+        output_fn = os.path.join(output_root, '%s-%s.%s' % (qid, method_name, oformat) )
+        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+
+
     def plot_all(self, query_length=2, method=1, oformat='png'):
         query_length = int(query_length)
         method = int(method)
@@ -565,14 +708,15 @@ class PlotTermRelationship(object):
         rel_data = self.read_rel_data(query_length)
         #prepared_data, rel_contain_alls = self.prepare_rel_data(query_length, details_data, rel_data)
         
-        ##### plot all kinds of docs
-        #self.plot_all_kinds_of_docs(prepared_data, details_data, rel_data, query_length, oformat)
-        ##### plot ONLY the docs that contain all query terms
-        #self.plot_only_rel_with_all_qterms(rel_contain_alls, details_data, rel_data, query_length, oformat)
-        ##### plot the relationship between terms only, no ranking function involved...
-        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 1, method, oformat)
-        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 2, method, oformat)
-        self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 3, method, oformat)
+        if query_length != 2:
+            return self.plot_only_rel_tf_relationship_mul(details_data, details_rel_data, 
+                rel_data, plot_option, method)
+        else:
+            self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 1, method, oformat)
+            self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 2, method, oformat)
+            self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 3, method, oformat)
+
+            self.plot_rel_tf_relationship_qids(details_data, details_rel_data, rel_data, query_length, method, oformat)
     
 
     @staticmethod
