@@ -1275,7 +1275,7 @@ class SubqueriesLearning(RunSubqueries):
                             p.append((subquery_id, subquery, ap))       
             if p:
                 p.sort(key=itemgetter(2), reverse=True)
-                r.append((qid, qlen,orig_query, p_all_term, p[0][1], p[0][2], p[1][1], p[1][2], p[0][2]- < 1e-6))
+                r.append((qid, qlen,orig_query, p_all_term, p[0][1], p[0][2]))
         results_root = os.path.join('../all_results', 'subqueries', 'top2_subqueries')
         if not os.path.exists(results_root):
             os.makedirs(results_root)
