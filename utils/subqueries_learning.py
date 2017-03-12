@@ -1252,16 +1252,16 @@ class SubqueriesLearning(RunSubqueries):
 
     def gen_top2_subqueries(self):
         q_class = Query(self.corpus_path)
-        queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
-        method = 'okapi'
+        queries = {int(ele['num']):ele['title'] for ele in q_class.get_queries()}
+        method = 'okapi' 
         r = []
-        for qid in queries.keys():
+        for qid in sorted(queries.keys()):
             p = []
             orig_query = queries[qid]
             qlen = len(orig_query.split())
             if qlen < 2:
                 continue
-            with open(os.path.join(self.collected_results_root, qid)) as f:
+            with open(os.path.join(self.collected_results_root, str(qid))) as f:
                 csvr = csv.reader(f)
                 for row in csvr:
                     subquery_id = row[0]
