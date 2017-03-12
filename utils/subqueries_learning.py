@@ -1255,7 +1255,7 @@ class SubqueriesLearning(RunSubqueries):
         queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
         method = 'okapi'
         r = []
-        for qid in qids:
+        for qid in queries.keys():
             p = []
             orig_query = queries[qid]
             with open(os.path.join(self.collected_results_root, qid)) as f:
