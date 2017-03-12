@@ -1253,9 +1253,31 @@ class SubqueriesLearning(RunSubqueries):
     def gen_top2_subqueries(self):
         q_class = Query(self.corpus_path)
         queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
-        gt_optimal, diff_sorted_qid = self.load_gt_optimal(queries.keys())
-        print gt_optimal
-        print diff_sorted_qid
+        method = 'okapi'
+        r = []
+        for qid in qids:
+            p = []
+            orig_query = queries[qid]
+            with open(os.path.join(self.collected_results_root, qid)) as f:
+                csvr = csv.reader(f)
+                for row in csvr:
+                    subquery_id = row[0]
+                    subquery = row[1]
+                    model_para = row[2]
+                    ap = float(row[3])
+                    if method in model_para:
+                        p.append((subquery_id, subquery, ap))
+                        if subquery_id == str(len(orig_query.split()))+'-0':
+                            p_all_term = ap
+            if p:
+                p.sort(key=itemgetter(2), reverse=True)
+                r.append((qid, p[0][1], p[0][2], p[1][1], p[1][2], p[0][1]-p_all_term < 1e-6))
+        results_root = os.path.join('../all_results', 'subqueries', 'top2_subqueries')
+        if not os.path.exists(results_root):
+            os.makedirs(results_root)
+        with open(os.path.join(results_root, self.collection_name+'.csv'), 'wb') as f:
+            w = csv.writer(f)
+            w.writerows(r)
 
 
     def mi_learn_algo(self, mi_vec, thres=1.0):
