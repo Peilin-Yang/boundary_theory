@@ -1271,6 +1271,7 @@ class SubqueriesLearning(RunSubqueries):
                             p_all_term = ap
             if p:
                 p.sort(key=itemgetter(2), reverse=True)
+                print p
                 r.append((qid, p[0][1], p[0][2], p[1][1], p[1][2], p[0][2]-p_all_term < 1e-6))
         results_root = os.path.join('../all_results', 'subqueries', 'top2_subqueries')
         if not os.path.exists(results_root):
