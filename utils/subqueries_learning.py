@@ -1269,12 +1269,13 @@ class SubqueriesLearning(RunSubqueries):
                     model_para = row[2]
                     ap = float(row[3])
                     if method in model_para:
-                        p.append((subquery_id, subquery, ap))
                         if subquery_id == str(qlen)+'-0':
                             p_all_term = ap
+                        else:
+                            p.append((subquery_id, subquery, ap))       
             if p:
                 p.sort(key=itemgetter(2), reverse=True)
-                r.append((qid, p[0][1], p[0][2], p[1][1], p[1][2], p[0][2]-p_all_term < 1e-6))
+                r.append((qid, qlen,orig_query, p_all_term, p[0][1], p[0][2], p[1][1], p[1][2], p[0][2]- < 1e-6))
         results_root = os.path.join('../all_results', 'subqueries', 'top2_subqueries')
         if not os.path.exists(results_root):
             os.makedirs(results_root)
