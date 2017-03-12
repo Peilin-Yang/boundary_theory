@@ -689,15 +689,15 @@ class PlotTermRelationship(object):
                 #ax.ticklabel_format(axis='x', style='sci', scilimits=(0,0))
                 ax.legend(handler_map=legend_handlers, loc='best', fontsize=6, markerscale=0.6, handletextpad=-0.5, frameon=False, framealpha=0.6)
 
-        if method == 1:
-            method_name = 'TF'
-        elif method == 2:
-            method_name = 'BM25'
-        output_root = os.path.join(self.output_root, self.collection_name)
+            if method == 1:
+                method_name = 'TF'
+            elif method == 2:
+                method_name = 'BM25'
+            output_root = os.path.join(self.output_root, self.collection_name)
             if not os.path.exists(output_root):
                 os.makedirs(output_root)
-        output_fn = os.path.join(output_root, '%s-%s.%s' % (qid, method_name, oformat) )
-        plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
+            output_fn = os.path.join(output_root, '%s-%s.%s' % (qid, method_name, oformat) )
+            plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
 
 
     def plot_all(self, query_length=2, method=1, oformat='png'):
