@@ -713,9 +713,9 @@ class PlotTermRelationship(object):
             return self.plot_only_rel_tf_relationship_mul(details_data, details_rel_data, 
                 rel_data, plot_option, method)
         else:
-            self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 1, method, oformat)
-            self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 2, method, oformat)
-            self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 3, method, oformat)
+            # self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 1, method, oformat)
+            # self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 2, method, oformat)
+            # self.plot_only_rel_tf_relationship(details_data, details_rel_data, rel_data, query_length, 3, method, oformat)
 
             self.plot_rel_tf_relationship_qids(details_data, details_rel_data, rel_data, query_length, method, oformat)
     
