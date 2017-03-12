@@ -366,7 +366,7 @@ class PlotTermRelationship(object):
                 d = {
                     'terms': terms,
                     'idfs': idfs.tolist(),
-                    'rel_tfs': rel_tfs.transpose().tolist()
+                    'rel_tfs': rel_tfs.transpose().tolist(),
                     'all_tfs': all_tfs.transpose().tolist()
                 }
                 with open(output_fn, 'wb') as f:
