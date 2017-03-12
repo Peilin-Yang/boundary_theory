@@ -576,10 +576,10 @@ class PlotTermRelationship(object):
         }
         all_performances = {k:{'all': {}, 'higher-IDF': {}, 'lower-IDF': {}} for k in model_mapping}
 
-        fig, axs = plt.subplots(nrows=1, ncols=3, sharex=False, sharey=False, figsize=(3*3+2, 3*1+1))
-        plt.rc('font', size=10)
-        plt.rc('text', usetex=False)     
         for qid in sorted(queries):
+            fig, axs = plt.subplots(nrows=1, ncols=3, sharex=False, sharey=False, figsize=(3*3+2, 3*1+1))
+            plt.rc('font', size=10)
+            plt.rc('text', usetex=False)
             terms = queries[qid].split()
             dfs = np.array([cs.get_term_df(t) for t in terms])
             qid_details = {row['docid']:row for row in doc_details.get_qid_details(qid)}
@@ -699,7 +699,7 @@ class PlotTermRelationship(object):
                 os.makedirs(output_root)
             output_fn = os.path.join(output_root, '%s-%s.%s' % (qid, method_name, oformat) )
             plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
-            plt.clf()
+            plt.close()
 
 
     def plot_all(self, query_length=2, method=1, oformat='png'):
