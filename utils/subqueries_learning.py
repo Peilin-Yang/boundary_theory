@@ -1250,6 +1250,14 @@ class SubqueriesLearning(RunSubqueries):
         for_sort.sort(key=itemgetter(1), reverse=True)
         return r, for_sort
 
+    def gen_top2_subqueries(self):
+        q_class = Query(self.corpus_path)
+        queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
+        gt_optimal, diff_sorted_qid = self.load_gt_optimal(queries.keys())
+        print gt_optimal
+        print diff_sorted_qid
+
+
     def mi_learn_algo(self, mi_vec, thres=1.0):
         """
         We start from query length of 3 ...

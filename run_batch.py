@@ -579,6 +579,24 @@ def gen_resources_for_crowdsourcing_atom(para_file):
             SubqueriesLearning(collection_path, collection_name).gen_resources_for_crowdsourcing_atom(qid, subquery_id, ap_diff)
 
 
+def gen_top2_subqueries_batch():
+    all_paras = []
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.append((collection_path, collection_name))
+    #print all_paras
+    gen_batch_framework('gen_top2_subqueries', 'gen_top2_subqueries_atom', all_paras)
+
+def gen_top2_subqueries_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            collection_name = row[1]
+            SubqueriesLearning(collection_path, collection_name).gen_top2_subqueries()
+
+
 
 ###################################################
 def run_all_baseline_results_atom(para_file):
@@ -843,6 +861,13 @@ if __name__ == '__main__':
         nargs=1,
         help='')
 
+    parser.add_argument('-gen_top2_subqueries_batch', '--gen_top2_subqueries_batch', 
+        action='store_true',
+        help='')
+    parser.add_argument('-gen_top2_subqueries_atom', '--gen_top2_subqueries_atom', 
+        nargs=1,
+        help='')
+
     parser.add_argument("-2", "--run_all_baseline_results",
         nargs='+',
         help="Run all parameters for Pivoted, Okapi and Dirichlet.")
@@ -958,6 +983,11 @@ if __name__ == '__main__':
         gen_resources_for_crowdsourcing_batch()
     if args.gen_crowdsourcing_atom:
         gen_resources_for_crowdsourcing_atom(args.gen_crowdsourcing_atom[0])
+
+    if args.gen_top2_subqueries_batch:
+        gen_top2_subqueries_batch()
+    if args.gen_top2_subqueries_atom:
+        gen_top2_subqueries_atom(args.gen_top2_subqueries_atom[0])
 
     if args.run_all_baseline_results:
         run_all_baseline_results(args.run_all_baseline_results)
