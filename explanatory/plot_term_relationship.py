@@ -699,7 +699,7 @@ class PlotTermRelationship(object):
                 os.makedirs(output_root)
             output_fn = os.path.join(output_root, '%s-%s.%s' % (qid, method_name, oformat) )
             plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
-            plt.cla()
+            plt.clf()
 
 
     def plot_all(self, query_length=2, method=1, oformat='png'):
