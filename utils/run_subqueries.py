@@ -216,8 +216,6 @@ class RunSubqueries(object):
                         terms_dict[row[-1]] += 1
                 return terms_dict
 
-
-
     def rerun_subqueries(self, qid, input_fn, output_fn):
         queries = self.get_queries()
         queries = {ele['num']:ele['title'] for ele in queries}

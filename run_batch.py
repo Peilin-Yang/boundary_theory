@@ -255,7 +255,7 @@ def gen_rerun_subqueries_batch():
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.extend(RunSubqueries(collection_path, collection_name).batch_rerun_subqueries_paras(int(query_length)))
+        all_paras.extend(RunSubqueries(collection_path, collection_name).batch_rerun_subqueries_paras())
     #print all_paras
     gen_batch_framework('rerun_subqueries', '422', all_paras)
 
