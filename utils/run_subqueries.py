@@ -217,6 +217,7 @@ class RunSubqueries(object):
                 print '1'
                 for line in out.split('\n')[2:]:
                     row = line.strip().split()
+                    print row
                     if row[-1] in terms_dict:
                         terms_dict[row[-1]] += 1
                 return terms_dict
