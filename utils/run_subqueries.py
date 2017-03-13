@@ -224,7 +224,7 @@ class RunSubqueries(object):
         orig_terms_vec = orig_query.split()
         cs = CollectionStats(self.corpus_path)
         with open(input_fn) as f:
-            lines = [line.strip() for line in f.readlines[:100]]
+            lines = [line.strip() for line in f.readlines()[:100]]
         for line in lines:
             row = line.split()
             docid = row[2]
