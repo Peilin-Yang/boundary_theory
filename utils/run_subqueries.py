@@ -201,23 +201,29 @@ class RunSubqueries(object):
         # first convert the docid to internal docid
         command = ['dumpindex_EX %s di docno %s' % (os.path.join(self.corpus_path, 'index'), docid)]
         p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+        out, err = p.communicate()
+        internal_docid = out.strip()
+
+        # then get the stemmed terms
+        terms_dict = {}
+        for t in query_terms:
+            command = ['dumpindex_EX %s tf %s' % (os.path.join(self.corpus_path, 'index'), t)]
+            p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+            out, err = p.communicate()
+            tjson = json.loads(out)
+            stemmed = tjson['stem']
+            terms_dict[stemmed] = 0
+        
+        command = ['dumpindex_EX %s dv %s' % (os.path.join(self.corpus_path, 'index'), internal_docid)]
+        p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
         returncode = p.wait()
         out, err = p.communicate()
-        if returncode == 0:
-            internal_docid = out.strip()
-            command = ['dumpindex_EX %s dv %s' % (os.path.join(self.corpus_path, 'index'), internal_docid)]
-            p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-            returncode = p.wait()
-            out, err = p.communicate()
-            terms_dict = {t:0 for t in query_terms}
-            if returncode == 0:
-                print '1'
-                for line in out.split('\n')[2:]:
-                    if line.strip():
-                        row = line.strip().split()
-                        if row[-1] in terms_dict:
-                            terms_dict[row[-1]] += 1
-                return terms_dict
+        for line in out.split('\n')[2:]:
+            if line.strip():
+                row = line.strip().split()
+                if row[-1] in terms_dict:
+                    terms_dict[row[-1]] += 1
+        return terms_dict
 
     def rerun_subqueries(self, qid, input_fn, output_fn):
         queries = self.get_queries()
