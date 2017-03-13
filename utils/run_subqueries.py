@@ -203,22 +203,18 @@ class RunSubqueries(object):
         p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
         returncode = p.wait()
         out, err = p.communicate()
-        print command
         if returncode == 0:
             internal_docid = out.strip()
-            print internal_docid
             command = ['dumpindex_EX %s dv %s' % (os.path.join(self.corpus_path, 'index'), internal_docid)]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             returncode = p.wait()
             out, err = p.communicate()
             terms_dict = {t:0 for t in query_terms}
-            print command
             if returncode == 0:
                 print '1'
                 for line in out.split('\n')[2:]:
                     if line.strip():
                         row = line.strip().split()
-                        print row
                         if row[-1] in terms_dict:
                             terms_dict[row[-1]] += 1
                 return terms_dict
@@ -229,6 +225,7 @@ class RunSubqueries(object):
         orig_query = queries[qid]
         orig_terms_vec = orig_query.split()
         cs = CollectionStats(self.corpus_path)
+        print intput_fn, orig_terms_vec
         with open(input_fn) as f:
             lines = [line.strip() for line in f.readlines()[:100]]
         for line in lines:
