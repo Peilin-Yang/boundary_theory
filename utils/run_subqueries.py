@@ -225,7 +225,7 @@ class RunSubqueries(object):
         orig_query = queries[qid]
         orig_terms_vec = orig_query.split()
         cs = CollectionStats(self.corpus_path)
-        print intput_fn, orig_terms_vec
+        print input_fn, orig_terms_vec
         with open(input_fn) as f:
             lines = [line.strip() for line in f.readlines()[:100]]
         for line in lines:
