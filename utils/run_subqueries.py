@@ -188,6 +188,7 @@ class RunSubqueries(object):
             os.makedirs(output_root)
         all_paras = []
         for fn in os.listdir(self.subqueries_runfiles_root):
+            qid = fn.split('_')[0]
             if not os.path.exists(os.path.join(output_root, fn)):
                 all_paras.append((self.corpus_path, self.collection_name, qid, os.path.join(self.subqueries_runfiles_root, fn), os.path.join(output_root, fn)))
         return all_paras
