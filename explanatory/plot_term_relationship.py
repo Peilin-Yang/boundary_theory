@@ -647,7 +647,10 @@ class PlotTermRelationship(object):
                     runfile_fn = os.path.join(self.collection_path, 'split_results', 'title_'+qid+'-'+indri_model_para)
                     with open(runfile_fn) as runf:
                         model_ranking_list = runf.readlines()
-                    model_topranked_tfs = np.array([[float(t.split('-')[1]) for t in qid_details[line.split()[2]]['tf'].split(',')] for line in model_ranking_list[:50]])
+                    try:
+                        model_topranked_tfs = np.array([[float(t.split('-')[1]) for t in qid_details[line.split()[2]]['tf'].split(',')] for line in model_ranking_list[:50]])
+                    except:
+                        continue
                     model_topranked_tfs = np.transpose(model_topranked_tfs)
                     if method != 1:
                         optimal_para = float(model_optimal[2].split(':')[1])
