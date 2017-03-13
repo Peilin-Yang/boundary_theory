@@ -224,7 +224,7 @@ class RunSubqueries(object):
 
         terms_dict = {}
         terms_mapping = {}
-        for t in query_terms:
+        for t in orig_terms_vec:
             command = ['dumpindex_EX %s tf %s' % (os.path.join(self.corpus_path, 'index'), t)]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             out, err = p.communicate()
@@ -239,8 +239,8 @@ class RunSubqueries(object):
         for line in lines:
             row = line.split()
             docid = row[2]
-            term_dict = self.get_term_dict_from_doc_vector(terms_dict.keys(), docid)
-            print term_dict
+            doc_term_dict = self.get_term_dict_from_doc_vector(terms_dict.keys(), docid)
+            print doc_term_dict
             exit()
             
 
