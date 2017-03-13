@@ -250,7 +250,7 @@ def run_subqueries_atom(para_file):
             eval_ofn = row[7]
             RunSubqueries(collection_path, collection_name).run_subqueries(qid, subquery_id, query, indri_model_para, runfile_ofn, eval_ofn)
 
-def gen_rerun_subqueries_batch(query_length=0):
+def gen_rerun_subqueries_batch():
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
@@ -265,9 +265,10 @@ def rerun_subqueries_atom(para_file):
         for row in reader:
             collection_path = row[0]
             collection_name = row[1]
-            query = row[2]
-            runfile_ofn = row[3]
-            RunSubqueries(collection_path, collection_name).rerun_subqueries(query, runfile_ofn)
+            qid= row[2]
+            input_fn = row[3]
+            output_fn = row[4]
+            RunSubqueries(collection_path, collection_name).rerun_subqueries(qid, input_fn, output_fn)
 
 
 def gen_run_proximity_subqueries_batch(_type=1, query_length=0):
@@ -745,7 +746,7 @@ if __name__ == '__main__':
         nargs=1,
         help='generate run subqueries paras. para indicating the query length')
     parser.add_argument('-411', '--gen_rerun_subqueries_batch', 
-        nargs=1,
+        action='store_true',
         help='generate rerun subqueries paras. para indicating the query length')
     parser.add_argument('-42', '--run_subqueries_atom', 
         nargs=1,

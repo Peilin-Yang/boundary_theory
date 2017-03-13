@@ -179,51 +179,62 @@ class RunSubqueries(object):
         self.run_indri_runquery(query, runfile_ofn, qid, indri_model_para)
         self.eval(runfile_ofn, eval_ofn)
 
-    def batch_rerun_subqueries_paras(self, query_length=0):
+    def batch_rerun_subqueries_paras(self):
         """
-        Generate the doc details if IndriRunQuery encounters problem
+        Generate the doc details for all query terms for each subquery 
         """
+        output_root = os.path.join(self.output_root, 'runfiles_allterms')
+        if not os.path.exists(output_root):
+            os.makedirs(output_root)
         all_paras = []
-        methods = ['okapi', 'dir']
-        optimal_model_performances = Performances(self.corpus_path).load_optimal_performance(methods)
-        if query_length == 0: #all queries
-            queries = self.get_queries()
-        else:
-            queries = self.get_queries_of_length(query_length)
-        queries = {ele['num']:ele['title'] for ele in queries}
-        for qid, query in queries.items():
-            all_subqueries = self.get_subqueries(query)
-            if not os.path.exists(os.path.join(self.subqueries_mapping_root, qid)):
-                with open(os.path.join(self.subqueries_mapping_root, qid), 'wb') as f:
-                    json.dump(all_subqueries, f, indent=2)
-            for subquery_id, subquery_str in all_subqueries.items():
-                for p in optimal_model_performances:
-                    indri_model_para = 'method:%s,' % p[0] + p[2]
-                    runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
-                    if os.path.exists(runfile_fn):
-                        with open(runfile_fn) as f:
-                            first_line = f.readline()
-                        row = first_line.split()
-                        if row and row[1] == 'Q0':
-                            all_paras.append((self.corpus_path, self.collection_name, subquery_str, runfile_fn))
+        for fn in os.listdir(self.subqueries_runfiles_root):
+            if not os.path.exists(os.path.join(output_root, fn)):
+                all_paras.append((self.corpus_path, self.collection_name, qid, os.path.join(self.subqueries_runfiles_root, fn), os.path.join(output_root, fn)))
         return all_paras
 
-    def rerun_subqueries(self, query, runfile_ofn):
+    def get_term_dict_from_doc_vector(self, query_terms, docid):
+        """
+        query_terms: a list of terms
+        """
+
+        # first convert the docid to internal docid
+        command = ['dumpindex_EX %s di docno %s' % (os.path.join(self.corpus_path, 'index'), docid)]
+        p = Popen(command, shell=True, stdout=f, stderr=PIPE)
+        returncode = p.wait()
+        out, err = p.communicate()
+        if returncode != 0:
+            internal_docid = out.strip()
+            command = ['dumpindex_EX %s dv %s' % (os.path.join(self.corpus_path, 'index'), internal_docid)]
+            p = Popen(command, shell=True, stdout=f, stderr=PIPE)
+            returncode = p.wait()
+            out, err = p.communicate()
+            terms_dict = {t:0 for t in query_terms}
+            if returncode != 0:
+                for line in out.split('\n')[2:]:
+                    row = line.strip().split()
+                    if row[-1] in terms_dict:
+                        terms_dict[row[-1]] += 1
+                return terms_dict
+
+
+
+    def rerun_subqueries(self, qid, input_fn, output_fn):
+        queries = self.get_queries()
+        queries = {ele['num']:ele['title'] for ele in queries}
+        orig_query = queries[qid]
+        orig_terms_vec = orig_query.split()
         cs = CollectionStats(self.corpus_path)
         query_terms = query.split()
-        with open(runfile_ofn) as f:
-            for line in f:
-                row = line.split()
-                docid = row[2]
-                doc_vec = cs.get_document_vector([docid])[0]
-                doc_term_dict = doc_vec['doc_term_dict']
-                unique_term_cnt = len(doc_term_dict)
-                doc_len = doc_vec['doc_len']
-                print docid
-                for term in query_terms:
-                    print term, doc_term_dict[term] if term in doc_term_dict else 0
-                print unique_term_cnt, doc_len
-                exit()
+        with open(input_fn) as f:
+            lines = [line.strip() for line in f.readlines[:100]]
+
+        for line in lines:
+            row = line.split()
+            docid = row[2]
+            term_dict = self.get_term_dict_from_doc_vector(orig_terms_vec, docid)
+            print term_dict
+            exit()
+            
 
     def sort_subquery_id(self, result):
         subquery_id = result[0]
