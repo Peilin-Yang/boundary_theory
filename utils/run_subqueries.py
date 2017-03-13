@@ -204,7 +204,7 @@ class RunSubqueries(object):
         returncode = p.wait()
         out, err = p.communicate()
         print command
-        if returncode != 0:
+        if returncode == 0:
             internal_docid = out.strip()
             print internal_docid
             command = ['dumpindex_EX %s dv %s' % (os.path.join(self.corpus_path, 'index'), internal_docid)]
@@ -213,7 +213,7 @@ class RunSubqueries(object):
             out, err = p.communicate()
             terms_dict = {t:0 for t in query_terms}
             print command
-            if returncode != 0:
+            if returncode == 0:
                 print '1'
                 for line in out.split('\n')[2:]:
                     row = line.strip().split()
