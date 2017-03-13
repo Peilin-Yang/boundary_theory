@@ -240,7 +240,7 @@ class RunSubqueries(object):
             row = line.split()
             docid = row[2]
             doc_term_dict = self.get_term_dict_from_doc_vector(terms_dict.keys(), docid)
-            print doc_term_dict
+            doc_term_dict = {terms_mapping[k]:v for k,v in doc_term_dict.items()}
             exit()
             
 
