@@ -230,17 +230,16 @@ class RunSubqueries(object):
             out, err = p.communicate()
             tjson = json.loads(out)
             stemmed = tjson['stem']
-            terms_mapping[stemmed] = t
+            terms_mapping[t] = stemmed
             terms_dict[stemmed] = 0
 
-        print input_fn, orig_terms_vec
         with open(input_fn) as f:
             lines = [line.strip() for line in f.readlines()[:100]]
         for line in lines:
             row = line.split()
             docid = row[2]
             doc_term_dict = self.get_term_dict_from_doc_vector(terms_dict.keys(), docid)
-            doc_term_dict = {terms_mapping[k]:v for k,v in doc_term_dict.items()}
+            terms_cnts = [t+'-'+str(doc_term_dict[terms_mapping[t]]) for t in orig_terms_vec]
             exit()
             
 
