@@ -193,9 +193,9 @@ class RunSubqueries(object):
                 all_paras.append((self.corpus_path, self.collection_name, qid, os.path.join(self.subqueries_runfiles_root, fn), os.path.join(output_root, fn)))
         return all_paras
 
-    def get_term_dict_from_doc_vector(self, query_terms, docid):
+    def get_term_dict_from_doc_vector(self, terms_dict, docid):
         """
-        query_terms: a list of terms
+        terms_dict: a dict of terms
         """
 
         # first convert the docid to internal docid
@@ -204,16 +204,6 @@ class RunSubqueries(object):
         out, err = p.communicate()
         internal_docid = out.strip()
 
-        # then get the stemmed terms
-        terms_dict = {}
-        for t in query_terms:
-            command = ['dumpindex_EX %s tf %s' % (os.path.join(self.corpus_path, 'index'), t)]
-            p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-            out, err = p.communicate()
-            tjson = json.loads(out)
-            stemmed = tjson['stem']
-            terms_dict[stemmed] = 0
-        
         command = ['dumpindex_EX %s dv %s' % (os.path.join(self.corpus_path, 'index'), internal_docid)]
         p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
         returncode = p.wait()
@@ -223,21 +213,31 @@ class RunSubqueries(object):
                 row = line.strip().split()
                 if row[-1] in terms_dict:
                     terms_dict[row[-1]] += 1
-        return terms_dict
 
     def rerun_subqueries(self, qid, input_fn, output_fn):
         queries = self.get_queries()
         queries = {ele['num']:ele['title'] for ele in queries}
         orig_query = queries[qid]
         orig_terms_vec = orig_query.split()
-        cs = CollectionStats(self.corpus_path)
+
+        terms_dict = {}
+        terms_mapping = {}
+        for t in query_terms:
+            command = ['dumpindex_EX %s tf %s' % (os.path.join(self.corpus_path, 'index'), t)]
+            p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+            out, err = p.communicate()
+            tjson = json.loads(out)
+            stemmed = tjson['stem']
+            terms_mapping[stemmed] = t
+            terms_dict[stemmed] = 0
+
         print input_fn, orig_terms_vec
         with open(input_fn) as f:
             lines = [line.strip() for line in f.readlines()[:100]]
         for line in lines:
             row = line.split()
             docid = row[2]
-            term_dict = self.get_term_dict_from_doc_vector(orig_terms_vec, docid)
+            term_dict = self.get_term_dict_from_doc_vector(terms_dict, docid)
             print term_dict
             exit()
             
