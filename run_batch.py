@@ -905,7 +905,7 @@ if __name__ == '__main__':
     if args.run_subqueries_atom:
         run_subqueries_atom(args.run_subqueries_atom[0])
     if args.gen_rerun_subqueries_batch:
-        gen_rerun_subqueries_batch(args.gen_rerun_subqueries_batch[0])
+        gen_rerun_subqueries_batch()
     if args.rerun_subqueries_atom:
         rerun_subqueries_atom(args.rerun_subqueries_atom[0])
     if args.gen_collect_subqueries_results_batch:
