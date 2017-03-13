@@ -193,9 +193,9 @@ class RunSubqueries(object):
                 all_paras.append((self.corpus_path, self.collection_name, qid, os.path.join(self.subqueries_runfiles_root, fn), os.path.join(output_root, fn)))
         return all_paras
 
-    def get_term_dict_from_doc_vector(self, terms_dict, docid):
+    def get_term_dict_from_doc_vector(self, query_terms, docid):
         """
-        terms_dict: a dict of terms
+        query_terms: a list of terms
         """
 
         # first convert the docid to internal docid
@@ -204,6 +204,7 @@ class RunSubqueries(object):
         out, err = p.communicate()
         internal_docid = out.strip()
 
+        terms_dict = {t:0 for t in query_terms}
         command = ['dumpindex_EX %s dv %s' % (os.path.join(self.corpus_path, 'index'), internal_docid)]
         p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
         returncode = p.wait()
@@ -213,6 +214,7 @@ class RunSubqueries(object):
                 row = line.strip().split()
                 if row[-1] in terms_dict:
                     terms_dict[row[-1]] += 1
+        return terms_dict
 
     def rerun_subqueries(self, qid, input_fn, output_fn):
         queries = self.get_queries()
@@ -237,7 +239,7 @@ class RunSubqueries(object):
         for line in lines:
             row = line.split()
             docid = row[2]
-            term_dict = self.get_term_dict_from_doc_vector(terms_dict, docid)
+            term_dict = self.get_term_dict_from_doc_vector(terms_dict.keys(), docid)
             print term_dict
             exit()
             
