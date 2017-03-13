@@ -241,8 +241,8 @@ class RunSubqueries(object):
                 docid = row[2]
                 doc_term_dict = self.get_term_dict_from_doc_vector(terms_dict.keys(), docid)
                 terms_cnts = [t+'-'+str(doc_term_dict[terms_mapping[t]]) for t in orig_terms_vec]
-                row[2] = ','.join(terms_cnts)
-                f.write('%s\n' % (row))
+                row[1] = ','.join(terms_cnts)
+                f.write('%s\n' % (' '.join(row)))
             
 
     def sort_subquery_id(self, result):
