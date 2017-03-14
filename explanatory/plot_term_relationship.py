@@ -841,8 +841,6 @@ class PlotTermRelationship(object):
                 top_n_docs, 
                 _type
             )
-            # for k in all_scores:
-            #     all_scores[k] = np.array(all_scores[k]).tolist()
             all_data[subquery_id] = all_scores
         with open(output_fn, 'wb') as f:
             json.dump(all_data, f, indent=2)
