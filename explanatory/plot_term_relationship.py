@@ -726,7 +726,7 @@ class PlotTermRelationship(object):
 
     @staticmethod
     def plot_tdc_violation_batch(collection_paths_n_names, query_length=0, 
-            top_n_docs=100, _type=1, ofn_format='png'):
+            top_n_docs=100, _type=1, terms_type=0, ofn_format='png'):
         """
         Plot the TDC (Term Discrimination Constraint) violation.
         We pick top ranked documents from the original query and the subquery
@@ -757,16 +757,22 @@ class PlotTermRelationship(object):
             for ele in diff_sorted_qid:
                 if ele[-1] != 0.0:
                     qid = ele[0]
+                    if terms_type == 0:
+                        output_fn = os.path.join(results_root, collection_name+'_'+qid+'_top'+str(top_n_docs)+'_'+type_str+'.'+ofn_format)
+                    elif terms_type == 1:
+                        output_fn = os.path.join(results_root, collection_name+'_'+qid+'_top'+str(top_n_docs)+'_'+type_str+'.json')
                     tmp = [collection_path, collection_name, qid, queries[qid], 
                         top_n_docs, _type, 
-                        os.path.join(results_root, collection_name+'_'+qid+'_top'+str(top_n_docs)+'_'+type_str+'.'+ofn_format), 
+                        terms_type,
+                        output_fn,
                         ofn_format]
                     all_qids.append(tmp)
         return all_qids
 
-    def get_runfiles_n_performances(self, req_qid, model='okapi'):
+    def get_runfiles_n_performances(self, req_qid, terms_type=0, model='okapi'):
         subquery_learn_class = SubqueriesLearning(self.collection_path, self.collection_name)
         results = {}
+        runfiles_root = os.path.join('subqueries', 'runfiles') if terms_type == 0 else os.path.join('subqueries', 'runfiles_allterms')
         for fn in os.listdir(subquery_learn_class.subqueries_performance_root):
             fn_split = fn.split('_')
             qid = fn_split[0]
@@ -782,7 +788,7 @@ class PlotTermRelationship(object):
                     ap = float(first_line.split()[-1])
             except:
                 continue
-            with open(os.path.join(subquery_learn_class.subqueries_runfiles_root, fn)) as f:
+            with open(os.path.join(runfiles_root, fn)) as f:
                 first_100_lines = f.readlines()[:100]
             results[subquery_id] = {'ap': ap, 'first_lines': first_100_lines}
         return results
@@ -820,8 +826,28 @@ class PlotTermRelationship(object):
                 break
         return all_scores
 
+    def output_tdc_data_for_all_terms(self, runfiles_n_performances, rel_docs, 
+            subquery_mapping, top_n_docs, _type, output_fn):
+        if len(subquery_mapping) != 7: # qlen == 3
+            return
+        all_data = {}
+        for subquery_id in sorted(runfiles_n_performances, key=self.sort_subquery_id):
+            all_scores = self.get_terms_scores_for_tdc_violation(
+                runfiles_n_performances[subquery_id]['first_lines'],
+                rel_docs, 
+                top_n_docs, 
+                _type
+            )
+            for k in all_scores:
+                all_scores[k] = np.array(all_scores[k]).T
+            all_data[subquery_id] = all_scores
+        with open(output_fn, 'wb') as f:
+            json.dump(all_data, f, indent=2)
+
+
     def plot_tdc_violation(self, runfiles_n_performances, rel_docs, 
-            subquery_mapping, top_n_docs, _type, output_fn, ofn_format='png'):
+            subquery_mapping, top_n_docs, _type, output_fn, terms_type=0, 
+            ofn_format='png'):
         if len(subquery_mapping) > 7: # we can not draw the plots for query len > 3
             return
         if len(subquery_mapping) == 7:
@@ -837,18 +863,6 @@ class PlotTermRelationship(object):
         # col_idx = 0
         idx = 1
         for subquery_id in sorted(runfiles_n_performances, key=self.sort_subquery_id):
-            #print qid
-            # if num_rows > 1:
-            #     ax = axs[row_idx][col_idx]
-            # else:
-            #     if num_cols > 1:
-            #         ax = axs[col_idx]
-            #     else:
-            #         ax = axs
-            # col_idx += 1
-            # if col_idx >= num_cols:
-            #     row_idx += 1
-            #     col_idx = 0
             all_scores = self.get_terms_scores_for_tdc_violation(
                 runfiles_n_performances[subquery_id]['first_lines'],
                 rel_docs, 
@@ -892,12 +906,19 @@ class PlotTermRelationship(object):
             idx += 1
         plt.savefig(output_fn, format=ofn_format, bbox_inches='tight', dpi=400)
 
-    def plot_tdc_violation_atom(self, qid, query, top_n_docs, _type, output_fn, ofn_format='png'):
+    def plot_tdc_violation_atom(self, qid, query, top_n_docs, _type, output_fn, terms_type=0, ofn_format='png'):
+        """
+        terms_type: 0-only terms in this subquery; 1-all terms in the original query
+        """
         q_class = Query(self.collection_path)
         subquery_learn_class = SubqueriesLearning(self.collection_path, self.collection_name)
         queries = {ele['num']:ele['title'] for ele in q_class.get_queries()}
         with open(os.path.join(subquery_learn_class.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries([qid], format='dict')[qid]
-        rps = self.get_runfiles_n_performances(qid)
-        self.plot_tdc_violation(rps, rel_docs, subquery_mapping, top_n_docs, _type, output_fn, ofn_format)
+        rps = self.get_runfiles_n_performances(qid, terms_type)
+        if terms_type == 0:
+            self.plot_tdc_violation(rps, rel_docs, subquery_mapping, top_n_docs, _type, output_fn, ofn_format)
+        elif terms_type == 1:
+            self.output_tdc_data_for_all_terms(rps, rel_docs, subquery_mapping, top_n_docs, _type, output_fn)
+

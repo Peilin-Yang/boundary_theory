@@ -277,9 +277,9 @@ def print_para_ranknet(method):
         print '-'*40
         r.print_results_para(method)
 
-def plot_tdc_violation_batch(qlen, top_n_docs, _type, ofn_format):
+def plot_tdc_violation_batch(qlen, top_n_docs, _type, terms_type, ofn_format):
     collections = [(os.path.abspath(os.path.join(collection_root, q['collection'])), q['collection_formal_name']) for q in g.query]
-    all_paras = PlotTermRelationship.plot_tdc_violation_batch(collections, int(qlen), int(top_n_docs), int(_type), ofn_format)
+    all_paras = PlotTermRelationship.plot_tdc_violation_batch(collections, int(qlen), int(top_n_docs), int(_type), int(terms_type), ofn_format)
     gen_batch_framework('plot_tdc_violation_atom', 'plot_tdc_violation_atom', all_paras)
 
 def plot_tdc_violation_atom(para_file):
@@ -403,7 +403,7 @@ if __name__ == '__main__':
                        help='Output the data files for SVMMAP')
 
     parser.add_argument('-plot_tdc_violation_batch', '--plot_tdc_violation_batch', 
-        nargs=4, # query length; top_n_docs: [20,50,100,etc]; type: 1-tf, 2-BM25; ofo_format: png or eps
+        nargs=5, # query length; top_n_docs: [20,50,100,etc]; type: 1-tf, 2-BM25; terms_type: 0-only terms in subquery, 1-all terms in original query; ofo_format: png or eps
         help='')
     parser.add_argument('-plot_tdc_violation_atom', '--plot_tdc_violation_atom', 
         nargs=1,
