@@ -1482,7 +1482,7 @@ class SubqueriesLearning(RunSubqueries):
         for term in orig_query.split():
             terms_stats[term] = cs.get_term_stats(term)
 
-        all_runfiles = os.listdir(self.subqueries_runfiles_root)
+        all_runfiles = os.listdir(os.path.join(self.output_root, 'runfiles_allterms'))
         optimal_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+optimal_subquery_id+'_method:okapi')][0]
         allterm_subquery_runfile = [fn for fn in all_runfiles if fn.startswith(qid+'_'+allterm_subquery_id+'_method:okapi')][0]
         with open(os.path.join(self.subqueries_performance_root, optimal_subquery_runfile)) as f:
@@ -1504,10 +1504,10 @@ class SubqueriesLearning(RunSubqueries):
         results_root = os.path.join('../all_results', 'subqueries', 'crowdsourcing', self.collection_name+'_'+qid)
         if not os.path.exists(results_root):
             os.makedirs(results_root)
-        self.dump_doc(os.path.join(self.subqueries_runfiles_root, optimal_subquery_runfile), 
-            rel_docs, results_root, True)
-        self.dump_doc(os.path.join(self.subqueries_runfiles_root, allterm_subquery_runfile), 
-            rel_docs, results_root, False)
+        # self.dump_doc(os.path.join(self.subqueries_runfiles_root, optimal_subquery_runfile), 
+        #     rel_docs, results_root, True)
+        # self.dump_doc(os.path.join(self.subqueries_runfiles_root, allterm_subquery_runfile), 
+        #     rel_docs, results_root, False)
         with open( os.path.join(results_root, 'info.json'), 'wb' ) as f:
             json.dump(info, f, indent=2, sort_keys=True)
         
