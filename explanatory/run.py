@@ -296,7 +296,7 @@ def plot_tdc_violation_atom(para_file):
             terms_type = int(row[7])
             ofn_format = row[8]
             PlotTermRelationship(collection_path, collection_name) \
-              .plot_tdc_violation_atom(qid, query, top_n_docs, _type, output_fn, ofn_format)
+              .plot_tdc_violation_atom(qid, query, top_n_docs, _type, output_fn, terms_type, ofn_format)
 
 
 if __name__ == '__main__':
