@@ -772,7 +772,10 @@ class PlotTermRelationship(object):
     def get_runfiles_n_performances(self, req_qid, terms_type=0, model='okapi'):
         subquery_learn_class = SubqueriesLearning(self.collection_path, self.collection_name)
         results = {}
-        runfiles_root = os.path.join('subqueries', 'runfiles') if terms_type == 0 else os.path.join('subqueries', 'runfiles_allterms')
+        if terms_type == 0:
+            runfiles_root = os.path.join(self.corpus_path, 'subqueries', 'runfiles') 
+        elif terms_type == 1:
+            runfiles_root = os.path.join(self.corpus_path, 'subqueries', 'runfiles_allterms')
         for fn in os.listdir(subquery_learn_class.subqueries_performance_root):
             fn_split = fn.split('_')
             qid = fn_split[0]
