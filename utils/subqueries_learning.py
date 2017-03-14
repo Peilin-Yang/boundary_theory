@@ -1420,11 +1420,11 @@ class SubqueriesLearning(RunSubqueries):
         with open(runfile_fn, 'wb') as f:
             for line in first_100_lines:
                 qid, tf_details, docid, rank, score, doc_details = line.split()
-                if not os.path.exists(os.path.join(doc_dir, docid)):
-                    dumpindex = '~/usr/indri-5.11/bin/dumpindex' if self.collection_name == 'GOV2' else 'dumpindex_EX'
-                    index = 'index_indri511' if self.collection_name == 'GOV2' else 'index'
-                    subprocess.call(['%s %s/%s dt `%s %s/%s di docno %s` > %s' 
-                        % (dumpindex, self.corpus_path, index, dumpindex, self.corpus_path, index, docid, os.path.join(doc_dir, docid))], shell=True)
+                # if not os.path.exists(os.path.join(doc_dir, docid)):
+                #     dumpindex = '~/usr/indri-5.11/bin/dumpindex' if self.collection_name == 'GOV2' else 'dumpindex_EX'
+                #     index = 'index_indri511' if self.collection_name == 'GOV2' else 'index'
+                #     subprocess.call(['%s %s/%s dt `%s %s/%s di docno %s` > %s' 
+                #         % (dumpindex, self.corpus_path, index, dumpindex, self.corpus_path, index, docid, os.path.join(doc_dir, docid))], shell=True)
                 f.write('%s %s %s %d %s %s\n' % (qid, tf_details, docid, 1 if docid in rel_docs else 0, score, doc_details))
 
     def get_queries(self):
@@ -1504,10 +1504,10 @@ class SubqueriesLearning(RunSubqueries):
         results_root = os.path.join('../all_results', 'subqueries', 'crowdsourcing', self.collection_name+'_'+qid)
         if not os.path.exists(results_root):
             os.makedirs(results_root)
-        # self.dump_doc(os.path.join(self.subqueries_runfiles_root, optimal_subquery_runfile), 
-        #     rel_docs, results_root, True)
-        # self.dump_doc(os.path.join(self.subqueries_runfiles_root, allterm_subquery_runfile), 
-        #     rel_docs, results_root, False)
+        self.dump_doc(os.path.join(self.subqueries_runfiles_root, optimal_subquery_runfile), 
+            rel_docs, results_root, True)
+        self.dump_doc(os.path.join(self.subqueries_runfiles_root, allterm_subquery_runfile), 
+            rel_docs, results_root, False)
         with open( os.path.join(results_root, 'info.json'), 'wb' ) as f:
             json.dump(info, f, indent=2, sort_keys=True)
         
