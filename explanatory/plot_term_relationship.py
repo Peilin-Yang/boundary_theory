@@ -763,8 +763,8 @@ class PlotTermRelationship(object):
                         output_fn = os.path.join(results_root, collection_name+'_'+qid+'_top'+str(top_n_docs)+'_'+type_str+'.json')
                     tmp = [collection_path, collection_name, qid, queries[qid], 
                         top_n_docs, _type, 
-                        terms_type,
                         output_fn,
+                        terms_type,
                         ofn_format]
                     all_qids.append(tmp)
         return all_qids
