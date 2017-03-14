@@ -200,12 +200,14 @@ class RunSubqueries(object):
 
         # first convert the docid to internal docid
         command = ['dumpindex_EX %s di docno %s' % (os.path.join(self.corpus_path, 'index'), docid)]
+        print command
         p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
         out, err = p.communicate()
         internal_docid = out.strip()
 
         terms_dict = {t:0 for t in query_terms}
         command = ['dumpindex_EX %s dv %s' % (os.path.join(self.corpus_path, 'index'), internal_docid)]
+        print command
         p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
         returncode = p.wait()
         out, err = p.communicate()
