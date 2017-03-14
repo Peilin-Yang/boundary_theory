@@ -773,9 +773,9 @@ class PlotTermRelationship(object):
         subquery_learn_class = SubqueriesLearning(self.collection_path, self.collection_name)
         results = {}
         if terms_type == 0:
-            runfiles_root = os.path.join(self.corpus_path, 'subqueries', 'runfiles') 
+            runfiles_root = os.path.join(self.collection_path, 'subqueries', 'runfiles') 
         elif terms_type == 1:
-            runfiles_root = os.path.join(self.corpus_path, 'subqueries', 'runfiles_allterms')
+            runfiles_root = os.path.join(self.collection_path, 'subqueries', 'runfiles_allterms')
         for fn in os.listdir(subquery_learn_class.subqueries_performance_root):
             fn_split = fn.split('_')
             qid = fn_split[0]
