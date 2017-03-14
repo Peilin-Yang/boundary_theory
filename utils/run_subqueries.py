@@ -200,16 +200,13 @@ class RunSubqueries(object):
 
         # first convert the docid to internal docid
         command = ['dumpindex_EX %s di docno %s' % (os.path.join(self.corpus_path, 'index'), docid)]
-        print command
         p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
         out, err = p.communicate()
         internal_docid = out.strip()
 
         terms_dict = {t:0 for t in query_terms}
         command = ['dumpindex_EX %s dv %s' % (os.path.join(self.corpus_path, 'index'), internal_docid)]
-        print command
         p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-        #returncode = p.wait()
         out, err = p.communicate()
         for line in out.split('\n')[2:]:
             if line.strip():
@@ -237,16 +234,13 @@ class RunSubqueries(object):
 
         with open(input_fn) as f:
             lines = [line.strip() for line in f.readlines()[:100]]
-        print input_fn
         with open(output_fn, 'wb') as f:
             for line in lines:
                 row = line.split()
                 docid = row[2]
-                print docid
                 doc_term_dict = self.get_term_dict_from_doc_vector(terms_dict.keys(), docid)
                 terms_cnts = [t+'-'+str(doc_term_dict[terms_mapping[t]]) for t in orig_terms_vec]
                 row[1] = ','.join(terms_cnts)
-                print row[1]
                 f.write('%s\n' % (' '.join(row)))
             
 
