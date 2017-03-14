@@ -209,7 +209,7 @@ class RunSubqueries(object):
         command = ['dumpindex_EX %s dv %s' % (os.path.join(self.corpus_path, 'index'), internal_docid)]
         print command
         p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
-        returncode = p.wait()
+        #returncode = p.wait()
         out, err = p.communicate()
         for line in out.split('\n')[2:]:
             if line.strip():
