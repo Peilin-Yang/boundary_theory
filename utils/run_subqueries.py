@@ -199,13 +199,21 @@ class RunSubqueries(object):
         """
 
         # first convert the docid to internal docid
-        command = ['dumpindex_EX %s di docno %s' % (os.path.join(self.corpus_path, 'index'), docid)]
+        if self.collection_name.lower() == 'gov2':
+            command = ['~/usr/indri-5.11/bin/dumpindex %s di docno %s' 
+                % (os.path.join(self.corpus_path, 'index_indri511'), docid)]
+        else:
+            command = ['dumpindex_EX %s di docno %s' % (os.path.join(self.corpus_path, 'index'), docid)]
         p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
         out, err = p.communicate()
         internal_docid = out.strip()
 
         terms_dict = {t:0 for t in query_terms}
-        command = ['dumpindex_EX %s dv %s' % (os.path.join(self.corpus_path, 'index'), internal_docid)]
+        if self.collection_name.lower() == 'gov2':
+            command = ['~/usr/indri-5.11/bin/dumpindex %s dv %s' 
+                % (os.path.join(self.corpus_path, 'index_indri511'), internal_docid)]
+        else:
+            command = ['dumpindex_EX %s dv %s' % (os.path.join(self.corpus_path, 'index'), internal_docid)]
         p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
         out, err = p.communicate()
         for line in out.split('\n')[2:]:
