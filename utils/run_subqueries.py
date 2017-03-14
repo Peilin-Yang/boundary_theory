@@ -235,6 +235,7 @@ class RunSubqueries(object):
 
         with open(input_fn) as f:
             lines = [line.strip() for line in f.readlines()[:100]]
+        print input_fn
         with open(output_fn, 'wb') as f:
             for line in lines:
                 row = line.split()
@@ -242,6 +243,7 @@ class RunSubqueries(object):
                 doc_term_dict = self.get_term_dict_from_doc_vector(terms_dict.keys(), docid)
                 terms_cnts = [t+'-'+str(doc_term_dict[terms_mapping[t]]) for t in orig_terms_vec]
                 row[1] = ','.join(terms_cnts)
+                print row[1]
                 f.write('%s\n' % (' '.join(row)))
             
 
