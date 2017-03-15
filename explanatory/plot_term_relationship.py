@@ -842,7 +842,7 @@ class PlotTermRelationship(object):
                 _type
             )
             all_scores['query'] = subquery_mapping[subquery_id]
-            all_scores['ap'] = '(%.4f)' % runfiles_n_performances[subquery_id]['ap']
+            all_scores['ap'] = '%.4f' % runfiles_n_performances[subquery_id]['ap']
             all_data[subquery_id] = all_scores
         with open(output_fn, 'wb') as f:
             json.dump(all_data, f, indent=2)
