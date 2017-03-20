@@ -179,7 +179,7 @@ class SubqueriesClassification(SubqueriesLearning):
         if not os.path.exists(output_root):
             os.makedirs(output_root)
         output_fn = os.path.join(output_root, str(query_len))
-        # feature_mapping = self.get_classification_feature_mapping(query_len)
+        print output_fn
         all_performances = self.get_all_performances()
         all_features_matrix = []
         classification = {}
