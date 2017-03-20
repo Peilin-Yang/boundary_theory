@@ -448,7 +448,6 @@ class SubqueriesLearning(RunSubqueries):
                         break
             all_features[subquery_id] = {}
             for i, w in enumerate(withins):
-                all_features[subquery_id][w]
                 centeroid = np.mean(features_wpara[i], axis=0)
                 distances = [np.linalg.norm(doc_scores_vec-centeroid) for doc_scores_vec in features_wpara[i]]
                 mean_distance = np.mean(distances)
