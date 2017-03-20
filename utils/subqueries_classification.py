@@ -117,7 +117,7 @@ class SubqueriesClassification(SubqueriesLearning):
             distances = [np.linalg.norm(doc_scores_vec-centeroid) for doc_scores_vec in ranking_scores]
             mean_distance = np.mean(distances)
             std_distance = np.std(distances)
-            features[subquery_id] = [mean_distance, std_distance]
+            features[subquery_id] = [mean_distance if np.isnan(mean_distance) else 0, std_distance if np.isnan(std_distance) else 0]
         return features
 
     def get_classification_feature_mapping(self, query_len=0):
@@ -157,6 +157,7 @@ class SubqueriesClassification(SubqueriesLearning):
             if not subquery_len in terms_scores_fl:
                 terms_scores_fl[subquery_len] = []
             terms_scores_fl[subquery_len].append(terms_scores[subquery_id][1]) # std
+        print terms_scores_fl
         for subquery_len in terms_scores_fl:
             if int(subquery_len) == len(query_str.split()):
                 features['scores_'+subquery_len] = {'all': terms_scores_fl[subquery_len][0]}
