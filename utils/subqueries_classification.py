@@ -204,6 +204,8 @@ class SubqueriesClassification(SubqueriesLearning):
                 classification[qid] = 0
             else:
                 classification[qid] = 1
+            print qid, all_features_matrix[-1]
+            raw_input()
         print np.argwhere(np.isnan(all_features_matrix))
         print np.any(np.isfinite(all_features_matrix))
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
