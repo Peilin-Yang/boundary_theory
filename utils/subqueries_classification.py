@@ -184,8 +184,16 @@ class SubqueriesClassification(SubqueriesLearning):
         all_features_matrix = []
         classification_features = {}
         classification = {}
-        for qid in sorted(all_performances): 
-            if qid not in all_features:
+
+        q = Query(self.corpus_path)
+        if query_len == 0:
+            queries = q.get_queries()
+        else:
+            queries = q.get_queries_of_length(query_len)
+        queries = {int(ele['num']):ele['title'] for ele in queries}
+        for qid in sorted(queries):
+            qid = str(qid)
+            if qid not in all_performances:
                 continue
             qid_feature_fn = os.path.join(self.subqueries_features_root, 'classification', 'qids', qid)
             with open(qid_feature_fn) as f:
@@ -211,13 +219,14 @@ class SubqueriesClassification(SubqueriesLearning):
             'nn': [10**i for i in range(-5, 0, 1)],
             'dt': range(1, 6)
         }
-        print methods
         run_paras = []
         classification_results_root = os.path.join(self.output_root, 'classification', 'results')
         if not os.path.exists(classification_results_root):
             os.makedirs(classification_results_root)
         feature_root = os.path.join(self.subqueries_features_root, 'classification')
         for query_len in os.listdir(feature_root):
+            if not os.path.isfile(os.path.join(feature_root, query_len)):
+                continue
             for method, paras in methods.items():
                 for para in paras:
                     output_fn = os.path.join(classification_results_root, query_len+'_'+method+'_'+str(para))
@@ -286,7 +295,7 @@ class SubqueriesClassification(SubqueriesLearning):
         methods = {
             'svm': [10**i for i in range(-5, 5)],
             'nn': [10**i for i in range(-5, 0, 1)],
-            'dt': range(3, 11)
+            'dt': range(1, 6)
         }
         for method, paras in methods.items():
             for para in paras:
