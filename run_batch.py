@@ -458,7 +458,7 @@ def cross_run_subquery_classification(query_length):
 
 def evaluate_cross_classification():
     collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
-    SubqueriesLearning.evaluate_cross_classification(collections)
+    SubqueriesClassification.evaluate_cross_classification(collections)
 
 def output_subqueries_features_batch(query_length):
     all_paras = []
