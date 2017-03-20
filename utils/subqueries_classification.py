@@ -182,7 +182,6 @@ class SubqueriesClassification(SubqueriesLearning):
         # feature_mapping = self.get_classification_feature_mapping(query_len)
         all_performances = self.get_all_performances()
         all_features_matrix = []
-        classification_features = {}
         classification = {}
 
         q = Query(self.corpus_path)
@@ -197,8 +196,8 @@ class SubqueriesClassification(SubqueriesLearning):
                 continue
             qid_feature_fn = os.path.join(self.subqueries_features_root, 'classification', 'qids', qid)
             with open(qid_feature_fn) as f:
-                classification_features[qid] = json.load(f)
-            all_features_matrix.append(all_features[qid].values().values())
+                qid_feature = json.load(f)
+            all_features_matrix.append(qid_feature.values().values())
             sorted_subqueryid = sorted(all_performances[qid].items(), key=itemgetter(1), reverse=True)
             if int(sorted_subqueryid[0][0].split('-')[0]) != query_len:
                 classification[qid] = 0
