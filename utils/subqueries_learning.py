@@ -511,6 +511,13 @@ class SubqueriesLearning(RunSubqueries):
                         for fb in features: # on the column
                             mapping[idx] = feature_name+str(w)+'('+fa+'-'+fb+')'
                             idx += 1
+            elif feature_idx == 15: # Cluster
+                withins = [50]
+                for w in withins:
+                    mapping[idx] = 'Cluster_MEAN'
+                    idx += 1
+                    mapping[idx] = 'Cluster_STD'
+                    idx += 1
             else:
                 for fa in features:
                     mapping[idx] = feature_name+'('+fa+')'
@@ -543,7 +550,7 @@ class SubqueriesLearning(RunSubqueries):
                         for w in withins:
                             str_w = str(w)
                             all_features[qid][subquery_id].extend(qid_features[subquery_id][str_w])
-                    elif feature_idx == 14: # TDC
+                    elif feature_idx == 14 or feature_idx == 15: # TDC or CLUSTER
                         withins = [50]
                         for w in withins:
                             str_w = str(w)
