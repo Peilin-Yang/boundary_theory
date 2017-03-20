@@ -760,6 +760,7 @@ class SubqueriesLearning(RunSubqueries):
                 tmptmp_label = []
                 sorted_label = copy.deepcopy(tmp_label)
                 sorted_label.sort(reverse=True)
+                print tmp_label, sorted_label
                 for ele in tmp_label:
                     if ele == sorted_label[0]:
                         tmptmp_label.append(4)
