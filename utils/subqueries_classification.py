@@ -151,14 +151,12 @@ class SubqueriesClassification(SubqueriesLearning):
 
         # term scores features
         terms_scores = self.ranking_scores_features(qid)
-        print terms_scores
         terms_scores_fl = {}
         for subquery_id in terms_scores:
             subquery_len = subquery_id.split('-')[0]
             if not subquery_len in terms_scores_fl:
                 terms_scores_fl[subquery_len] = []
             terms_scores_fl[subquery_len].append(terms_scores[subquery_id][1]) # std
-        print terms_scores_fl
         for subquery_len in terms_scores_fl:
             if int(subquery_len) == len(query_str.split()):
                 features['scores_'+subquery_len] = {'all': terms_scores_fl[subquery_len][0]}
@@ -206,10 +204,7 @@ class SubqueriesClassification(SubqueriesLearning):
                 classification[qid] = 0
             else:
                 classification[qid] = 1
-            print qid, np.argwhere(np.isnan(all_features_matrix[-1]))
-        print np.argwhere(np.isnan(all_features_matrix))
-        print np.any(np.isfinite(all_features_matrix))
-        normalized = normalize(all_features_matrix, axis=0) # normalize each feature
+            normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         idx = 0
         with open(output_fn, 'wb') as f: 
             for qid in sorted(classification, key=self.sort_qid):
