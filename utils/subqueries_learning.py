@@ -64,7 +64,7 @@ class SubqueriesLearning(RunSubqueries):
             11: 'LOGAVGTFIDF',
             12: 'AVGTFCTF',
             13: 'PROXIMITY', # performance score of using proximity query
-            14: 'TDC' # TDC looks at the TF relationship in the top docs of ranking list
+            14: 'TDC', # TDC looks at the TF relationship in the top docs of ranking list
             15: 'CLT' # CLT measures the clusterness of the ranking list
         }
 
