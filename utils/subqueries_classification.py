@@ -151,6 +151,7 @@ class SubqueriesClassification(SubqueriesLearning):
 
         # term scores features
         terms_scores = self.ranking_scores_features(qid)
+        print terms_scores
         terms_scores_fl = {}
         for subquery_id in terms_scores:
             subquery_len = subquery_id.split('-')[0]
