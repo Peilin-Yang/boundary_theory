@@ -977,8 +977,6 @@ if __name__ == '__main__':
         output_features_classification_qlen_batch(args.output_features_classification_qlen_batch[0])
     if args.output_features_classification_qlen_atom:
         output_features_classification_qlen_atom(args.output_features_classification_qlen_atom[0])
-    if args.output_features_classification:
-        output_features_classification(args.output_features_classification[0])
     if args.cross_run_subquery_classification:
         cross_run_subquery_classification(args.cross_run_subquery_classification[0])
     if args.evaluate_cross_classification:
