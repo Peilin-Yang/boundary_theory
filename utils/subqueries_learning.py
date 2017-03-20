@@ -8,6 +8,7 @@ import ast
 import uuid
 import itertools
 import codecs
+import copy
 import xml.etree.ElementTree as ET
 from operator import itemgetter
 import subprocess
@@ -756,19 +757,38 @@ class SubqueriesLearning(RunSubqueries):
                     ### sample training: "3 qid:1 1:1 2:1 3:0 4:0.2 5:0 # 1A"
                     if qid in all_performances and subquery_id in all_performances[qid]:
                         tmp_label.append(all_performances[qid][subquery_id])
-                tmptmp_label = [round((ele-min(tmp_label))*4/(max(tmp_label) - min(tmp_label)), 0) for ele in tmp_label]
-                max_cnts = []
-                for i, ele in enumerate(tmptmp_label):
-                    if ele == 4.0:
-                        max_cnts.append(i)
-                if len(max_cnts) > 1:
-                    orig_max_idx = 0
-                    for j in range(1, len(tmp_label)):
-                        if tmp_label[j] > tmp_label[orig_max_idx]:
-                            orig_max_idx = j
-                    for max_cnt in max_cnts:
-                        if max_cnt != orig_max_idx:
-                            tmptmp_label[max_cnt] -= 1
+                tmptmp_label = []
+                sorted_label = copy.deepcopy(tmp_label)
+                sorted_label.sort(reverse=True)
+                for ele in tmp_label:
+                    if ele == sorted_label[0]:
+                        tmptmp_label.append(4)
+                    elif ele == sorted_label[1]:
+                        diff = sorted_label[0] - sorted_label[1]
+                        if diff <= 1.0:
+                            tmptmp_label.append(3)
+                        elif diff > 1.0 and diff <= 0.3:
+                            tmptmp_label.append(2)
+                        elif diff > 0.3:
+                            tmptmp_label.append(1)
+                    else:
+                        tmptmp_label.append(0)
+                # tmptmp_label = [round((ele-min(tmp_label))*4/(max(tmp_label) - min(tmp_label)), 0) for ele in tmp_label]
+                # max_cnts = []
+                # for i, ele in enumerate(tmptmp_label):
+                #     if ele == 4.0:
+                #         max_cnts.append(i)
+                # if len(max_cnts) > 1:
+                #     orig_max_idx = 0
+                #     for j in range(1, len(tmp_label)):
+                #         if tmp_label[j] > tmp_label[orig_max_idx]:
+                #             orig_max_idx = j
+                #     for max_cnt in max_cnts:
+                #         if max_cnt != orig_max_idx:
+                #             tmptmp_label[max_cnt] -= 1
+                print tmp_label
+                print tmptmp_label
+                raw_input()
                 tmp_label = tmptmp_label
                 tmp_label_idx = 0
                 for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
