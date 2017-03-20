@@ -416,7 +416,6 @@ class SubqueriesLearning(RunSubqueries):
         all_features = {}
         # withins = [1, 5, 10, 20, 50, 100]
         withins = [50]
-        features_wpara = [[] for ele in withins]
         methods = ['okapi']
         optimal_lm_performances = Performances(self.corpus_path).load_optimal_performance(methods)[0]
         indri_model_para = 'method:%s,' % optimal_lm_performances[0] + optimal_lm_performances[2]
@@ -425,6 +424,7 @@ class SubqueriesLearning(RunSubqueries):
             subquery_mapping = json.load(f)
 
         for subquery_id, subquery_str in subquery_mapping.items():
+            features_wpara = [[] for ele in withins]
             orig_runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
             print orig_runfile_fn
             with open(orig_runfile_fn) as f:
