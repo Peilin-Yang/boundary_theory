@@ -374,8 +374,6 @@ class PlotTermRelationship(object):
             except:
                 print 'We have some problems with qid: %s' % qid
 
-
-
     def plot_only_rel_tf_relationship(self, details_data, details_rel_data, 
             rel_data, query_length=2, plot_option=1, method=1, oformat='png'):
         rel_tf_stats = RelTFStats(self.collection_path)

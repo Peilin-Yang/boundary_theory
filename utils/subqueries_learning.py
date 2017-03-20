@@ -65,6 +65,7 @@ class SubqueriesLearning(RunSubqueries):
             12: 'AVGTFCTF',
             13: 'PROXIMITY', # performance score of using proximity query
             14: 'TDC' # TDC looks at the TF relationship in the top docs of ranking list
+            15: 'CLT' # CLT measures the clusterness of the ranking list
         }
 
 
@@ -110,6 +111,8 @@ class SubqueriesLearning(RunSubqueries):
             self.gen_proximity(qid)
         elif feature_type == 14:
             self.gen_tdc(qid)
+        elif feature_type == 15:
+            self.gen_clt(qid)
 
     ############## for mutual information ##############
     def run_indri_runquery(self, query_str, runfile_ofn, qid='0', rule=''):
@@ -404,6 +407,57 @@ class SubqueriesLearning(RunSubqueries):
         with open(outfn, 'wb') as f:
             json.dump(all_features, f, indent=2)
 
+    def gen_clt(self, qid, _type=2):
+        features_root = os.path.join(self.subqueries_features_root, 'CLT')
+        if not os.path.exists(features_root):
+            os.makedirs(features_root)
+
+        cs = CollectionStats(self.corpus_path)
+        all_features = {}
+        # withins = [1, 5, 10, 20, 50, 100]
+        withins = [50]
+        features_wpara = [[] for ele in withins]
+        methods = ['okapi']
+        optimal_lm_performances = Performances(self.corpus_path).load_optimal_performance(methods)[0]
+        indri_model_para = 'method:%s,' % optimal_lm_performances[0] + optimal_lm_performances[2]
+        model_para = float(optimal_lm_performances[2].split(':')[1])
+        with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
+            subquery_mapping = json.load(f)
+
+        for subquery_id, subquery_str in subquery_mapping.items():
+            orig_runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
+            with open(orig_runfile_fn) as f:
+                line_idx = 0
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        row = line.split()
+                        tf_details = row[1]
+                        terms = [ele.split('-')[0] for ele in tf_details.split(',')]
+                        tfs = [float(ele.split('-')[1]) for ele in tf_details.split(',')]
+                        dl = float(row[-1].split(',')[0].split(':')[1])
+                        if _type == 1: # simple TF
+                            scores = tfs
+                        elif _type == 2: # BM25
+                            scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_para+model_para*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
+                        for i, w in enumerate(withins):
+                            if line_idx < w:
+                                features_wpara[i].append(scores)
+                    line_idx += 1
+                    if line_idx >= 100:
+                        break
+            all_features[subquery_id] = {}
+            for i, w in enumerate(withins):
+                all_features[subquery_id][w]
+                centeroid = np.mean(features_wpara[i], axis=0)
+                distances = [np.linalg.norm(doc_scores_vec-centeroid) for doc_scores_vec in features_wpara[i]]
+                mean_distance = np.mean(distances)
+                std_distance = np.std(distances)
+                all_features[subquery_id][w] = [0 if np.isnan(mean_distance) else mean_distance, 0 if np.isnan(std_distance) else std_distance]
+
+        outfn = os.path.join(features_root, qid)
+        with open(outfn, 'wb') as f:
+            json.dump(all_features, f, indent=2)
 
     def get_all_sorts_features(self, feature_vec):
         return [np.min(feature_vec), np.max(feature_vec), 
@@ -844,7 +898,7 @@ class SubqueriesLearning(RunSubqueries):
             subprocess.call(command)
         elif method == 2:
             leaf = int(method_para)
-            command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -leaf %d -save %s' % ( 
+            command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 -ranker 6 -leaf %d -save %s' % ( 
                 os.path.join(self.subqueries_features_root, folder, feature_fn), 
                 leaf,
                 os.path.join(model_root, feature_fn+'_'+str(leaf)))
@@ -907,7 +961,7 @@ class SubqueriesLearning(RunSubqueries):
                         os.path.join(model_root, fn), 
                         os.path.join(predict_root, fn))]
             elif method == 2:
-                command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -leaf %s' 
+                command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 -ranker 6 -leaf %s' 
                     % (os.path.join(self.subqueries_features_root, folder, feature_fn), para)]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             returncode = p.wait()
@@ -919,7 +973,7 @@ class SubqueriesLearning(RunSubqueries):
                 err_rate = float(out.split('\n')[-2].split(':')[1])
             elif method == 2:
                 err_rate = 1-float(out.split('\n')[-3].split(':')[1])
-                command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -load %s -rank %s -score %s'
+                command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -load %s -metric2T NDCG@1 -rank %s -score %s'
                     % (os.path.join(model_root, fn), 
                     os.path.join(self.subqueries_features_root, folder, feature_fn),
                     os.path.join(predict_root, fn))]
@@ -1219,7 +1273,7 @@ class SubqueriesLearning(RunSubqueries):
                 model_output_fn = os.path.join(results_root, 'model_%s_%d_%d' 
                     % (test_collection, query_length, leaf) )
                 if not os.path.exists(model_output_fn):
-                    command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -ranker 6 -leaf %d -save %s' % (trainging_fn, leaf, model_output_fn)]
+                    command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 -ranker 6 -leaf %d -save %s' % (trainging_fn, leaf, model_output_fn)]
                     p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
                     returncode = p.wait()
                     out, error = p.communicate()
@@ -1229,7 +1283,7 @@ class SubqueriesLearning(RunSubqueries):
                 predict_fn = os.path.join(results_root, 'predict_%s_%d_%d' 
                     % (test_collection, query_length, leaf))
                 if not os.path.exists(predict_fn):
-                    command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -load %s -rank %s -score %s' 
+                    command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -load %s -metric2T NDCG@1 -rank %s -score %s' 
                         % (model_output_fn, testing_fn, predict_fn)]
                     p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
                     returncode = p.wait()
