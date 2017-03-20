@@ -288,9 +288,9 @@ class SubqueriesClassification(SubqueriesLearning):
             os.makedirs(results_root)
         test_collection = test[0][1]
         trainging_fn = os.path.join(results_root, 'train_%s_%d' % (test_collection, query_length))
-        SubqueriesLearning.write_combined_feature_classification_fn(results_root, train, trainging_fn, query_length, True)
+        SubqueriesClassification.write_combined_feature_classification_fn(results_root, train, trainging_fn, query_length, True)
         testing_fn = os.path.join(results_root, 'test_%s_%d' % (test_collection, query_length))
-        SubqueriesLearning.write_combined_feature_classification_fn(results_root, test, testing_fn, query_length, False)
+        SubqueriesClassification.write_combined_feature_classification_fn(results_root, test, testing_fn, query_length, False)
         
         methods = {
             'svm': [10**i for i in range(-5, 5)],
@@ -302,9 +302,9 @@ class SubqueriesClassification(SubqueriesLearning):
                 output_fn = os.path.join(results_root, 'predict_'+test_collection+'_'+str(query_length)+'_'+method+'_'+str(para))
                 #if not os.path.exists(output_fn):
                 train_features, train_classes, train_qids = \
-                    SubqueriesLearning.read_classification_features(trainging_fn)
+                    SubqueriesClassification.read_classification_features(trainging_fn)
                 testing_features, testing_classes, testing_qids = \
-                    SubqueriesLearning.read_classification_features(testing_fn)
+                    SubqueriesClassification.read_classification_features(testing_fn)
                 if method == 'nn':
                     clf = MLPClassifier(solver='lbfgs', alpha=para, random_state=1)
                 elif method == 'svm':
@@ -314,7 +314,7 @@ class SubqueriesClassification(SubqueriesLearning):
                 clf.fit(train_features, train_classes)
                 predicted = clf.predict(testing_features)
                 optimal_ground_truth, using_all_terms, second_optimal = \
-                    SubqueriesLearning.load_optimal_ground_truth(test[0][0], testing_qids)
+                    SubqueriesClassification.load_optimal_ground_truth(test[0][0], testing_qids)
                 predicted_map = {}
                 for i, qid in enumerate(testing_qids):
                     if predicted[i] == 1:
