@@ -67,13 +67,13 @@ class SubqueriesClassification(SubqueriesLearning):
     def get_all_sorts_features(self, feature_vec, 
             allowed=['min', 'max', 'max-min', 'max/min', 'mean', 'std', 'sum', 'gmean']):
         _all = {
-            'min': np.min(feature_vec), 
-            'max': np.max(feature_vec), 
-            'max-min': np.max(feature_vec)-np.min(feature_vec),
-            'max/min': np.max(feature_vec)/np.min(feature_vec) if np.min(feature_vec) != 0 else 0,
-            'mean': np.mean(feature_vec), 
-            'std': np.std(feature_vec), 
-            'sum': np.sum(feature_vec), 
+            'min': np.min(feature_vec) if feature_vec else 0.0, 
+            'max': np.max(feature_vec) if feature_vec else 0.0,  
+            'max-min': np.max(feature_vec)-np.min(feature_vec) if feature_vec else 0.0, 
+            'max/min': np.max(feature_vec)/np.min(feature_vec) if feature_vec and np.min(feature_vec) != 0 else 0,
+            'mean': np.mean(feature_vec) if feature_vec else 0.0,
+            'std': np.std(feature_vec) if feature_vec else 0.0, 
+            'sum': np.sum(feature_vec) if feature_vec else 0.0, 
             'gmean': 0 if np.isnan(scipy.stats.mstats.gmean(feature_vec)) else scipy.stats.mstats.gmean(feature_vec)
         }
         return {k:v for k,v in _all.items() if k in allowed}
