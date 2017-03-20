@@ -418,6 +418,25 @@ def output_features_classification_atom(para_file):
             query = row[3]
             SubqueriesClassification(collection_path, collection_name).gen_query_classification_features(qid, query)
 
+def output_features_classification_qlen_batch(qlen):
+    all_paras = []
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        all_paras.append((collection_path, collection_name, qlen))
+    #print all_paras
+    gen_batch_framework('output_features_classification_qlen', '612', all_paras)
+
+def output_features_classification_qlen_atom(para_file):
+    with open(para_file) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            collection_path = row[0]
+            collection_name = row[1]
+            qlen = int(row[2])
+            SubqueriesClassification(collection_path, collection_name).output_features_classification(qlen)
+
+
 def output_features_classification(qlen):
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
@@ -813,16 +832,19 @@ if __name__ == '__main__':
     parser.add_argument('-610', '--output_features_classification_atom', 
         nargs=1,
         help='generate features classification with performance')
-    parser.add_argument('-611', '--output_features_classification', 
+    parser.add_argument('-611', '--output_features_classification_qlen_batch', 
         nargs=1, # query_length
         help='generate features classification with performance')
-    parser.add_argument('-612', '--cross_run_subquery_classification', 
+    parser.add_argument('-612', '--output_features_classification_qlen_atom', 
+        nargs=1, # query_length
+        help='generate features classification with performance')
+    parser.add_argument('-613', '--cross_run_subquery_classification', 
         nargs=1,
         help=('run classification on the original queries to see whether '
             'it should favor subquery or the original one. '
             'arg: query_length')
         )
-    parser.add_argument('-613', '--evaluate_cross_classification', 
+    parser.add_argument('-614', '--evaluate_cross_classification', 
         action='store_true',
         help='evaluate_cross_classification')
     parser.add_argument('-61', '--output_subqueries_features_batch', 
@@ -951,6 +973,10 @@ if __name__ == '__main__':
         output_features_classification_batch()
     if args.output_features_classification_atom:
         output_features_classification_atom(args.output_features_classification_atom[0])
+    if args.output_features_classification_qlen_batch:
+        output_features_classification_qlen_batch(args.output_features_classification_qlen_batch[0])
+    if args.output_features_classification_qlen_atom:
+        output_features_classification_qlen_atom(args.output_features_classification_qlen_atom[0])
     if args.output_features_classification:
         output_features_classification(args.output_features_classification[0])
     if args.cross_run_subquery_classification:
