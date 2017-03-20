@@ -426,7 +426,6 @@ class SubqueriesLearning(RunSubqueries):
         for subquery_id, subquery_str in subquery_mapping.items():
             features_wpara = [[] for ele in withins]
             orig_runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
-            print orig_runfile_fn
             with open(orig_runfile_fn) as f:
                 line_idx = 0
                 for line in f:
@@ -449,7 +448,6 @@ class SubqueriesLearning(RunSubqueries):
                         break
             all_features[subquery_id] = {}
             for i, w in enumerate(withins):
-                print features_wpara[i]
                 centeroid = np.mean(features_wpara[i], axis=0)
                 distances = [np.linalg.norm(doc_scores_vec-centeroid) for doc_scores_vec in features_wpara[i]]
                 mean_distance = np.mean(distances)
