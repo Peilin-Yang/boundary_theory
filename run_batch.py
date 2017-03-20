@@ -418,6 +418,12 @@ def output_features_classification_atom(para_file):
             query = row[3]
             SubqueriesClassification(collection_path, collection_name).gen_query_classification_features(qid, query)
 
+def output_features_classification(qlen):
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        SubqueriesClassification(collection_path, collection_name).output_features_classification(int(qlen))
+
 def cross_run_subquery_classification(query_length):
     query_length = int(query_length)
     collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
@@ -807,13 +813,16 @@ if __name__ == '__main__':
     parser.add_argument('-610', '--output_features_classification_atom', 
         nargs=1,
         help='generate features classification with performance')
-    parser.add_argument('-611', '--cross_run_subquery_classification', 
+    parser.add_argument('-611', '--output_features_classification', 
+        nargs=1, # query_length
+        help='generate features classification with performance')
+    parser.add_argument('-612', '--cross_run_subquery_classification', 
         nargs=1,
         help=('run classification on the original queries to see whether '
             'it should favor subquery or the original one. '
             'arg: query_length')
         )
-    parser.add_argument('-612', '--evaluate_cross_classification', 
+    parser.add_argument('-613', '--evaluate_cross_classification', 
         action='store_true',
         help='evaluate_cross_classification')
     parser.add_argument('-61', '--output_subqueries_features_batch', 
@@ -942,6 +951,8 @@ if __name__ == '__main__':
         output_features_classification_batch()
     if args.output_features_classification_atom:
         output_features_classification_atom(args.output_features_classification_atom[0])
+    if args.output_features_classification:
+        output_features_classification(args.output_features_classification[0])
     if args.cross_run_subquery_classification:
         cross_run_subquery_classification(args.cross_run_subquery_classification[0])
     if args.evaluate_cross_classification:

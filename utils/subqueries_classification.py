@@ -179,17 +179,18 @@ class SubqueriesClassification(SubqueriesLearning):
         if not os.path.exists(output_root):
             os.makedirs(output_root)
         output_fn = os.path.join(output_root, str(query_len))
-        feature_mapping = self.get_classification_feature_mapping(query_len)
+        # feature_mapping = self.get_classification_feature_mapping(query_len)
         all_performances = self.get_all_performances()
-        # all_features = self.get_classification_features(query_len)
         all_features_matrix = []
         classification_features = {}
         classification = {}
         for qid in sorted(all_performances): 
             if qid not in all_features:
                 continue
-            classification_features[qid] = all_features[qid][str(query_len)+'-0']
-            all_features_matrix.append(all_features[qid][str(query_len)+'-0'])
+            qid_feature_fn = os.path.join(self.subqueries_features_root, 'classification', 'qids', qid)
+            with open(qid_feature_fn) as f:
+                classification_features[qid] = json.load(f)
+            all_features_matrix.append(all_features[qid].values().values())
             sorted_subqueryid = sorted(all_performances[qid].items(), key=itemgetter(1), reverse=True)
             if int(sorted_subqueryid[0][0].split('-')[0]) != query_len:
                 classification[qid] = 0
@@ -207,7 +208,8 @@ class SubqueriesClassification(SubqueriesLearning):
     def batch_run_classification_paras(self):
         methods = {
             'svm': [10**i for i in range(-5, 5)],
-            'nn': [10**i for i in range(-5, 0, 1)]
+            'nn': [10**i for i in range(-5, 0, 1)],
+            'dt': range(1, 6)
         }
         print methods
         run_paras = []
