@@ -117,7 +117,7 @@ class SubqueriesClassification(SubqueriesLearning):
             distances = [np.linalg.norm(doc_scores_vec-centeroid) for doc_scores_vec in ranking_scores]
             mean_distance = np.mean(distances)
             std_distance = np.std(distances)
-            features[subquery_id] = [mean_distance if np.isnan(mean_distance) else 0, std_distance if np.isnan(std_distance) else 0]
+            features[subquery_id] = [0 if np.isnan(mean_distance) else mean_distance, 0 if np.isnan(std_distance) else std_distance]
         return features
 
     def get_classification_feature_mapping(self, query_len=0):
