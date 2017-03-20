@@ -766,6 +766,7 @@ class SubqueriesLearning(RunSubqueries):
                         tmptmp_label.append(4)
                     elif ele == sorted_label[1]:
                         diff = sorted_label[0] - sorted_label[1]
+                        print diff
                         if diff <= 1.0:
                             tmptmp_label.append(3)
                         elif diff > 1.0 and diff <= 0.3:
