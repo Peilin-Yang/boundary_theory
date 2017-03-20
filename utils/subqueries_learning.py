@@ -65,7 +65,7 @@ class SubqueriesLearning(RunSubqueries):
             12: 'AVGTFCTF',
             13: 'PROXIMITY', # performance score of using proximity query
             14: 'TDC', # TDC looks at the TF relationship in the top docs of ranking list
-            15: 'CLT' # CLT measures the clusterness of the ranking list
+            15: 'CLT', # CLT measures the clusterness of the ranking list
         }
 
 
@@ -424,7 +424,7 @@ class SubqueriesLearning(RunSubqueries):
             subquery_mapping = json.load(f)
 
         for subquery_id, subquery_str in subquery_mapping.items():
-            features_wpara = [[] for ele in withins]
+            features_wpara = [{'all_terms': [], 'sub_terms': []} for ele in withins]
             orig_runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
             with open(orig_runfile_fn) as f:
                 line_idx = 0
@@ -442,17 +442,49 @@ class SubqueriesLearning(RunSubqueries):
                             scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_para+model_para*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
                         for i, w in enumerate(withins):
                             if line_idx < w:
-                                features_wpara[i].append(scores)
+                                features_wpara[i]['sub_terms'].append(scores)
+                    line_idx += 1
+                    if line_idx >= 100:
+                        break
+            sub_runfile_fn = os.path.join(self.output_root, 'runfiles_allterms', qid+'_'+subquery_id+'_'+indri_model_para)
+            with open(sub_runfile_fn) as f:
+                line_idx = 0
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        row = line.split()
+                        tf_details = row[1]
+                        terms = [ele.split('-')[0] for ele in tf_details.split(',')]
+                        tfs = [float(ele.split('-')[1]) for ele in tf_details.split(',')]
+                        dl = float(row[-1].split(',')[0].split(':')[1])
+                        if _type == 1: # simple TF
+                            scores = tfs
+                        elif _type == 2: # BM25
+                            scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_para+model_para*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
+                        for i, w in enumerate(withins):
+                            if line_idx < w:
+                                features_wpara[i]['all_terms'].append(scores)
                     line_idx += 1
                     if line_idx >= 100:
                         break
             all_features[subquery_id] = {}
             for i, w in enumerate(withins):
-                centeroid = np.mean(features_wpara[i], axis=0)
-                distances = [np.linalg.norm(doc_scores_vec-centeroid) for doc_scores_vec in features_wpara[i]]
-                mean_distance = np.mean(distances)
-                std_distance = np.std(distances)
-                all_features[subquery_id][w] = [0 if np.isnan(mean_distance) else mean_distance, 0 if np.isnan(std_distance) else std_distance]
+                centeroid_sub = np.mean(features_wpara[i]['sub_terms'], axis=0)
+                distances_sub = [np.linalg.norm(doc_scores_vec-centeroid_sub) for doc_scores_vec in features_wpara[i]['sub_terms']]
+                mean_distance_sub = np.mean(distances_sub)
+                std_distance_sub = np.std(distances_sub)
+                centeroid_all = np.mean(features_wpara[i]['all_terms'], axis=0)
+                distances_all = [np.linalg.norm(doc_scores_vec-centeroid_all) for doc_scores_vec in features_wpara[i]['all_terms']]
+                mean_distance_all = np.mean(distances_all)
+                std_distance_all = np.std(distances_all)
+                all_features[subquery_id][w] = [
+                    0 if np.isnan(mean_distance_sub) else mean_distance_sub, 
+                    0 if np.isnan(std_distance_sub) else std_distance_sub,
+                    0 if np.isnan(mean_distance_all) else mean_distance_all, 
+                    0 if np.isnan(std_distance_all) else std_distance_all,
+                    mean_distance_all-mean_distance_sub, 
+                    std_distance_all-std_distance_sub
+                ]
 
         outfn = os.path.join(features_root, qid)
         with open(outfn, 'wb') as f:
