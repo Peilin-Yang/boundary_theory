@@ -204,6 +204,7 @@ class SubqueriesClassification(SubqueriesLearning):
                 classification[qid] = 0
             else:
                 classification[qid] = 1
+        print all_features_matrix
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         idx = 0
         with open(output_fn, 'wb') as f: 
