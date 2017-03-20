@@ -760,7 +760,6 @@ class SubqueriesLearning(RunSubqueries):
                 tmptmp_label = []
                 sorted_label = copy.deepcopy(tmp_label)
                 sorted_label.sort(reverse=True)
-                print tmp_label, sorted_label
                 for ele in tmp_label:
                     if ele == sorted_label[0]:
                         tmptmp_label.append(4)
@@ -788,9 +787,6 @@ class SubqueriesLearning(RunSubqueries):
                 #     for max_cnt in max_cnts:
                 #         if max_cnt != orig_max_idx:
                 #             tmptmp_label[max_cnt] -= 1
-                print tmp_label
-                print tmptmp_label
-                raw_input()
                 tmp_label = tmptmp_label
                 tmp_label_idx = 0
                 for subquery_id in sorted(all_features[qid], key=self.sort_subquery_id):
