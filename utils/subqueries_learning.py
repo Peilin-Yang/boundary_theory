@@ -523,11 +523,8 @@ class SubqueriesLearning(RunSubqueries):
                     distances_nearest_axis_std = np.nan
                 else:
                     distances_nearest_axis_centeroid, distances_nearest_axis = self.cal_point_to_axis_distances(centeroid_all, features_wpara[i]['all_terms'])
-                    print centeroid_all, features_wpara[i]['all_terms'], distances_nearest_axis
                     distances_nearest_axis_mean = np.mean(distances_nearest_axis)
                     distances_nearest_axis_std = np.std(distances_nearest_axis)
-                print distances_nearest_axis_centeroid, distances_nearest_axis_mean, distances_nearest_axis_std
-                raw_input()
                 all_features[subquery_id][w] = [
                     999 if np.isnan(mean_distance_sub) else mean_distance_sub, 
                     999 if np.isnan(std_distance_sub) else std_distance_sub,
