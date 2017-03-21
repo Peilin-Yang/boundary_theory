@@ -414,8 +414,11 @@ class SubqueriesLearning(RunSubqueries):
     def cal_point_to_line_distances(self, points):
         points = np.array(points)
         shape = points.shape
-        print shape
-        if shape[1] == 2:
+        if shape[0] == 0:
+            return 
+        elif shape[1] == 1:
+            return np.apply_along_axis(self.cal_point_to_line_distances2, 1, points)    
+        elif shape[1] == 2:
             return np.apply_along_axis(self.cal_point_to_line_distances2, 1, points)
         elif shape[1] == 3:
             return np.apply_along_axis(self.cal_point_to_line_distances3, 1, points)
@@ -491,16 +494,22 @@ class SubqueriesLearning(RunSubqueries):
                 distances_all = [np.linalg.norm(doc_scores_vec-centeroid_all) for doc_scores_vec in features_wpara[i]['all_terms']]
                 mean_distance_all = np.mean(distances_all)
                 std_distance_all = np.std(distances_all)
-                print features_wpara[i]['all_terms']
-                print self.cal_point_to_line_distances(features_wpara[i]['all_terms'])
-                raw_input()
+                distances_diagonal_all = self.cal_point_to_line_distances(features_wpara[i]['all_terms'])
+                distances_diagonal_all_centeroid = self.cal_point_to_line_distances([centeroid_all])
+                distances_diagonal_all_centeroid = distances_diagonal_all_centeroid if distances_diagonal_all_centeroid else 999
+                distances_diagonal_all_mean = np.mean(distances_diagonal_all) if distances_diagonal_all else 999
+                distances_diagonal_all_std = np.std(distances_diagonal_all) if distances_diagonal_all else 999
+                print distances_diagonal_all_centeroid, distances_diagonal_all_mean, distances_diagonal_all_std
                 all_features[subquery_id][w] = [
-                    0 if np.isnan(mean_distance_sub) else mean_distance_sub, 
-                    0 if np.isnan(std_distance_sub) else std_distance_sub,
-                    0 if np.isnan(mean_distance_all) else mean_distance_all, 
-                    0 if np.isnan(std_distance_all) else std_distance_all,
-                    0 if np.isnan(mean_distance_all) or np.isnan(mean_distance_sub) else mean_distance_all-mean_distance_sub, 
-                    0 if np.isnan(std_distance_all) or np.isnan(std_distance_sub) else std_distance_all-std_distance_sub
+                    999 if np.isnan(mean_distance_sub) else mean_distance_sub, 
+                    999 if np.isnan(std_distance_sub) else std_distance_sub,
+                    999 if np.isnan(mean_distance_all) else mean_distance_all, 
+                    999 if np.isnan(std_distance_all) else std_distance_all,
+                    999 if np.isnan(mean_distance_all) or np.isnan(mean_distance_sub) else mean_distance_all-mean_distance_sub, 
+                    999 if np.isnan(std_distance_all) or np.isnan(std_distance_sub) else std_distance_all-std_distance_sub
+                    distances_diagonal_all_centeroid,
+                    distances_diagonal_all_mean,
+                    distances_diagonal_all_std,
                 ]
 
         outfn = os.path.join(features_root, qid)
