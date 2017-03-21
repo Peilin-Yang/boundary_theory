@@ -427,7 +427,6 @@ class SubqueriesLearning(RunSubqueries):
     def cal_point_to_axis_distances(self, center, points):
         points = np.array(points)
         shape = points.shape
-        print points, shape
         if shape[0] == 0:
             return np.nan, np.nan
         if shape[1] == 1:
@@ -511,25 +510,31 @@ class SubqueriesLearning(RunSubqueries):
                 mean_distance_all = np.mean(distances_all)
                 std_distance_all = np.std(distances_all)
                 distances_diagonal_all = self.cal_point_to_diagnoal_distances(features_wpara[i]['all_terms'])
-                if np.any(np.isnan(centeroid_all)):
+                if centeroid_all.shape[0] > 3:
                     distances_diagonal_all_centeroid = np.nan
-                else:
-                    print centeroid_all
-                    distances_diagonal_all_centeroid = self.cal_point_to_diagnoal_distances([centeroid_all])
-                    print distances_diagonal_all_centeroid
-                    if not np.isnan(distances_diagonal_all_centeroid):
-                        distances_diagonal_all_centeroid = distances_diagonal_all_centeroid[0]
-                distances_diagonal_all_mean = np.mean(distances_diagonal_all)
-                distances_diagonal_all_std = np.std(distances_diagonal_all)
-
-                if np.any(np.isnan(centeroid_all)):
+                    distances_diagonal_all_mean = np.nan
+                    distances_diagonal_all_std = np.nan
                     distances_nearest_axis_centeroid = np.nan
                     distances_nearest_axis_mean = np.nan
                     distances_nearest_axis_std = np.nan
                 else:
-                    distances_nearest_axis_centeroid, distances_nearest_axis = self.cal_point_to_axis_distances(centeroid_all, features_wpara[i]['all_terms'])
-                    distances_nearest_axis_mean = np.mean(distances_nearest_axis)
-                    distances_nearest_axis_std = np.std(distances_nearest_axis)
+                    if np.any(np.isnan(centeroid_all)):
+                        distances_diagonal_all_centeroid = np.nan
+                    else:
+                        distances_diagonal_all_centeroid = self.cal_point_to_diagnoal_distances([centeroid_all])
+                        if not distances_diagonal_all_centeroid or np.isnan(distances_diagonal_all_centeroid):
+                            distances_diagonal_all_centeroid = distances_diagonal_all_centeroid[0]
+                    distances_diagonal_all_mean = np.mean(distances_diagonal_all)
+                    distances_diagonal_all_std = np.std(distances_diagonal_all)
+
+                    if np.any(np.isnan(centeroid_all)):
+                        distances_nearest_axis_centeroid = np.nan
+                        distances_nearest_axis_mean = np.nan
+                        distances_nearest_axis_std = np.nan
+                    else:
+                        distances_nearest_axis_centeroid, distances_nearest_axis = self.cal_point_to_axis_distances(centeroid_all, features_wpara[i]['all_terms'])
+                        distances_nearest_axis_mean = np.mean(distances_nearest_axis)
+                        distances_nearest_axis_std = np.std(distances_nearest_axis)
                 all_features[subquery_id][w] = [
                     999 if np.isnan(mean_distance_sub) else mean_distance_sub, 
                     999 if np.isnan(std_distance_sub) else std_distance_sub,
