@@ -998,7 +998,6 @@ class SubqueriesLearning(RunSubqueries):
             predict_output_fn = os.path.join(predict_root, fn)
             if os.path.exists(predict_output_fn) and os.path.exists(error_rate_fn):
                 continue
-            print fn
             feature_fn = fn.split('_')[0]
             label_type = feature_fn.split('.')[1]
             para = fn.split('_')[1]
@@ -1035,7 +1034,6 @@ class SubqueriesLearning(RunSubqueries):
             if label_type not in all_models[query_length]:
                 all_models[query_length][label_type] = []
             all_models[query_length][label_type].append((para, err_rate))
-        print all_models
         if error_rates:
             with open(error_rate_fn, 'wb') as f:
                 json.dump(error_rates, f, indent=2)
