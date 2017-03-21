@@ -828,6 +828,7 @@ class SubqueriesLearning(RunSubqueries):
         all_features_matrix = []
         for qid in sorted(all_features):
             for subquery_id in sorted(all_features[qid]):
+                print qid, subquery_id, np.argwhere(np.isnan(all_features[qid][subquery_id]))
                 all_features_matrix.append(all_features[qid][subquery_id])
         normalized = normalize(all_features_matrix, axis=0) # normalize each feature
         all_performances = self.get_all_performances()
