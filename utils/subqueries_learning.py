@@ -407,13 +407,18 @@ class SubqueriesLearning(RunSubqueries):
         with open(outfn, 'wb') as f:
             json.dump(all_features, f, indent=2)
 
+    def cal_point_to_line_distances2(self, a):
+        return np.absolute(a[0]-a[1])/np.sqrt(2)
+    def cal_point_to_line_distances3(self, a):
+        return np.linalg.norm(np.array([-a[1]+a[2], a[0]-a[2], -a[0]+a[1]]))/np.sqrt(3)
     def cal_point_to_line_distances(self, points):
         points = np.array(points)
         shape = points.shape
+        print shape
         if shape[1] == 2:
-            return np.absolute(points[0]-points[1])/np.sqrt(2)
+            return np.apply_along_axis(self.cal_point_to_line_distances2, 1, points)
         elif shape[1] == 3:
-            return np.linalg.norm(np.array([-points[1]+points[2], points[0]-points[2], -points[0]+points[1]]))/np.sqrt(3)
+            return np.apply_along_axis(self.cal_point_to_line_distances3, 1, points)
 
 
     def gen_clt(self, qid, _type=2):
