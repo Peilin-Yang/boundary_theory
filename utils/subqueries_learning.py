@@ -408,6 +408,7 @@ class SubqueriesLearning(RunSubqueries):
             json.dump(all_features, f, indent=2)
 
     def cal_point_to_line_distances(self, points):
+        points = np.array(points)
         shape = points.shape
         if shape[1] == 2:
             return np.absolute(points[0]-points[1])/np.sqrt(2)
