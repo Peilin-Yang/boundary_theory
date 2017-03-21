@@ -552,6 +552,7 @@ class SubqueriesLearning(RunSubqueries):
                 ]
 
         outfn = os.path.join(features_root, qid)
+        print all_features
         with open(outfn, 'wb') as f:
             json.dump(all_features, f, indent=2)
 
