@@ -432,7 +432,7 @@ class SubqueriesLearning(RunSubqueries):
         if shape[1] == 1:
             return np.nan, np.nan  
         which_axis = np.argmin(center)
-        elif shape[1] == 2:
+        if shape[1] == 2:
             return center[np.argmax(center)], points[np.argmax(center)]
         elif shape[1] == 3:
             axes = [for i in range(3) if i != which_axis]
