@@ -514,6 +514,7 @@ class SubqueriesLearning(RunSubqueries):
                     distances_diagonal_all_centeroid = np.nan
                 else:
                     distances_diagonal_all_centeroid = self.cal_point_to_diagnoal_distances([centeroid_all])
+                    print distances_diagonal_all_centeroid
                     if not np.isnan(distances_diagonal_all_centeroid):
                         distances_diagonal_all_centeroid = distances_diagonal_all_centeroid[0]
                 distances_diagonal_all_mean = np.mean(distances_diagonal_all)
