@@ -417,8 +417,6 @@ class SubqueriesLearning(RunSubqueries):
         print shape
         if shape[0] == 0:
             return 
-        if len(shape) == 1 and shape[0] == 1:
-            print points
         if shape[1] == 1:
             return np.apply_along_axis(self.cal_point_to_line_distances2, 1, points)    
         elif shape[1] == 2:
