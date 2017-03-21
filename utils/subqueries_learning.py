@@ -427,6 +427,7 @@ class SubqueriesLearning(RunSubqueries):
     def cal_point_to_axis_distances(self, center, points):
         points = np.array(points)
         shape = points.shape
+        print points, shape
         if shape[0] == 0:
             return np.nan, np.nan
         if shape[1] == 1:
