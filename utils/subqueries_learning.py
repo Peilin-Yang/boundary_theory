@@ -506,7 +506,7 @@ class SubqueriesLearning(RunSubqueries):
                     999 if np.isnan(mean_distance_all) else mean_distance_all, 
                     999 if np.isnan(std_distance_all) else std_distance_all,
                     999 if np.isnan(mean_distance_all) or np.isnan(mean_distance_sub) else mean_distance_all-mean_distance_sub, 
-                    999 if np.isnan(std_distance_all) or np.isnan(std_distance_sub) else std_distance_all-std_distance_sub
+                    999 if np.isnan(std_distance_all) or np.isnan(std_distance_sub) else std_distance_all-std_distance_sub,
                     distances_diagonal_all_centeroid,
                     distances_diagonal_all_mean,
                     distances_diagonal_all_std,
