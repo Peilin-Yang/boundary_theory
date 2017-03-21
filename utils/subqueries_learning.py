@@ -437,7 +437,7 @@ class SubqueriesLearning(RunSubqueries):
         elif shape[1] == 3:
             axes = [i for i in range(3) if i != which_axis]
             print axes, center
-            return np.linalg.norm(center[axes[0]], center[axes[1]]), np.apply_along_axis(self.cal_point_to_axis_distances3, 1, points, axes)
+            return np.linalg.norm([center[axes[0]], center[axes[1]]]), np.apply_along_axis(self.cal_point_to_axis_distances3, 1, points, axes)
 
 
     def gen_clt(self, qid, _type=2):
