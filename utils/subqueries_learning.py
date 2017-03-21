@@ -436,7 +436,6 @@ class SubqueriesLearning(RunSubqueries):
             return center[np.argmax(center)], points[np.argmax(center)]
         elif shape[1] == 3:
             axes = [i for i in range(3) if i != which_axis]
-            print axes, center
             return np.linalg.norm([center[axes[0]], center[axes[1]]]), np.apply_along_axis(self.cal_point_to_axis_distances3, 1, points, axes)
 
 
@@ -524,6 +523,7 @@ class SubqueriesLearning(RunSubqueries):
                     distances_nearest_axis_std = np.nan
                 else:
                     distances_nearest_axis_centeroid, distances_nearest_axis = self.cal_point_to_axis_distances(centeroid_all, features_wpara[i]['all_terms'])[0]
+                    print distances_nearest_axis
                     distances_nearest_axis_mean = np.mean(distances_nearest_axis)
                     distances_nearest_axis_std = np.std(distances_nearest_axis)
                 print centeroid_all, features_wpara[i]['all_terms']
