@@ -417,12 +417,15 @@ class SubqueriesLearning(RunSubqueries):
         print shape
         if shape[0] == 0:
             return 
-        elif shape[1] == 1:
-            return np.apply_along_axis(self.cal_point_to_line_distances2, 1, points)    
-        elif shape[1] == 2:
-            return np.apply_along_axis(self.cal_point_to_line_distances2, 1, points)
-        elif shape[1] == 3:
-            return np.apply_along_axis(self.cal_point_to_line_distances3, 1, points)
+        try:
+            elif shape[1] == 1:
+                return np.apply_along_axis(self.cal_point_to_line_distances2, 1, points)    
+            elif shape[1] == 2:
+                return np.apply_along_axis(self.cal_point_to_line_distances2, 1, points)
+            elif shape[1] == 3:
+                return np.apply_along_axis(self.cal_point_to_line_distances3, 1, points)
+        except:
+            return 999
 
 
     def gen_clt(self, qid, _type=2):
