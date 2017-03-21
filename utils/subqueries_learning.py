@@ -546,9 +546,17 @@ class SubqueriesLearning(RunSubqueries):
             elif feature_idx == 15: # Cluster
                 withins = [50]
                 for w in withins:
-                    mapping[idx] = 'Cluster_MEAN'
+                    mapping[idx] = 'Allterms_Cluster_MEAN'
                     idx += 1
-                    mapping[idx] = 'Cluster_STD'
+                    mapping[idx] = 'Allterms_Cluster_STD'
+                    idx += 1
+                    mapping[idx] = 'Subterms_Cluster_MEAN'
+                    idx += 1
+                    mapping[idx] = 'Subterms_Cluster_STD'
+                    idx += 1
+                    mapping[idx] = 'Cluster_MEAN_Diff'
+                    idx += 1
+                    mapping[idx] = 'Cluster_STD_Diff'
                     idx += 1
             else:
                 for fa in features:
