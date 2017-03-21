@@ -612,6 +612,18 @@ class SubqueriesLearning(RunSubqueries):
                     idx += 1
                     mapping[idx] = 'Cluster_STD_Diff'
                     idx += 1
+                    mapping[idx] = 'Allterms_Dist_Diag_Center'
+                    idx += 1
+                    mapping[idx] = 'Allterms_Dist_Diag_MEAN'
+                    idx += 1
+                    mapping[idx] = 'Allterms_Dist_Diag_STD'
+                    idx += 1
+                    mapping[idx] = 'Allterms_Dist_NearestAxis_Center'
+                    idx += 1
+                    mapping[idx] = 'Allterms_Dist_NearestAxis_MEAN'
+                    idx += 1
+                    mapping[idx] = 'Allterms_Dist_NearestAxis_STD'
+                    idx += 1
             else:
                 for fa in features:
                     mapping[idx] = feature_name+'('+fa+')'
