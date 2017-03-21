@@ -995,6 +995,7 @@ class SubqueriesLearning(RunSubqueries):
         error_rate_fn = os.path.join(self.output_root, method_folder, folder, 'err_rate')
         error_rates = {}
         for fn in os.listdir(model_root):
+            print fn
             predict_output_fn = os.path.join(predict_root, fn)
             if os.path.exists(predict_output_fn) and os.path.exists(error_rate_fn):
                 continue
