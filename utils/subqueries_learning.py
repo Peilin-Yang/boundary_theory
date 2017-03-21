@@ -414,6 +414,7 @@ class SubqueriesLearning(RunSubqueries):
     def cal_point_to_line_distances(self, points):
         points = np.array(points)
         shape = points.shape
+        print shape
         if shape[0] == 0:
             return 
         elif shape[1] == 1:
@@ -507,9 +508,9 @@ class SubqueriesLearning(RunSubqueries):
                     999 if np.isnan(std_distance_all) else std_distance_all,
                     999 if np.isnan(mean_distance_all) or np.isnan(mean_distance_sub) else mean_distance_all-mean_distance_sub, 
                     999 if np.isnan(std_distance_all) or np.isnan(std_distance_sub) else std_distance_all-std_distance_sub,
-                    distances_diagonal_all_centeroid,
-                    distances_diagonal_all_mean,
-                    distances_diagonal_all_std,
+                    999 if np.isnan(distances_diagonal_all_centeroid) else distances_diagonal_all_centeroid,
+                    999 if np.isnan(distances_diagonal_all_mean) else distances_diagonal_all_mean,
+                    999 if np.isnan(distances_diagonal_all_std) else distances_diagonal_all_std,
                 ]
 
         outfn = os.path.join(features_root, qid)
