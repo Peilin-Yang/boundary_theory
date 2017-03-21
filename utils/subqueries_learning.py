@@ -456,6 +456,7 @@ class SubqueriesLearning(RunSubqueries):
             subquery_mapping = json.load(f)
 
         for subquery_id, subquery_str in subquery_mapping.items():
+            print self.corpus_path, qid, subquery_id
             features_wpara = [{'all_terms': [], 'sub_terms': []} for ele in withins]
             orig_runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
             with open(orig_runfile_fn) as f:
