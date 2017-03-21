@@ -498,7 +498,7 @@ class SubqueriesLearning(RunSubqueries):
                 mean_distance_all = np.mean(distances_all)
                 std_distance_all = np.std(distances_all)
                 distances_diagonal_all = self.cal_point_to_line_distances(features_wpara[i]['all_terms'])
-                if np.isnan(centeroid_all):
+                if np.isnan(centeroid_all.any()):
                     distances_diagonal_all_centeroid = np.nan
                 else:
                     distances_diagonal_all_centeroid = self.cal_point_to_line_distances([centeroid_all])[0]
