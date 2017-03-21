@@ -407,22 +407,36 @@ class SubqueriesLearning(RunSubqueries):
         with open(outfn, 'wb') as f:
             json.dump(all_features, f, indent=2)
 
-    def cal_point_to_line_distances2(self, a):
+    def cal_point_to_diagnoal_distances2(self, a):
         return np.absolute(a[0]-a[1])/np.sqrt(2)
-    def cal_point_to_line_distances3(self, a):
+    def cal_point_to_diagnoal_distances3(self, a):
         return np.linalg.norm(np.array([-a[1]+a[2], a[0]-a[2], -a[0]+a[1]]))/np.sqrt(3)
-    def cal_point_to_line_distances(self, points):
+    def cal_point_to_diagnoal_distances(self, points):
         points = np.array(points)
         shape = points.shape
-        print shape
         if shape[0] == 0:
             return np.nan
         if shape[1] == 1:
-            return np.apply_along_axis(self.cal_point_to_line_distances2, 1, points)    
+            return np.nan
         elif shape[1] == 2:
-            return np.apply_along_axis(self.cal_point_to_line_distances2, 1, points)
+            return np.apply_along_axis(self.cal_point_to_diagnoal_distances2, 1, points)
         elif shape[1] == 3:
-            return np.apply_along_axis(self.cal_point_to_line_distances3, 1, points)
+            return np.apply_along_axis(self.cal_point_to_diagnoal_distances3, 1, points)
+    def cal_point_to_axis_distances3(self, a, axes):
+        return np.linalg.norm(np.array([a[axes[0]], a[axes[1]]]))
+    def cal_point_to_axis_distances(self, center, points):
+        points = np.array(points)
+        shape = points.shape
+        if shape[0] == 0:
+            return np.nan, np.nan
+        if shape[1] == 1:
+            return np.nan, np.nan  
+        which_axis = np.argmin(center)
+        elif shape[1] == 2:
+            return center[np.argmax(center)], points[np.argmax(center)]
+        elif shape[1] == 3:
+            axes = [for i in range(3) if i != which_axis]
+            return np.linalg.norm(center[axes[0]], center[axes[1]]), np.apply_along_axis(self.cal_point_to_axis_distances3, 1, points, axes)
 
 
     def gen_clt(self, qid, _type=2):
@@ -495,14 +509,25 @@ class SubqueriesLearning(RunSubqueries):
                 distances_all = [np.linalg.norm(doc_scores_vec-centeroid_all) for doc_scores_vec in features_wpara[i]['all_terms']]
                 mean_distance_all = np.mean(distances_all)
                 std_distance_all = np.std(distances_all)
-                distances_diagonal_all = self.cal_point_to_line_distances(features_wpara[i]['all_terms'])
-                print features_wpara[i]['all_terms']
+                distances_diagonal_all = self.cal_point_to_diagnoal_distances(features_wpara[i]['all_terms'])
                 if np.any(np.isnan(centeroid_all)):
                     distances_diagonal_all_centeroid = np.nan
                 else:
-                    distances_diagonal_all_centeroid = self.cal_point_to_line_distances([centeroid_all])[0]
+                    distances_diagonal_all_centeroid = self.cal_point_to_diagnoal_distances([centeroid_all])[0]
                 distances_diagonal_all_mean = np.mean(distances_diagonal_all)
                 distances_diagonal_all_std = np.std(distances_diagonal_all)
+
+                if np.any(np.isnan(centeroid_all)):
+                    distances_nearest_axis_centeroid = np.nan
+                    distances_nearest_axis_mean = np.nan
+                    distances_nearest_axis_std = np.nan
+                else:
+                    distances_nearest_axis_centeroid, distances_nearest_axis = self.cal_point_to_axis_distances(centeroid_all, features_wpara[i]['all_terms'])[0]
+                    distances_nearest_axis_mean = np.mean(distances_nearest_axis)
+                    distances_nearest_axis_std = np.std(distances_nearest_axis)
+                print centeroid_all, features_wpara[i]['all_terms']
+                print distances_nearest_axis_centeroid, distances_nearest_axis_mean, distances_nearest_axis_std
+                raw_input()
                 all_features[subquery_id][w] = [
                     999 if np.isnan(mean_distance_sub) else mean_distance_sub, 
                     999 if np.isnan(std_distance_sub) else std_distance_sub,
@@ -513,6 +538,9 @@ class SubqueriesLearning(RunSubqueries):
                     999 if np.isnan(distances_diagonal_all_centeroid) else distances_diagonal_all_centeroid,
                     999 if np.isnan(distances_diagonal_all_mean) else distances_diagonal_all_mean,
                     999 if np.isnan(distances_diagonal_all_std) else distances_diagonal_all_std,
+                    999 if np.isnan(distances_nearest_axis_centeroid) else distances_nearest_axis_centeroid,
+                    999 if np.isnan(distances_nearest_axis_mean) else distances_nearest_axis_mean,
+                    999 if np.isnan(distances_nearest_axis_std) else distances_nearest_axis_std,
                 ]
 
         outfn = os.path.join(features_root, qid)
