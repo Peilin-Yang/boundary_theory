@@ -407,6 +407,14 @@ class SubqueriesLearning(RunSubqueries):
         with open(outfn, 'wb') as f:
             json.dump(all_features, f, indent=2)
 
+    def cal_point_to_line_distances(self, points):
+        shape = points.shape
+        if shape[1] == 2:
+            return np.absolute(points[0]-points[1])/np.sqrt(2)
+        elif shape[1] == 3:
+            return np.linalg.norm(np.array([-points[1]+points[2], points[0]-points[2], -points[0]+points[1]]))/np.sqrt(3)
+
+
     def gen_clt(self, qid, _type=2):
         features_root = os.path.join(self.subqueries_features_root, 'CLT')
         if not os.path.exists(features_root):
@@ -477,6 +485,9 @@ class SubqueriesLearning(RunSubqueries):
                 distances_all = [np.linalg.norm(doc_scores_vec-centeroid_all) for doc_scores_vec in features_wpara[i]['all_terms']]
                 mean_distance_all = np.mean(distances_all)
                 std_distance_all = np.std(distances_all)
+                print features_wpara[i]['all_terms']
+                print self.cal_point_to_line_distances(features_wpara[i]['all_terms'])
+                raw_input()
                 all_features[subquery_id][w] = [
                     0 if np.isnan(mean_distance_sub) else mean_distance_sub, 
                     0 if np.isnan(std_distance_sub) else std_distance_sub,
