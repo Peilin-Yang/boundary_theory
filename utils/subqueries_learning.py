@@ -482,8 +482,8 @@ class SubqueriesLearning(RunSubqueries):
                     0 if np.isnan(std_distance_sub) else std_distance_sub,
                     0 if np.isnan(mean_distance_all) else mean_distance_all, 
                     0 if np.isnan(std_distance_all) else std_distance_all,
-                    mean_distance_all-mean_distance_sub, 
-                    std_distance_all-std_distance_sub
+                    0 if np.isnan(mean_distance_all) or np.isnan(mean_distance_sub) else mean_distance_all-mean_distance_sub, 
+                    0 if np.isnan(std_distance_all) or np.isnan(std_distance_sub) else std_distance_all-std_distance_sub
                 ]
 
         outfn = os.path.join(features_root, qid)
