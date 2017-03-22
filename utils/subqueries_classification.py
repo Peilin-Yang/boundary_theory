@@ -341,8 +341,8 @@ class SubqueriesClassification(SubqueriesLearning):
                     all_predict_data[query_length][method] = []
                 with open(os.path.join(results_root, fn)) as f:
                     lines = f.readlines()
-                    accuracy = float(lines[0].strip())
-                    ap = float(lines[1].strip())
+                    accuracy = float(lines[0].strip().split(':')[1])
+                    ap = float(lines[1].strip().split(':')[1])
                 all_predict_data[query_length][method].append((collection_name, accuracy, ap))
 
         avg_predict_data = {}
