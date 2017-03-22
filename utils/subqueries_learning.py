@@ -510,7 +510,7 @@ class SubqueriesLearning(RunSubqueries):
                 mean_distance_all = np.mean(distances_all)
                 std_distance_all = np.std(distances_all)
                 distances_diagonal_all = self.cal_point_to_diagnoal_distances(features_wpara[i]['all_terms'])
-                if centeroid_all.shape[0] > 3 or centeroid_all.shape[0] < 2:
+                if np.isnan(centeroid_all) or centeroid_all.shape[0] > 3 or centeroid_all.shape[0] < 2:
                     distances_diagonal_all_centeroid = np.nan
                     distances_diagonal_all_mean = np.nan
                     distances_diagonal_all_std = np.nan
