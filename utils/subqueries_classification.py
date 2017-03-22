@@ -109,8 +109,8 @@ class SubqueriesClassification(SubqueriesLearning):
         with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
         features = {}
-        features_root = os.path.join(self.subqueries_features_root, 'CLT')
-        with open(os.path.join(features_root, subquery_id)) as f:
+        features_fn = os.path.join(self.subqueries_features_root, 'CLT', qid)
+        with open(features_fn) as f:
             j = json.load(f)
             for subquery_id, subquery_str in subquery_mapping.items():
                 features[subquery_id] = j[subquery_id]['50']
