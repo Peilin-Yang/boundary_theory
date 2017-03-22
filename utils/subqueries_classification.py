@@ -23,7 +23,7 @@ from sklearn.feature_selection import SelectFromModel
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from sklearn import tree
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, accuracy_score
 from sklearn.metrics import classification_report
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 
@@ -309,6 +309,7 @@ class SubqueriesClassification(SubqueriesLearning):
                     clf = tree.DecisionTreeClassifier(max_depth=para)
                 clf.fit(train_features, train_classes)
                 predicted = clf.predict(testing_features)
+                acc = accuracy_score(testing_classes, predicted)
                 optimal_ground_truth, using_all_terms, second_optimal = \
                     SubqueriesClassification.load_optimal_ground_truth(test[0][0], testing_qids)
                 predicted_map = {}
@@ -320,7 +321,8 @@ class SubqueriesClassification(SubqueriesLearning):
                     elif predicted[i] == 0 and testing_classes[i] == 1:
                         predicted_map[qid] = second_optimal[qid]
                 with open(output_fn, 'wb') as f:
-                    f.write('%.4f' % np.mean(predicted_map.values()))
+                    f.write('acc:%.2f\n' % acc)
+                    f.write('predict_ap:%.4f\n' % np.mean(predicted_map.values()))
 
     @staticmethod
     def evaluate_cross_classification(all_data, query_length=2):
@@ -338,8 +340,10 @@ class SubqueriesClassification(SubqueriesLearning):
                 if method not in all_predict_data[query_length]:
                     all_predict_data[query_length][method] = []
                 with open(os.path.join(results_root, fn)) as f:
-                    performance = float(f.read())
-                all_predict_data[query_length][method].append((collection_name, performance))
+                    lines = f.readlines()
+                    accuracy = float(lines[0].strip())
+                    ap = float(lines[1].strip())
+                all_predict_data[query_length][method].append((collection_name, accuracy, ap))
 
         avg_predict_data = {}
         for query_length in all_predict_data:
