@@ -1200,7 +1200,7 @@ class SubqueriesLearning(RunSubqueries):
                     if method == 1:
                         with open(os.path.join(model_root, model_fn)) as f:
                             model = f.readlines()[-1]
-                        feature_weights = [(int(ele.split(':')[0]), float(ele.split(':')[1])) for ele in model.split()[1:-1]]
+                        feature_weights = [(int(ele.split(':')[0]), math.fabs(ele.split(':')[1])) for ele in model.split()[1:-1]]
                     elif method == 2:
                         # train_data, train_label = self.read_data_from_feature_file(feature_fn)
                         # clf = GradientBoostingRegressor(n_estimators=1000, max_depth=1, random_state=0).fit(train_data, train_label)
