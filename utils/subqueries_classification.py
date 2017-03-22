@@ -109,15 +109,11 @@ class SubqueriesClassification(SubqueriesLearning):
         with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
         features = {}
-        for subquery_id, subquery_str in subquery_mapping.items():
-            features[subquery_id] = {}
-            runfile_fn = os.path.join(self.subqueries_runfiles_root, qid+'_'+subquery_id+'_'+indri_model_para)
-            ranking_scores = self.load_term_scores(runfile_fn, model_para, 2)
-            centeroid = np.mean(ranking_scores, axis=0)
-            distances = [np.linalg.norm(doc_scores_vec-centeroid) for doc_scores_vec in ranking_scores]
-            mean_distance = np.mean(distances)
-            std_distance = np.std(distances)
-            features[subquery_id] = [0 if np.isnan(mean_distance) else mean_distance, 0 if np.isnan(std_distance) else std_distance]
+        features_root = os.path.join(self.subqueries_features_root, 'CLT')
+        with open(os.path.join(features_root, subquery_id)) as f:
+            j = json.load(f)
+            for subquery_id, subquery_str in subquery_mapping.items():
+                features[subquery_id] = j[subquery_id]['50']
         return features
 
     def get_classification_feature_mapping(self, query_len=0):
