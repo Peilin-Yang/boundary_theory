@@ -978,57 +978,61 @@ class SubqueriesLearning(RunSubqueries):
     def batch_gen_learning_to_rank_paras(self, feature_type=1, method=1, 
             label_type='int', included_feature_list_file=0):
         if feature_type == 2:
-            folder = 'kendallstau'
+            feature_folder = 'kendallstau'
+            result_folder = 'kendallstau'
         elif feature_type == 3:
-            folder = 'pearsonr'
+            feature_folder = 'pearsonr'
+            result_folder = 'pearsonr'
         else:
+            feature_folder = 'final'
             if included_feature_list_file == 0:
-                folder = 'final'
+                result_folder = 'final'
             else:
-                folder = str(included_feature_list_file)
+                result_folder = str(included_feature_list_file)
 
         if method == 1:
             method_folder = 'svm_rank'
         elif method == 2:
             method_folder = 'lambdamart'
         paras = []
-        model_root = os.path.join(self.output_root, method_folder, folder, 'models')
+        model_root = os.path.join(self.output_root, method_folder, result_folder, 'models')
         if not os.path.exists(model_root):
             os.makedirs(model_root)
-        predict_root = os.path.join(self.output_root, method_folder, folder, 'predict')
+        predict_root = os.path.join(self.output_root, method_folder, result_folder, 'predict')
         if not os.path.exists(predict_root):
             os.makedirs(predict_root)
-        for fn in os.listdir(os.path.join(self.subqueries_features_root, folder)):
+        for fn in os.listdir(os.path.join(self.subqueries_features_root, feature_folder)):
             fn_splits = fn.split('.')
             if len(fn_splits) != 2 or fn_splits[1] != label_type:
                 continue
             if method == 1:
                 for c in range(-5, 5):
                     if not os.path.exists(os.path.join(model_root, fn+'_'+str(10**c))):
-                        paras.append((self.corpus_path, self.collection_name, folder, fn, method, c))
+                        paras.append((self.corpus_path, self.collection_name, feature_folder, result_folder, fn, method, c))
             elif method == 2:
                 for leaf in range(2, 10):
                     if not os.path.exists(os.path.join(model_root, fn+'_'+str(leaf))):
-                        paras.append((self.corpus_path, self.collection_name, folder, fn, method, leaf))
+                        paras.append((self.corpus_path, self.collection_name, feature_folder, result_folder, fn, method, leaf))
         return paras
 
-    def learning_to_rank_wrapper(self, folder, feature_fn, method, method_para):
+    def learning_to_rank_wrapper(self, feature_folder, result_folder,
+            feature_fn, method, method_para):
         if method == 1:
             method_folder = 'svm_rank'
         elif method == 2:
             method_folder = 'lambdamart'
-        model_root = os.path.join(self.output_root, method_folder, folder, 'models')
+        model_root = os.path.join(self.output_root, method_folder, result_folder, 'models')
         if method == 1:
             c = int(method_para)
             command = ['svm_rank_learn', '-c', str(10**c), 
-                os.path.join(self.subqueries_features_root, folder, feature_fn), 
+                os.path.join(self.subqueries_features_root, feature_folder, feature_fn), 
                 os.path.join(model_root, feature_fn+'_'+str(10**c))]
             subprocess.call(command)
         elif method == 2:
             leaf = int(method_para)
             command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 %s -ranker 6 -leaf %d -save %s' % ( 
-                os.path.join(self.subqueries_features_root, folder, feature_fn), 
-                '' if int(folder) == 0 else '-feature ./utils/features/'+folder,
+                os.path.join(self.subqueries_features_root, feature_folder, feature_fn), 
+                '' if int(result_folder) == 0 else '-feature ./utils/features/'+result_folder,
                 leaf,
                 os.path.join(model_root, feature_fn+'_'+str(leaf)))
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)

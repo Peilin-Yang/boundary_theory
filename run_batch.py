@@ -493,11 +493,12 @@ def learning_to_rank_atom(para_file):
         for row in reader:
             collection_path = row[0]
             collection_name = row[1]
-            folder = row[2]
-            feature_fn = row[3]
-            method = int(row[4])
-            method_para = float(row[5])
-            SubqueriesLearning(collection_path, collection_name).learning_to_rank_wrapper(folder, feature_fn, method, method_para)
+            feature_folder = row[2]
+            result_folder = row[3]
+            feature_fn = row[4]
+            method = int(row[5])
+            method_para = float(row[6])
+            SubqueriesLearning(collection_path, collection_name).learning_to_rank_wrapper(feature_folder, result_folder, feature_fn, method, method_para)
 
 def gen_evaluate_learning_to_rank_model_batch(feature_type=1, method=1):
     all_paras = []
