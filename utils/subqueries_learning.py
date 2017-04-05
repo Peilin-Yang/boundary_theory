@@ -975,13 +975,17 @@ class SubqueriesLearning(RunSubqueries):
                         tmp_label_idx += 1
                     idx += 1
 
-    def batch_gen_learning_to_rank_paras(self, feature_type=1, method=1, label_type='int'):
+    def batch_gen_learning_to_rank_paras(self, feature_type=1, method=1, 
+            label_type='int', included_feature_list_file=0):
         if feature_type == 2:
             folder = 'kendallstau'
         elif feature_type == 3:
             folder = 'pearsonr'
         else:
-            folder = 'final'
+            if included_feature_list_file == 0:
+                folder = 'final'
+            else:
+                folder = str(included_feature_list_file)
 
         if method == 1:
             method_folder = 'svm_rank'
@@ -1022,8 +1026,9 @@ class SubqueriesLearning(RunSubqueries):
             subprocess.call(command)
         elif method == 2:
             leaf = int(method_para)
-            command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 -ranker 6 -leaf %d -save %s' % ( 
+            command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 %s -ranker 6 -leaf %d -save %s' % ( 
                 os.path.join(self.subqueries_features_root, folder, feature_fn), 
+                '' if int(folder) == 0 else '-feature '+folder,
                 leaf,
                 os.path.join(model_root, feature_fn+'_'+str(leaf)))
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)

@@ -478,7 +478,7 @@ def output_subqueries_features_atom(para_file):
             query_length = int(row[2])
             SubqueriesLearning(collection_path, collection_name).output_collection_features(query_length)
 
-def gen_learning_to_rank_batch(feature_type=1, method=1, label_type='int'):
+def gen_learning_to_rank_batch(feature_type=1, method=1, label_type='int', feature_list_file=None):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
@@ -854,7 +854,7 @@ if __name__ == '__main__':
         nargs=1,
         help='generate subqueries features')
     parser.add_argument('-63', '--gen_learning_to_rank_batch', 
-        nargs=3,
+        nargs=4,
         help=('generate the batch runs for svm rank. '
             'arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr), ranking_method(1-svmrank, 2-lambdamart), label_type(int,ap)]')
     )
@@ -989,7 +989,8 @@ if __name__ == '__main__':
         gen_learning_to_rank_batch(
             int(args.gen_learning_to_rank_batch[0]), 
             int(args.gen_learning_to_rank_batch[1]),
-            args.gen_learning_to_rank_batch[2])
+            args.gen_learning_to_rank_batch[2],
+            int(args.gen_learning_to_rank_batch[3]))
     if args.learning_to_rank_atom:
         learning_to_rank_atom(args.learning_to_rank_atom[0])
     if args.gen_evaluate_learning_to_rank_model_batch:
