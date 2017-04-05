@@ -483,7 +483,7 @@ def gen_learning_to_rank_batch(feature_type=1, method=1, label_type='int', featu
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.extend(SubqueriesLearning(collection_path, collection_name).batch_gen_learning_to_rank_paras(feature_type, method, label_type))
+        all_paras.extend(SubqueriesLearning(collection_path, collection_name).batch_gen_learning_to_rank_paras(feature_type, method, label_type, feature_list_file))
     #print all_paras
     gen_batch_framework('learning_to_rank_train', '64', all_paras)
 
@@ -856,7 +856,7 @@ if __name__ == '__main__':
     parser.add_argument('-63', '--gen_learning_to_rank_batch', 
         nargs=4,
         help=('generate the batch runs for svm rank. '
-            'arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr), ranking_method(1-svmrank, 2-lambdamart), label_type(int,ap)]')
+            'arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr), ranking_method(1-svmrank, 2-lambdamart), label_type(int,ap), feature_list_file(used for LambdaMART)]')
     )
     parser.add_argument('-64', '--learning_to_rank_atom', 
         nargs=1,
