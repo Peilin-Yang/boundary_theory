@@ -1028,7 +1028,7 @@ class SubqueriesLearning(RunSubqueries):
             leaf = int(method_para)
             command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 %s -ranker 6 -leaf %d -save %s' % ( 
                 os.path.join(self.subqueries_features_root, folder, feature_fn), 
-                '' if int(folder) == 0 else '-feature '+folder,
+                '' if int(folder) == 0 else '-feature ./utils/features/'+folder,
                 leaf,
                 os.path.join(model_root, feature_fn+'_'+str(leaf)))
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
