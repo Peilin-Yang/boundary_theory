@@ -1066,7 +1066,7 @@ class SubqueriesLearning(RunSubqueries):
         return all_features
 
     def evaluate_learning_to_rank_model(self, feature_type=1, method=1, feature_list_file=0):
-       if feature_type == 2:
+        if feature_type == 2:
             feature_folder = 'kendallstau'
             result_folder = 'kendallstau'
         elif feature_type == 3:
