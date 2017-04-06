@@ -864,8 +864,8 @@ if __name__ == '__main__':
         nargs=1,
         help='svm rank atom')
     parser.add_argument('-65', '--gen_evaluate_learning_to_rank_model_batch', 
-        nargs=2,
-        help='generate the batch runs for learning to rank. arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr), method(1-svmrank, 2-lambdamart)]')
+        nargs=3,
+        help='generate the batch runs for learning to rank. arg: [feature_type(1-all features, 2-top features kendallstau, 3-top features pearsonr), method(1-svmrank, 2-lambdamart), feature_list_file(used for LambdaMART)]')
     parser.add_argument('-66', '--evaluate_learning_to_rank_model_atom', 
         nargs=1,
         help='rank atom')
@@ -998,7 +998,8 @@ if __name__ == '__main__':
     if args.gen_evaluate_learning_to_rank_model_batch:
         gen_evaluate_learning_to_rank_model_batch(
             int(args.gen_evaluate_learning_to_rank_model_batch[0]),
-            int(args.gen_evaluate_learning_to_rank_model_batch[1]))
+            int(args.gen_evaluate_learning_to_rank_model_batch[1]),
+            int(args.gen_evaluate_learning_to_rank_model_batch[2]))
     if args.evaluate_learning_to_rank_model_atom:
         evaluate_learning_to_rank_model_atom(args.evaluate_learning_to_rank_model_atom[0])
     if args.print_svm_model_feature_importance:
