@@ -1367,7 +1367,7 @@ class SubqueriesLearning(RunSubqueries):
             print query_length, json.dumps(all_performances[query_length][0], indent=2)
 
     @staticmethod
-    def cross_testing_learning_to_rank_model(train, test, query_length=2, method=1, label_type='int'):
+    def cross_testing_learning_to_rank_model(train, test, query_length=2, method=1, label_type='int', feature_list_file=0):
         """
         train and test are list of (collection_path, collection_name)
         # label_type: int (use integer as labels) or ap (use ap value floating numbers as labels)
@@ -1378,7 +1378,7 @@ class SubqueriesLearning(RunSubqueries):
             method_folder = 'svm_rank'
         elif method == 2:
             method_folder = 'lambdamart'
-        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', label_type, method_folder)
+        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', label_type, method_folder, str(feature_list_file))
         if not os.path.exists(results_root):
             os.makedirs(results_root)
         trainging_fn = os.path.join(results_root, 'train_%s_%d' % (test_collection, query_length))
@@ -1414,7 +1414,8 @@ class SubqueriesLearning(RunSubqueries):
                 model_output_fn = os.path.join(results_root, 'model_%s_%d_%d' 
                     % (test_collection, query_length, leaf) )
                 if not os.path.exists(model_output_fn):
-                    command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 -ranker 6 -leaf %d -save %s' % (trainging_fn, leaf, model_output_fn)]
+                    command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s %s -metric2t NDCG@1 -ranker 6 -leaf %d -save %s' 
+                        % (trainging_fn, '' if feature_list_file == 0 else '-feature '+str(feature_list_file), leaf, model_output_fn)]
                     p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
                     returncode = p.wait()
                     out, error = p.communicate()
