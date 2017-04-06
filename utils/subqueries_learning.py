@@ -1103,7 +1103,7 @@ class SubqueriesLearning(RunSubqueries):
                 command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 %s -ranker 6 -leaf %s' 
                     % (os.path.join(self.subqueries_features_root, result_folder, feature_fn),
                        '' if int(result_folder) == 0 else '-feature ./utils/features/'+result_folder, 
-                       , para)]
+                       para)]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             returncode = p.wait()
             out, error = p.communicate()
