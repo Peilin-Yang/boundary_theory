@@ -1163,7 +1163,7 @@ class SubqueriesLearning(RunSubqueries):
                     optimal_model_predict = 0.0
                     performance_using_all_terms = 0.0
                     para = all_models[query_length][label_type][0][0]
-                    feature_fn = os.path.join(self.subqueries_features_root, feature_folderz, str(query_length)+'.'+label_type)
+                    feature_fn = os.path.join(self.subqueries_features_root, feature_folder, str(query_length)+'.'+label_type)
                     predict_fn = os.path.join(predict_root, str(query_length)+'.'+label_type+'_'+para)
                     with open(predict_fn) as f:
                         if method == 1:
