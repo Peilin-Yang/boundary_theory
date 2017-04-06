@@ -1416,7 +1416,7 @@ class SubqueriesLearning(RunSubqueries):
                     % (test_collection, query_length, leaf) )
                 if not os.path.exists(model_output_fn):
                     command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s %s -metric2t NDCG@1 -ranker 6 -leaf %d -save %s' 
-                        % (trainging_fn, '' if feature_list_file == 0 else '-feature '+str(feature_list_file), leaf, model_output_fn)]
+                        % (trainging_fn, '' if feature_list_file == 0 else '-feature ./utils/features/'+str(feature_list_file), leaf, model_output_fn)]
                     p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
                     returncode = p.wait()
                     out, error = p.communicate()
