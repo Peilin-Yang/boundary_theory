@@ -565,9 +565,9 @@ def cross_testing_learning_to_rank_model(query_length=2, method=1, label_type='i
                 this_training.append(collections[j])
         SubqueriesLearning.cross_testing_learning_to_rank_model(this_training, this_testing, int(query_length), int(method), label_type, int(feature_list_file))
 
-def evaluate_learning_to_rank_cross_testing(method=1, label_type='int'):
+def evaluate_learning_to_rank_cross_testing(method=1, label_type='int', feature_list_file=0):
     collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
-    SubqueriesLearning.evaluate_learning_to_rank_cross_testing(collections, int(method), label_type)
+    SubqueriesLearning.evaluate_learning_to_rank_cross_testing(collections, int(method), label_type, feature_list_file)
 
 
 def mi_learn_batch(query_length, mi_distance, thres):
@@ -878,8 +878,8 @@ if __name__ == '__main__':
         nargs=4,
         help='cross testing the learning to rank model. arg: [query_length, ranking_method(1-svmrank, 2-lambdamart), label_type(int,ap), feature_list_file(used for LambdaMART)]')
     parser.add_argument('-69', '--evaluate_learning_to_rank_cross_testing', 
-        nargs=2,
-        help='evaluate cross testing the learning to rank. arg: [ranking_method(1-svmrank, 2-lambdamart), label_type(int,ap)]')
+        nargs=3,
+        help='evaluate cross testing the learning to rank. arg: [ranking_method(1-svmrank, 2-lambdamart), label_type(int,ap), feature_list_file(used for LambdaMART)]')
 
     parser.add_argument('-mi_learn_batch', '--mi_learn_batch', 
         nargs=3,
@@ -1013,7 +1013,8 @@ if __name__ == '__main__':
     if args.evaluate_learning_to_rank_cross_testing:
         evaluate_learning_to_rank_cross_testing(
             int(args.evaluate_learning_to_rank_cross_testing[0]),
-            args.evaluate_learning_to_rank_cross_testing[1])
+            args.evaluate_learning_to_rank_cross_testing[1],
+            int(args.evaluate_learning_to_rank_cross_testing[2]))
 
     if args.mi_learn_batch:
         mi_learn_batch(args.mi_learn_batch[0], args.mi_learn_batch[1], args.mi_learn_batch[2])

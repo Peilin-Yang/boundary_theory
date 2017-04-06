@@ -1279,13 +1279,13 @@ class SubqueriesLearning(RunSubqueries):
                     qid_idx += 1
 
     @staticmethod
-    def evaluate_learning_to_rank_cross_testing(all_data, method=1, label_type='int'):
+    def evaluate_learning_to_rank_cross_testing(all_data, method=1, label_type='int', feature_list_file=0):
         if method == 1:
             method_folder = 'svm_rank'
         elif method == 2:
             method_folder = 'lambdamart'
         data_mapping = {d[1]:d[0] for d in all_data}
-        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', label_type, method_folder)
+        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', label_type, method_folder, str(feature_list_file))
         all_predict_data = {}
         for fn in os.listdir(results_root):
             m = re.search(r'^predict_(.*?)_(.*?)_(.*)$', fn)
@@ -1363,6 +1363,7 @@ class SubqueriesLearning(RunSubqueries):
             all_performances[query_length].sort(key=itemgetter(1), reverse=True)
 
         print 'Method: %s' % method_folder
+        print 'Feature: %d' % feature_list_file
         for query_length in all_performances:
             print query_length, json.dumps(all_performances[query_length][0], indent=2)
 
