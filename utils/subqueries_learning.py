@@ -1065,21 +1065,27 @@ class SubqueriesLearning(RunSubqueries):
             all_features.append(int(tree.find('split').find('feature').text))
         return all_features
 
-    def evaluate_learning_to_rank_model(self, feature_type=1, method=1):
-        if feature_type == 2:
-            folder = 'kendallstau'
+    def evaluate_learning_to_rank_model(self, feature_type=1, method=1, feature_list_file=0):
+       if feature_type == 2:
+            feature_folder = 'kendallstau'
+            result_folder = 'kendallstau'
         elif feature_type == 3:
-            folder = 'pearsonr'
+            feature_folder = 'pearsonr'
+            result_folder = 'pearsonr'
         else:
-            folder = 'final'
+            feature_folder = 'final'
+            if included_feature_list_file == 0:
+                result_folder = 'final'
+            else:
+                result_folder = str(included_feature_list_file)
         if method == 1:
             method_folder = 'svm_rank'
         elif method == 2:
             method_folder = 'lambdamart'
-        model_root = os.path.join(self.output_root, method_folder, folder, 'models')
-        predict_root = os.path.join(self.output_root, method_folder, folder, 'predict')
+        model_root = os.path.join(self.output_root, method_folder, result_folder, 'models')
+        predict_root = os.path.join(self.output_root, method_folder, result_folder, 'predict')
         all_models = {}
-        error_rate_fn = os.path.join(self.output_root, method_folder, folder, 'err_rate')
+        error_rate_fn = os.path.join(self.output_root, method_folder, result_folder, 'err_rate')
         error_rates = {}
         for fn in os.listdir(model_root):
             predict_output_fn = os.path.join(predict_root, fn)
@@ -1090,12 +1096,14 @@ class SubqueriesLearning(RunSubqueries):
             para = fn.split('_')[1]
             if method == 1:
                 command = ['svm_rank_classify %s %s %s' 
-                    % (os.path.join(self.subqueries_features_root, folder, feature_fn), 
+                    % (os.path.join(self.subqueries_features_root, feature_folder, feature_fn), 
                         os.path.join(model_root, fn), 
                         os.path.join(predict_root, fn))]
             elif method == 2:
-                command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 -ranker 6 -leaf %s' 
-                    % (os.path.join(self.subqueries_features_root, folder, feature_fn), para)]
+                command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 %s -ranker 6 -leaf %s' 
+                    % (os.path.join(self.subqueries_features_root, result_folder, feature_fn),
+                       '' if int(result_folder) == 0 else '-feature ./utils/features/'+result_folder, 
+                       , para)]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             returncode = p.wait()
             out, error = p.communicate()
@@ -1108,7 +1116,7 @@ class SubqueriesLearning(RunSubqueries):
                 err_rate = 1-float(out.split('\n')[-3].split(':')[1])
                 command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -load %s -metric2T NDCG@1 -rank %s -score %s'
                     % (os.path.join(model_root, fn), 
-                    os.path.join(self.subqueries_features_root, folder, feature_fn),
+                    os.path.join(self.subqueries_features_root, feature_folder, feature_fn),
                     os.path.join(predict_root, fn))]
                 subprocess.call(command, shell=True)
             if query_length not in error_rates:
@@ -1137,7 +1145,7 @@ class SubqueriesLearning(RunSubqueries):
                         all_models[query_length][label_type].append((para, error_rates[query_length][label_type][para]))
         feature_mapping = self.get_feature_mapping()
         predict_optimal_subquery_len_dist = {}
-        with open(os.path.join(self.final_output_root, self.collection_name+'-%s_subquery_dist-%s.md' % (method_folder, folder)), 'wb') as ssdf:
+        with open(os.path.join(self.final_output_root, self.collection_name+'-%s_subquery_dist-%s.md' % (method_folder, result_folder)), 'wb') as ssdf:
             ssdf.write('### %s\n' % (self.collection_name))
             ssdf.write('| query len | label_type | using all terms | optimal (ground truth) | optimal |\n')
             ssdf.write('|--------|--------|--------|--------|--------|\n')
@@ -1155,7 +1163,7 @@ class SubqueriesLearning(RunSubqueries):
                     optimal_model_predict = 0.0
                     performance_using_all_terms = 0.0
                     para = all_models[query_length][label_type][0][0]
-                    feature_fn = os.path.join(self.subqueries_features_root, folder, str(query_length)+'.'+label_type)
+                    feature_fn = os.path.join(self.subqueries_features_root, feature_folderz, str(query_length)+'.'+label_type)
                     predict_fn = os.path.join(predict_root, str(query_length)+'.'+label_type+'_'+para)
                     with open(predict_fn) as f:
                         if method == 1:
@@ -1222,7 +1230,7 @@ class SubqueriesLearning(RunSubqueries):
                             features_dict[feature] += 1
                         feature_weights = [(k,v) for k,v in features_dict.items()]
                     feature_weights.sort(key=itemgetter(1, 0), reverse=True)
-                    output_root = os.path.join(self.output_root, method_folder, folder, 'featurerank')
+                    output_root = os.path.join(self.output_root, method_folder, result_folder, 'featurerank')
                     if not os.path.exists(output_root):
                         os.makedirs(output_root)
                     with open(os.path.join(output_root, str(query_length)), 'wb') as f:

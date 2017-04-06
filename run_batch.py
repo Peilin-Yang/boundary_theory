@@ -478,7 +478,7 @@ def output_subqueries_features_atom(para_file):
             query_length = int(row[2])
             SubqueriesLearning(collection_path, collection_name).output_collection_features(query_length)
 
-def gen_learning_to_rank_batch(feature_type=1, method=1, label_type='int', feature_list_file=None):
+def gen_learning_to_rank_batch(feature_type=1, method=1, label_type='int', feature_list_file=0):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
@@ -500,12 +500,12 @@ def learning_to_rank_atom(para_file):
             method_para = float(row[6])
             SubqueriesLearning(collection_path, collection_name).learning_to_rank_wrapper(feature_folder, result_folder, feature_fn, method, method_para)
 
-def gen_evaluate_learning_to_rank_model_batch(feature_type=1, method=1):
+def gen_evaluate_learning_to_rank_model_batch(feature_type=1, method=1, feature_list_file=0):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        all_paras.append((collection_path, collection_name, feature_type, method))
+        all_paras.append((collection_path, collection_name, feature_type, method, feature_list_file))
     #print all_paras
     gen_batch_framework('evaluate_learning_to_rank_model', '66', all_paras)
 
@@ -517,7 +517,8 @@ def evaluate_learning_to_rank_model_atom(para_file):
             collection_name = row[1]
             feature_type = int(row[2])
             method = int(row[3])
-            SubqueriesLearning(collection_path, collection_name).evaluate_learning_to_rank_model(feature_type, method)
+            feature_list_file = int(row[4])
+            SubqueriesLearning(collection_path, collection_name).evaluate_learning_to_rank_model(feature_type, method, feature_list_file)
 
 def print_svm_model_feature_importance(feature_type=1, top=10):
     if feature_type == 1:
