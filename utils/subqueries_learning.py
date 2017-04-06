@@ -1074,10 +1074,10 @@ class SubqueriesLearning(RunSubqueries):
             result_folder = 'pearsonr'
         else:
             feature_folder = 'final'
-            if included_feature_list_file == 0:
+            if feature_list_file == 0:
                 result_folder = 'final'
             else:
-                result_folder = str(included_feature_list_file)
+                result_folder = str(feature_list_file)
         if method == 1:
             method_folder = 'svm_rank'
         elif method == 2:
