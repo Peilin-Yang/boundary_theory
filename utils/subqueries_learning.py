@@ -1101,7 +1101,7 @@ class SubqueriesLearning(RunSubqueries):
                         os.path.join(predict_root, fn))]
             elif method == 2:
                 command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 %s -ranker 6 -leaf %s' 
-                    % (os.path.join(self.subqueries_features_root, result_folder, feature_fn),
+                    % (os.path.join(self.subqueries_features_root, feature_folder, feature_fn),
                        '' if int(result_folder) == 0 else '-feature ./utils/features/'+result_folder, 
                        para)]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
