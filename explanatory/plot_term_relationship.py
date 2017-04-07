@@ -825,7 +825,7 @@ class PlotTermRelationship(object):
             line_idx += 1
             if line_idx >= top_n_docs:
                 break
-        terms_n_idfs = [(t, cs.get_term_logidf1(terms[i])) for t in terms]
+        terms_n_idfs = [(t, cs.get_term_logidf1(t)) for t in terms]
         return terms_n_idfs, all_scores
 
     def output_tdc_data_for_all_terms(self, runfiles_n_performances, rel_docs, 
