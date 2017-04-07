@@ -825,7 +825,8 @@ class PlotTermRelationship(object):
             line_idx += 1
             if line_idx >= top_n_docs:
                 break
-        return all_scores
+        terms_n_idfs = [(t, cs.get_term_logidf1(terms[i])) for t in terms]
+        return terms_n_idfs, all_scores
 
     def output_tdc_data_for_all_terms(self, runfiles_n_performances, rel_docs, 
             subquery_mapping, top_n_docs, _type, output_fn):
@@ -833,7 +834,7 @@ class PlotTermRelationship(object):
             return
         all_data = {}
         for subquery_id in sorted(runfiles_n_performances, key=self.sort_subquery_id):
-            all_scores = self.get_terms_scores_for_tdc_violation(
+            terms_n_idfs, all_scores = self.get_terms_scores_for_tdc_violation(
                 runfiles_n_performances[subquery_id]['first_lines'],
                 rel_docs, 
                 top_n_docs, 
@@ -865,6 +866,7 @@ class PlotTermRelationship(object):
             not_allowed = [ele[0] for ele in all_subquery_ids if ele[0] not in allowed_subquery_id]
             for subquery_id in not_allowed:
                 del(runfiles_n_performances[subquery_id])
+            print allowed_subquery_id, not_allowed
             
             fig = plt.figure(figsize=(6, 3))
         else:
@@ -881,7 +883,7 @@ class PlotTermRelationship(object):
         # col_idx = 0
         idx = 1
         for subquery_id in sorted(runfiles_n_performances, key=self.sort_subquery_id):
-            all_scores = self.get_terms_scores_for_tdc_violation(
+            terms_n_idfs, all_scores = self.get_terms_scores_for_tdc_violation(
                 runfiles_n_performances[subquery_id]['first_lines'],
                 rel_docs, 
                 top_n_docs, 
@@ -925,8 +927,8 @@ class PlotTermRelationship(object):
                 continue
             max_value = max(np.amax(all_scores['rel']) if all_scores['rel'].shape[0] > 0 else 0, np.amax(all_scores['nonrel']))
             ax.set_title(subquery_mapping[subquery_id] + '(%.4f)' % runfiles_n_performances[subquery_id]['ap'])
-            # ax.set_xlabel('%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]), labelpad=-2)
-            # ax.set_ylabel('%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx]), labelpad=0)
+            ax.set_xlabel('%s(%.2f)' % (terms_n_idfs[0][0], terms_n_idfs[0][1]), labelpad=-2)
+            ax.set_ylabel('%s(%.2f)' % (terms_n_idfs[1][0], terms_n_idfs[1][1]), labelpad=0)
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
