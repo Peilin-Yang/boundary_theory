@@ -857,7 +857,7 @@ class PlotTermRelationship(object):
             allowed_subquery_id = []
             all_subquery_ids = [(k, v['ap']) for k,v in runfiles_n_performances.items()]
             all_subquery_ids.sort(key=itemgetter(1), reverse=True)
-            if all_subquery_ids[0][0] == str(len(runfiles_n_performances))+'-0'
+            if all_subquery_ids[0][0] == str(len(runfiles_n_performances))+'-0':
                 allowed_subquery_id.append(all_subquery_ids[1][0])
             else:
                 allowed_subquery_id.append(all_subquery_ids[0][0])
