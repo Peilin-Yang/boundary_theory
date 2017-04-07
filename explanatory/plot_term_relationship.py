@@ -867,7 +867,6 @@ class PlotTermRelationship(object):
             not_allowed = [ele[0] for ele in all_subquery_ids if ele[0] not in allowed_subquery_id]
             for subquery_id in not_allowed:
                 del(runfiles_n_performances[subquery_id])
-            print allowed_subquery_id, not_allowed
             
             fig = plt.figure(figsize=(6, 3))
         else:
