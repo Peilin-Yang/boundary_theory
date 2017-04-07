@@ -851,10 +851,27 @@ class PlotTermRelationship(object):
             ofn_format='png'):
         if len(subquery_mapping) > 7: # we can not draw the plots for query len > 3
             return
-        if len(subquery_mapping) == 7:
-            fig = plt.figure(figsize=(15, 9))
-        elif len(subquery_mapping) == 3:
-            fig = plt.figure(figsize=(12, 5))
+        
+        only_plot_optimal_and_original = True
+        if only_plot_optimal_and_original:
+            allowed_subquery_id = []
+            all_subquery_ids = [(k, v['ap']) for k,v in runfiles_n_performances.items()]
+            all_subquery_ids.sort(key=itemgetter(1), reverse=True)
+            if all_subquery_ids[0][0] == str(len(runfiles_n_performances))+'-0'
+                allowed_subquery_id.append(all_subquery_ids[1][0])
+            else:
+                allowed_subquery_id.append(all_subquery_ids[0][0])
+            allowed_subquery_id.append(str(len(runfiles_n_performances))+'-0')
+            not_allowed = [ele[0] for ele in all_subquery_ids if ele[0] not in allowed_subquery_id]
+            for subquery_id in not_allowed:
+                del(runfiles_n_performances[subquery_id])
+            
+            fig = plt.figure(figsize=(6, 3))
+        else:
+            if len(subquery_mapping) == 7:
+                fig = plt.figure(figsize=(15, 9))
+            elif len(subquery_mapping) == 3:
+                fig = plt.figure(figsize=(12, 5))
         # num_cols = min(4, len(runfiles_n_performances)+1) # extra one for explanations
         # num_rows = int(math.ceil((len(runfiles_n_performances)+1)*1.0/num_cols))
         # fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols+3, 3*num_rows+3))
@@ -876,7 +893,10 @@ class PlotTermRelationship(object):
                 continue
             if all_scores['nonrel'].shape[0] == 1:
                 if len(subquery_mapping) == 7:
-                    ax = fig.add_subplot(2, 4, idx)
+                    if only_plot_optimal_and_original:
+                        ax = fig.add_subplot(1, 2, 1)
+                    else:
+                        ax = fig.add_subplot(2, 4, idx)
                 elif len(subquery_mapping) == 3:
                     ax = fig.add_subplot(1, 3, idx)
                 if all_scores['rel'].shape[0] > 0:
@@ -884,14 +904,20 @@ class PlotTermRelationship(object):
                 ax.plot(all_scores['nonrel'][0], all_scores['nonrel'][0], 'ro', alpha=0.5)
             elif all_scores['nonrel'].shape[0] == 2:
                 if len(subquery_mapping) == 7:
-                    ax = fig.add_subplot(2, 4, idx)
+                    if only_plot_optimal_and_original:
+                        ax = fig.add_subplot(1, 2, 1)
+                    else:
+                        ax = fig.add_subplot(2, 4, idx)
                 elif len(subquery_mapping) == 3:
                     ax = fig.add_subplot(1, 3, idx)
                 if all_scores['rel'].shape[0] > 0:
                     ax.plot(all_scores['rel'][0], all_scores['rel'][1], 'go', alpha=0.5)
                 ax.plot(all_scores['nonrel'][0], all_scores['nonrel'][1], 'ro', alpha=0.5)
             elif all_scores['nonrel'].shape[0] == 3:
-                ax = fig.add_subplot(2, 4, idx, projection='3d')
+                if only_plot_optimal_and_original:
+                    ax = fig.add_subplot(1, 2, 2)
+                else:
+                    ax = fig.add_subplot(2, 4, idx, projection='3d')
                 if all_scores['rel'].shape[0] > 0:
                     ax.scatter(all_scores['rel'][0], all_scores['rel'][1], all_scores['rel'][2], c='g')
                 ax.scatter(all_scores['nonrel'][0], all_scores['nonrel'][1], all_scores['nonrel'][2], c='r')
