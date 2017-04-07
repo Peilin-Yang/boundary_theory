@@ -889,6 +889,8 @@ class PlotTermRelationship(object):
                 top_n_docs, 
                 _type
             )
+            if len(terms_n_idfs) < 2:
+                continue
             for k in all_scores:
                 all_scores[k] = np.array(all_scores[k]).T
             if all_scores['nonrel'].shape[0] > 3:
@@ -929,6 +931,8 @@ class PlotTermRelationship(object):
             ax.set_title(subquery_mapping[subquery_id] + '(%.4f)' % runfiles_n_performances[subquery_id]['ap'])
             ax.set_xlabel('%s(%.2f)' % (terms_n_idfs[0][0], terms_n_idfs[0][1]), labelpad=0)
             ax.set_ylabel('%s(%.2f)' % (terms_n_idfs[1][0], terms_n_idfs[1][1]), labelpad=0)
+            if all_scores['nonrel'].shape[0] == 3:
+                ax.set_zlabel('%s(%.2f)' % (terms_n_idfs[2][0], terms_n_idfs[2][1]), labelpad=0)
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
