@@ -917,7 +917,7 @@ class PlotTermRelationship(object):
                 ax.plot(all_scores['nonrel'][0], all_scores['nonrel'][1], 'ro', alpha=0.5)
             elif all_scores['nonrel'].shape[0] == 3:
                 if only_plot_optimal_and_original:
-                    ax = fig.add_subplot(1, 2, 2)
+                    ax = fig.add_subplot(1, 2, 2, projection='3d')
                 else:
                     ax = fig.add_subplot(2, 4, idx, projection='3d')
                 if all_scores['rel'].shape[0] > 0:
