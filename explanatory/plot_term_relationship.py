@@ -927,7 +927,7 @@ class PlotTermRelationship(object):
                 continue
             max_value = max(np.amax(all_scores['rel']) if all_scores['rel'].shape[0] > 0 else 0, np.amax(all_scores['nonrel']))
             ax.set_title(subquery_mapping[subquery_id] + '(%.4f)' % runfiles_n_performances[subquery_id]['ap'])
-            ax.set_xlabel('%s(%.2f)' % (terms_n_idfs[0][0], terms_n_idfs[0][1]), labelpad=-2)
+            ax.set_xlabel('%s(%.2f)' % (terms_n_idfs[0][0], terms_n_idfs[0][1]), labelpad=0)
             ax.set_ylabel('%s(%.2f)' % (terms_n_idfs[1][0], terms_n_idfs[1][1]), labelpad=0)
             ax.set_xlim([0, max_value])
             ax.set_ylim([0, max_value])
