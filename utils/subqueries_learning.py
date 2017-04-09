@@ -1378,7 +1378,8 @@ class SubqueriesLearning(RunSubqueries):
         print 'Method: %s' % method_folder
         print 'Feature: %s' % feature_list_file
         for query_length in all_performances:
-            print query_length, json.dumps(all_performances[query_length][0], indent=2)
+            print 'Qlen:'+str(query_length)
+            print json.dumps(all_performances[query_length][0], indent=2)
 
     @staticmethod
     def cross_testing_learning_to_rank_model(train, test, query_length=2, method=1, label_type='int', feature_list_file='0'):
