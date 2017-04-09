@@ -1376,7 +1376,7 @@ class SubqueriesLearning(RunSubqueries):
             all_performances[query_length].sort(key=itemgetter(1), reverse=True)
 
         print 'Method: %s' % method_folder
-        print 'Feature: %d' % feature_list_file
+        print 'Feature: %s' % feature_list_file
         for query_length in all_performances:
             print query_length, json.dumps(all_performances[query_length][0], indent=2)
 
