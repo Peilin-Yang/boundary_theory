@@ -1372,7 +1372,8 @@ class SubqueriesLearning(RunSubqueries):
                     collection_predict_performance[collection_name] = collection_predict / len(predict_optimal_performance)  
                     collection_accuracy[collection_name] = '%d/%d(%.2f)' % (collection_accuracy_0, collection_accuracy_1, collection_accuracy_0/collection_accuracy_1)      
                 all_performances[query_length].append((para, optimal_svm_predict, 
-                    '%d/%d(%.2f)' % (total_accuracy_0, total_accuracy_1, total_accuracy_0/total_accuracy_1), collection_predict_performance))
+                    '%d/%d(%.2f)' % (total_accuracy_0, total_accuracy_1, total_accuracy_0/total_accuracy_1), 
+                    collection_predict_performance, collection_accuracy))
             all_performances[query_length].sort(key=itemgetter(1), reverse=True)
 
         print 'Method: %s' % method_folder
