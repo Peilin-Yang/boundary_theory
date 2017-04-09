@@ -478,7 +478,7 @@ def output_subqueries_features_atom(para_file):
             query_length = int(row[2])
             SubqueriesLearning(collection_path, collection_name).output_collection_features(query_length)
 
-def gen_learning_to_rank_batch(feature_type=1, method=1, label_type='int', feature_list_file=0):
+def gen_learning_to_rank_batch(feature_type=1, method=1, label_type='int', feature_list_file='0'):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
@@ -500,7 +500,7 @@ def learning_to_rank_atom(para_file):
             method_para = float(row[6])
             SubqueriesLearning(collection_path, collection_name).learning_to_rank_wrapper(feature_folder, result_folder, feature_fn, method, method_para)
 
-def gen_evaluate_learning_to_rank_model_batch(feature_type=1, method=1, feature_list_file=0):
+def gen_evaluate_learning_to_rank_model_batch(feature_type=1, method=1, feature_list_file='0'):
     all_paras = []
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
@@ -553,7 +553,7 @@ def print_svm_model_feature_importance(feature_type=1, top=10):
             print '| **%s** | %s |' % (collection_name if idx == 0 else '', 
                 all_top_features[collection_name][0][idx])
 
-def cross_testing_learning_to_rank_model(query_length=2, method=1, label_type='int', feature_list_file=0):
+def cross_testing_learning_to_rank_model(query_length=2, method=1, label_type='int', feature_list_file='0'):
     collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
     for i in range(len(collections)):
         this_training = []
@@ -563,9 +563,9 @@ def cross_testing_learning_to_rank_model(query_length=2, method=1, label_type='i
                 this_testing.append(collections[j])
             else:
                 this_training.append(collections[j])
-        SubqueriesLearning.cross_testing_learning_to_rank_model(this_training, this_testing, int(query_length), int(method), label_type, int(feature_list_file))
+        SubqueriesLearning.cross_testing_learning_to_rank_model(this_training, this_testing, int(query_length), int(method), label_type, feature_list_file)
 
-def evaluate_learning_to_rank_cross_testing(method=1, label_type='int', feature_list_file=0):
+def evaluate_learning_to_rank_cross_testing(method=1, label_type='int', feature_list_file='0'):
     collections = [(os.path.abspath(os.path.join(_root, q['collection'])), q['collection_formal_name']) for q in g.query]
     SubqueriesLearning.evaluate_learning_to_rank_cross_testing(collections, int(method), label_type, feature_list_file)
 
@@ -992,14 +992,14 @@ if __name__ == '__main__':
             int(args.gen_learning_to_rank_batch[0]), 
             int(args.gen_learning_to_rank_batch[1]),
             args.gen_learning_to_rank_batch[2],
-            int(args.gen_learning_to_rank_batch[3]))
+            args.gen_learning_to_rank_batch[3])
     if args.learning_to_rank_atom:
         learning_to_rank_atom(args.learning_to_rank_atom[0])
     if args.gen_evaluate_learning_to_rank_model_batch:
         gen_evaluate_learning_to_rank_model_batch(
             int(args.gen_evaluate_learning_to_rank_model_batch[0]),
             int(args.gen_evaluate_learning_to_rank_model_batch[1]),
-            int(args.gen_evaluate_learning_to_rank_model_batch[2]))
+            args.gen_evaluate_learning_to_rank_model_batch[2])
     if args.evaluate_learning_to_rank_model_atom:
         evaluate_learning_to_rank_model_atom(args.evaluate_learning_to_rank_model_atom[0])
     if args.print_svm_model_feature_importance:
@@ -1009,12 +1009,12 @@ if __name__ == '__main__':
             int(args.cross_testing_learning_to_rank_model[0]),
             int(args.cross_testing_learning_to_rank_model[1]),
             args.cross_testing_learning_to_rank_model[2],
-            int(args.cross_testing_learning_to_rank_model[3]))
+            args.cross_testing_learning_to_rank_model[3])
     if args.evaluate_learning_to_rank_cross_testing:
         evaluate_learning_to_rank_cross_testing(
             int(args.evaluate_learning_to_rank_cross_testing[0]),
             args.evaluate_learning_to_rank_cross_testing[1],
-            int(args.evaluate_learning_to_rank_cross_testing[2]))
+            args.evaluate_learning_to_rank_cross_testing[2])
 
     if args.mi_learn_batch:
         mi_learn_batch(args.mi_learn_batch[0], args.mi_learn_batch[1], args.mi_learn_batch[2])

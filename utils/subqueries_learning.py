@@ -976,7 +976,7 @@ class SubqueriesLearning(RunSubqueries):
                     idx += 1
 
     def batch_gen_learning_to_rank_paras(self, feature_type=1, method=1, 
-            label_type='int', included_feature_list_file=0):
+            label_type='int', included_feature_list_file='0'):
         if feature_type == 2:
             feature_folder = 'kendallstau'
             result_folder = 'kendallstau'
@@ -985,10 +985,10 @@ class SubqueriesLearning(RunSubqueries):
             result_folder = 'pearsonr'
         else:
             feature_folder = 'final'
-            if included_feature_list_file == 0:
+            if included_feature_list_file == '0':
                 result_folder = 'final'
             else:
-                result_folder = str(included_feature_list_file)
+                result_folder = included_feature_list_file
 
         if method == 1:
             method_folder = 'svm_rank'
@@ -1032,7 +1032,7 @@ class SubqueriesLearning(RunSubqueries):
             leaf = int(method_para)
             command = 'java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 %s -ranker 6 -leaf %d -save %s' % ( 
                 os.path.join(self.subqueries_features_root, feature_folder, feature_fn), 
-                '' if int(result_folder) == 0 else '-feature ./utils/features/'+result_folder,
+                '' if result_folder == '0' else '-feature ./utils/features/'+result_folder,
                 leaf,
                 os.path.join(model_root, feature_fn+'_'+str(leaf)))
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
@@ -1065,7 +1065,7 @@ class SubqueriesLearning(RunSubqueries):
             all_features.append(int(tree.find('split').find('feature').text))
         return all_features
 
-    def evaluate_learning_to_rank_model(self, feature_type=1, method=1, feature_list_file=0):
+    def evaluate_learning_to_rank_model(self, feature_type=1, method=1, feature_list_file='0'):
         if feature_type == 2:
             feature_folder = 'kendallstau'
             result_folder = 'kendallstau'
@@ -1077,7 +1077,7 @@ class SubqueriesLearning(RunSubqueries):
             if feature_list_file == 0:
                 result_folder = 'final'
             else:
-                result_folder = str(feature_list_file)
+                result_folder = feature_list_file
         if method == 1:
             method_folder = 'svm_rank'
         elif method == 2:
@@ -1102,7 +1102,7 @@ class SubqueriesLearning(RunSubqueries):
             elif method == 2:
                 command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s -metric2t NDCG@1 %s -ranker 6 -leaf %s' 
                     % (os.path.join(self.subqueries_features_root, feature_folder, feature_fn),
-                       '' if int(result_folder) == 0 else '-feature ./utils/features/'+result_folder, 
+                       '' if result_folder == '0' else '-feature ./utils/features/'+result_folder, 
                        para)]
             p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
             returncode = p.wait()
@@ -1279,13 +1279,13 @@ class SubqueriesLearning(RunSubqueries):
                     qid_idx += 1
 
     @staticmethod
-    def evaluate_learning_to_rank_cross_testing(all_data, method=1, label_type='int', feature_list_file=0):
+    def evaluate_learning_to_rank_cross_testing(all_data, method=1, label_type='int', feature_list_file='0'):
         if method == 1:
             method_folder = 'svm_rank'
         elif method == 2:
             method_folder = 'lambdamart'
         data_mapping = {d[1]:d[0] for d in all_data}
-        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', label_type, method_folder, str(feature_list_file))
+        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', label_type, method_folder, feature_list_file)
         all_predict_data = {}
         for fn in os.listdir(results_root):
             m = re.search(r'^predict_(.*?)_(.*?)_(.*)$', fn)
@@ -1368,7 +1368,7 @@ class SubqueriesLearning(RunSubqueries):
             print query_length, json.dumps(all_performances[query_length][0], indent=2)
 
     @staticmethod
-    def cross_testing_learning_to_rank_model(train, test, query_length=2, method=1, label_type='int', feature_list_file=0):
+    def cross_testing_learning_to_rank_model(train, test, query_length=2, method=1, label_type='int', feature_list_file='0'):
         """
         train and test are list of (collection_path, collection_name)
         # label_type: int (use integer as labels) or ap (use ap value floating numbers as labels)
@@ -1379,7 +1379,7 @@ class SubqueriesLearning(RunSubqueries):
             method_folder = 'svm_rank'
         elif method == 2:
             method_folder = 'lambdamart'
-        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', label_type, method_folder, str(feature_list_file))
+        results_root = os.path.join('../all_results', 'subqueries', 'cross_training', label_type, method_folder, feature_list_file)
         if not os.path.exists(results_root):
             os.makedirs(results_root)
         trainging_fn = os.path.join(results_root, 'train_%s_%d' % (test_collection, query_length))
@@ -1416,7 +1416,7 @@ class SubqueriesLearning(RunSubqueries):
                     % (test_collection, query_length, leaf) )
                 if not os.path.exists(model_output_fn):
                     command = ['java -jar -Xmx2g ~/Downloads/RankLib-2.8.jar -train %s %s -metric2t NDCG@1 -ranker 6 -leaf %d -save %s' 
-                        % (trainging_fn, '' if feature_list_file == 0 else '-feature ./utils/features/'+str(feature_list_file), leaf, model_output_fn)]
+                        % (trainging_fn, '' if feature_list_file == '0' else '-feature ./utils/features/'+feature_list_file, leaf, model_output_fn)]
                     p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
                     returncode = p.wait()
                     out, error = p.communicate()
