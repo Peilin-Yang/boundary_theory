@@ -1310,11 +1310,16 @@ class SubqueriesLearning(RunSubqueries):
                 #svm_predict_optimal_subquery_len_dist[query_length] = {}
                 existing_performance = {}
                 collection_predict_performance = {}
+                collection_accuracy = {}
                 optimal_ground_truth = 0.0
                 optimal_svm_predict = 0.0
                 performance_using_all_terms = 0.0
+                total_accuracy_0 = 0.0
+                total_accuracy_1 = 0.0
                 for collection_name in all_predict_data[query_length][para]: 
                     predict_optimal_performance = {}
+                    collection_accuracy_0 = 0.0
+                    collection_accuracy_1 = 0.0
                     feature_fn = os.path.join(results_root, 'test_%s_%d' % (collection_name, query_length))
                     predict_fn = os.path.join(results_root, 'predict_%s_%d_%s' % (collection_name, query_length, para))
                     with open(predict_fn) as f:
@@ -1347,7 +1352,8 @@ class SubqueriesLearning(RunSubqueries):
                                 performance_using_all_terms += qid_performances[-1][1]
                                 qid_performances.sort(key=itemgetter(1), reverse=True)
                                 optimal_ground_truth += qid_performances[0][1]
-                            predict_optimal_performance[qid].append((subquery_id, predict_res[idx], existing_performance[qid][subquery_id]))
+                                optimal_subquery_id = qid_performances[0][0]
+                            predict_optimal_performance[qid].append((subquery_id, predict_res[idx], existing_performance[qid][subquery_id], optimal_subquery_id))
                             idx += 1
                     collection_predict = 0.0
                     for qid in predict_optimal_performance:
@@ -1358,8 +1364,15 @@ class SubqueriesLearning(RunSubqueries):
                         # if subquery_len not in svm_predict_optimal_subquery_len_dist[query_length]:
                         #     svm_predict_optimal_subquery_len_dist[query_length][subquery_len] = 0
                         # svm_predict_optimal_subquery_len_dist[query_length][subquery_len] += 1 
-                    collection_predict_performance[collection_name] = collection_predict / len(predict_optimal_performance)        
-                all_performances[query_length].append((para, optimal_svm_predict, collection_predict_performance))
+                        if predict_optimal_performance[qid][0][0] == predict_optimal_performance[qid][0][-1]:
+                            total_accuracy_0 += 1.0
+                            collection_accuracy_0 += 1.0
+                        total_accuracy_1 += 1.0
+                        collection_accuracy_1 += 1.0
+                    collection_predict_performance[collection_name] = collection_predict / len(predict_optimal_performance)  
+                    collection_accuracy[collection_name] = '%d/%d(%.2f)' % (collection_accuracy_0, collection_accuracy_1, collection_accuracy_0/collection_accuracy_1)      
+                all_performances[query_length].append((para, optimal_svm_predict, 
+                    '%d/%d(%.2f)' % (total_accuracy_0, total_accuracy_1, total_accuracy_0/total_accuracy_1), collection_predict_performance))
             all_performances[query_length].sort(key=itemgetter(1), reverse=True)
 
         print 'Method: %s' % method_folder
