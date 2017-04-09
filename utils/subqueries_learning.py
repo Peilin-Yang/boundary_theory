@@ -1162,6 +1162,8 @@ class SubqueriesLearning(RunSubqueries):
                     optimal_ground_truth = 0.0
                     optimal_model_predict = 0.0
                     performance_using_all_terms = 0.0
+                    accuracy_0 = 0.0
+                    accuracy_1 = 0.0
                     para = all_models[query_length][label_type][0][0]
                     feature_fn = os.path.join(self.subqueries_features_root, feature_folder, str(query_length)+'.'+label_type)
                     predict_fn = os.path.join(predict_root, str(query_length)+'.'+label_type+'_'+para)
@@ -1195,7 +1197,8 @@ class SubqueriesLearning(RunSubqueries):
                                 performance_using_all_terms += qid_performances[-1][1]
                                 qid_performances.sort(key=itemgetter(1), reverse=True)
                                 optimal_ground_truth += qid_performances[0][1]
-                            predict_optimal_performance[qid].append((subquery_id, predict_res[idx], existing_performance[qid][subquery_id]))
+                                optimal_subquery_id = qid_performances[0][0]
+                            predict_optimal_performance[qid].append((subquery_id, predict_res[idx], existing_performance[qid][subquery_id], optimal_subquery_id))
                             idx += 1
                     for qid in predict_optimal_performance:
                         predict_optimal_performance[qid].sort(key=itemgetter(1), reverse=True)
@@ -1205,12 +1208,17 @@ class SubqueriesLearning(RunSubqueries):
                             predict_optimal_subquery_len_dist[query_length][label_type][subquery_len] = 0
                         predict_optimal_subquery_len_dist[query_length][label_type][subquery_len] += 1
 
+                        if predict_optimal_performance[qid][0][0] == predict_optimal_performance[qid][0][-1]:
+                            accuracy_0 += 1.0
+                        accuracy_1 += 1.0
+
                     query_cnt = len(predict_optimal_performance)
-                    ssdf.write('| %s | %s | %.4f | %.4f | %.4f |\n' 
+                    ssdf.write('| %s | %s | %.4f | %.4f | %.4f | %d/%d(%.2f)\n' 
                         % ( query_length, label_type,
                             performance_using_all_terms/query_cnt, 
                             optimal_ground_truth/query_cnt, 
-                            optimal_model_predict/query_cnt))
+                            optimal_model_predict/query_cnt,
+                            accuracy_0, accuracy_1, accuracy_0/accuracy_1))
 
                     # feature ranking related
                     model_fn = str(query_length)+'.'+str(label_type)+'_'+str(all_models[query_length][label_type][0][0])
