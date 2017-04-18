@@ -394,7 +394,7 @@ class SubqueriesLearning(RunSubqueries):
                         elif _type == 2: # BM25
                             scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_para+model_para*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
                         elif _type == 3: # Dirichlet
-                            scores = [(tf+model_para*cs.get_term_stats(terms[i])['total_occur'])/cs.get_total_terms())/(model_para+dl) for i, tf in enumerate(tfs)]
+                            scores = [(tf+model_para*cs.get_term_stats(terms[i])['total_occur']/cs.get_total_terms())/(model_para+dl) for i, tf in enumerate(tfs)]
                         tf_features = self.get_all_sorts_features(scores)
                         for i, w in enumerate(withins):
                             if line_idx < w:
