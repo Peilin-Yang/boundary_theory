@@ -357,7 +357,7 @@ class SubqueriesLearning(RunSubqueries):
         with open(outfn, 'wb') as f:
             json.dump(features, f, indent=2)
 
-    def gen_tdc(self, qid, _type=2):
+    def gen_tdc(self, qid, _type=3):
         features_root = os.path.join(self.subqueries_features_root, 'TDC')
         if not os.path.exists(features_root):
             os.makedirs(features_root)
@@ -367,10 +367,13 @@ class SubqueriesLearning(RunSubqueries):
         # withins = [1, 5, 10, 20, 50, 100]
         withins = [50]
         features_wpara = [[] for ele in withins]
-        methods = ['okapi']
-        optimal_lm_performances = Performances(self.corpus_path).load_optimal_performance(methods)[0]
-        indri_model_para = 'method:%s,' % optimal_lm_performances[0] + optimal_lm_performances[2]
-        model_para = float(optimal_lm_performances[2].split(':')[1])
+        methods = ['okapi', 'dir']
+        if _type == 2:
+            optimal_performances = Performances(self.corpus_path).load_optimal_performance(methods)[0]
+        elif _type == 3:
+            optimal_performances = Performances(self.corpus_path).load_optimal_performance(methods)[1]
+        indri_model_para = 'method:%s,' % optimal_performances[0] + optimal_performances[2]
+        model_para = float(optimal_performances[2].split(':')[1])
         with open(os.path.join(self.subqueries_mapping_root, qid)) as f:
             subquery_mapping = json.load(f)
 
@@ -390,6 +393,8 @@ class SubqueriesLearning(RunSubqueries):
                             scores = tfs
                         elif _type == 2: # BM25
                             scores = [tf*cs.get_term_logidf1(terms[i])*2.2/(tf+1.2*(1-model_para+model_para*dl/cs.get_avdl())) for i, tf in enumerate(tfs)]
+                        elif _type == 3: # Dirichlet
+                            scores = [(tf+model_para*cs.get_term_stats(terms[i])['total_occur'])/cs.get_total_terms())/(model_para+dl) for i, tf in enumerate(tfs)]
                         tf_features = self.get_all_sorts_features(scores)
                         for i, w in enumerate(withins):
                             if line_idx < w:
