@@ -723,7 +723,7 @@ class SubqueriesLearning(RunSubqueries):
         for qid in r:
             _sorted = sorted(r[qid].items(), key=itemgetter(1), reverse=True)
             for i in range(1, len(_sorted)):
-                diff = int((_sorted[0] - _sorted[i])/0.05)
+                diff = int((_sorted[0][1] - _sorted[i][1])/0.05)
                 if diff not in res:
                     res[diff] = 0
                 res[diff] += 1
