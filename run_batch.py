@@ -325,11 +325,19 @@ def output_optimal_dist():
         RunSubqueries(collection_path, collection_name).output_optimal_dist()
 
 def gen_performance_distribution():
+    all_res = {}
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        print collection_name, SubqueriesLearning(collection_path, collection_name).gen_performance_distribution()
+        collection_dist = SubqueriesLearning(collection_path, collection_name).gen_performance_distribution()
+        print collection_name, collection_dist
+        for n in collection_dist:
+            if n not in all_res:
+                all_res[n] = 0
+            all_res[n] += collection_dist[n]
 
+    print 'all:'
+    print all_res
 
 def gen_subqueries_features_batch(feature_type):
     all_paras = []
