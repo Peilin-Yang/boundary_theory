@@ -719,6 +719,10 @@ class SubqueriesLearning(RunSubqueries):
 
     def gen_performance_distribution(self):
         r = self.get_all_performances()
+        for qid in r:
+            _sorted = sorted(r[qid], key=itemgetter(1))
+            print _sorted
+            raw_input()
         return r
 
 
