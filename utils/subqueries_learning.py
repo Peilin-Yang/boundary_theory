@@ -717,16 +717,20 @@ class SubqueriesLearning(RunSubqueries):
 
         return results
 
-    def gen_performance_distribution(self):
+    def gen_performance_distribution(self, qlens=[2,3]):
         r = self.get_all_performances()
         res = {}
-        for qid in r:
-            _sorted = sorted(r[qid].items(), key=itemgetter(1), reverse=True)
-            for i in range(1, len(_sorted)):
-                diff = int((_sorted[0][1] - _sorted[i][1])/0.05)
-                if diff not in res:
-                    res[diff] = 0
-                res[diff] += 1
+        q = Query(collection_path)
+        queries = q.get_queries()
+        queries = {ele['num']:ele['title'] for ele in queries}
+        for qid in queries:
+            if len(queries[qid].split()) in qlens:
+                _sorted = sorted(r[qid].items(), key=itemgetter(1), reverse=True)
+                for i in range(1, len(_sorted)):
+                    diff = int((_sorted[0][1] - _sorted[i][1])/0.05)
+                    if diff not in res:
+                        res[diff] = 0
+                    res[diff] += 1
         return res
 
 
