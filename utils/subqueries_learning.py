@@ -724,7 +724,7 @@ class SubqueriesLearning(RunSubqueries):
         queries = q.get_queries()
         queries = {ele['num']:ele['title'] for ele in queries}
         for qid in queries:
-            if len(queries[qid].split()) in qlens:
+            if qid in r and len(queries[qid].split()) in qlens:
                 _sorted = sorted(r[qid].items(), key=itemgetter(1), reverse=True)
                 for i in range(1, len(_sorted)):
                     diff = int((_sorted[0][1] - _sorted[i][1])/0.05)
