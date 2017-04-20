@@ -328,7 +328,7 @@ def gen_performance_distribution():
     for q in g.query:
         collection_name = collection_name = q['collection_formal_name']
         collection_path = os.path.join(_root, q['collection'])
-        print SubqueriesLearning(collection_path, collection_name).gen_performance_distribution()
+        print collection_name, SubqueriesLearning(collection_path, collection_name).gen_performance_distribution()
 
 
 def gen_subqueries_features_batch(feature_type):
