@@ -324,6 +324,12 @@ def output_optimal_dist():
         collection_path = os.path.join(_root, q['collection'])
         RunSubqueries(collection_path, collection_name).output_optimal_dist()
 
+def gen_performance_distribution():
+    for q in g.query:
+        collection_name = collection_name = q['collection_formal_name']
+        collection_path = os.path.join(_root, q['collection'])
+        print SubqueriesLearning(collection_path, collection_name).gen_performance_distribution()
+
 
 def gen_subqueries_features_batch(feature_type):
     all_paras = []
@@ -801,6 +807,9 @@ if __name__ == '__main__':
         nargs=1,
         help='generate run subqueries paras')
 
+    parser.add_argument('-pdist', '--performance_distribution', 
+        action='store_true',
+        help='performance distribution')
 
     parser.add_argument('-51', '--gen_subqueries_features_batch', 
         nargs=1, # feature type
@@ -954,6 +963,9 @@ if __name__ == '__main__':
         gen_run_proximity_subqueries_batch(args.gen_run_proximity_subqueries_batch[0], args.gen_run_proximity_subqueries_batch[1])
     if args.run_proximity_subqueries_atom:
         run_proximity_subqueries_atom(args.run_proximity_subqueries_atom[0])
+
+    if args.performance_distribution:
+        gen_performance_distribution()
 
     if args.gen_subqueries_features_batch:
         gen_subqueries_features_batch(args.gen_subqueries_features_batch[0])

@@ -717,6 +717,11 @@ class SubqueriesLearning(RunSubqueries):
 
         return results
 
+    def gen_performance_distribution(self):
+        r = self.get_all_performances()
+        return r
+
+
     def output_correlation_features(self, query_len=0, corr_type=1):
         """
         corr_type: 1-kendallstau, 2-pearsonr, 3-ken_n_pea
