@@ -720,7 +720,7 @@ class SubqueriesLearning(RunSubqueries):
     def gen_performance_distribution(self, qlens=[2,3]):
         r = self.get_all_performances()
         res = {}
-        q = Query(collection_path)
+        q = Query(self.corpus_path)
         queries = q.get_queries()
         queries = {ele['num']:ele['title'] for ele in queries}
         for qid in queries:
