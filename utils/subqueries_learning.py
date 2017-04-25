@@ -614,7 +614,7 @@ class SubqueriesLearning(RunSubqueries):
                     idx += 1
                     mapping[idx] = feature_name+str(w)+'(pear)'
                     idx += 1
-            elif feature_idx == 14: # TDC
+            elif feature_idx == 14: # TS
                 withins = [50]
                 for w in withins:
                     for fa in features: # on a single doc
@@ -1777,3 +1777,10 @@ class SubqueriesLearning(RunSubqueries):
         with open( os.path.join(results_root, 'info.json'), 'wb' ) as f:
             json.dump(info, f, indent=2, sort_keys=True)
         
+
+if __name__ == '__main__':
+    sl = SubqueriesLearning(sys.argv[1], sys.argv[2])
+    m = sl.get_feature_mapping()
+    if len(sys.argv) > 3:
+        for arg in sys.argv[3:]:
+            print arg, m[int(arg)]
