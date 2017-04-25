@@ -575,8 +575,9 @@ class PlotTermRelationship(object):
         all_performances = {k:{'all': {}, 'higher-IDF': {}, 'lower-IDF': {}} for k in model_mapping}
 
         for qid in sorted(queries):
-            fig, axs = plt.subplots(nrows=1, ncols=3, sharex=False, sharey=False, figsize=(3*3+2, 3*1+1))
-            plt.rc('font', size=10)
+            #fig, axs = plt.subplots(nrows=1, ncols=3, sharex=False, sharey=False, figsize=(3*3+2, 3*1+1))
+            fig, axs = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(3.5, 3.5))
+            plt.rc('font', size=12)
             plt.rc('text', usetex=False)
             terms = queries[qid].split()
             dfs = np.array([cs.get_term_df(t) for t in terms])
@@ -618,8 +619,9 @@ class PlotTermRelationship(object):
             all_counts = collections.Counter(zip(all_xaxis, all_yaxis))
             prob_counts = {k:rel_counts[k]*1./v for k,v in all_counts.items() if k in rel_counts}
             nonrel_counts = {k:v for k,v in all_counts.items() if k not in rel_counts}
-            for plot_option in range(3):
-                ax = axs[plot_option]
+            for plot_option in range(1,2):
+                #ax = axs[plot_option]
+                ax = axs
                 if plot_option == 0:
                     counts = rel_counts
                 elif plot_option == 1:
