@@ -154,8 +154,8 @@ class PlotRelProb(object):
         num_cols = min(4, len(queries))
         num_rows = int(math.ceil(len(rel_docs)*1.0/num_cols))
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
-        font = {'size' : 5}
-        plt.rc('font', **font)
+        #font = {'size' : 5}
+        #plt.rc('font', **font)
         row_idx = 0
         col_idx = 0
         #idfs = [(qid, math.log(cs.get_term_IDF1(queries[qid]))) for qid in rel_docs]
