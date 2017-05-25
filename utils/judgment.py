@@ -106,8 +106,8 @@ class Judgment(object):
             split (int) : how to define the "relevant documents". 
                 Documents have equal or higher value than the split will be 
                 viewed as relevant.
-            format (string) : The return format: as "tuple" [(qid, rel-score),...], 
-                "dict" {qid:rel-score,...}, "list" [[qid, rel-score],...]
+            format (string) : The return format: as "tuple" [(docid, rel-score),...], 
+                "dict" {docid:rel-score,...}, "list" [[docid, rel-score],...]
 
         @Return: As parameter format indicates (See Above)
         """
