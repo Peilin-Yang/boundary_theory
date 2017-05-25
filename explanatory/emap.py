@@ -80,7 +80,7 @@ class EMAP(object):
     def cal_emap_runfile(self, collection_path, method, qids):
         judgments = Judgment(collection_path).get_relevant_docs_of_some_queries(qids)
         all_emaps = {}
-        for qid in queries:
+        for qid in qids:
             res_fn = os.path.join(collection_path, 'split_results', 'title_%s-method:%s' % (qid, method))
             docids_n_scores = self.load_indri_ranking_file(res_fn)
             self.cal_emap_basedon_scores(docids_n_scores, judgments[qid])
