@@ -94,6 +94,8 @@ class EMAP(object):
         return docids_n_scores
 
     def cal_emap_basedon_scores(self, docids_n_scores, qid_judgments):
+        if not docids_n_scores:
+            return 0
         emap_input = []
         cur_score = round(docids_n_scores[0][1], 4)
         i = 1
