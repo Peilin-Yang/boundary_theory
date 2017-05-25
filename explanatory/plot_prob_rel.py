@@ -384,7 +384,7 @@ class PlotRelProb(object):
 
             if curve_fitting:
                 # plot the goodness of fit
-                all_fitting_results = [ele for ele in all_fitting_results if 'name' in ele and ele['name'] not in ['AD']]
+                all_fitting_results = [ele for ele in all_fitting_results if 'name' in ele ]
                 goodness_fit_data = [ele['sr'] for ele in all_fitting_results if 'sr' in ele]
                 labels = [ele['name'] for ele in all_fitting_results if 'sr' in ele and 'name' in ele]
                 fig, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, figsize=(6, 3.*1))
