@@ -307,10 +307,12 @@ class PlotRelProb(object):
                                 )
                             all_fitting_results[j-1]['ap'].append(estimated_map) # average precision
                             actual_map = p[qid]['map'] if p[qid] else 0
-                            all_fitting_results[j-1]['ap_diff'].append(math.fabs(estimated_map-actual_map))   
+                            expected_ap = all_emaps[qid] if all_emaps[qid] else 0
+                            ap_diff = math.fabs(estimated_map-expected_ap)
+                            all_fitting_results[j-1]['ap_diff'].append(ap_diff)   
                             fitting.append(j) 
                             fitting.append(estimated_map)
-                            fitting.append(math.fabs(estimated_map-actual_map))
+                            fitting.append(ap_diff)
                             all_fittings.append(fitting)
                             if fitting_func_name not in all_fitting_performances:
                                 all_fitting_performances[fitting_func_name] = {}
