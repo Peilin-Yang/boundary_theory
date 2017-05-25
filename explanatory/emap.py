@@ -78,7 +78,7 @@ class EMAP(object):
         return s/total_rel
 
     def cal_emap_runfile(self, collection_path, method, qids):
-        judgments = Judgment(collection_path).get_relevant_docs_of_some_queries(qids)
+        judgments = Judgment(collection_path).get_relevant_docs_of_some_queries(qids, format='dict')
         all_emaps = {}
         for qid in qids:
             res_fn = os.path.join(collection_path, 'split_results', 'title_%s-method:%s' % (qid, method))
