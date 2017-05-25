@@ -156,7 +156,7 @@ class PlotRelProb(object):
         fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(2*num_cols, 2*num_rows))
         #font = {'size' : 5}
         #plt.rc('font', **font)
-        plt.tick_params(axis='both', which='major', labelsize=8)
+        plt.tick_params(axis='both', which='major', labelsize=1)
         row_idx = 0
         col_idx = 0
         #idfs = [(qid, math.log(cs.get_term_IDF1(queries[qid]))) for qid in rel_docs]
