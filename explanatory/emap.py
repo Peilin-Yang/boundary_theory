@@ -92,18 +92,18 @@ class EMAP(object):
 
     def cal_emap_basedon_scores(self, docids_n_scores, qid_judgments):
         emap_input = []
-        cur_score = round(scores[0][1], 4)
+        cur_score = round(docids_n_scores[0][1], 4)
         i = 1
-        cur_rel = scores[0][0] in qid_judgments
+        cur_rel = docids_n_scores[0][0] in qid_judgments
         cur_total = 1
-        while i < len(scores):
-            if cur_score == round(scores[i][1], 4):
+        while i < len(docids_n_scores):
+            if cur_score == round(docids_n_scores[i][1], 4):
                 cur_total += 1
-                cur_rel += scores[i][0] in qid_judgments
+                cur_rel += docids_n_scores[i][0] in qid_judgments
             else: 
                 emap_input.append((cur_rel, cur_total))
-                cur_score = scores[i][1]
-                cur_rel = scores[i][0] in qid_judgments
+                cur_score = docids_n_scores[i][1]
+                cur_rel = docids_n_scores[i][0] in qid_judgments
                 cur_total = 1
             i += 1 
         if cur_total != 0:
