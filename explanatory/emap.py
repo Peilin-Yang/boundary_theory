@@ -77,6 +77,41 @@ class EMAP(object):
             return 0
         return s/total_rel
 
+    def cal_emap_runfile(self, collection_path, method, queries):
+        judgments = Judgment(collection_path).get_relevant_docs_of_some_queries(queries)
+        all_emaps = {}
+        for qid in queries:
+            res_fn = os.path.join(collection_path, 'split_results', 'title_%s-method:%s' % (qid, method))
+            docids_n_scores = self.load_indri_ranking_file(res_fn)
+            self.cal_emap_basedon_scores(docids_n_scores, judgments[qid])
+            
+    def load_indri_ranking_file(self, fn):
+        with open(fn) as f:
+            docids_n_scores = [(line.strip().split()[2], float(line.strip().split()[4])) for line in f.readlines()[:1000]]
+        return docids_n_scores
+
+    def cal_emap_basedon_scores(self, docids_n_scores, qid_judgments):
+        emap_input = []
+        cur_score = round(scores[0][1], 4)
+        i = 1
+        cur_rel = scores[0][0] in qid_judgments
+        cur_total = 1
+        while i < len(scores):
+            if cur_score == round(scores[i][1], 4):
+                cur_total += 1
+                cur_rel += scores[i][0] in qid_judgments
+            else: 
+                emap_input.append((cur_rel, cur_total))
+                cur_score = scores[i][1]
+                cur_rel = scores[i][0] in qid_judgments
+                cur_total = 1
+            i += 1 
+        if cur_total != 0:
+            emap_input.append((cur_rel, cur_total))
+        print emap_input
+        exit()
+
+
 
 class Test(unittest.TestCase):
     def test_A(self):
