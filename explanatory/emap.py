@@ -81,9 +81,10 @@ class EMAP(object):
         judgments = Judgment(collection_path).get_relevant_docs_of_some_queries(qids, format='dict')
         all_emaps = {}
         for qid in qids:
+            print 'qid:', qid
             res_fn = os.path.join(collection_path, 'split_results', 'title_%s-method:%s' % (qid, method))
             docids_n_scores = self.load_indri_ranking_file(res_fn)
-            self.cal_emap_basedon_scores(docids_n_scores, judgments[qid])
+            self.cal_emap_basedon_scores(docids_n_scores, [ele[0] for ele in judgments[qid]])
             
     def load_indri_ranking_file(self, fn):
         with open(fn) as f:
