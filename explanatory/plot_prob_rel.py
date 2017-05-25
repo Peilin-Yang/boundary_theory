@@ -67,7 +67,7 @@ class PlotRelProb(object):
         if ylimit > 0:
             ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<ylimit else ylimit)
         ax.set_title(title)
-        ax.legend(loc=legend_pos, markerscale=legend_markscale)
+        ax.legend(loc=legend_pos, markerscale=legend_markscale, fontsize=8)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
@@ -261,7 +261,7 @@ class PlotRelProb(object):
                 query_stat = cs.get_term_stats(query_term)
                 zoom_xaxis = xaxis[zoom_x:]
                 zoom_yaxis = yaxis[zoom_x:]
-                ax, zoom_ax = self.plot_figure(ax, xaxis, yaxis, qid+'-'+query_term, legend,
+                ax, zoom_ax = self.plot_figure(ax, xaxis, yaxis, 'qid:'+qid, legend,
                     drawline=drawline,
                     xlimit=xlimit,
                     ylimit=ylimit,
