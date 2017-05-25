@@ -332,7 +332,7 @@ class PlotRelProb(object):
                     #         idx = fitting_xaxis.index(x)
                     #         fitted_y[idx] = all_fittings[0][3][idx]
                     zoom_yaxis_fitting = fit_curve_y[zoom_x:]
-                    self.plot_figure(ax, fit_curve_x, fit_curve_y, qid+'-'+query_term, 
+                    self.plot_figure(ax, fit_curve_x, fit_curve_y, 'qid:'+qid, 
                         '%s(%.4f)' % (all_fittings[0][1], all_fittings[0][-2]), 
                         drawline=True, 
                         linestyle='--',
