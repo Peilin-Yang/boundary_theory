@@ -347,7 +347,7 @@ class PlotRelProb(object):
                     fit_curve_y = FittingModels().curve_fit_mapping(all_fittings[0][-3])(fit_curve_x, *all_fittings[0][2])
                     zoom_yaxis_fitting = fit_curve_y[zoom_x:]
                     self.plot_figure(ax, fit_curve_x, fit_curve_y, qid+'-'+query_term, 
-                        '%s(%.4f)\n2-LL(%.4f)' % (all_fittings[0][1], all_fittings[0][-2], aupr_lognormal), 
+                        '%s(%.4f)' % (all_fittings[0][1], all_fittings[0][-2]), 
                         drawline=True, 
                         linestyle=':',
                         marker=" ", #nothing
