@@ -52,7 +52,7 @@ class PlotRelProb(object):
             linestyle=None, xlabel='', ylabel='', xlog=False, ylog=False, 
             zoom=False, zoom_ax=None, zoom_xaxis=[], zoom_yaxis=[], 
             legend_pos='best', xlabel_format=0, xlimit=0, ylimit=0, legend_markscale=1.0):
-        ax.tick_params(axis='both', which='major', labelsize=8)
+        ax.tick_params(axis='both', which='major')
         if drawline:
             ax.plot(xaxis, yaxis, marker=marker if marker else '+', ls=linestyle if linestyle else '-', label=legend)
         else: #draw dots 
@@ -67,7 +67,7 @@ class PlotRelProb(object):
         if ylimit > 0:
             ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<ylimit else ylimit)
         ax.set_title(title)
-        ax.legend(loc=legend_pos, markerscale=legend_markscale, prop={'size':6})
+        ax.legend(loc=legend_pos, markerscale=legend_markscale)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
