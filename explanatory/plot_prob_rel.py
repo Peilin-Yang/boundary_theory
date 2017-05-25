@@ -149,7 +149,6 @@ class PlotRelProb(object):
             metrics=['map']
         )
         print p
-        raw_input()
         all_emaps = EMAP().cal_emap_runfile(self.collection_path, method=_method, qids=queries.keys()) 
         collection_x_dict = {}
         collection_level_maxX = 0.0
