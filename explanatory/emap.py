@@ -81,11 +81,12 @@ class EMAP(object):
         judgments = Judgment(collection_path).get_relevant_docs_of_some_queries(qids, format='dict')
         all_emaps = {}
         for qid in qids:
-            print 'qid:', qid
+            #print 'qid:', qid
             res_fn = os.path.join(collection_path, 'split_results', 'title_%s-method:%s' % (qid, method))
             docids_n_scores = self.load_indri_ranking_file(res_fn)
-            print judgments[qid]
-            self.cal_emap_basedon_scores(docids_n_scores, judgments[qid].keys())
+            emap = self.cal_emap_basedon_scores(docids_n_scores, judgments[qid].keys())
+            all_emaps[qid] = emap
+        return all_emaps
             
     def load_indri_ranking_file(self, fn):
         with open(fn) as f:
@@ -93,7 +94,6 @@ class EMAP(object):
         return docids_n_scores
 
     def cal_emap_basedon_scores(self, docids_n_scores, qid_judgments):
-        print qid_judgments
         emap_input = []
         cur_score = round(docids_n_scores[0][1], 4)
         i = 1
@@ -111,8 +111,7 @@ class EMAP(object):
             i += 1 
         if cur_total != 0:
             emap_input.append((cur_rel, cur_total))
-        print emap_input
-        exit()
+        return self.cal_expected_map(emap_input) 
 
 
 

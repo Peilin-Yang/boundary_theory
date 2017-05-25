@@ -148,7 +148,6 @@ class PlotRelProb(object):
             return_all_metrics=False, 
             metrics=['map']
         )
-        print p
         all_emaps = EMAP().cal_emap_runfile(self.collection_path, method=_method, qids=queries.keys()) 
         collection_x_dict = {}
         collection_level_maxX = 0.0
@@ -182,7 +181,8 @@ class PlotRelProb(object):
             #idf = math.log(cs.get_term_IDF1(query_term))
             #legend = 'idf:%.2f'%idf
             if performance_as_legend:
-                legend = 'AP:%.4f' % (p[qid]['map'] if p[qid] else 0)
+                # legend = 'AP:%.4f' % (p[qid]['map'] if p[qid] else 0)
+                legend = 'EAP:%.4f' % (all_emaps[qid] if p[qid] else 0)
             x_dict = {}
             #for row in cs.get_qid_details(qid):
             ranking_list_for_sd = []# ranking list for score distribution estimation
