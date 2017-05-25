@@ -84,6 +84,7 @@ class EMAP(object):
             print 'qid:', qid
             res_fn = os.path.join(collection_path, 'split_results', 'title_%s-method:%s' % (qid, method))
             docids_n_scores = self.load_indri_ranking_file(res_fn)
+            print judgments[qid]
             self.cal_emap_basedon_scores(docids_n_scores, [ele[0] for ele in judgments[qid]])
             
     def load_indri_ranking_file(self, fn):
