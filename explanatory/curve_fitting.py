@@ -38,7 +38,7 @@ class RealModels(object):
         okapi
         """
         return round((k1+1)*float(row['total_tf'])/(float(row['total_tf']) + k1*(1-b+b*float(row['doc_len'])/float(collection_stats.get_avdl()))), 3) 
-    def tf1(self, collection_stats, tf, doclen):
+    def tf1(self, collection_stats, tf, df, doclen):
         """
         tf - numpy matrix (even if there is only one term), each row is the tf values for each term
         doclen - numpy array
