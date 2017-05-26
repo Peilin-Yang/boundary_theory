@@ -33,15 +33,16 @@ class RealModels(object):
     def __init__(self):
         super(RealModels, self).__init__()
 
-    def okapi_apply(self, tf, idf, doclen, avdl, k1=0.9, b=0.35):
+    def okapi_apply(self, tf, idf, doclen, avdl, k1=1.2, b=0.35):
         return (k1+1)*idf*tf/(tf+k1*(1-b+b*doclen/avdl))
-    def okapi(self, collection_stats, tf, df, doclen, k1=0.9, b=0.35):
+    def okapi(self, collection_stats, tf, df, doclen, k1=1.2, b=0.35):
         """
         okapi
         """
         idfs = np.log((collection_stats.get_doc_counts() + 1)/(df+1e-4))
         avdl = collection_stats.get_avdl()
-        r = np.apply_along_axis(self.okapi_apply, 0, tf, idfs, doclen, avdl, k1, b)
+        r = (k1+1)*idf*tf/(tf+k1*(1-b+b*doclen/avdl))
+        # r = np.apply_along_axis(self.okapi_apply, 0, tf, idfs, doclen, avdl, k1, b)
         return np.sum(r, axis=0)
     def tf1(self, collection_stats, tf, df, doclen):
         """
