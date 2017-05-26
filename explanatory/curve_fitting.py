@@ -46,7 +46,8 @@ class RealModels(object):
         r1 = np.apply_along_axis(self.okapi_apply1, 0, tf, idfs, k1)
         r2 = k1*(1-b+b*doclen/avdl)
         r3 = np.apply_along_axis(self.okapi_apply2, 1, tf, r2)
-        print tf, doclen, avdl, r2
+        print tf, doclen, avdl, r2, r3
+        exit()
         return np.sum(r2, axis=0)
     def tf1(self, collection_stats, tf, df, doclen):
         """
