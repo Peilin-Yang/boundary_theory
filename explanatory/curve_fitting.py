@@ -34,7 +34,7 @@ class RealModels(object):
         super(RealModels, self).__init__()
 
     def okapi_apply(self, tf, idf, doclen, avdl, k1=0.9, b=0.35):
-        return (k1+1)*idf*tf/(tf+k1*(1-b+b*doclen/advl))
+        return (k1+1)*idf*tf/(tf+k1*(1-b+b*doclen/avdl))
     def okapi(self, collection_stats, tf, df, doclen, k1=0.9, b=0.35):
         """
         okapi
