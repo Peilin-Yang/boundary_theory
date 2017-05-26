@@ -35,8 +35,8 @@ class RealModels(object):
 
     def okapi_apply1(self, tf, idf, k1=1.2):
         return (k1+1)*idf*tf
-    def okapi_apply2(self, tf, idf, doclen, avdl, k1=1.2, b=0.35):
-        return (k1+1)*idf*tf/(tf+k1*(1-b+b*doclen/avdl))
+    def okapi_apply2(self, tf, r1, doclen, avdl, k1=1.2, b=0.35):
+        return r1/(tf+k1*(1-b+b*doclen/avdl))
     def okapi(self, collection_stats, tf, df, doclen, k1=1.2, b=0.35):
         """
         okapi
@@ -44,7 +44,8 @@ class RealModels(object):
         idfs = np.log((collection_stats.get_doc_counts() + 1)/(df+1e-4))
         avdl = collection_stats.get_avdl()
         r1 = np.apply_along_axis(self.okapi_apply1, 0, tf, idfs, k1)
-        return np.sum(r1, axis=0)
+        r2 = np.apply_along_axis(self.okapi_apply2, 0, tf, r1, doclen, avdl, k1, b)
+        return np.sum(r2, axis=0)
     def tf1(self, collection_stats, tf, df, doclen):
         """
         tf - numpy matrix (even if there is only one term), each row is the tf values for each term
