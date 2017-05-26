@@ -36,7 +36,7 @@ class RealModels(object):
     def okapi_apply1(self, tf, idf, k1=1.2):
         return (k1+1)*idf*tf
     def okapi_apply2(self, tf, doclen, avdl, k1=1.2, b=0.35):
-        return tf+k1*(1-b+b*doclen/avdl)
+        return k1*(1-b+b*doclen/avdl)
     def okapi(self, collection_stats, tf, df, doclen, k1=1.2, b=0.35):
         """
         okapi
