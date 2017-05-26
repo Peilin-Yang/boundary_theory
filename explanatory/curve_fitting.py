@@ -41,7 +41,7 @@ class RealModels(object):
         """
         idfs = np.log((collection_stats.get_doc_counts() + 1)/(df+1e-4))
         avdl = collection_stats.get_avdl()
-        r = (k1+1)*idf*tf/(tf+k1*(1-b+b*doclen/avdl))
+        r = (k1+1)*idfs*tf/(tf+k1*(1-b+b*doclen/avdl))
         # r = np.apply_along_axis(self.okapi_apply, 0, tf, idfs, doclen, avdl, k1, b)
         return np.sum(r, axis=0)
     def tf1(self, collection_stats, tf, df, doclen):
