@@ -239,6 +239,8 @@ class PlotRelProb(object):
                 if rel:
                     collection_x_dict[x][0] += 1
                 collection_x_dict[x][1] += 1
+                print x_dict, collection_x_dict
+                raw_input()
 
             xaxis = sorted(x_dict)
             if sum([x_dict[x][0] for x in xaxis]) == 0:
