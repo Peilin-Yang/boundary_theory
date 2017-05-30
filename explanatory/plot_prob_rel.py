@@ -262,7 +262,7 @@ class PlotRelProb(object):
                     xaxis = range(1, len(xaxis)+1)
                 if curve_fitting and not plot_ratio:
                     sum_yaxis = np.sum(yaxis)
-                #     yaxis /= sum_yaxis
+                    yaxis /= sum_yaxis
                 query_stat = cs.get_term_stats(query_term)
                 zoom_xaxis = xaxis[zoom_x:]
                 zoom_yaxis = yaxis[zoom_x:]
@@ -293,7 +293,7 @@ class PlotRelProb(object):
                             rel_docs = [0 for x in raw_xaxis]
                             fitting_array_idx = 0
                             for idx in fitting_xaxis_mapping:
-                                rel_docs[idx] = fitting[3][fitting_array_idx]*sum_yaxis
+                                rel_docs[idx] = fitting[3][fitting_array_idx]*x_dict[x][1]
                                 fitting_array_idx += 1
                             if re.search(r'^tf\d+$', _method):
                                 estimated_map = CalEstMAP().cal_map(
