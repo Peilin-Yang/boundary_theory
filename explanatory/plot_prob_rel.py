@@ -196,7 +196,7 @@ class PlotRelProb(object):
             scores_n_rels = scores_n_rels[::-1][:1000]
             scores = [ele[0] for ele in scores_n_rels]
             rels = [ele[1] for ele in scores_n_rels]
-            scores = [(s-min(scores))/(max(scores)-min(scores)) for s ele in scores]
+            scores = [(s-min(scores))/(max(scores)-min(scores)) for s in scores]
             scores = np.around(scores, decimals=2)
             decending_ranking_list = zip(scores, rels)
             #print decending_ranking_list
