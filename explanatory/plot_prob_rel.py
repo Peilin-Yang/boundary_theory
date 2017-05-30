@@ -191,7 +191,7 @@ class PlotRelProb(object):
             if doclens.size == 0:
                 continue
             scores = x_func(cs, tfs, dfs, doclens)
-            scores = np.around(scores, decimals=4)
+            scores = np.around(scores, decimals=1)
             scores = np.sort(scores)
             scores = scores[::-1][:1000]
             decending_ranking_list = zip(scores, rels)
