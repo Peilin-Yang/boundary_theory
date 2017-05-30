@@ -256,8 +256,8 @@ class PlotRelProb(object):
                 yaxis = np.array(yaxis, dtype=np.float32)
                 if compact_x:
                     xaxis = range(1, len(xaxis)+1)
-                # if curve_fitting and not plot_ratio:
-                #     sum_yaxis = np.sum(yaxis)
+                if curve_fitting and not plot_ratio:
+                    sum_yaxis = np.sum(yaxis)
                 #     yaxis /= sum_yaxis
                 query_stat = cs.get_term_stats(query_term)
                 zoom_xaxis = xaxis[zoom_x:]
