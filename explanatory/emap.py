@@ -98,12 +98,12 @@ class EMAP(object):
         if not docids_n_scores:
             return 0
         emap_input = []
-        cur_score = round(docids_n_scores[0][1], 1)
+        cur_score = round(docids_n_scores[0][1], 2)
         i = 1
         cur_rel = 1 if docids_n_scores[0][0] in qid_judgments else 0
         cur_total = 1
         while i < len(docids_n_scores):
-            if cur_score == round(docids_n_scores[i][1], 1):
+            if cur_score == round(docids_n_scores[i][1], 2):
                 cur_total += 1
                 cur_rel += 1 if docids_n_scores[i][0] in qid_judgments else 0
             else: 

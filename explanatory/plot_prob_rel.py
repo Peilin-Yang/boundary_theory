@@ -194,7 +194,7 @@ class PlotRelProb(object):
             scores = np.sort(scores)
             scores = scores[::-1][:1000]
             scores = [(s-min(scores))/(max(scores)-min(scores)) for s in scores]
-            scores = np.around(scores, decimals=1)
+            scores = np.around(scores, decimals=2)
             decending_ranking_list = zip(scores, rels)
             #print decending_ranking_list
             # for row in doc_details.get_qid_details(qid):
