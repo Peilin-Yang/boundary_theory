@@ -91,6 +91,7 @@ class EMAP(object):
     def load_indri_ranking_file(self, fn):
         with open(fn) as f:
             docids_n_scores = [(line.strip().split()[2], float(line.strip().split()[4])) for line in f.readlines()[:1000]]
+        docids_n_scores = [(ele[0], (ele[1]-docids_n_scores[999][1])/(docids_n_scores[0][1] - docids_n_scores[999][1])) for ele in docids_n_scores]
         return docids_n_scores
 
     def cal_emap_basedon_scores(self, docids_n_scores, qid_judgments):
