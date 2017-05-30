@@ -503,10 +503,10 @@ class PlotRelProb(object):
                 xaxis = range(1, len(xaxis)+1)
 
             print xaxis
-            xaxis = np.array(xaxis, dtype=np.float32)
-            print xaxis
-            np.around(xaxis, decimals=4)
-            print xaxis
+            # xaxis = np.array(xaxis, dtype=np.float32)
+            # print xaxis
+            # np.around(xaxis, decimals=4)
+            # print xaxis
             yaxis = np.array(yaxis, dtype=np.float32)
             if curve_fitting and not plot_ratio:
                 yaxis /= np.sum(yaxis)
