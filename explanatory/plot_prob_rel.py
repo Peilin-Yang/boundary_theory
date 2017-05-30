@@ -238,7 +238,6 @@ class PlotRelProb(object):
                 collection_x_dict[x][1] += 1
 
             xaxis = sorted(x_dict)
-            print xaxis
             if sum([x_dict[x][0] for x in xaxis]) == 0:
                 continue
             if plot_ratio:
@@ -423,7 +422,6 @@ class PlotRelProb(object):
         plt.rc('font', **font)
         xaxis = collection_x_dict.keys()
         xaxis.sort()
-        print xaxis
         if plot_ratio:
             yaxis = [collection_x_dict[x][0]*1./collection_x_dict[x][1] for x in xaxis]
         else:
