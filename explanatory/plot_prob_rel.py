@@ -424,7 +424,6 @@ class PlotRelProb(object):
         xaxis = collection_x_dict.keys()
         xaxis.sort()
         print xaxis
-        exit()
         if plot_ratio:
             yaxis = [collection_x_dict[x][0]*1./collection_x_dict[x][1] for x in xaxis]
         else:
@@ -508,7 +507,7 @@ class PlotRelProb(object):
 
             print xaxis
             xaxis = np.array(xaxis, dtype=np.float32)
-            #np.around(xaxis, decimals=4)
+            np.around(xaxis, decimals=4)
             print xaxis
             yaxis = np.array(yaxis, dtype=np.float32)
             if curve_fitting and not plot_ratio:
