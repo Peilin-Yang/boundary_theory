@@ -424,6 +424,8 @@ class PlotRelProb(object):
         xaxis.sort()
         if plot_ratio:
             yaxis = [collection_x_dict[x][0]*1./collection_x_dict[x][1] for x in xaxis]
+        print collection_x_dict
+        exit()
         else:
             if plot_total_or_avg:
                 yaxis = [(collection_x_dict[x][0]) if plot_rel_or_all else (collection_x_dict[x][1]) for x in xaxis] 
