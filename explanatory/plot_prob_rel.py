@@ -422,8 +422,6 @@ class PlotRelProb(object):
         plt.rc('font', **font)
         xaxis = collection_x_dict.keys()
         xaxis.sort()
-        print collection_x_dict
-        exit()
         if plot_ratio:
             yaxis = [collection_x_dict[x][0]*1./collection_x_dict[x][1] for x in xaxis]
         else:
