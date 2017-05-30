@@ -192,7 +192,7 @@ class PlotRelProb(object):
                 continue
             scores = x_func(cs, tfs, dfs, doclens)
             scores_n_rels = zip(scores, rels)
-            scores_n_rels = np.sort(scores_n_rels, key=itemgetter(0))
+            scores_n_rels.sort(key=itemgetter(0))
             scores_n_rels = scores_n_rels[::-1][:1000]
             scores = [ele[0] for ele in scores_n_rels]
             rels = [ele[1] for ele in scores_n_rels]
