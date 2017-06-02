@@ -68,7 +68,7 @@ class PlotRelProb(object):
             ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<ylimit else ylimit)
         ax.set_title(title, fontsize=14)
         #ax.legend(loc=legend_pos, markerscale=legend_markscale, prop={'size':14})
-        ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), markerscale=legend_markscale, prop={'size':8})
+        ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), markerscale=legend_markscale, prop={'size':8})
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
