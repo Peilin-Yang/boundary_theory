@@ -186,7 +186,7 @@ class PlotRelProb(object):
             #legend = 'idf:%.2f'%idf
             if performance_as_legend:
                 # legend = 'AP:%.4f' % (p[qid]['map'] if p[qid] else 0)
-                legend = 'EAP:%.4f' % (all_emaps[qid] if p[qid] else 0)
+                legend = 'Ground Truth EAP:%.4f' % (all_emaps[qid] if p[qid] else 0)
             x_dict = {}
             #for row in cs.get_qid_details(qid):
             ranking_list_for_sd = []# ranking list for score distribution estimation
