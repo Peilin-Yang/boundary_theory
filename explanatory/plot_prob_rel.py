@@ -67,8 +67,8 @@ class PlotRelProb(object):
         if ylimit > 0:
             ax.set_ylim(0, ax.get_ylim()[1] if ax.get_ylim()[1]<ylimit else ylimit)
         ax.set_title(title, fontsize=14)
-        #ax.legend(loc=legend_pos, markerscale=legend_markscale, prop={'size':14})
-        ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), markerscale=legend_markscale, prop={'size':8})
+        ax.legend(loc=legend_pos, markerscale=legend_markscale, prop={'size':14})
+        #ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), markerscale=legend_markscale, prop={'size':8})
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
@@ -140,8 +140,7 @@ class PlotRelProb(object):
         #print qids
         rel_docs = Judgment(self.collection_path).get_relevant_docs_of_some_queries(queries.keys(), 1, 'dict')
         #print rel_docs
-        #queries = {k:v for k,v in queries.items() if k in rel_docs and len(rel_docs[k]) > 0}
-        queries = {k:v for k,v in queries.items() if k == '360' or k == '364'}
+        queries = {k:v for k,v in queries.items() if k in rel_docs and len(rel_docs[k]) > 0}
         #print np.mean([len(rel_docs[qid]) for qid in rel_docs])
         eval_class = Evaluation(self.collection_path)
         print _method
