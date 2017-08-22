@@ -576,8 +576,9 @@ class PlotTermRelationship(object):
         }
         all_performances = {k:{'all': {}, 'higher-IDF': {}, 'lower-IDF': {}} for k in model_mapping}
 
+        col_factor = 1
         for qid in sorted(queries):
-            fig, axs = plt.subplots(nrows=1, ncols=3, sharex=False, sharey=False, figsize=(3*1+2, 3*1+1))
+            fig, axs = plt.subplots(nrows=1, ncols=col_factor, sharex=False, sharey=False, figsize=(3*col_factor+2, 3*1+1))
             plt.rc('font', size=10)
             plt.rc('text', usetex=False)
             terms = queries[qid].split()
