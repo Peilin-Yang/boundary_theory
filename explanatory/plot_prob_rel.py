@@ -25,6 +25,8 @@ import numpy as np
 import scipy.stats
 import matplotlib
 matplotlib.use('Agg')
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset

@@ -27,6 +27,8 @@ import numpy as np
 import scipy.stats
 import matplotlib
 matplotlib.use('Agg')
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 import matplotlib.pyplot as plt
 from matplotlib.legend_handler import HandlerLine2D
 from mpl_toolkits.mplot3d import Axes3D
