@@ -624,7 +624,10 @@ class PlotTermRelationship(object):
             for plot_option in range(3):
                 if plot_option != 1:
                     continue
-                ax = axs[plot_option]
+                if col_factor == 1:
+                    ax = axs
+                else:
+                    ax = axs[plot_option]
                 if plot_option == 0:
                     counts = rel_counts
                 elif plot_option == 1:
