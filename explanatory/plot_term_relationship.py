@@ -579,7 +579,7 @@ class PlotTermRelationship(object):
         col_factor = 1
         for qid in sorted(queries):
             fig, axs = plt.subplots(nrows=1, ncols=col_factor, sharex=False, sharey=False, figsize=(3*col_factor+2, 3*1+1))
-            plt.rc('font', size=10)
+            plt.rc('font', size=15)
             plt.rc('text', usetex=False)
             terms = queries[qid].split()
             dfs = np.array([cs.get_term_df(t) for t in terms])
