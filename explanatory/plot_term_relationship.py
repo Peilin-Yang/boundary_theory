@@ -646,7 +646,10 @@ class PlotTermRelationship(object):
                         'x': list(xaxis_plot), 
                         'y': list(yaxis_plot),
                         'size': sizes.tolist(),
-                        'max': max_value
+                        'max': max_value,
+                        'query': queries[qid],
+                        'xlabel': '%s:%.2f' % (terms[smaller_idf_idx], idfs[smaller_idf_idx]),
+                        'ylabel': '%s:%.2f' % (terms[larger_idf_idx], idfs[larger_idf_idx])
                     }
                 scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
                 cbar = fig.colorbar(scatter, ax=ax)
