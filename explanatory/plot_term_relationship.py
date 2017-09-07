@@ -623,7 +623,8 @@ class PlotTermRelationship(object):
             all_counts = collections.Counter(zip(all_xaxis, all_yaxis))
             prob_counts = {k:rel_counts[k]*1./v for k,v in all_counts.items() if k in rel_counts}
             nonrel_counts = {k:v for k,v in all_counts.items() if k not in rel_counts}
-            json_output[qid] = {}
+            if qid == '325' or qid == '394':
+                json_output[qid] = {}
             for plot_option in range(3):
                 if plot_option != 1:
                     continue
@@ -640,12 +641,13 @@ class PlotTermRelationship(object):
                 xaxis_plot, yaxis_plot = zip(*counts.keys())
                 sizes = np.array(counts.values())
                 max_value = max(max(xaxis_plot), max(yaxis_plot))
-                json_output[qid][plot_option] = {
-                    'x': list(xaxis_plot), 
-                    'y': list(yaxis_plot),
-                    'size': sizes.tolist(),
-                    'max': max_value
-                }
+                if qid == '325' or qid == '394':
+                    json_output[qid][plot_option] = {
+                        'x': list(xaxis_plot), 
+                        'y': list(yaxis_plot),
+                        'size': sizes.tolist(),
+                        'max': max_value
+                    }
                 scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
                 cbar = fig.colorbar(scatter, ax=ax)
                 #cbar.ax.set_ylabel('Counts')
