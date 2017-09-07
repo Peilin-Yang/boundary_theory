@@ -646,7 +646,6 @@ class PlotTermRelationship(object):
                     'size': sizes.tolist(),
                     'max': max_value
                 }
-                print json_output
                 scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
                 cbar = fig.colorbar(scatter, ax=ax)
                 #cbar.ax.set_ylabel('Counts')
