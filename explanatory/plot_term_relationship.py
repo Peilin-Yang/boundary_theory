@@ -641,8 +641,8 @@ class PlotTermRelationship(object):
                 sizes = np.array(counts.values())
                 max_value = max(max(xaxis_plot), max(yaxis_plot))
                 json_output[qid][plot_option] = {
-                    'x': xaxis_plot[0].tolist, 
-                    'y': yaxis_plot[0].tolist,
+                    'x': xaxis_plot[0].tolist(), 
+                    'y': yaxis_plot[0].tolist(),
                     'size': sizes,
                     'max': max_value
                 }
