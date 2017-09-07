@@ -643,7 +643,7 @@ class PlotTermRelationship(object):
                 json_output[qid][plot_option] = {
                     'x': list(xaxis_plot), 
                     'y': list(yaxis_plot),
-                    'size': sizes,
+                    'size': sizes.tolist(),
                     'max': max_value
                 }
                 print json_output
