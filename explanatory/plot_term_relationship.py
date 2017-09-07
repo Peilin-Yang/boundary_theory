@@ -640,7 +640,7 @@ class PlotTermRelationship(object):
                 xaxis_plot, yaxis_plot = zip(*counts.keys())
                 sizes = np.array(counts.values())
                 max_value = max(max(xaxis_plot), max(yaxis_plot))
-                print xaxis_plot
+                print type(xaxis_plot), xaxis_plot
                 json_output[qid][plot_option] = {
                     'x': xaxis_plot.tolist(), 
                     'y': yaxis_plot.tolist(),
