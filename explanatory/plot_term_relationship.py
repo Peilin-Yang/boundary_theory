@@ -29,6 +29,7 @@ import matplotlib
 matplotlib.use('Agg')
 matplotlib.rcParams['pdf.fonttype'] = 42
 matplotlib.rcParams['ps.fonttype'] = 42
+matplotlib.rcParams['font.weight'] = 'bold'
 import matplotlib.pyplot as plt
 from matplotlib.legend_handler import HandlerLine2D
 from mpl_toolkits.mplot3d import Axes3D
@@ -577,6 +578,7 @@ class PlotTermRelationship(object):
         all_performances = {k:{'all': {}, 'higher-IDF': {}, 'lower-IDF': {}} for k in model_mapping}
 
         col_factor = 1
+        json_output = {}
         for qid in sorted(queries):
             fig, axs = plt.subplots(nrows=1, ncols=col_factor, sharex=False, sharey=False, figsize=(3*col_factor+2, 3*1+1))
             plt.rc('font', size=15)
@@ -621,6 +623,7 @@ class PlotTermRelationship(object):
             all_counts = collections.Counter(zip(all_xaxis, all_yaxis))
             prob_counts = {k:rel_counts[k]*1./v for k,v in all_counts.items() if k in rel_counts}
             nonrel_counts = {k:v for k,v in all_counts.items() if k not in rel_counts}
+            json_output[qid] = {}
             for plot_option in range(3):
                 if plot_option != 1:
                     continue
@@ -637,6 +640,12 @@ class PlotTermRelationship(object):
                 xaxis_plot, yaxis_plot = zip(*counts.keys())
                 sizes = np.array(counts.values())
                 max_value = max(max(xaxis_plot), max(yaxis_plot))
+                json_output[qid][plot_option] = {
+                    'x': xaxis_plot, 
+                    'y': yaxis_plot,
+                    'size': sizes,
+                    'max': max_value
+                }
                 scatter = ax.scatter(xaxis_plot, yaxis_plot, c=sizes, edgecolors='none')
                 cbar = fig.colorbar(scatter, ax=ax)
                 #cbar.ax.set_ylabel('Counts')
@@ -711,6 +720,11 @@ class PlotTermRelationship(object):
             plt.savefig(output_fn, format=oformat, bbox_inches='tight', dpi=400)
             plt.close()
 
+            jsondata_output_root = os.path.join(self.output_root+'/json/')
+            if not os.path.exists(jsondata_output_root):
+                os.makedirs(jsondata_output_root)
+            with open(os.path.join(jsondata_output_root, self.collection_name+'.json'), 'w') as f:
+                json.dump(json_output, f, indent=2)
 
     def plot_all(self, query_length=2, method=1, oformat='png'):
         query_length = int(query_length)
