@@ -917,6 +917,7 @@ class PlotTermRelationship(object):
         # row_idx = 0
         # col_idx = 0
         idx = 1
+        all_all_scores = {}
         for subquery_id in sorted(runfiles_n_performances, key=self.sort_subquery_id):
             terms_n_idfs, all_scores = self.get_terms_scores_for_tdc_violation(
                 runfiles_n_performances[subquery_id]['first_lines'],
@@ -972,8 +973,9 @@ class PlotTermRelationship(object):
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
             idx += 1
+            all_all_scores[subquery_id] = self.jsonify(all_scores)
         with open(output_fn+'.json', 'w') as f:
-            json.dump({'data': self.jsonify(all_scores), 
+            json.dump({'data': all_all_scores, 
                 'max': max_value, 
                 'title': subquery_mapping[subquery_id] + '(%.4f)' % runfiles_n_performances[subquery_id]['ap'], 
                 'xlabel': '%s(%.2f)' % (terms_n_idfs[0][0], terms_n_idfs[0][1]),
