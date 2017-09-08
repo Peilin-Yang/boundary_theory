@@ -878,6 +878,8 @@ class PlotTermRelationship(object):
         for k, v in d.items():
             if 'numpy' in str(type(v)):
                 v = v.tolist()
+                for ele in v.tolist():
+                    ele = ele.tolist()
             if 'dict' in str(type(v)):
                 return self.jsonify(v)
         return d
