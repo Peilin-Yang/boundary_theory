@@ -879,7 +879,8 @@ class PlotTermRelationship(object):
             if 'numpy' in str(type(v)):
                 v = v.tolist()
             if 'dict' in str(type(v)):
-                self.jsonify(v)
+                return self.jsonify(v)
+        return d
 
     def plot_tdc_violation(self, runfiles_n_performances, rel_docs, 
             subquery_mapping, top_n_docs, _type, output_fn, terms_type=0, 
