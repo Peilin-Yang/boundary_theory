@@ -874,16 +874,6 @@ class PlotTermRelationship(object):
         with open(output_fn, 'wb') as f:
             json.dump(all_data, f, indent=2)
 
-    def jsonify(self, d):
-        for k, v in d.items():
-            if 'numpy' in str(type(v)):
-                v = v.tolist()
-                for ele in v:
-                    ele = ele.tolist()
-            if 'dict' in str(type(v)):
-                return self.jsonify(v)
-        return d
-
     def plot_tdc_violation(self, runfiles_n_performances, rel_docs, 
             subquery_mapping, top_n_docs, _type, output_fn, terms_type=0, 
             ofn_format='png'):
@@ -975,7 +965,11 @@ class PlotTermRelationship(object):
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
             idx += 1
-            all_all_scores[subquery_id] = self.jsonify(all_scores)
+            all_all_scores[subquery_id] = {}
+            for k, v in all_scores.items():
+                all_all_scores[subquery_id][k] = []
+                for ele in v:
+                    all_all_scores[subquery_id][k].append(v.tolist())
         with open(output_fn+'.json', 'w') as f:
             json.dump({'data': all_all_scores, 
                 'max': max_value, 
