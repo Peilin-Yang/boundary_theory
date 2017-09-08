@@ -974,9 +974,9 @@ class PlotTermRelationship(object):
             }
             print all_scores
             for k, v in all_scores.items():
-                all_all_scores[subquery_id]['data'][k] = []
-                for ele in v:
-                    all_all_scores[subquery_id]['data'][k].append(v.tolist())
+                all_all_scores[subquery_id]['data'][k] = v.tolist()
+                # for ele in v:
+                #     all_all_scores[subquery_id]['data'][k].append(v.tolist())
             print all_all_scores[subquery_id]['data']
             raw_input()
         with open(output_fn+'.json', 'w') as f:
