@@ -965,6 +965,14 @@ class PlotTermRelationship(object):
             ax.set_ylim([0, max_value])
             ax.grid(ls='dotted')
             idx += 1
+        with open(output_fn+'.json', 'w') as f:
+            json.dump({'data': all_scores, 
+                'max': max_value, 
+                'title': subquery_mapping[subquery_id] + '(%.4f)' % runfiles_n_performances[subquery_id]['ap'], 
+                'xlabel': '%s(%.2f)' % (terms_n_idfs[0][0], terms_n_idfs[0][1]),
+                'ylabel': '%s(%.2f)' % (terms_n_idfs[1][0], terms_n_idfs[1][1]),
+                'zlabel': '%s(%.2f)' % (terms_n_idfs[2][0], terms_n_idfs[2][1]) if all_scores['nonrel'].shape[0] == 3 else '',
+                }, f, indent=2)
         plt.savefig(output_fn, format=ofn_format, bbox_inches='tight', dpi=400)
 
     def plot_tdc_violation_atom(self, qid, query, top_n_docs, _type, output_fn, terms_type=0, ofn_format='png'):
