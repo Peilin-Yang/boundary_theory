@@ -972,10 +972,13 @@ class PlotTermRelationship(object):
                 'ylabel': '%s(%.2f)' % (terms_n_idfs[1][0], terms_n_idfs[1][1]),
                 'zlabel': '%s(%.2f)' % (terms_n_idfs[2][0], terms_n_idfs[2][1]) if all_scores['nonrel'].shape[0] == 3 else '',
             }
+            print all_scores
             for k, v in all_scores.items():
                 all_all_scores[subquery_id]['data'][k] = []
                 for ele in v:
                     all_all_scores[subquery_id]['data'][k].append(v.tolist())
+            print all_all_scores[subquery_id]['data']
+            raw_input()
         with open(output_fn+'.json', 'w') as f:
             json.dump(all_all_scores, f, indent=2)
         plt.savefig(output_fn, format=ofn_format, bbox_inches='tight', dpi=400)
