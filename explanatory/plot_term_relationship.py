@@ -880,7 +880,7 @@ class PlotTermRelationship(object):
         if len(subquery_mapping) > 7: # we can not draw the plots for query len > 3
             return
         
-        only_plot_optimal_and_original = True
+        only_plot_optimal_and_original = False
         if only_plot_optimal_and_original:
             allowed_subquery_id = []
             all_subquery_ids = [(k, v['ap']) for k,v in runfiles_n_performances.items()]
