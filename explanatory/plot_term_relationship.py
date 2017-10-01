@@ -898,13 +898,13 @@ class PlotTermRelationship(object):
             fig = plt.figure(figsize=(6, 3))
         else:
             if len(subquery_mapping) == 7:
-                fig = plt.figure(figsize=(15, 9))
+                fig = plt.figure(figsize=(16, 9))
             elif len(subquery_mapping) == 3:
-                fig = plt.figure(figsize=(12, 5))
+                fig = plt.figure(figsize=(13, 5))
         # num_cols = min(4, len(runfiles_n_performances)+1) # extra one for explanations
         # num_rows = int(math.ceil((len(runfiles_n_performances)+1)*1.0/num_cols))
         # fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, sharex=False, sharey=False, figsize=(3*num_cols+3, 3*num_rows+3))
-        plt.rc('font', size=8)
+        plt.rc('font', size=12)
         plt.rc('text', usetex=False)
         # row_idx = 0
         # col_idx = 0
