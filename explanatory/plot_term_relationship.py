@@ -898,7 +898,7 @@ class PlotTermRelationship(object):
             fig = plt.figure(figsize=(6, 3))
         else:
             if len(subquery_mapping) == 7:
-                fig = plt.figure(figsize=(16, 9))
+                fig = plt.figure(figsize=(18, 9))
             elif len(subquery_mapping) == 3:
                 fig = plt.figure(figsize=(13, 5))
         # num_cols = min(4, len(runfiles_n_performances)+1) # extra one for explanations
